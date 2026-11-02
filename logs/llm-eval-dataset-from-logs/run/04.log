@@ -1,0 +1,14 @@
+date: 2026-11-02T15:56:08Z
+cwd: <work>/eval-dataset
+node: v22.22.0 / npm: 10.9.4
+command: node check-cases.ts
+--- output (stdout+stderr) ---
+6行、6件、id の重複 0件
+ファイルの末尾が改行: true
+shipping-001 [bad]   注文した商品は　いつ届きますか？ 
+shipping-002 [-] 注文をキャンセルしたら送料はかかりますか？
+shipping-003 [-] 配達の時間帯を指定できますか？
+refund-001 [bad] 返品は何日以内ならできますか？
+account-001 [-] 登録したメールアドレス <email> を変更したいです。
+payment-001 [good] 支払い方法を教えてください。
+--- exit=0

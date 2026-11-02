@@ -1,0 +1,11 @@
+date: 2026-11-02T15:14:24Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_char --tool-arg text=MCP
+  echo $?
+--- output (stdout+stderr) ---
+char-count MCP server started (stdio)
+{"error":{"code":"tool_not_found","message":"Tool 'count_char' not found on server."}}
+5
+--- exit=0

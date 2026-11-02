@@ -1,0 +1,7 @@
+date: 2026-10-31T14:11:01Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node <code>/extra/dotdot-name.ts
+--- output (stdout+stderr) ---
+"..memo.md" true false
+--- exit=0

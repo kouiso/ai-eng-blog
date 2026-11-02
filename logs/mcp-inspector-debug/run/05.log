@@ -1,0 +1,35 @@
+date: 2026-11-02T15:14:19Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector --cli node server.ts --method tools/list
+--- output (stdout+stderr) ---
+char-count MCP server started (stdio)
+{
+  "tools": [
+    {
+      "name": "count_chars",
+      "title": "文字数を数える",
+      "description": "文章の文字数（見た目の1文字を1と数える）と行数を返す。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "description": "数えたい文章"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}
+--- exit=0

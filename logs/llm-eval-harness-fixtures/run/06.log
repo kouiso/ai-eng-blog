@@ -1,0 +1,9 @@
+date: 2026-11-02T15:45:20Z
+cwd: <work>/llm-eval
+node: v22.22.0 / npm: 10.9.4
+command: node extra/missing-answer.ts
+--- output (stdout+stderr) ---
+{ pass: false, reason: '期待した答え "negative" と違う' }
+{ pass: false, reason: '足りないキーワード: 30日' }
+{ pass: false, reason: '/(?<!\\d)3件/ に合わない' }
+--- exit=0

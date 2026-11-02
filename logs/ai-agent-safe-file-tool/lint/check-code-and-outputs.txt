@@ -1,0 +1,32 @@
+blocks in article: 27 / expected: 27
+OK #1: bash cmd node -v
+OK #2: text out 01
+OK #3: bash cmd mkdir safe-file-tool
+cd safe-file-tool
+OK #4: json code package.json
+OK #5: ts code setup.ts
+OK #6: bash cmd node setup.ts
+OK #7: text out 02
+OK #8: text cmd (図またはワンライナー)
+OK #9: ts code naive-tool.ts
+OK #10: ts code try-naive.ts
+OK #11: bash cmd node try-naive.ts
+OK #12: text out 03
+OK #13: ts code safe-file-tools.ts
+OK #14: bash cmd (図またはワンライナー)
+OK #15: text out 07
+OK #16: ts code try-safe.ts
+OK #17: bash cmd node try-safe.ts
+OK #18: text out 04
+OK #19: ts code naive-write.ts
+OK #20: bash cmd node naive-write.ts
+OK #21: text out 05
+OK #22: ts code tools.ts
+OK #23: bash cmd (図またはワンライナー)
+OK #24: text out 08
+OK #25: ts code try-tools.ts
+OK #26: bash cmd node try-tools.ts
+OK #27: text out 06
+OK one-liner run/07.log command appears verbatim in article
+OK one-liner run/08.log command appears verbatim in article
+ALL OK

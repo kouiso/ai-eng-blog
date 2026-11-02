@@ -1,0 +1,15 @@
+TEXT 'read: [{"uri":"guide://glossary/prompt","mimeType":"text/plain","text":"ユーザーが選んで使う、メッセージのひな形。"}]' ほか 1 行: 抜き出し（全行が run/04.log の出力にある）
+CMD 'node -v': run/01.log exit=0
+OUT after run/01.log: SAME
+TEXT 'writing-helper-mcp/' ほか 4 行: 実行結果ではない
+CMD 'mkdir writing-helper-mcp\ncd writing-helper-mcp': run/02.log exit=0
+CODE package.json: SAME
+CMD 'npm install': run/03.log exit=0
+OUT after run/03.log: SAME
+CODE server.ts: SAME
+CODE check.ts: SAME
+CMD 'node check.ts': run/04.log exit=0
+OUT after run/04.log: SAME
+CMD 'npx -y @modelcontextprotocol/inspector@2.13.0 --cli node server.ts --method resources/read --uri guide://style': run/09.log exit=0
+OUT after run/09.log: SAME
+ALL OK

@@ -1,0 +1,10 @@
+date: 2026-11-02 15:04:51 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: claude mcp add --transport http --scope user char-count-http http://127.0.0.1:3000/mcp
+exit: 0
+elapsed: 531 ms
+--- stdout+stderr ---
+Added HTTP MCP server char-count-http with URL: http://127.0.0.1:3000/mcp to user config
+File modified: /path/to/tmp-home/.claude.json

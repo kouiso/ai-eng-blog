@@ -1,0 +1,16 @@
+date: 2026-11-02T15:14:23Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_chars --tool-args-json '{"text":"2026"}'
+--- output (stdout+stderr) ---
+char-count MCP server started (stdio)
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "文字数: 4 / 行数: 1"
+    }
+  ]
+}
+--- exit=0

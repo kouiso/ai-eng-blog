@@ -1,0 +1,41 @@
+date: 2026-11-02T15:24:35Z
+cwd: /path/to/writing-helper-mcp
+node: v22.22.0 / npm: 10.9.4 / arch: x86_64
+command:
+  node probe.ts server-object.ts guide://glossary/prompt guide://glossary/constructor
+--- output (stdout+stderr) ---
+writing-helper MCP server started (stdio)
+read: guide://glossary/prompt [{"uri":"guide://glossary/prompt","mimeType":"text/plain","text":"ユーザーが選んで使う、メッセージのひな形。"}]
+error: guide://glossary/constructor undefined [
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "text"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        }
+      ],
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "blob"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        }
+      ]
+    ],
+    "path": [
+      "contents",
+      0
+    ],
+    "message": "Invalid input"
+  }
+]
+--- exit=0

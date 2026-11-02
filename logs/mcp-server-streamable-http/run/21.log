@@ -1,0 +1,13 @@
+date: 2026-11-02 15:04:56 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: curl -sS -X POST http://127.0.0.1:3000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+  -o /dev/null -w "status: %{http_code} %{content_type} %{size_download} bytes\n"
+exit: 0
+elapsed: 14 ms
+--- stdout+stderr ---
+status: 500  0 bytes

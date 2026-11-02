@@ -1,0 +1,17 @@
+date: 2026-11-02T15:39:41Z
+cwd: /path/to/notes-mcp
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command:
+  cat package.json
+--- output (stdout+stderr) ---
+{
+  "name": "notes-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
+}
+--- exit=0

@@ -1,0 +1,28 @@
+date: 2026-11-02 15:51:58 +0000
+cwd: /path/to/retrieval-eval
+node: v22.22.0
+npm: 10.9.4
+command: bash -c "cp ../code/extra/show-ranked.ts . && node show-ranked.ts 0.1 返金はいつ？ 'E1021 が出た' カードが使えない ログインできない && node show-ranked.ts 0 返金はいつ？"
+exit: 0
+elapsed: 4808 ms
+--- stdout+stderr ---
+# 返金はいつ？
+bm25  : 
+vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
+hybrid: returns(0.01639) cancel(0.01613) points(0.01587) payment(0.01563) delivery(0.01538)
+# E1021 が出た
+bm25  : error-e1020(1.928) error-e1021(1.296) login(0.578) payment(0.537) points(0.442)
+vector: error-e1021(0.878) error-e1020(0.863) password(0.819) login(0.819) points(0.818)
+hybrid: error-e1020(0.03252) error-e1021(0.03252) login(0.03150) points(0.03077) password(0.01587)
+# カードが使えない
+bm25  : payment(2.116) error-e1020(1.965) login(1.535) error-e1021(1.433) points(1.262)
+vector: error-e1021(0.865) error-e1020(0.856) payment(0.835) login(0.833) password(0.831)
+hybrid: payment(0.03227) error-e1020(0.03226) error-e1021(0.03202) login(0.03150) points(0.01538)
+# ログインできない
+bm25  : login(2.617) password(0.731) error-e1020(0.697)
+vector: login(0.883) password(0.876) error-e1020(0.829) error-e1021(0.819) payment(0.818)
+hybrid: login(0.03279) password(0.03226) error-e1020(0.03175) error-e1021(0.01563) payment(0.01538)
+# 返金はいつ？
+bm25  : points(0.032) shipping-fee(0.032) delivery(0.031) returns(0.031) payment(0.028)
+vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
+hybrid: points(0.03227) returns(0.03202) delivery(0.03126) payment(0.03101) shipping-fee(0.01613)

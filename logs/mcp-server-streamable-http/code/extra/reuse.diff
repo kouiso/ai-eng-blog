@@ -1,0 +1,13 @@
+46a47,50
+> const server = createServer();
+> const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+> await server.connect(transport);
+> 
+48,54d51
+<   const server = createServer();
+<   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+<   res.on("close", () => {
+<     transport.close();
+<     server.close();
+<   });
+<   await server.connect(transport);

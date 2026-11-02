@@ -1,0 +1,8 @@
+date: 2026-10-31T14:11:01Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: <tc>/node_modules/.bin/tsc -v && <tc>/node_modules/.bin/tsc -p <code>/extra/tsconfig.typecheck.json --typeRoots <tc>/node_modules/@types; echo tsc_exit=$?
+--- output (stdout+stderr) ---
+Version 7.0.2
+tsc_exit=0
+--- exit=0

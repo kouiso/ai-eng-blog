@@ -1,0 +1,9 @@
+date: 2026-11-02T15:38:33Z
+cwd: /path/to/notes-mcp
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command:
+  node other-errors.mjs
+--- output (stdout+stderr) ---
+command not found: spawn nodee ENOENT (0s)
+no response: MCP error -32001: Request timed out (60s)
+--- exit=0

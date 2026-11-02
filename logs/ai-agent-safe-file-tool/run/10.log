@@ -1,0 +1,9 @@
+date: 2026-10-31T14:11:00Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node setup.ts && node <code>/extra/hard-link.ts
+--- output (stdout+stderr) ---
+見本のファイルを作りました
+作業フォルダの外のファイルです
+
+--- exit=0

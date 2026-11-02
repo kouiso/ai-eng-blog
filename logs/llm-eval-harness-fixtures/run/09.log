@@ -1,0 +1,8 @@
+date: 2026-11-02T15:45:20Z
+cwd: <work>/llm-eval
+node: v22.22.0 / npm: 10.9.4
+command: node extra/format-only.ts
+--- output (stdout+stderr) ---
+2026-11-20: { pass: true, reason: '/^\\d{4}-\\d{2}-\\d{2}$/ に合う' }
+2026-11-21: { pass: true, reason: '/^\\d{4}-\\d{2}-\\d{2}$/ に合う' }
+--- exit=0

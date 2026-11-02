@@ -1,0 +1,13 @@
+date: 2026-10-31 14:05:43 +0000
+cwd: /path/to/hybrid-search
+node: v22.22.0
+npm: 10.9.4
+command: node hybrid.ts 返金はいつ？ 0
+exit: 0
+elapsed: 2519 ms
+--- stdout+stderr ---
+BM25  : points(0.032) shipping-fee(0.032) delivery(0.031) returns(0.031) payment(0.028)
+vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
+0.03227 points (順位 1 / 3)
+0.03202 returns (順位 4 / 1)
+0.03126 delivery (順位 3 / 5)

@@ -1,0 +1,8 @@
+date: 2026-11-02T15:38:13Z
+cwd: /path/to
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command:
+  node -v
+--- output (stdout+stderr) ---
+v22.22.0
+--- exit=0

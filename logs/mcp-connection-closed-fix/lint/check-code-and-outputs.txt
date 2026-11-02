@@ -1,0 +1,31 @@
+PASS code block count 6 vs 6
+PASS code#1 json full == package.json 
+PASS code#2 ts full == server.ts 
+PASS code#3 ts full == check.ts 
+PASS code#4 ts part == check.ts 
+PASS code#5 ts part == after/check.ts 
+PASS code#6 ts part == server.ts 
+PASS after/check.ts = check.ts + 1 line ['  env: { NOTES_DIR: process.env.NOTES_DIR ?? "" },']
+PASS bash block count 9 vs 9
+PASS bash#1 command == run/02.log --- exit=0
+PASS bash#1 has no output block (mkdir/touch) 
+PASS bash#2 command == run/03.log --- exit=0
+PASS bash#2 output#1 == run/03.log output 
+PASS bash#3 command == run/04.log --- exit=1
+PASS bash#3 output#1 == run/04.log output 
+PASS bash#4 command == run/05.log --- exit=0
+PASS bash#4 output#1 == run/05.log output 
+PASS bash#5 command == run/06.log --- exit=1
+PASS bash#5 output#1 == run/06.log output 
+PASS bash#6 command == run/07.log --- exit=0
+PASS bash#6 output#1 == run/07.log output 
+PASS bash#7 command == run/08.log --- exit=0
+PASS bash#7 output#1 == run/08.log output 
+PASS bash#8 command == run/09.log --- exit=1
+PASS bash#8 output#1 == run/09.log output 
+PASS bash#9 command == run/10.log --- exit=0
+PASS bash#9 command == run/11.log --- exit=0
+PASS bash#9 output#1 == run/10.log output 
+PASS bash#9 output#2 == run/11.log output 
+ALL OK
+exit=0

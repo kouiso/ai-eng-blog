@@ -1,0 +1,16 @@
+date: 2026-10-31T14:10:59Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node try-naive.ts
+--- output (stdout+stderr) ---
+[readNaive]
+  notes/todo.md -> 読めた: # TODO
+  ../outside/private.txt -> 読めた: 作業フォルダの外のファイルです
+  ../workspace-old/memo.txt -> 読めた: 隣のフォルダのメモです
+  notes/shortcut.txt -> 読めた: 作業フォルダの外のファイルです
+[readWithPrefixCheck]
+  notes/todo.md -> 読めた: # TODO
+  ../outside/private.txt -> 拒否: 作業フォルダの外です
+  ../workspace-old/memo.txt -> 読めた: 隣のフォルダのメモです
+  notes/shortcut.txt -> 読めた: 作業フォルダの外のファイルです
+--- exit=0

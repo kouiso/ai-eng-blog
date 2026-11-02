@@ -1,0 +1,21 @@
+date: 2026-11-02T15:56:09Z
+cwd: <work>/missing-field
+node: v22.22.0 / npm: 10.9.4
+command: cat logs.jsonl; node build-cases.ts
+--- output (stdout+stderr) ---
+{"ts":"2026-10-01T09:00:00+09:00","category":"shipping","answer":"質問の欄が無いログ","feedback":null}
+file://<work>/missing-field/build-cases.ts:23
+const mask = (text        ) => text.replace(EMAIL, "<email>");
+                                    ^
+
+TypeError: Cannot read properties of undefined (reading 'replace')
+    at mask (file://<work>/missing-field/build-cases.ts:23:37)
+    at file://<work>/missing-field/build-cases.ts:47:24
+    at Array.filter (<anonymous>)
+    at file://<work>/missing-field/build-cases.ts:46:24
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.0
+--- exit=1
