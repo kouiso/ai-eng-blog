@@ -1,0 +1,86 @@
+code package.json in article: True
+code tsconfig.json in article: True
+code src/server.ts in article: True
+code src/check.ts in article: True
+code extra/reuse-snippet.ts in article: True
+fence json '{' in code/: True
+fence json '{' in code/: True
+fence ts 'import { McpServer } from "@modelcontext' in code/: True
+fence ts 'import { Client } from "@modelcontextpro' in code/: True
+fence ts 'const server = createServer();' in code/: True
+server.reuse.ts == server.ts with app.post replaced by reuse-snippet.ts: True
+server.no-405.ts == server.ts without the app.all block: True
+article has 'mkdir -p char-count-http/src\ncd char-count-http': True
+run/01 command is mkdir: True
+article has 'npm run build\nnpm start': True
+run/03 command == 'npm install': True
+run/04 command == 'npm run build': True
+run/05 command == 'npm start': True
+run/06 command == 'npm run check': True
+article has 'npm install': True
+article has 'npm run check': True
+run/07 curl command in article: True
+run/08 curl command in article: True
+run/09 curl command in article: True
+run/10 curl command in article: True
+run/11 curl command in article: True
+run/13 '$ claude mcp add --transport http --scope user char-count-http http://127.0.0.1:3000/mcp' + output in Claude Code block: True
+run/14 '$ claude mcp list' + output in Claude Code block: True
+run/15 '$ claude mcp get char-count-http' + output in Claude Code block: True
+run/16 '$ claude mcp remove char-count-http -s user' + output in Claude Code block: True
+output run/03 in article: True
+output run/05 in article: True
+output run/06 in article: True
+output run/07 in article: True
+output run/08 in article: True
+output run/09 in article: True
+output run/10 in article: True
+output run/11 in article: True
+output run/20 in article: True
+output run/27 in article: True
+run/31 (restored) output == run/06 output: True
+run/23 exception text in article: True
+AbortError line in article: True
+run/36: 30 runs, all ok=1, abort=1 in 4: True
+run/21, 22: 500 with 0 bytes: True
+run/19: server printed only the start line: True
+run/37: 7 TS7006 errors without @types/express: True
+run 01 exit=0
+run 02 exit=0
+run 03 exit=0
+run 04 exit=0
+run 05 exit=130
+run 06 exit=0
+run 07 exit=0
+run 08 exit=0
+run 09 exit=0
+run 10 exit=0
+run 11 exit=0
+run 12 exit=0
+run 13 exit=0
+run 14 exit=0
+run 15 exit=0
+run 16 exit=0
+run 17 exit=1
+run 18 exit=0
+run 19 exit=130
+run 20 exit=1
+run 21 exit=0
+run 22 exit=0
+run 23 exit=0
+run 24 exit=1
+run 25 exit=0
+run 26 exit=130
+run 27 exit=0
+run 28 exit=0
+run 29 exit=0
+run 30 exit=130
+run 31 exit=0
+run 32 exit=0
+run 33 exit=0
+run 34 exit=0
+run 35 exit=130
+run 36 exit=0
+run 37 exit=0
+run 38 exit=0
+ALL OK

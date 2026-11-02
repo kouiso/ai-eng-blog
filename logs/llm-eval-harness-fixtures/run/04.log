@@ -1,0 +1,9 @@
+date: 2026-11-02T15:45:19Z
+cwd: <work>/llm-eval
+node: v22.22.0 / npm: 10.9.4
+command: node extra/no-normalize.ts
+--- output (stdout+stderr) ---
+"Negative" === "negative": false
+refund の回答 includes("30日"): false
+"３０日".normalize("NFKC"): 30日
+--- exit=0

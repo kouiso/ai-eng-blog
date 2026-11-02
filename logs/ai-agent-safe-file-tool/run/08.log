@@ -1,0 +1,7 @@
+date: 2026-10-31T14:11:00Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node -e 'const h = { read_file() {} }; console.log(typeof h["toString"])'
+--- output (stdout+stderr) ---
+function
+--- exit=0

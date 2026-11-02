@@ -1,0 +1,25 @@
+CMD 'node -v': run/01.log exit=0
+OUT after run/01.log: SAME
+TEXT (実行結果ではない): 'inspector-demo/' ほか 3 行
+CMD 'mkdir inspector-demo\ncd inspector-demo': run/02.log exit=0
+CODE package.json: SAME
+CODE server.ts: SAME
+CMD 'npm install': run/03.log exit=0
+OUT after run/03.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --version': run/04.log exit=0
+OUT after run/04.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node server.ts --method tools/list': run/05.log exit=0
+OUT after run/05.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_chars --tool-arg text=MCPサーバー': run/06.log exit=0
+OUT after run/06.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_chars --tool-arg text=2026\necho $?': run/07.log exit=0
+OUT after run/07.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_chars --tool-args-json \'{"text":"2026"}\'': run/08.log exit=0
+OUT after run/08.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_char --tool-arg text=MCP\necho $?': run/09.log exit=0
+OUT after run/09.log: SAME
+CMD 'npx @modelcontextprotocol/inspector --cli node servr.ts --method tools/list\necho $?': run/10.log exit=0
+OUT after run/10.log: SAME
+CMD 'npx @modelcontextprotocol/inspector node server.ts': run/11.log exit=130
+OUT after run/11.log: SAME
+ALL OK

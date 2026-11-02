@@ -1,0 +1,20 @@
+date: 2026-11-02T15:14:22Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector --cli node server.ts --method tools/call --tool-name count_chars --tool-arg text=2026
+  echo $?
+--- output (stdout+stderr) ---
+char-count MCP server started (stdio)
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "MCP error -32602: Input validation error: Invalid arguments for tool count_chars: Invalid input: expected string, received number at text"
+    }
+  ],
+  "isError": true
+}
+{"error":{"code":"tool_is_error","message":"Tool 'count_chars' returned isError:true."}}
+5
+--- exit=0

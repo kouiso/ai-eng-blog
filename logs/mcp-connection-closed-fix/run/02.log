@@ -1,0 +1,9 @@
+date: 2026-11-02T15:38:13Z
+cwd: /path/to
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command:
+  mkdir -p notes-mcp/notes
+  cd notes-mcp
+  touch notes/todo.md notes/idea.md
+--- output (stdout+stderr) ---
+--- exit=0

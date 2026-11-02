@@ -1,0 +1,10 @@
+date: 2026-11-02 15:05:02 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: npm view @modelcontextprotocol/sdk version engines
+exit: 0
+elapsed: 345 ms
+--- stdout+stderr ---
+version = '1.32.2'
+engines = { node: '>=18' }

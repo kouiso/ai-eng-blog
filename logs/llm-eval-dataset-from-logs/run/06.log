@@ -1,0 +1,14 @@
+date: 2026-11-02T15:56:09Z
+cwd: <work>/eval-dataset
+node: v22.22.0 / npm: 10.9.4
+command: node extra/dedup-variants.ts
+--- output (stdout+stderr) ---
+読めた質問 15件
+記事のキー（NFKC、空白をすべて除く、小文字）: 12件
+空白を1つにまとめるだけ（NFKC、trim、小文字）: 13件
+NFKC なし（空白をすべて除く、小文字）: 13件
+そのまま比べる: 14件
+"？".normalize("NFKC") => "?"
+"\u3000".normalize("NFKC") => " "
+/\s/.test("\u3000") => true
+--- exit=0

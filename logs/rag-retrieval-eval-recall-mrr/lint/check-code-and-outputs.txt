@@ -1,0 +1,59 @@
+code package.json: True
+code metrics.ts: True
+code check-metrics.ts: True
+code cases.ts: True
+code tokenize.ts: True
+code bm25.ts: True
+code docs.ts: True
+code embed.ts: True
+code vector-search.ts: True
+code rrf.ts: True
+code eval.ts: True
+cases.ts sha256 unchanged since run/cases-written-at.txt: True
+command 'mkdir retrieval-eval' in article: True
+command 'npm install' in article: True
+  run/03.log command matches: True (npm install)
+command 'node check-metrics.ts' in article: True
+  run/06.log command matches: True (node check-metrics.ts)
+command 'node eval.ts' in article: True
+  run/08.log command matches: True (node eval.ts)
+command 'node eval.ts 1 | tail -n 4' in article: True
+  run/18.log command matches: True (bash -c "node eval.ts 1 | tail -n 4")
+command 'node eval.ts 5 | tail -n 4' in article: True
+  run/19.log command matches: True (bash -c "node eval.ts 5 | tail -n 4")
+command 'node eval.ts 3 0' in article: True
+  run/12.log command matches: True (node eval.ts 3 0)
+output run/06.log in article: True
+output run/08.log in article: True
+output run/18.log in article: True
+output run/19.log in article: True
+output run/12.log in article: True
+offline output of 'node check-metrics.ts' equals run/06.log: True
+offline output of 'node eval.ts' equals run/08.log: True
+offline output of 'node eval.ts 1' equals run/10.log: True
+offline output of 'node eval.ts 5' equals run/11.log: True
+offline output of 'node eval.ts 3 0' equals run/12.log: True
+run/18.log equals last 4 lines of run/10.log: True
+run/19.log equals last 4 lines of run/11.log: True
+run 01 exit=0
+run 02 exit=0
+run 03 exit=0
+run 04 exit=0
+run 05 exit=0
+run 06 exit=0
+run 07 exit=0
+run 08 exit=0
+run 09 exit=0
+run 10 exit=0
+run 11 exit=0
+run 12 exit=0
+run 13 exit=0
+run 14 exit=0
+run 15 exit=0
+run 16 exit=0
+run 17 exit=0
+run 18 exit=0
+run 19 exit=0
+run 20 exit=0
+run 21 exit=0
+ALL OK

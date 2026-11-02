@@ -1,0 +1,11 @@
+date: 2026-11-02T15:56:09Z
+cwd: <work>/eval-dataset
+node: v22.22.0 / npm: 10.9.4
+command: node extra/quota.ts
+--- output (stdout+stderr) ---
+shipping: 6件 → 割合どおり 2.500、最低1件あり 3件、なし 3件
+refund: 3件 → 割合どおり 1.250、最低1件あり 1件、なし 1件
+account: 2件 → 割合どおり 0.833、最低1件あり 1件、なし 1件
+payment: 1件 → 割合どおり 0.417、最低1件あり 1件、なし 0件
+合計: 最低1件あり 6件、なし 5件（目標 5件）
+--- exit=0

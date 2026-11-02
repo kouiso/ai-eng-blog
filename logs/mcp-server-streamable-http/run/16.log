@@ -1,0 +1,10 @@
+date: 2026-11-02 15:04:54 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: claude mcp remove char-count-http -s user
+exit: 0
+elapsed: 583 ms
+--- stdout+stderr ---
+Removed MCP server char-count-http from user config
+File modified: /path/to/tmp-home/.claude.json

@@ -1,0 +1,16 @@
+CODE package.json: SAME
+CODE logs.jsonl: SAME
+CODE build-cases.ts: SAME
+CODE check-cases.ts: SAME
+CMD 'mkdir eval-dataset': run-all.sh の手順で実行（ログ行なし）
+CMD 'cd eval-dataset': run-all.sh の手順で実行（ログ行なし）
+CMD 'node build-cases.ts': run/02.log exit=0
+OUT after 'node build-cases.ts' vs run/02.log: SAME
+CMD 'cat cases.jsonl': run/03.log exit=0
+OUT after 'cat cases.jsonl' vs run/03.log: SAME
+CMD 'node check-cases.ts': run/04.log exit=0
+OUT after 'node check-cases.ts' vs run/04.log: SAME
+CMD 'wc -l cases.jsonl': run/05.log exit=0
+OUT after 'wc -l cases.jsonl' vs run/05.log: SAME
+code/ files not in article: []
+ALL OK

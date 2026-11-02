@@ -1,0 +1,12 @@
+date: 2026-11-02 15:54:10 +0000
+cwd: リポジトリのルート
+command: uname -sm; for f in tokenize.ts bm25.ts docs.ts embed.ts vector-search.ts rrf.ts; do cmp logs/rag-hybrid-search-rrf/code/$f logs/rag-retrieval-eval-recall-mrr/code/$f && echo "$f identical"; done
+--- stdout+stderr ---
+Linux x86_64
+tokenize.ts identical
+bm25.ts identical
+docs.ts identical
+embed.ts identical
+vector-search.ts identical
+rrf.ts identical
+exit: 0

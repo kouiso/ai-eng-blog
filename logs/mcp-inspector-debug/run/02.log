@@ -1,0 +1,8 @@
+date: 2026-11-02T15:14:05Z
+cwd: /path/to
+node: v22.22.0 / npm: 10.9.4
+command:
+  mkdir inspector-demo
+  cd inspector-demo
+--- output (stdout+stderr) ---
+--- exit=0

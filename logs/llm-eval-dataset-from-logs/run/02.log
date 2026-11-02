@@ -1,0 +1,13 @@
+date: 2026-11-02T15:56:08Z
+cwd: <work>/eval-dataset
+node: v22.22.0 / npm: 10.9.4
+command: node build-cases.ts
+--- output (stdout+stderr) ---
+読めない行をとばしました: 8行目
+読めたログ 15件、重複を除いて 12件
+shipping: 6件から 3件
+refund: 3件から 1件
+account: 2件から 1件
+payment: 1件から 1件
+cases.jsonl に 6件を書き出しました
+--- exit=0

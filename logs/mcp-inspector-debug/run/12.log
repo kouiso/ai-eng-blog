@@ -1,0 +1,198 @@
+date: 2026-11-02T15:14:29Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  node web-ui-check.mjs <起動時の出力>（記事に載せない確認。11 のサーバーが動いているあいだに実行）
+--- output (stdout+stderr) ---
+=== 1. 開いた直後
+- main:
+  - alert "Read-only session":
+    - text: Read-only session This server list was launched with
+    - code: "--config"
+    - text: or an ad-hoc server and can't be edited here. Changes won't be saved. Use
+    - code: "--catalog"
+    - text: (or no flag) to manage a writable catalog.
+  - heading "Servers" [level=3]
+  - button "Export"
+  - button "Collapse all":
+  - paragraph: node
+  - paragraph: Disconnected
+  - switch "Connect or disconnect \"node\""
+  - text: STDIO
+  - paragraph: Standard I/O
+  - text: node server.ts
+  - button "Copy": ⎘
+=== 2. スイッチを入れたあと
+- banner:
+  - link "MCP":
+    - /url: https://modelcontextprotocol.io
+    - img "MCP"
+  - paragraph: char-count
+  - radiogroup:
+    - radio "Servers" [checked]
+    - text: Servers
+    - radio "Tools"
+    - text: Tools
+  - button "Disconnect from server":
+  - button "Client settings":
+  - button "Toggle color scheme":
+  - button "Close monitoring sidebar":
+- main:
+  - alert "Read-only session":
+    - text: Read-only session This server list was launched with
+    - code: "--config"
+    - text: or an ad-hoc server and can't be edited here. Changes won't be saved. Use
+    - code: "--catalog"
+    - text: (or no flag) to manage a writable catalog.
+  - heading "Servers" [level=3]
+  - button "Export"
+  - button "Collapse all":
+  - paragraph: node
+  - paragraph: Connected
+  - switch "Connect or disconnect \"node\"" [checked]
+  - text: STDIO
+  - paragraph: Standard I/O
+  - paragraph: MCP 2025-11-25
+  - text: node server.ts
+  - button "Copy": ⎘
+  - button "Connection Info"
+  - separator "Resize monitoring sidebar"
+  - radiogroup "Monitoring screen":
+    - radio "Protocol" [checked]
+    - text: Protocol
+    - radio "Console"
+    - text: Console
+  - textbox "Search":
+    - /placeholder: Search...
+  - heading "Messages" [level=4]
+  - text: Legacy
+  - textbox "History sort direction": Newest First
+  - button "Clear"
+  - button "Export"
+  - button "Expand all":
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 95ms
+  - text: OK tools/list
+  - paragraph: 15:14:33
+  - text: client → server notifications/initialized
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 227ms
+  - text: OK initialize
+- contentinfo:
+  - paragraph: v2.13.0
+  - paragraph: Copyright © Model Context Protocol a Series of LF Projects, LLC.
+=== 3. Tools で count_chars を選んだあと
+- main:
+  - heading "Tools (1)" [level=3]
+  - textbox "Search tools..."
+  - switch "Fetch lists one page at a time"
+  - text: Paginated
+  - button "文字数を数える count_chars":
+    - paragraph: 文字数を数える
+    - paragraph: count_chars
+  - paragraph: 文字数を数える
+  - button "Hide description" [expanded]:
+  - paragraph: 文章の文字数（見た目の1文字を1と数える）と行数を返す。
+  - separator
+  - switch "Edit as JSON"
+  - text: Edit as JSON text
+  - paragraph: 数えたい文章
+  - textbox "text"
+  - button "Enlarge text":
+  - button "Execute Tool" [disabled]
+  - separator "Resize monitoring sidebar"
+  - radiogroup "Monitoring screen":
+    - radio "Protocol" [checked]
+    - text: Protocol
+    - radio "Console"
+    - text: Console
+  - textbox "Search":
+    - /placeholder: Search...
+  - heading "Messages" [level=4]
+  - text: Legacy
+  - textbox "History sort direction": Newest First
+  - button "Clear"
+  - button "Export"
+  - button "Expand all":
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 95ms
+  - text: OK tools/list
+  - paragraph: 15:14:33
+  - text: client → server notifications/initialized
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 227ms
+  - text: OK initialize
+=== 4. text に 2026 を入れて Execute Tool を押したあと
+- main:
+  - heading "Tools (1)" [level=3]
+  - textbox "Search tools..."
+  - switch "Fetch lists one page at a time"
+  - text: Paginated
+  - button "文字数を数える count_chars":
+    - paragraph: 文字数を数える
+    - paragraph: count_chars
+  - button "Close results":
+  - heading "Results" [level=3]
+  - text: "文字数: 4 / 行数: 1"
+  - button "Copy": ⎘
+  - separator "Resize monitoring sidebar"
+  - radiogroup "Monitoring screen":
+    - radio "Protocol" [checked]
+    - text: Protocol
+    - radio "Console"
+    - text: Console
+  - textbox "Search":
+    - /placeholder: Search...
+  - heading "Messages" [level=4]
+  - text: Legacy
+  - textbox "History sort direction": Newest First
+  - button "Clear"
+  - button "Export"
+  - button "Expand all":
+  - paragraph: 15:14:39
+  - text: client → server
+  - paragraph: 74ms
+  - text: OK tools/call
+  - paragraph: count_chars
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 95ms
+  - text: OK tools/list
+  - paragraph: 15:14:33
+  - text: client → server notifications/initialized
+  - paragraph: 15:14:33
+  - text: client → server
+  - paragraph: 227ms
+  - text: OK initialize
+=== 5. 右側の Console を開いたあと
+- main:
+  - heading "Tools (1)" [level=3]
+  - textbox "Search tools..."
+  - switch "Fetch lists one page at a time"
+  - text: Paginated
+  - button "文字数を数える count_chars":
+    - paragraph: 文字数を数える
+    - paragraph: count_chars
+  - button "Close results":
+  - heading "Results" [level=3]
+  - text: "文字数: 4 / 行数: 1"
+  - button "Copy": ⎘
+  - separator "Resize monitoring sidebar"
+  - radiogroup "Monitoring screen":
+    - radio "Protocol"
+    - text: Protocol
+    - radio "Console" [checked]
+    - text: Console
+  - textbox "Search":
+    - /placeholder: Search...
+  - heading "Server Console" [level=4]
+  - textbox "Console sort direction": Newest First
+  - button "Clear"
+  - button "Export"
+  - paragraph: 3:14:33 PM
+  - paragraph: char-count MCP server started (stdio)
+--- exit=0

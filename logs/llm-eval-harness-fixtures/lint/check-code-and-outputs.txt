@@ -1,0 +1,14 @@
+CODE package.json: SAME
+CODE graders.ts: SAME
+CODE cases.ts: SAME
+CODE answers.ts: SAME
+CODE run-eval.ts: SAME
+CODE compare.ts: SAME
+CMD 'mkdir llm-eval': run-all.sh の手順で実行（ログ行なし）
+CMD 'cd llm-eval': run-all.sh の手順で実行（ログ行なし）
+TEXT layout vs code/: SAME ['answers.ts', 'cases.ts', 'compare.ts', 'graders.ts', 'package.json', 'run-eval.ts']
+CMD 'node run-eval.ts; echo "終了コード: $?"': run/02.log exit=0
+OUT after 'node run-eval.ts; echo "終了コード: $?"' vs run/02.log: SAME
+CMD 'node compare.ts': run/03.log exit=0
+OUT after 'node compare.ts' vs run/03.log: SAME
+ALL OK

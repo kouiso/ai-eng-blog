@@ -1,0 +1,8 @@
+date: 2026-11-02T15:14:44Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx -y -p typescript@7.0.2 tsc -p tsconfig.typecheck.json && npx -y -p typescript@7.0.2 tsc -v
+--- output (stdout+stderr) ---
+Version 7.0.2
+--- exit=0

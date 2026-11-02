@@ -1,0 +1,27 @@
+date: 2026-11-02T15:14:26Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector node server.ts
+--- output (stdout+stderr) ---
+Starting MCP inspector...
+
+[mcp-inspector] The OS keychain is not available, so secrets will be kept in: File (unencrypted) at ~/.mcp-inspector/secrets.json — fell back from the OS keychain.
+[mcp-inspector] Keychain error: zbus error: Failed to connect to address `unix:path=/run/user/0/bus`: No such file or directory (os error 2)
+[mcp-inspector] Set MCP_INSPECTOR_SECRET_STORE=keyring|file|memory to choose explicitly.
+[mcp-inspector] Secrets are stored unencrypted (file mode 0600). Set MCP_INSPECTOR_SECRET_KEY or MCP_INSPECTOR_SECRET_KEY_FILE to encrypt them.
+[mcp-inspector] How the secret store is chosen, and how to secure it: https://github.com/modelcontextprotocol/inspector/blob/main/docs/secret-storage.md
+
+MCP Inspector Web is up and running at:
+   http://127.0.0.1:6274?MCP_INSPECTOR_API_TOKEN=***
+
+   Sandbox (MCP Apps): http://127.0.0.1:6275/sandbox
+
+   Auth token: ***
+
+   Secrets: File (unencrypted) at ~/.mcp-inspector/secrets.json — fell back from the OS keychain
+
+Opening browser...
+--- exit=130
+--- note: 端末の Ctrl+C と同じく、プロセスグループに SIGINT を送って止めた。止めたあとの healthz: 000（000 は接続できない＝止まっている）
+--- note: 実行前に ~/.mcp-inspector があったか: no。Inspector が作った ~/.mcp-inspector の中身: 

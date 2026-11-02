@@ -1,0 +1,10 @@
+date: 2026-10-31T14:11:00Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node try-tools.ts
+--- output (stdout+stderr) ---
+{"type":"tool_result","tool_use_id":"toolu_01","content":"# TODO\n- 請求書を送る\n","is_error":false}
+{"type":"tool_result","tool_use_id":"toolu_02","content":"作業フォルダの外は読めません。","is_error":true}
+{"type":"tool_result","tool_use_id":"toolu_03","content":"path に文字列を指定してください。","is_error":true}
+{"type":"tool_result","tool_use_id":"toolu_04","content":"delete_file というツールはありません。使えるのは read_file、write_file です。","is_error":true}
+--- exit=0

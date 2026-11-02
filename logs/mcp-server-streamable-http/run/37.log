@@ -1,0 +1,23 @@
+date: 2026-11-02 15:12:08 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: npm uninstall @types/express && npx tsc --noEmit; echo "tsc_exit=$?"
+exit: 0
+elapsed: 1233 ms
+--- stdout+stderr ---
+
+removed 9 packages, and audited 100 packages in 531ms
+
+36 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+src/server.ts(34,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/server.ts(34,15): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/server.ts(34,20): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/server.ts(47,25): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/server.ts(47,30): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/server.ts(58,18): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/server.ts(58,24): error TS7006: Parameter 'res' implicitly has an 'any' type.
+tsc_exit=1

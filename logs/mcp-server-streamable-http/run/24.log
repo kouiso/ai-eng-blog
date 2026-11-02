@@ -1,0 +1,17 @@
+date: 2026-11-02 15:04:57 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: cp ../code/extra/server.no-405.ts src/server.ts && diff ../code/src/server.ts src/server.ts
+exit: 1
+elapsed: 8 ms
+--- stdout+stderr ---
+58,65d57
+< app.all("/mcp", (_req, res) => {
+<   res.status(405).set("Allow", "POST").json({
+<     jsonrpc: "2.0",
+<     error: { code: -32000, message: "Method not allowed." },
+<     id: null,
+<   });
+< });
+< 

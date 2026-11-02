@@ -1,0 +1,7 @@
+sentences: 255 (prose+frontmatter 185, headings 12, table cells 58)
+not counted: code block lines 196, URL-only table cells 14 (lines [494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507])
+LONG>60: 0  (50<len<=60: 29)
+prose length min 13 / max 60 / short(<=20) 12 / long(41-60) 76
+SAME3: 0
+AND/OR candidates (や in prose, judge by eye):
+  YA 94 両方の中位が上に来やすい計算です

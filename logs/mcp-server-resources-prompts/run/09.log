@@ -1,0 +1,17 @@
+date: 2026-11-02T15:24:37Z
+cwd: /path/to/writing-helper-mcp
+node: v22.22.0 / npm: 10.9.4 / arch: x86_64
+command:
+  npx -y @modelcontextprotocol/inspector@2.13.0 --cli node server.ts --method resources/read --uri guide://style
+--- output (stdout+stderr) ---
+writing-helper MCP server started (stdio)
+{
+  "contents": [
+    {
+      "uri": "guide://style",
+      "mimeType": "text/markdown",
+      "text": "# 文章のルール\n- ですます調にそろえる\n- 1文は60字以内にする\n- 太字は使わない"
+    }
+  ]
+}
+--- exit=0

@@ -1,0 +1,9 @@
+58,65d57
+< app.all("/mcp", (_req, res) => {
+<   res.status(405).set("Allow", "POST").json({
+<     jsonrpc: "2.0",
+<     error: { code: -32000, message: "Method not allowed." },
+<     id: null,
+<   });
+< });
+< 

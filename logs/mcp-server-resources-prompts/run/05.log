@@ -1,0 +1,9 @@
+date: 2026-11-02T15:24:35Z
+cwd: /path/to/writing-helper-mcp
+node: v22.22.0 / npm: 10.9.4 / arch: x86_64
+command:
+  node probe.ts server-plain-error.ts guide://glossary/agent
+--- output (stdout+stderr) ---
+writing-helper MCP server started (stdio)
+error: guide://glossary/agent -32603 MCP error -32603: Resource not found
+--- exit=0

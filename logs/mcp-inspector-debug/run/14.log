@@ -1,0 +1,10 @@
+date: 2026-11-02T15:14:46Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npx @modelcontextprotocol/inspector --cli node server.ts
+  echo $?
+--- output (stdout+stderr) ---
+{"error":{"code":"error","message":"Method is required. Use --method to specify the method to invoke."}}
+1
+--- exit=0

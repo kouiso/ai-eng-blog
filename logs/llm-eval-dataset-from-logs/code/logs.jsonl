@@ -1,0 +1,16 @@
+{"ts":"2026-10-01T09:00:00+09:00","category":"shipping","question":"注文した商品はいつ届きますか？","answer":"通常は注文の翌日から3日以内に発送します。","feedback":"good"}
+{"ts":"2026-10-02T09:00:00+09:00","category":"shipping","question":"配送先の住所を注文後に変えられますか？","answer":"発送前ならマイページから変更できます。","feedback":null}
+{"ts":"2026-10-03T09:00:00+09:00","category":"refund","question":"返品は何日以内ならできますか？","answer":"購入から14日以内です。","feedback":"bad"}
+{"ts":"2026-10-04T09:00:00+09:00","category":"shipping","question":"注文した商品はいつ届きますか?","answer":"注文から3日以内に発送します。","feedback":null}
+{"ts":"2026-10-05T09:00:00+09:00","category":"account","question":"パスワードを忘れました。","answer":"ログイン画面の「パスワードを忘れた方」から再設定できます。","feedback":"good"}
+{"ts":"2026-10-06T09:00:00+09:00","category":"shipping","question":"海外にも発送できますか？","answer":"現在は国内のみ発送しています。","feedback":null}
+{"ts":"2026-10-07T09:00:00+09:00","category":"payment","question":"支払い方法を教えてください。","answer":"クレジットカード、コンビニ払い、代金引換が使えます。\n代金引換の手数料は330円です。","feedback":"good"}
+{"ts":"2026-10-08T09:00:00+09:00","category":"shipping","question":"送料はいくらですか
+{"ts":"2026-10-09T09:00:00+09:00","category":"refund","question":"返品の送料は誰が負担しますか？","answer":"不良品の場合は当店が負担します。","feedback":null}
+{"ts":"2026-10-10T09:00:00+09:00","category":"shipping","question":"  注文した商品は　いつ届きますか？ ","answer":"在庫があれば当日に発送します。","feedback":"bad"}
+{"ts":"2026-10-11T09:00:00+09:00","category":"account","question":"登録したメールアドレス taro@example.com を変更したいです。","answer":"マイページの「登録情報」から変更できます。","feedback":null}
+{"ts":"2026-10-12T09:00:00+09:00","category":"shipping","question":"置き配はできますか？","answer":"できます。注文時に置き場所を指定してください。","feedback":"good"}
+{"ts":"2026-10-13T09:00:00+09:00","category":"refund","question":"返品は何日以内ならできますか？","answer":"購入から30日以内です。","feedback":null}
+{"ts":"2026-10-14T09:00:00+09:00","category":"shipping","question":"配達の時間帯を指定できますか？","answer":"午前、14〜16時、16〜18時、18〜21時から選べます。","feedback":null}
+{"ts":"2026-10-15T09:00:00+09:00","category":"refund","question":"届いた商品が壊れていました。交換できますか？","answer":"交換できます。注文番号を添えてお問い合わせください。","feedback":null}
+{"ts":"2026-10-16T09:00:00+09:00","category":"shipping","question":"注文をキャンセルしたら送料はかかりますか？","answer":"発送前のキャンセルなら送料はかかりません。","feedback":null}

@@ -1,0 +1,14 @@
+date: 2026-11-02T15:14:05Z
+cwd: /path/to/inspector-demo
+node: v22.22.0 / npm: 10.9.4
+command:
+  npm install
+--- output (stdout+stderr) ---
+
+added 197 packages, and audited 198 packages in 13s
+
+85 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+--- exit=0
