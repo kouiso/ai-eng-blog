@@ -20,10 +20,11 @@ const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[avail
 	<section class="container hero">
 		<p class="eyebrow">LLM API / RAG / AIエージェント / MCP</p>
 		<h1 class="hero__title">
-			自分のアプリに AI を組み込む。<br />API キーを取ってから、本番に出すまで。
+			<span class="phrase">自分のアプリに</span> <span class="phrase">AI を組み込む。</span><br /><span
+				class="phrase">API キーを取ってから、</span><span class="phrase">本番に出すまで。</span>
 		</h1>
 		<p class="hero__text">
-			記事のコードは、公開前にすべて実際に動かしています。一次情報の URL と確認した日付、料金の目安も記事ごとに書いています。
+			記事に載せるコードは、公開前にすべて実際に動かします。一次情報の URL と確認した日付、料金の目安も記事ごとに書きます。
 		</p>
 		<div class="hero__actions">
 			<a class="btn btn--primary" href="#check">学ぶ順番を診断する</a>
@@ -202,6 +203,11 @@ const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[avail
 		line-height: 1.35;
 		font-weight: 800;
 		max-width: 780px;
+		word-break: auto-phrase;
+	}
+	/* 句の途中で折り返さない。「まで。」だけが次の行に落ちるのを防ぐ */
+	.phrase {
+		display: inline-block;
 	}
 	.hero__text {
 		margin: 0;
