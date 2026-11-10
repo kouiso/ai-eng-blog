@@ -4,7 +4,7 @@
 
 サイトのコードが canonical、og:url、OGP 画像の URL、`/sitemap.xml` と `/static-sitemap.xml` に書く絶対 URL も、同じ値から作る（`src/utils/site-origin.ts` の `getSiteOrigin()`）。値が無いか URL の形でないときだけ、開いたアドレスを使う。
 
-Worker 名かアカウントのサブドメインを変えると、公開 URL も変わる。そのときは最初の管理者を作る「前」に、この値を新しい URL に書き換えて push する。作ったあとで変えるときは、README の「独自ドメインに移す」と同じ手順でパスキーを作り直す。
+Worker 名かアカウントのサブドメインを変えると、公開 URL も変わる。そのときは最初の管理者を作る「前」に、この値を新しい URL に書き換えて push する。作ったあとで変えるときは、OWNER_TASKS.md の「独自ドメインに移す」と同じ手順でパスキーを作り直す。
 
 ## EmDash がサイトの URL をどこから読むか
 
@@ -62,4 +62,4 @@ secret にしない理由: URL は秘密ではありません。Cloudflare の d
 
 ## 独自ドメインに移すとき
 
-手順は README の「独自ドメインに移す」にあります。出典は https://docs.emdashcms.com/guides/change-domain/ と https://docs.emdashcms.com/deployment/cloudflare/ です（どちらも 2026-10-31 確認）。
+手順は OWNER_TASKS.md の「独自ドメインに移す」にあります。出典は https://docs.emdashcms.com/guides/change-domain/ と https://docs.emdashcms.com/deployment/cloudflare/ です（どちらも 2026-10-31 確認）。

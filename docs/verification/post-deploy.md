@@ -6,7 +6,7 @@
 
 公開 URL は `https://ai-eng-blog.kouiso.workers.dev`（`wrangler.jsonc` の `EMDASH_SITE_URL`）。以下 `<URL>` と書く。
 
-## 1. deploy の直後（管理者を作る前に、README の手順 3 と 4 のあいだで行う）
+## 1. deploy の直後（管理者を作る前に、OWNER_TASKS.md の手順 3 と 4 のあいだで行う）
 
 - [ ] `<URL>/robots.txt` の `Sitemap:` 行が `https://ai-eng-blog.kouiso.workers.dev/sitemap.xml` になっている。`http://` や別のホスト名なら、`EMDASH_SITE_URL` が効いていない。管理者を作らずに止める。
 - [ ] `<URL>/privacy` の `<link rel="canonical">` が `https://ai-eng-blog.kouiso.workers.dev/privacy` になっている。
