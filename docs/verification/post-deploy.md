@@ -38,6 +38,11 @@
 - [ ] `<URL>/privacy` の「4. 利用している外部サービス」に Turnstile が出ている。Web Analytics を有効にしたなら、それも出ている。出る項目が変わったので、`src/utils/subscribers.ts` の `PRIVACY_POLICY_VERSION` を上げたかを確かめる。
 - [ ] `<URL>/` で Turnstile のウィジェットが出て、自分のアドレスで登録できる。`npx wrangler d1 execute DB --remote --command "SELECT email, consent_policy_version FROM newsletter_subscribers"` に1行入っている（最初の1件でテーブルが作られる）。
 - [ ] ウィジェットを通さない `curl` の登録が `captcha_failed`（400）になる。
+- [ ] `/api/subscribe` に WAF のレート制限ルールを1つ作る。Turnstile を通った送信でも、同じ IP から短い間に何度も送られると D1 の書き込みが無料枠を食うため。
+  - 前提: ルールは自分のゾーン（Cloudflare に追加した独自ドメイン）に対して作る。Worker をそのゾーンの [Custom Domain](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/) か route で動かしてから行う。`*.workers.dev` は Cloudflare が管理するゾーンで、自分のゾーンに作ったルールはそこには効かない（[workers.dev のページ](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/) の Browser Integrity Check の節。2026-11-10 確認）。`*.workers.dev` だけで動かしているあいだは、このルールは作れないので未対応として残す。
+  - 無料プランで使える範囲（[Rate limiting rules の Availability 表](https://developers.cloudflare.com/waf/rate-limiting-rules/)、2026-11-10 確認）: ルールは1つ、数える単位は IP だけ、数える期間と遮断の長さはどちらも 10 秒だけ、条件に使えるのは Path と Verified Bot。リクエストのメソッド（POST）は Business 以上でないと条件にできない。このサイトで `/api/subscribe` に来るのはフォームの POST だけなので、Path だけで POST を絞ったのと同じになる。
+  - 作り方（[ダッシュボードでの作成手順](https://developers.cloudflare.com/waf/rate-limiting-rules/create-zone-dashboard/)、2026-11-10 確認）: ゾーンの **Security rules** → **Create rule** → **Rate limiting rules**。**Rule name** は `subscribe-post`。**Field** を `URI Path`、**Operator** を `equals`、**Value** を `/api/subscribe`。**With the same characteristics** は IP。**When rate exceeds** は 10 秒に 5 回（人が普通に送るのは1回で、入力ミスの再送を足しても 5 回には届かない）。**Choose action** は Block、**Duration** は 10 秒。**Deploy** を押す。
+  - 確かめ方: 同じ端末から `for i in $(seq 1 8); do curl -s -o /dev/null -w "%{http_code}\n" -X POST -H "Origin: <URL>" <URL>/api/subscribe; done` を流し、途中から 429 が返る。10 秒待つと、また 400 などのいつもの応答に戻る。Security → Events にそのルールの Block が出ている。
 
 ## 6. 最初のメールを送る前（配信サービスにつなぐとき）
 
