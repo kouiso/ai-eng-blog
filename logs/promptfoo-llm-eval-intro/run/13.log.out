@@ -1,1 +1,0 @@
-init: model=claude-haiku-5-5 apiKeySource=none claude_code_version=2.1.322
