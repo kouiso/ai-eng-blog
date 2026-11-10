@@ -1,0 +1,8 @@
+date: 2026-10-31T14:10:59Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node naive-write.ts
+--- output (stdout+stderr) ---
+# 要約
+
+--- exit=0

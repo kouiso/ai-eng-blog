@@ -1,0 +1,7 @@
+date: 2026-11-02T15:47:29Z
+cwd: <logs>/llm-eval-harness-fixtures（run-all.sh の外で手で実行）
+node: v22.22.0 / npm: 10.9.4
+command: uname -sm
+--- output (stdout+stderr) ---
+Linux x86_64
+--- exit=0

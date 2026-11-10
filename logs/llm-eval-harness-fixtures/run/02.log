@@ -1,0 +1,15 @@
+date: 2026-11-02T15:45:19Z
+cwd: <work>/llm-eval
+node: v22.22.0 / npm: 10.9.4
+command: node run-eval.ts; echo "終了コード: $?"
+--- output (stdout+stderr) ---
+PASS sentiment-1 [exact] 完全一致
+FAIL sentiment-2 [exact] 期待した答え "neutral" と違う
+     回答: "neutral です。"
+PASS refund [contains] キーワードをすべて含む
+PASS order-count [regex] /(?<!\d)3件/ に合う
+FAIL delivery-date [regex] /^\d{4}-\d{2}-\d{2}$/ に合わない
+     回答: "納品日は 2026-11-20 です。"
+合格 3/5 (60%)、基準 80%
+終了コード: 1
+--- exit=0

@@ -1,0 +1,10 @@
+date: 2026-11-02 15:04:51 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: curl -sS http://127.0.0.1:3000/mcp -w "\nstatus: %{http_code} %{content_type}\n"
+exit: 0
+elapsed: 12 ms
+--- stdout+stderr ---
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}
+status: 405 application/json; charset=utf-8

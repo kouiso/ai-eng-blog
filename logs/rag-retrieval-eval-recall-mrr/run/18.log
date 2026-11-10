@@ -1,0 +1,12 @@
+date: 2026-11-02 15:53:02 +0000
+cwd: /path/to/retrieval-eval
+node: v22.22.0
+npm: 10.9.4
+command: bash -c "node eval.ts 1 | tail -n 4"
+exit: 0
+elapsed: 2296 ms
+--- stdout+stderr ---
+15問の平均
+bm25    Recall@1 0.767  MRR 0.867
+vector  Recall@1 0.867  MRR 0.967
+hybrid  Recall@1 0.767  MRR 0.900

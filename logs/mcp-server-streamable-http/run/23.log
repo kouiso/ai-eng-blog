@@ -1,0 +1,10 @@
+date: 2026-11-02 15:04:57 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: node ../code/extra/reuse-cause.mjs
+exit: 0
+elapsed: 157 ms
+--- stdout+stderr ---
+1st: 202
+2nd threw: Stateless transport cannot be reused across requests. Create a new transport per request.

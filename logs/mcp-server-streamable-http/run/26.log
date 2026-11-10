@@ -1,0 +1,13 @@
+date: 2026-11-02 15:04:58 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: npm start
+exit: 130
+elapsed: 1104 ms
+--- stdout+stderr ---
+
+> char-count-http@0.1.0 start
+> node dist/server.js
+
+char-count MCP server: http://127.0.0.1:3000/mcp

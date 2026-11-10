@@ -1,0 +1,31 @@
+date: 2026-11-02T15:24:49Z
+cwd: /path/to/writing-helper-mcp
+node: v22.22.0 / npm: 10.9.4 / arch: x86_64
+command:
+  npx -y @modelcontextprotocol/inspector@2.13.0 --cli node server.ts --method prompts/get --prompt-name review-text --prompt-args text=MCPサーバーを作った。
+--- output (stdout+stderr) ---
+writing-helper MCP server started (stdio)
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "type": "resource",
+        "resource": {
+          "uri": "guide://style",
+          "mimeType": "text/markdown",
+          "text": "# 文章のルール\n- ですます調にそろえる\n- 1文は60字以内にする\n- 太字は使わない"
+        }
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "type": "text",
+        "text": "上のルールに照らして、次の文章の直す箇所を挙げてください。\n\nMCPサーバーを作った。"
+      }
+    }
+  ]
+}
+--- exit=0
+--- note: 実行前に ~/.mcp-inspector があったか: no。実行後の ~/.mcp-inspector の中身: 

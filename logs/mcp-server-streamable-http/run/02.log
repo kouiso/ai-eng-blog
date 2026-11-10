@@ -1,0 +1,12 @@
+date: 2026-11-02 15:04:46 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: cp ../code/package.json ../code/tsconfig.json . && cp ../code/src/server.ts ../code/src/check.ts src/ && find . -type f | sort
+exit: 0
+elapsed: 10 ms
+--- stdout+stderr ---
+./package.json
+./src/check.ts
+./src/server.ts
+./tsconfig.json

@@ -1,0 +1,18 @@
+date: 2026-11-02T15:38:20Z
+cwd: /path/to/notes-mcp
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude: 2.1.316 (Claude Code)
+HOME: 使い捨てのフォルダ（ログでは ~）
+command:
+  claude mcp remove notes -s user
+  claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node "$PWD/server.ts"
+  (cd ~ && claude mcp list)
+--- output (stdout+stderr) ---
+Removed MCP server notes from user config
+File modified: ~/.claude.json
+Added stdio MCP server notes with command: node /path/to/notes-mcp/server.ts to user config
+File modified: ~/.claude.json
+Checking MCP server health…
+
+notes: node /path/to/notes-mcp/server.ts - √ Connected
+--- exit=0

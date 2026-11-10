@@ -1,0 +1,12 @@
+date: 2026-11-02T15:56:08Z
+cwd: <work>/eval-dataset
+node: v22.22.0 / npm: 10.9.4
+command: cat cases.jsonl
+--- output (stdout+stderr) ---
+{"id":"shipping-001","category":"shipping","question":"  注文した商品は　いつ届きますか？ ","logged_answer":"在庫があれば当日に発送します。","feedback":"bad","source_ts":"2026-10-10T09:00:00+09:00"}
+{"id":"shipping-002","category":"shipping","question":"注文をキャンセルしたら送料はかかりますか？","logged_answer":"発送前のキャンセルなら送料はかかりません。","feedback":null,"source_ts":"2026-10-16T09:00:00+09:00"}
+{"id":"shipping-003","category":"shipping","question":"配達の時間帯を指定できますか？","logged_answer":"午前、14〜16時、16〜18時、18〜21時から選べます。","feedback":null,"source_ts":"2026-10-14T09:00:00+09:00"}
+{"id":"refund-001","category":"refund","question":"返品は何日以内ならできますか？","logged_answer":"購入から14日以内です。","feedback":"bad","source_ts":"2026-10-03T09:00:00+09:00"}
+{"id":"account-001","category":"account","question":"登録したメールアドレス <email> を変更したいです。","logged_answer":"マイページの「登録情報」から変更できます。","feedback":null,"source_ts":"2026-10-11T09:00:00+09:00"}
+{"id":"payment-001","category":"payment","question":"支払い方法を教えてください。","logged_answer":"クレジットカード、コンビニ払い、代金引換が使えます。\n代金引換の手数料は330円です。","feedback":"good","source_ts":"2026-10-07T09:00:00+09:00"}
+--- exit=0

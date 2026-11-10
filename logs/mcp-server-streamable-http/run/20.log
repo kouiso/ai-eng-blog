@@ -1,0 +1,27 @@
+date: 2026-11-02 15:04:56 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: npm run check
+exit: 1
+elapsed: 419 ms
+--- stdout+stderr ---
+
+> char-count-http@0.1.0 check
+> node dist/check.js
+
+client error: Streamable HTTP error: Error POSTing to endpoint: 
+file:///path/to/char-count-http/node_modules/@modelcontextprotocol/sdk/dist/esm/client/streamableHttp.js:378
+                throw new StreamableHTTPError(response.status, `Error POSTing to endpoint: ${this._unfollowedRedirect(response, this._url) ?? text}`);
+                      ^
+
+StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: 
+    at StreamableHTTPClientTransport.send (file:///path/to/char-count-http/node_modules/@modelcontextprotocol/sdk/dist/esm/client/streamableHttp.js:378:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Client.notification (file:///path/to/char-count-http/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js:907:9)
+    at async Client.connect (file:///path/to/char-count-http/node_modules/@modelcontextprotocol/sdk/dist/esm/client/index.js:303:13)
+    at async file:///path/to/char-count-http/dist/check.js:6:1 {
+  code: 500
+}
+
+Node.js v22.22.0

@@ -1,0 +1,11 @@
+date: 2026-11-02 15:04:52 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: claude mcp list
+exit: 0
+elapsed: 682 ms
+--- stdout+stderr ---
+Checking MCP server health…
+
+char-count-http: http://127.0.0.1:3000/mcp (HTTP) - √ Connected

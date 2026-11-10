@@ -1,0 +1,41 @@
+date: 2026-11-02T15:24:34Z
+cwd: /path/to/writing-helper-mcp
+node: v22.22.0 / npm: 10.9.4 / arch: x86_64
+command:
+  node check.ts
+--- output (stdout+stderr) ---
+writing-helper MCP server started (stdio)
+capabilities: {"prompts":{"listChanged":true},"resources":{"listChanged":true}}
+resources: [
+  'guide://style',
+  'guide://glossary/resource',
+  'guide://glossary/prompt',
+  'guide://glossary/tool'
+]
+templates: [ 'guide://glossary/{term}' ]
+read: [{"uri":"guide://glossary/prompt","mimeType":"text/plain","text":"ユーザーが選んで使う、メッセージのひな形。"}]
+prompt args: [{"name":"text","description":"見直したい文章","required":true},{"name":"focus","description":"特に見てほしい点","required":false}]
+messages: [
+  {
+    "role": "user",
+    "content": {
+      "type": "resource",
+      "resource": {
+        "uri": "guide://style",
+        "mimeType": "text/markdown",
+        "text": "# 文章のルール\n- ですます調にそろえる\n- 1文は60字以内にする\n- 太字は使わない"
+      }
+    }
+  },
+  {
+    "role": "user",
+    "content": {
+      "type": "text",
+      "text": "上のルールに照らして、次の文章の直す箇所を挙げてください。特に「文体」を見てください。\n\nMCP サーバーを作った。とても便利だ。"
+    }
+  }
+]
+error: -32002 MCP error -32002: MCP error -32002: Resource not found
+error: -32602 MCP error -32602: MCP error -32602: Resource memo://today not found
+error: -32602 MCP error -32602: MCP error -32602: Invalid arguments for prompt review-text: Invalid input: expected string, received undefined at text
+--- exit=0

@@ -1,0 +1,14 @@
+PASS 開いた直後は Disconnected
+PASS 開いた直後に node のスイッチ
+PASS 開いた直後に Read-only session の表示
+PASS スイッチのあと Connected
+PASS スイッチのあと上に Tools が出る
+PASS Protocol に initialize
+PASS Protocol に notifications/initialized
+PASS Protocol に tools/list
+PASS count_chars を選ぶと text の欄と Execute Tool
+PASS Results に 文字数: 4 / 行数: 1
+PASS Protocol に tools/call
+PASS Console にサーバーの stderr の行
+PASS 終了コード 0
+ALL OK

@@ -1,0 +1,13 @@
+date: 2026-10-31 14:05:37 +0000
+cwd: /path/to/hybrid-search
+node: v22.22.0
+npm: 10.9.4
+command: node hybrid.ts 届くのが遅い 0.1 1
+exit: 0
+elapsed: 2836 ms
+--- stdout+stderr ---
+BM25  : login(0.673) error-e1020(0.641) payment(0.537) points(0.333) returns(0.109)
+vector: delivery(0.858) shipping-fee(0.847) returns(0.838) points(0.837) cancel(0.837)
+0.50000 login (順位 1 / -)
+0.50000 delivery (順位 - / 1)
+0.41667 returns (順位 5 / 3)

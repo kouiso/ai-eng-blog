@@ -1,0 +1,21 @@
+date: 2026-11-02 15:04:55 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: cp ../code/extra/server.reuse.ts src/server.ts && diff ../code/src/server.ts src/server.ts
+exit: 1
+elapsed: 8 ms
+--- stdout+stderr ---
+46a47,50
+> const server = createServer();
+> const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+> await server.connect(transport);
+> 
+48,54d51
+<   const server = createServer();
+<   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+<   res.on("close", () => {
+<     transport.close();
+<     server.close();
+<   });
+<   await server.connect(transport);
