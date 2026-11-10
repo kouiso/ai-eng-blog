@@ -1,6 +1,6 @@
 # judgments: claude-agent-sdk-first-agent
 
-判定日: 2026-11-10。原稿は `content/articles/claude-agent-sdk-first-agent.md`（366行）。lint はスキル手順7のコマンドでリポジトリのルートから実行し、出力は `ai-smell.txt`、`writing-lint.txt` に最後の実行で上書きした。
+判定日: 2026-11-10（08:13 ごろに再判定）。原稿は `content/articles/claude-agent-sdk-first-agent.md`（366行。再判定の版も366行）。lint はスキル手順7のコマンドでリポジトリのルートから実行し、出力は `ai-smell.txt`、`writing-lint.txt` に最後の実行で上書きした。
 
 ## ai-smell-lint.py
 
@@ -11,7 +11,7 @@
 
 ## writing-lint.py
 
-- `writing-lint.txt` 1行目 `366行/142文`（スクリプトの数え方）、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。
+- `writing-lint.txt` 1行目 `366行/146文`（再判定の版。スクリプトの数え方）、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。
 - DENSITY は10カウンタすべて0回（B-1 対比0、B-5 ダッシュ0、B-3 切り詰め0、B-9 つまり0 など）。上限は guides/08 の密度基準総表の標準の列（対比2、ダッシュ2、切り詰め2、メタ談話予告1、つまり2）と一致。
 - `### WATCH` の節は出ていない（転用動詞なし）。SHOULD 0件、INFO(要人間確認) 0件。1件ずつ判断する対象が無い。
 
@@ -30,3 +30,15 @@ lint は最初の版から FATAL 0 / warn 0 だった。次は `prose-check.py`�
 ## frontmatter の行で出た検出
 
 なし（ai-smell-lint の mention 0件、writing-lint の検出0件）。
+
+## 再判定で直したもの（2026-11-10、レビューの指摘4件）
+
+指摘を1件ずつ確かめ、4件とも事実だったので直した。直したあと、手順7のコマンドで lint を2本とも回し直し、`ai-smell.txt` と `writing-lint.txt` を上書きした。結果は ai-smell-lint が `use 0件 / 📎mention 0件`、`exit=0`、writing-lint が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。warn、mention、SHOULD、WATCH、INFO はどれも0件で、1件ずつ判断する対象は出ていない。
+
+- 前提の Node.js（67行目）: 「Node.js 18.14 以上（出典2）」は、出典2が `npx tsx` で動かす前提の版で、記事の `node hello.ts` には足りなかった。`run/12.log`（v20.20.0）で `ERR_UNKNOWN_FILE_EXTENSION`、`exit=1` を再現した。67行目を「Node.js 22.18.0 以上（出典10）」にし、理由の1文を足した。192行目に 20.20.0 で動かないことを足した。
+- #18 との重なり（326〜328行目）: ターンの数え方、`error_max_turns`、`for await` の例外の3点を外し、次の記事で扱うと書いた。事実そのものは正しかったので、誤りとして直したのではなく、`content/plan.md` 94行目の分担に合わせて外した。
+- プラットフォームの名前（132、144、146行目）: 132行目に「Linux x64 では」を足した。144行目に、名前の末尾が OS と CPU ごとに違うこと、Mac（Apple シリコン）と Windows（x64）の名前を足した（出典11、`run/14.log`）。146行目の「このフォルダ」を「`claude-agent-sdk-` で始まるフォルダ」にした。
+- 足した文の C25: 最初の書き方は 71字、88字、65字で60字を超えた。文を分けるか短くし、`prose-check.txt` 2行目 `C25 over60=0 max=60` にした。
+- 足した文の C17: 144行目で「入ります。変わります。になります。」が末尾3字の「ります」で3連続になったので、「変わります」を「違います」にした。192行目で「試しました。動きませんでした。」のあとに 209行目の「届きました。」が続き、2字の「した」が3連続になったので（最初の判定で同じ形を崩しているのに合わせ）、「動きません。」にした。最後の版は `C17 SAME3(3字)=0`。2字の「ます」の3連続は 144行目に1か所増えたが、末尾3字は「ります」「います」「ります」で一致しないので、最初の判定と同じ理由で残した。
+
+frontmatter（1〜53行目）は変えていない。frontmatter の範囲の mention は0件のまま。

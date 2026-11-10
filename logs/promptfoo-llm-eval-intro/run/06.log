@@ -1,35 +1,34 @@
-date: 2026-11-10T07:56:03+00:00
+date: 2026-11-10T07:59:35+00:00
 cwd: <work>
 node: v22.22.0  npm: 10.9.4
 ANTHROPIC_API_KEY: unset
 $ npx promptfoo eval --no-share -o results.jsonl
 echo $?
 ----
-Starting evaluation eval-MFQ-2026-11-10T07:56:05
+Starting evaluation eval-tpE-2026-11-10T07:59:37
 Running 6 test cases (up to 4 at a time)...
 
 ┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
 │ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
-│                              │                              │ 指示だけ                     │ 形も指定                     │
+│                              │                              │ 形の指定なし                 │ 形の指定あり                 │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **分類: billing**     │ [PASS] billing               │
-│                              │                              │ 理由:                        │                              │
-│                              │                              │ 「請求額が2回引き落とされて… │                              │
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] billing               │ [PASS] billing               │
+│                              │                              │ この問い合わせは請求に関す…  │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] bug                   │ [PASS] bug                   │
-│                              │                              │ この問い合わせは、保存操作…  │                              │
+│                              │                              │ この問い合わせは「保存ボタ…  │                              │
+│                              │                              │ に分類します。課金に関する…  │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] other                 │ [PASS] other                 │
-│                              │                              │ この問い合わせは、ロゴの使…  │                              │
-│                              │                              │ **other** です。             │                              │
+│ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
+│                              │                              │ この問い合わせは、御社のロ…  │                              │
 └──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
-✓ Eval complete (ID: eval-MFQ-2026-11-10T07:56:05)
+✓ Eval complete (ID: eval-tpE-2026-11-10T07:59:37)
 
 » View results: promptfoo view
 » Feedback: https://promptfoo.dev/feedback
 
-Total Tokens: 17,122
-  Provider: 17,122 (16,040 prompt, 1,082 completion, 729 reasoning)
+Total Tokens: 17,201
+  Provider: 17,201 (16,046 prompt, 1,155 completion, 746 reasoning)
 
 Results:
   ✓ 3 passed (50.00%)

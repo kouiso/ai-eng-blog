@@ -1,0 +1,16 @@
+date: 2026-11-10T08:11:15Z
+cwd: <work>/first-agent
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node hello.ts
+--- output (stdout+stderr) ---
+[active_goal]
+[autocompact_state]
+[system/init] model=claude-haiku-5-5 apiKeySource=none claude_code_version=2.1.322
+[rate_limit_event]
+[assistant/text] TypeScriptの型注釈とは、変数・引数・戻り値などに「この値はこの型である」とコンパイル時に明示する記述で、`let name: string = "太郎";` のように `:` の後に型を書くものです。
+[system/post_turn_summary]
+[result/success] num_turns=1 total_cost_usd=0.00035426
+result: TypeScriptの型注釈とは、変数・引数・戻り値などに「この値はこの型である」とコンパイル時に明示する記述で、`let name: string = "太郎";` のように `:` の後に型を書くものです。
+--- exit=0

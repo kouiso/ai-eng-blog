@@ -18,7 +18,7 @@
 - `rag-retrieval-eval-recall-mrr`（#28）: 検索結果を Recall@k と MRR で測る記事。回答の採点はしない。`prev` はこの slug。
 - `llm-eval-dataset-from-logs`（#30）: テストケースを作る記事。採点はしない。
 - `claude-agent-sdk-first-agent`（#17）、`ai-agent-max-turns-budget-limit`（#18）: Agent SDK の導入と上限の記事。採点基準と `outputFormat` は扱わない。
-- 計画上の #6 `claude-structured-outputs-json`（未作成）: Messages API の Structured Outputs の記事。この記事は `outputFormat` を使うが、API の Structured Outputs の説明はしない（`content/plan.md` の「重なりを避けるために決めたこと」）。
+- 計画上の #6 `claude-structured-outputs-json`（未作成）: Messages API の Structured Outputs の記事。この記事は `outputFormat` を使うが、Structured Outputs の説明はせず #6 にリンクする（`content/plan.md` の「重なりを避けるために決めたこと」）。2026-11-10 の最初の版は、`StructuredOutput` ツールの注入、出し直し、`error_max_structured_output_retries`、success で `structured_output` が無い場合を H3 2つで説明していて、この取り決めを守れていなかった（レビューの指摘）。その2つの H3 を外し、本文 223行目に `/posts/claude-structured-outputs-json` へのリンクを置いた。本文に残した Structured Outputs まわりの記述は、`outputFormat` を渡すと `structured_output` に値が入ること（221行目）、`judge()` が値の無い結果を例外にすること（225行目）、`structured_output` の型が `unknown` で SDK が検証していること（227行目）の3つで、どれも `judge.ts` のコードの説明。
 - 計画上の #29 `promptfoo-llm-eval-intro`（未作成）: promptfoo の設定の記事。採点の考え方はこの記事に任せる側。
 
 ## ANTHROPIC_API_KEY（手順1の2の2）

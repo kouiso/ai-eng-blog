@@ -43,7 +43,9 @@ log_run 03 "$(printf 'npm init -y\nnpm pkg set type=module')"
 log_run 04 "npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322"
 log_run 05 "npm pkg get type dependencies"
 # 記事のコードブロックを、記事に書いたファイル名でそのまま置く
-cp "$CODE_DIR"/workflow.ts "$CODE_DIR"/agent.ts .
+cp "$CODE_DIR"/workflow.ts .
+# 1回目の実行（run/01〜13）のエージェント版は、書き直す前の版（extra/agent-v1.ts）
+cp "$CODE_DIR"/extra/agent-v1.ts agent.ts
 log_run 06 "$(cat "$CODE_DIR"/setup-tickets.sh)"
 log_run 07 "node workflow.ts"
 log_run 08 "node agent.ts"

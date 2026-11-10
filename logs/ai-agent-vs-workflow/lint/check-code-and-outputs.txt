@@ -12,8 +12,8 @@ blocks in article=15 expected=15
 11 OK  run/07 output
 12 OK  run/10 output
 13 OK  code/agent.ts
-14 OK  run/08 command
-15 OK  run/08 output
+14 OK  run/21 command
+15 OK  run/21 output
 run/01.log exit=0
 run/02.log exit=0
 run/03.log exit=0
@@ -27,4 +27,14 @@ run/10.log exit=0
 run/11.log exit=0
 run/12.log exit=0
 run/13.log exit=0
+run/14.log exit=0
+run/15.log exit=0
+run/16.log exit=0
+run/17.log exit=0
+run/18.log exit=0
+run/19.log exit=0
+run/20.log exit=0
+run/21.log exit=0
+run/22.log exit=0
 ALL OK
+round2 setup commands == round1: OK

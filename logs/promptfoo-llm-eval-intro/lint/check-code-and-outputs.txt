@@ -1,0 +1,62 @@
+blocks in article: 14 / expected: 14
+OK #1: bash cmd 01
+OK #2: text out 01
+OK #3: bash cmd 02
+OK #4: text out 02
+OK #5: bash cmd 03
+OK #6: text out 03
+OK #7: text in 09
+OK #8: yaml code promptfooconfig.yaml
+OK #9: bash cmd 04
+OK #10: text out 04
+OK #11: ts code show-failures.ts
+OK #12: bash cmd 05
+OK #13: text out 05
+OK #14: text in 07
+OK run/04.log contains 'Total Tokens: 17,489'
+OK run/04.log contains '16,050 prompt'
+OK run/04.log contains '✓ 3 passed (50.00%)'
+OK run/04.log contains 'Running 6 test cases'
+OK run/06.log contains 'Total Tokens: 17,201'
+OK run/06.log contains '✓ 3 passed (50.00%)'
+OK run/06.log contains 'Writing output to results.jsonl\n100'
+OK run/04.log contains 'Writing output to results.jsonl\n100'
+OK run/07.log contains '合格 3 / 6'
+OK run/08.log contains 'Total Tokens: 31,477'
+OK run/08.log contains '29,913 prompt'
+OK run/08.log contains '✓ 3 passed (50.00%)'
+OK run/12.log contains 'total_cost_usd=0.00236732'
+OK run/12.log contains 'costBasis=claude-haiku-5-5:list'
+OK run/13.log contains 'apiKeySource=none'
+OK run/13.log contains 'model=claude-haiku-5-5'
+OK run/13.log contains 'claude_code_version=2.1.322'
+OK run/13.log contains '\n0.125.1'
+OK run/10.log contains 'tsc_exit=0'
+OK run/10.log contains 'Version 7.0.2'
+OK run/01.log exit=0 (want exit=0)
+OK run/02.log exit=0 (want exit=0)
+OK run/03.log exit=0 (want exit=0)
+OK run/04.log exit=0 (want exit=0)
+OK run/05.log exit=0 (want exit=0)
+OK run/06.log exit=0 (want exit=0)
+OK run/07.log exit=0 (want exit=0)
+OK run/09.log exit=0 (want exit=0)
+OK run/10.log exit=0 (want exit=0)
+OK run/11.log exit=0 (want exit=0)
+OK run/12.log exit=0 (want exit=0)
+OK run/13.log exit=0 (want exit=0)
+OK run/08.log exit=100 (want exit=100)
+OK run/01.log uuid=none
+OK run/02.log uuid=none
+OK run/03.log uuid=none
+OK run/04.log uuid=none
+OK run/05.log uuid=none
+OK run/06.log uuid=none
+OK run/07.log uuid=none
+OK run/09.log uuid=none
+OK run/10.log uuid=none
+OK run/11.log uuid=none
+OK run/12.log uuid=none
+OK run/13.log uuid=none
+OK run/08.log uuid=none
+ALL OK

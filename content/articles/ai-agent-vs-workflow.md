@@ -1,7 +1,7 @@
 ---
 title: "AI エージェントとワークフローの違い【決まった手順なら LLM を順に呼ぶだけでいい】"
 slug: "ai-agent-vs-workflow"
-description: "AI エージェントとワークフローの違いは、次の手順を LLM が決めるか、コードが決めるかです。Claude Agent SDK で同じ仕分けを2通りに書いて動かし、呼び出し回数、時間、止め方を実測で比べます。"
+description: "AI エージェントとワークフローの違いは、次の手順を LLM が決めるか、コードが決めるかです。Claude Agent SDK で同じ仕分けを2通りに書いて動かし、呼び出し回数と時間を実測で比べます。答えを確かめられる時点の違いも示します。"
 tags: ["AIエージェント", "Claude Agent SDK", "TypeScript"]
 main_keyword: "AIエージェント"
 target_query: null
@@ -45,6 +45,9 @@ sources:
   - url: "https://code.claude.com/docs/en/model-config"
     title: "Model configuration (Claude Code)"
     accessed: 2026-11-10
+  - url: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    title: "Prompt caching"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
@@ -74,7 +77,7 @@ Anthropic の「Building effective agents」は、2つを次のように分け�
 | 向いている処理 | 決まった小さな手順にきれいに分けられる処理（出典1） | 必要な手数を前もって読めない処理（出典1） |
 | 途中で止める方法 | 手順の間にコードの確認を挟む（出典1） | 反復回数の上限を停止条件として付ける（出典1） |
 
-Anthropic は、まず最も単純な方法を探し、必要になったときに限って複雑にするよう勧めています（出典1）。エージェントは、遅延とコストを払って性能を取ることが多い、とも書いています（出典1）。
+Anthropic は、まず最も単純な方法を探し、必要になったときに限って複雑にするよう勧めています（出典1）。同じ記事は、ワークフローとエージェントの両方を agentic systems と呼びます。どちらも、LLM の呼び出し1回で済ませる方法より、遅延とコストを払って性能を取ることが多い仕組みです（出典1）。そのうえで、手順のはっきりした処理には、予測しやすく結果のそろうワークフローが向くと書いています（出典1）。
 
 手順を書き出せる処理を、わざわざエージェントにする理由はほとんど見当たりません。
 
@@ -83,7 +86,7 @@ Anthropic は、まず最も単純な方法を探し、必要になったとき�
 この記事のコードは、Claude Agent SDK の `query()` を使います。用意するものは次のとおりで、どれも欠かせません。
 
 - Node.js は 22.18.0 以上が必要です。`.ts` のファイルを `node` で直接動かすためです（出典9）。検証は 22.22.0 で行いました。
-- Claude のプランは、Pro、Max、Ultra のどれかが必要です。Free には Claude Code が含まれません（出典8）。Pro は月払いで月20ドルです（出典8）。
+- Claude のプランは、Pro、Max、Ultra、Team、Enterprise のどれかが必要です（出典7）。Free には Claude Code が含まれません（出典8）。Pro は月払いで月20ドルです（出典8）。
 - Claude Code に、そのプランのアカウントでログインしておく必要があります（出典7）。
 
 Node.js は、型の注釈を空白に置き換えて実行します。型の検査はしません（出典9）。検証では別に `tsc` で型を確かめ、エラーは0件でした。
@@ -271,50 +274,64 @@ LLM の答えの形は、同じ指示でも実行ごとに揺れます。ワー�
 
 括弧を取り除いてから比べれば、1回目の 003.txt も通ります。あなたなら括弧を外して通しますか。それとも止めて、人の確認に回しますか。
 
-### tools を指定しないと、1回ごとに39個のツールの定義が付く
+### tools を指定しないと、39個のツールが付いて入力が約27倍になる
 
-`tools` を指定しないと、`query()` には Claude Code の組み込みのツールが付きます。手順1と同じ分類を、`tools` と `systemPrompt` の両方を指定せずに1回だけ投げて確かめました。
+`tools` を指定しないと、`query()` には Claude Code の組み込みのツールが付きます。手順1と同じ分類を、`tools` と `systemPrompt` を1つずつ外した4通りで投げて確かめました。
 
-init のメッセージにあるツールの数は39個でした。`cache_creation_input_tokens` は 13,212 でした。`cache_read_input_tokens` は 25,805 です。分類1回の `total_cost_usd` は 0.003156 です。上のワークフローの4回分の合計 0.001992 を、1回で超えています。
+比べたのは、usage の3つのトークン数を足した「入力の合計」です（出典12）。キャッシュを通らなかった分は `input_tokens` に入ります。キャッシュに書き込んだ分は `cache_creation_input_tokens` です。キャッシュから読み出した分は、`cache_read_input_tokens` に数えられます。キャッシュを使えたかどうかで内訳は変わっても、和は LLM に渡した入力全体の量を表します（出典12）。
 
-LLM を部品として呼ぶ手順では、`tools: []` と短い `systemPrompt` を必ず渡してください。
+| 指定のしかた | ツールの数 | 入力の合計 | `total_cost_usd`（見積もり） |
+|---|---|---|---|
+| `tools: []` と `systemPrompt` を指定（workflow.ts と同じ） | 0 | 1,462 | 0.000319 |
+| `tools` を指定しない（`systemPrompt` は指定） | 39 | 38,995 | 0.003029 |
+| `systemPrompt` を指定しない（`tools: []` は指定） | 0 | 1,468 | 0.000407 |
+| どちらも指定しない | 39 | 39,001 | 0.003148 |
 
-## エージェントは、ツールを渡した query() を1回呼ぶ
+`systemPrompt` を外したときの入力の増加は、6トークンでした。`tools` を外すと、入力は約27倍になり、費用の見積もりは約10倍になりました。入力が大きく増えたのは、`tools` の指定を外した2通りです。
 
-エージェント版のコードには、ファイル名も読む順番も書きません。渡すのはやってほしいことと、使ってよいツールです。
+LLM を部品として呼ぶ手順では、`tools: []` を必ず渡してください。
+
+## エージェントは、同じ仕事をツールつきの query() 1回に任せる
+
+エージェント版には、ワークフロー版と同じ仕事を頼みます。コードに書くのは頼みたいことと使ってよいツールで、ファイル名も読む順番も書きません。
 
 ```ts
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
+const LABELS = ["返金", "不具合", "その他"];
 const started = Date.now();
 
-// ツールを渡した query() を1回だけ呼ぶ。何をどの順に読むかはモデルが決める
+// workflow.ts と同じ仕事を、ツールを渡した query() 1回に任せる
 for await (const msg of query({
-  prompt: "tickets フォルダの問い合わせをすべて読み、返金を求めているものをファイル名つきで挙げてください。",
+  prompt:
+    "tickets フォルダの問い合わせをすべて読み、1件ごとに「ファイル名: 返金」「ファイル名: 不具合」「ファイル名: その他」の形で1行ずつ答えてください。" +
+    "返金の問い合わせには、次の行に返信の書き出しを1文だけ添えてください。",
   options: { model: "haiku", tools: ["Glob", "Read"], allowedTools: ["Glob", "Read"], maxTurns: 10 },
 })) {
-  if (msg.type === "system" && msg.subtype === "init") {
-    console.log(`apiKeySource: ${msg.apiKeySource}`);
-  }
+  if (msg.type === "system" && msg.subtype === "init") console.log(`apiKeySource: ${msg.apiKeySource}`);
   if (msg.type === "assistant") {
     for (const block of msg.message.content) {
-      if (block.type === "tool_use") {
-        // 作業フォルダの絶対パスは「.」に置き換えて表示する
-        console.log(`ツール: ${block.name} ${JSON.stringify(block.input).replaceAll(process.cwd(), ".")}`);
-      }
+      // 作業フォルダの絶対パスは「.」に置き換えて表示する
+      if (block.type === "tool_use") console.log(`ツール: ${block.name} ${JSON.stringify(block.input).replaceAll(process.cwd(), ".")}`);
     }
   }
   if (msg.type === "result") {
-    if (msg.subtype === "success") console.log(`答え: ${msg.result}`);
-    console.log(`num_turns=${msg.num_turns}、cache_creation=${msg.usage.cache_creation_input_tokens}`);
-    console.log(`total_cost_usd（見積もり）: ${msg.total_cost_usd.toFixed(6)}、かかった時間: ${Date.now() - started}ms`);
+    if (msg.subtype === "success") {
+      console.log(`答え:\n${msg.result.replaceAll(process.cwd(), ".")}`);
+      // 答えの形を確かめられるのは、すべてが終わったこの時点だけ
+      const ok = msg.result.split("\n").filter((line) => LABELS.includes(line.split(": ")[1] ?? ""));
+      console.log(`形が合った行: ${ok.length}件`);
+    }
+    console.log(`num_turns=${msg.num_turns}、total_cost_usd（見積もり）: ${msg.total_cost_usd.toFixed(6)}、かかった時間: ${Date.now() - started}ms`);
   }
 }
 ```
 
-`tools` に渡したのは、ファイルを探す `Glob` と、読む `Read` の2つです（出典2）。`allowedTools` に同じ2つを並べると、確認なしで実行されます（出典2）。書き込みと実行のツールは渡していません。
+`tools` には、ファイルを探す `Glob` と、読む `Read` の2つを渡しました（出典2）。`allowedTools` に同じ2つを並べ、確認なしで実行させます（出典2）。オプションの役割は[入門記事](/posts/claude-agent-sdk-first-agent)にあります。
 
-`maxTurns: 10` は停止条件です。ターンは、LLM が出力し、ツールを呼んだならその結果を受け取るまでの1往復です（出典2）。10往復で終わらなければ、`error_max_turns` の結果で止まります（出典2）。
+`maxTurns: 10` は、エージェントを止めるための停止条件です（出典1）。10往復で終わらなければ、`error_max_turns` の結果で止まります（出典2）。
+
+`LABELS.includes` の行は、ワークフロー版の手順2と同じく、ラベルの一致を見るコードです。違いは置き場所で、全部の作業が終わって `result` が届いたあとにしか動きません。
 
 ```bash
 node agent.ts
@@ -322,42 +339,48 @@ node agent.ts
 
 ```text
 apiKeySource: none
-ツール: Glob {"pattern":"**/*","path":"./tickets"}
+ツール: Glob {"pattern":"tickets/**/*"}
 ツール: Read {"file_path":"./tickets/001.txt"}
 ツール: Read {"file_path":"./tickets/002.txt"}
 ツール: Read {"file_path":"./tickets/003.txt"}
-答え: `tickets` フォルダには3件の問い合わせがあり、返金を求めているのは1件です。
-
-- **001.txt**: 注文番号 A-1024 のマウスを返品したので、代金を返してください。
-
-残りの2件は返金の依頼ではありません。002.txt はログイン後に画面が真っ白になる不具合の報告、003.txt は請求書の宛名変更の相談です。
-num_turns=5、cache_creation=2262
-total_cost_usd（見積もり）: 0.001101、かかった時間: 8181ms
+答え:
+001.txt: 返金
+ご連絡ありがとうございます。注文番号 A-1024 のマウスの返品を確認いたしました。
+002.txt: 不具合
+003.txt: その他
+形が合った行: 3件
+num_turns=5、total_cost_usd（見積もり）: 0.001069、かかった時間: 9166ms
 ```
 
-LLM は、まず `Glob` でファイルの一覧を取り、3件を `Read` で1件ずつ読みました。ツールを4回呼んだあとに答えを書き、`num_turns` は5でした。この順番はコードのどこにも書いていません。
+2回動かしたうちの2回目の出力です。3件とも正しいラベルで返り、返信の書き出しが付いたのは返金の 001.txt でした。
 
-同じコードの2回目では、`Glob` の引数が変わりました。引数は `{"pattern":"tickets/**/*","path":"."}` でした。ターン数は同じ5でしたが、答えの中のファイル名は絶対パスで書かれていました。
+1回目の実行では、LLM は最初の `Glob` で Claude Code の一時フォルダを探しました。続けて作業フォルダを探し直したので、ツールの呼び出しは5回、`num_turns` は6でした。返信の書き出しには「返信の書き出し: 」という前置きが付いています。
 
-エージェントの手順と答えの形は、実行するたびに変わります。
+コードは2回とも同じです。何をどの順に調べ、答えをどんな形で書くかは、LLM がその場で決めています。
+
+ワークフロー版の1回目では、003.txt の答えに付いた鉤括弧を手順2が見つけ、その1件を止めました。エージェント版で同じ揺れが起きても、コードが気づけるのは最後の答えが返ってからです。
 
 ## 測ってみると、この3件ではエージェントのほうが速くて安かった
 
-2つの書き方を、それぞれ2回ずつ動かした結果です。
+同じ仕分けを、2つの書き方でそれぞれ2回ずつ動かした結果です。
 
 | 観点 | ワークフロー 1回目 | ワークフロー 2回目 | エージェント 1回目 | エージェント 2回目 |
 |---|---|---|---|---|
 | `query()` を呼んだ回数 | 4 | 4 | 1 | 1 |
-| かかった時間 | 23,153ms | 27,702ms | 8,181ms | 8,459ms |
-| `total_cost_usd`（見積もり） | 0.001992 | 0.001351 | 0.001101 | 0.000931 |
+| かかった時間 | 23,153ms | 27,702ms | 9,769ms | 9,166ms |
+| `total_cost_usd`（見積もり） | 0.001992 | 0.001351 | 0.001239 | 0.001069 |
+| 途中で止まった問い合わせ | 003.txt（手順2） | 0件 | 0件（6ターンで終了） | 0件（5ターンで終了） |
+| 答えをコードで確かめた時点 | 1件ごと | 1件ごと | 全部の作業のあと | 全部の作業のあと |
 
-遅延とコストを払うのはエージェントのほうだ、という Anthropic の説明と逆の結果です（出典1）。ワークフロー側は、`query()` を4回呼んでいます。
+エージェント版は2回とも、上限の `maxTurns: 10` に届く前に答えを返しました。止める仕組みが実際に働いたのは、ワークフロー版の1回目の手順2です。
+
+時間はワークフロー版のほうが長く、`query()` を4回呼んだ分、遅くなっています。prompt chaining はワークフローの1つです。Anthropic は、遅延と引き換えに精度を上げる方法だと説明しています（出典1）。
 
 `query()` は、既定では手元で Claude Code のプロセスを起動して動きます（出典4）。分類を1回だけ投げて測ると、`query()` 1回で 6,714ms かかりました。ワークフロー版はこれを4回くり返すので、20秒を超えます。
 
-エージェント版は、5ターンの往復を含めても `query()` 1回で 8,181ms でした。ターンをまたいで変わらない部分はキャッシュされます（出典2）。`cache_creation` も 2,262 の1回分です。
+エージェント版は、ターンの往復を含めても `query()` は1回で、9,166ms と 9,769ms でした。ターンをまたいで変わらない部分は、キャッシュされます（出典2）。
 
-速さと安さで選ぶなら、この結果からはエージェントになります。それでも、この仕分けはワークフローで書きます。LLM を呼ぶ回数が動かす前に決まり、手順2で答えの形を確かめられるからです。
+速さと安さで選ぶなら、この結果からはエージェントになります。それでも、この仕分けはワークフローで書きます。LLM を呼ぶ回数が動かす前に決まり、手順2で答えの形を1件ずつ確かめられるからです。
 
 この比較は、3件の問い合わせを2回ずつ動かしたときの数字です。件数を増やしたときの差は測っていません。
 
@@ -392,5 +415,6 @@ LLM は、まず `Glob` でファイルの一覧を取り、3件を `Read` で1�
 | 9 | Modules: TypeScript (Node.js) | https://nodejs.org/api/typescript.html | 2026-11-10 |
 | 10 | @anthropic-ai/claude-agent-sdk (npm) | https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk | 2026-11-10 |
 | 11 | Model configuration (Claude Code) | https://code.claude.com/docs/en/model-config | 2026-11-10 |
+| 12 | Prompt caching | https://platform.claude.com/docs/en/build-with-claude/prompt-caching | 2026-11-10 |
 
 AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

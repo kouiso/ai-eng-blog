@@ -12,6 +12,8 @@
 | `no-catch.ts` | `try` を付けずに `maxTurns: 1` で動かし、例外でプロセスが終わることを見せる |
 | `extra/run-all.sh` | 記事の手順どおりに作業フォルダを作り、`run/01.log`〜`12.log` を書く |
 | `extra/run-headroom.sh` | `run-all.sh` のあとに足した実行。作業フォルダを同じ手順で作り直し、`node budget-limit.ts 0.0021` を `run/13.log` に書く |
+| `extra/show-blocks.ts` | 記事には載せない確認用（2026-11-10、2版目）。記事の `run-agent.ts` から `baseOptions` と `task` を読み、`maxBudgetUsd` を渡して、assistant メッセージのブロックを `tool_use` 以外（text、thinking）も表示する。上限で止まった回に、回答の text が届いてから result が来るかを見る |
+| `extra/run-show-blocks.sh` | 作業フォルダを記事の手順で作り直し、`show-blocks.ts` を 0.0008 で3回、0.0005 で1回動かして `run/14.log` に書く |
 | `extra/tsconfig.typecheck.json` | 型の確認（`run/11.log`、TypeScript 7.0.2）に使った設定。記事には載せていない |
 
 実行は 2026-11-10、Node.js 22.22.0、npm 10.9.4、Linux x86_64、`ANTHROPIC_API_KEY` を外した状態（両スクリプトの冒頭で `unset`）。認証はオーナー自身の Claude プランでログインした Claude Code に任せ、init メッセージの `apiKeySource` は `none` でした。
@@ -19,6 +21,7 @@
 ```bash
 bash extra/run-all.sh <作業場所の親フォルダ> <run ログの出力先> <tsc と @types/node を入れたフォルダ>
 bash extra/run-headroom.sh <作業場所の親フォルダ> <run ログの出力先>
+bash extra/run-show-blocks.sh <作業場所の親フォルダ> <run ログの出力先>
 ```
 
 ログに残すとき、作業場所のパスは `<work>`、このフォルダは `<code>`、tsc のフォルダは `<tc>` に置き換えています。ログイン中のアカウント名、メールアドレス、セッションの ID、認証情報は、どのスクリプトも表示しません（init の行に出すのはモデル名、`apiKeySource`、Claude Code の版だけ）。

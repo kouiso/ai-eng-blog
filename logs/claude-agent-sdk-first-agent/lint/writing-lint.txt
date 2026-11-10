@@ -1,4 +1,4 @@
-## writing-lint v2: claude-agent-sdk-first-agent.md (type=article, register=standard, 366行/142文)
+## writing-lint v2: claude-agent-sdk-first-agent.md (type=article, register=standard, 366行/146文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

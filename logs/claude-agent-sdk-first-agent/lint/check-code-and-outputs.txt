@@ -25,4 +25,7 @@ OK run/08.log exit=0
 OK run/09.log exit=0
 OK run/10.log exit=0
 OK run/11.log exit=0
+OK run/12.log exit=1 (want 1) contains 'ERR_UNKNOWN_FILE_EXTENSION'=True
+OK run/13.log exit=0 (want 0) contains '[result/success]'=True
+OK run/14.log exit=0 (want 0) contains 'claude-agent-sdk-darwin-arm64'=True
 ALL OK

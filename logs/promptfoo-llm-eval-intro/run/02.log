@@ -1,4 +1,4 @@
-date: 2026-11-10T07:55:23+00:00
+date: 2026-11-10T07:58:44+00:00
 cwd: <base>
 node: v22.22.0  npm: 10.9.4
 ANTHROPIC_API_KEY: unset
@@ -11,7 +11,7 @@ npm install --save-exact promptfoo@0.125.1 @anthropic-ai/claude-agent-sdk@0.3.32
 npm warn deprecated @modelcontextprotocol/server-filesystem@2026.8.31: Date-based versions are no longer published. This package has resumed semantic versioning at 1.0.0: install the latest version.
 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 
-added 576 packages, and audited 577 packages in 25s
+added 576 packages, and audited 577 packages in 36s
 
 111 packages are looking for funding
   run `npm fund` for details

@@ -20,7 +20,9 @@
 
 ## 既存記事との重なり（G06）
 
-`content/articles/*.md` の frontmatter（title、main_keyword、target_query）を全件読んだ（2026-11-10、この記事のほか18本）。本文を `agent sdk`、`claude-agent-sdk`、`apiKeySource`、`query()` で `grep -ni` し、0件だった。Agent SDK を扱う記事はまだ無い。
+最初の判定（2026-11-10 07:29 ごろ）では、`content/articles/*.md` の frontmatter を全件読み（この記事のほか18本）、本文を `agent sdk`、`claude-agent-sdk`、`apiKeySource`、`query()` で `grep -ni` して0件だった。
+
+その後に原稿が増えたので、2026-11-10 08:13 ごろに読み直した（再判定）。`ls content/articles` は23本で、この記事のほか22本。`grep -l -i 'claude-agent-sdk\|agent sdk' content/articles/*.md` は、この記事のほか4本（`ai-agent-max-turns-budget-limit`、`ai-agent-vs-workflow`、`llm-as-a-judge-claude`、`promptfoo-llm-eval-intro`）を返した。4本とも frontmatter の `title`、`main_keyword`、`target_query`（4本とも null）と見出しを読み、下の表に足した。最初の判定の「Agent SDK を扱う記事はまだ無い」は、この時点では誤り。
 
 | slug | main_keyword | 答える検索意図 | 重なり |
 |---|---|---|---|
@@ -42,8 +44,12 @@
 | `llm-eval-harness-fixtures` | LLM 評価 | 回答を完全一致、部分一致、正規表現で採点する | なし |
 | `rag-retrieval-eval-recall-mrr` | LLM 評価 | 検索の良し悪しを Recall@k と MRR で測る | なし |
 | `llm-eval-dataset-from-logs` | LLM 評価 | ログから評価用のテストケースを作る | なし |
+| `ai-agent-max-turns-budget-limit` | AIエージェント | Agent SDK の `maxTurns`・`maxBudgetUsd` で止める、止まったときの結果と例外 | 最初の版は重なっていた。この記事の 326〜328行目が、ターンの数え方、`error_max_turns`、`for await` の例外を書いていて、あちらの見出し（58、164、388行目）と同じ内容だった。`content/plan.md` の「重なりを避けるために決めたこと」（#17 は導入とメッセージの読み方、#18 は上限と止まったときの結果と例外だけ）に合わせて、326〜328行目からその3点を外し、次の記事に回すと書いた。再判定では重なりなし |
+| `ai-agent-vs-workflow` | AIエージェント | エージェントとワークフローの違い（比較） | なし。比較の記事で、`query()` のメッセージの種類は 146行目でこの記事にリンクして任せている。2本目のエージェント（Glob と Read で3つのファイルを読む、`num_turns` 5）は題材が似ているが、あちらはワークフローとの速さと費用の比較に使い、この記事は `tool_use` と `tool_result` の読み分けに使う |
+| `llm-as-a-judge-claude` | LLM 評価 | LLM-as-a-Judge で回答を採点する | なし。Agent SDK は採点の道具として使うだけで、`apiKeySource` は 312行目の1文で触れる程度。メッセージの種類の読み分けを扱う見出しは無い |
+| `promptfoo-llm-eval-intro` | LLM 評価 | promptfoo でプロンプトを評価する | なし。Agent SDK は 87行目と 427行目でこの記事にリンクするだけ |
 
-計画上の隣の記事とは、`content/plan.md` の「重なりを避けるために決めたこと」のとおり分けた。#16（`ai-agent-tool-use-loop-typescript`、自作ループ）はまだ原稿が無い。#18（`ai-agent-max-turns-budget-limit`、`maxTurns` と `maxBudgetUsd`）もまだ原稿が無い。この記事は導入と `query()` のメッセージの読み方だけを扱い、`maxTurns` は安全のための上限として1か所で使うだけにし、止まったときの結果と例外は #18 へのリンクに任せた。
+計画上の隣の記事とは、`content/plan.md` の「重なりを避けるために決めたこと」（94行目）のとおり分けた。#16（`ai-agent-tool-use-loop-typescript`、自作ループ）は再判定の時点でも原稿が無い（`ls` で確認）。#18（`ai-agent-max-turns-budget-limit`）は 07:32 に原稿ができていた。この記事は導入と `query()` のメッセージの読み方だけを扱う。`maxTurns` はオプションの紹介（187行目）と安全のための上限（328行目）で使うだけにし、ターンの数え方、止まったときの結果と例外は #18 に任せた（326、328、364行目）。
 
 ## 外した候補
 

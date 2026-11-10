@@ -55,4 +55,12 @@ for n in ("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"):
     code_ = log(n).rsplit("--- exit=", 1)[1].strip()
     print(f"{'OK' if code_ == '0' else 'NG'} run/{n}.log exit={code_}")
     ok &= code_ == "0"
+# 前提の Node.js の版の確認（run-node-versions.sh）。12 は Node.js 20 で失敗するのが期待どおり
+for n, want_code, want_text in (("12", "1", "ERR_UNKNOWN_FILE_EXTENSION"), ("13", "0", "[result/success]"), ("14", "0", "claude-agent-sdk-darwin-arm64")):
+    body = log(n)
+    code_ = body.rsplit("--- exit=", 1)[1].strip()
+    hit = want_text in out(n)
+    good = code_ == want_code and hit
+    print(f"{'OK' if good else 'NG'} run/{n}.log exit={code_} (want {want_code}) contains {want_text!r}={hit}")
+    ok &= good
 print("ALL OK" if ok else "SOMETHING DIFFERS")

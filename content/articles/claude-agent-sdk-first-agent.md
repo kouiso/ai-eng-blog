@@ -64,7 +64,7 @@ Agent SDK は、Claude Code のツールとループを自分のコードで動�
 
 用意するのは Node.js、Claude のプラン、そのプランでログインした Claude Code です。
 
-- Node.js 18.14 以上（出典2）。検証は 22.22.0 で行いました。
+- Node.js 22.18.0 以上（出典10）。`.ts` のファイルを `node` で直接動かすためです。検証は 22.22.0 で行いました。
 - Claude の Pro、Max、Ultra のどれか。Free には Claude Code が含まれません（出典7）。Pro は月払いで月20ドルです（出典7）。
 - `claude auth login` でプランのアカウントにログインした Claude Code（出典4）
 
@@ -129,7 +129,7 @@ npm pkg get type dependencies
 }
 ```
 
-入ったパッケージを見ると、SDK の隣に `claude-agent-sdk-linux-x64` があります。
+Linux x64 では、SDK の隣に `claude-agent-sdk-linux-x64` が入ります。
 
 ```bash
 ls node_modules/@anthropic-ai
@@ -141,9 +141,9 @@ claude-agent-sdk-linux-x64
 sdk
 ```
 
-この `linux-x64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。
+この `linux-x64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。名前の末尾は OS と CPU ごとに違います（出典11）。Apple シリコンの Mac では `darwin-arm64` になります。x64 の Windows では `win32-x64` です。
 
-`npm ci --omit=optional` のように optional を飛ばすと、本体が入りません（出典2）。CI で動かないときは、まずこのフォルダの有無を見てください。
+`npm ci --omit=optional` のように optional を飛ばすと、本体が入りません（出典2）。CI で動かないときは、`claude-agent-sdk-` で始まるフォルダがあるかを先に見てください。
 
 ## 1本目は init、assistant、result の順に届く
 
@@ -189,7 +189,7 @@ for await (const message of query({
 
 省いた場合は、`~/.claude/settings.json` などの設定がすべて読まれます（出典8）。手元の設定で結果が変わらないよう、この記事では空にしています。
 
-Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典10）。
+Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典10）。Node.js 20.20.0 でも試しました。`ERR_UNKNOWN_FILE_EXTENSION` のエラーが出て、`hello.ts` は動きません。
 
 ```bash
 node hello.ts
@@ -323,9 +323,9 @@ result: 締め切りが最も早いのは「請求書を送る」で、締め切
 
 Messages API の SDK で自作するループでは、このやり取りを自分で書きます（出典1）。Agent SDK では、届いた `user` を読めば済みます。
 
-`num_turns=5` は、Glob の1回と Read の3回、最後に文章で答えた1回の合計です。公式の数え方も、ツールを呼んだターンに最後の文章のターンを足します（出典3）。
+`result` の `num_turns=5` は、この実行で数えたターンの数です。ターンの数え方は、上限の話と一緒に次の記事で扱います。
 
-`maxTurns: 10` は、ループが止まらなくなったときの上限として入れました。上限に達すると、`result` の `subtype` が `error_max_turns` になります（出典3）。その場合、`for await` のループが例外を投げます（出典3）。
+`maxTurns: 10` は、ループが止まらなくなったときの上限として入れました。上限に達したあとに届く結果と例外も、同じ記事に回しています。
 
 ### 同じコードでも、ツールの引数と答えの文面は変わる
 

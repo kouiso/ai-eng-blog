@@ -1,5 +1,5 @@
 C25 over60=0 max=60
-C16 prose sentences=124 min=13 max=60 le20=11 41-60=49
+C16 prose sentences=135 min=13 max=60 le20=13 41-60=65
 C19 non-desumasu=0
 C17 same-ending3 (last3)=0
 PAT bold **: 0 []
