@@ -38,3 +38,5 @@ log_run 04 "node stop-reason.ts"
 log_run 05 "node naive-repair.ts"
 # 以下は記事に載せない確認用の実行
 log_run 06 "node $CODE_DIR/extra/full-messages.ts"
+log_run 09 "node $CODE_DIR/extra/edge-brace.ts"
+log_run 10 "node $CODE_DIR/extra/edge-cases.ts"

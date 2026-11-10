@@ -18,3 +18,4 @@ OUT after 'node stop-reason.ts' vs run/04.log: SAME
 CMD 'node naive-repair.ts': run/05.log exit=0
 OUT after 'node naive-repair.ts' vs run/05.log: SAME
 ALL OK
+exit=0

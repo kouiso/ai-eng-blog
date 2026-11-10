@@ -12,6 +12,15 @@ for (const s of sections) {
   console.log(`  header=${countChars(header)} body=${countChars(s.body)} total=${countChars(header) + countChars(s.body)} ${s.headings.join(" > ")}`);
 }
 
+const headingTexts = md.split("\n").filter((l) => /^#{1,6}\s+/.test(l)).map((l) => l.replace(/^#+\s+/, ""));
+const withoutBody = headingTexts.filter((h) => !sections.some((s) => s.headings.at(-1) === h));
+console.log("headings:", headingTexts.length, "without body:", withoutBody.length, withoutBody.join(", "));
+const shipping = md.indexOf("## 配送について\n");
+const beforeShipping = splitSections(md.slice(0, shipping)).at(-1)!.headings;
+const afterShipping = splitSections(md.slice(0, shipping) + "## 配送について\n\nx\n").at(-1)!.headings;
+console.log("headings before ## 配送について:", JSON.stringify(beforeShipping));
+console.log("headings after ## 配送について:", JSON.stringify(afterShipping));
+
 const c120 = chunkMarkdown(md, 120, 40);
 console.log("120/40 last chars:", c120.map((c) => [...c].at(-1)).join(" "));
 for (let i = 1; i < c120.length; i++) {

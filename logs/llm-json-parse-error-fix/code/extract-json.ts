@@ -6,7 +6,7 @@ export function extractJson(text: string): string {
   const start = body.search(/[{[]/);
   const end = Math.max(body.lastIndexOf("}"), body.lastIndexOf("]"));
   if (start === -1 || end < start) {
-    return body.trim();
+    return text;
   }
   return body.slice(start, end + 1);
 }

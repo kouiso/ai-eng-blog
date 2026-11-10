@@ -1,4 +1,4 @@
-date: 2026-10-31 13:51:04 +0000
+date: 2026-11-10 06:58:35 +0000
 cwd: /path/to/jp-chunker
 node: v22.22.0
 icu: 77.1
@@ -11,6 +11,9 @@ sections: 5
   header=27 body=104 total=131 ご利用ガイド > 配送について > お届けまでの日数
   header=22 body=60 total=82 ご利用ガイド > 配送について > 配送料
   header=16 body=116 total=132 ご利用ガイド > よくある質問
+headings: 8 without body: 3 ご利用ガイド, 返品について, 配送について
+headings before ## 配送について: ["ご利用ガイド","返品について","返金の時期"]
+headings after ## 配送について: ["ご利用ガイド","配送について"]
 120/40 last chars: 。 。 。 。 。 。 。 。 。
   #2 first=23字 overlap=true prevLast=23字
   #3 first=34字 overlap=false prevLast=28字

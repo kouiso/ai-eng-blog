@@ -1,13 +1,14 @@
-date: 2026-10-31T09:12:09+00:00
-cwd: (作業フォルダ zod-llm-check)
+date: 2026-11-10T06:45:33Z
+cwd: <work>/zod-llm-check
 node: v22.22.0 / npm: 10.9.4
-note: 日本語のメッセージの節。pretty-ja.ts を置いて実行（cp）
-command: cp (code)/pretty-ja.ts . && node pretty-ja.ts
+command: cp (code)/retry-message.ts . && node retry-message.ts
 ----- stdout+stderr -----
-✖ 大きすぎる値: numberは3以下である必要があります
+前回の JSON は、次の点がスキーマに合いませんでした。
+✖ Too big: expected number to be <=3
   → at priority
-✖ 無効な入力: stringが期待されましたが、undefinedが入力されました
+✖ Invalid input: expected string, received undefined
   → at summary
-✖ 無効な入力: stringが期待されましたが、数値が入力されました
+✖ Invalid input: expected string, received number
   → at tags[1]
+直した JSON だけを返してください。
 ----- exit=0 -----

@@ -20,23 +20,33 @@ for f in ["package.json", "count.ts", "estimate.ts", "unknown-model.ts"]:
     hit = code in fences
     ok &= hit
     print(f"code {f}: {hit}")
-expect = {"01": "mkdir token-cost-estimate", "02": "npm install", "03": "node count.ts",
-          "04": "node estimate.ts", "05": "node unknown-model.ts"}
+# 2026-11-10 の再実行（run/10〜17）を照合する。01〜09 は 2026-10-31 の実行で、記録として残している。
+expect = {"10": "mkdir token-cost-estimate", "11": "npm install", "12": "node count.ts",
+          "13": "node estimate.ts", "14": "node unknown-model.ts"}
 for n, cmd in expect.items():
     c, e, out = log(n)
     same_cmd = c == cmd and e == "0"
     ok &= same_cmd
     print(f"run {n} command == article command ({cmd}) and exit 0: {same_cmd}")
-    if n != "01":
+    if n != "10":
         hit = out in fences
         ok &= hit
         print(f"  output of run {n} appears verbatim in article: {hit}")
-lead = log("04")[2].split("\n")[0]
+lead = log("13")[2].split("\n")[0]
 hit = lead in fences
 ok &= hit
-print(f"lead line (run 04 first line) in article: {hit}")
-off = log("09")[2]
-same_offline = all(log(n)[2] in off for n in ["03", "04", "05"]) and "network: unreachable" in off
+print(f"lead line (run 13 first line) in article: {hit}")
+off = log("17")[2]
+same_offline = all(log(n)[2] in off for n in ["12", "13", "14"]) and "network: unreachable" in off
 ok &= same_offline
-print(f"run 09 (no network) reproduces 03/04/05 outputs: {same_offline}")
+print(f"run 17 (no network) reproduces 12/13/14 outputs: {same_offline}")
+notype = log("16")
+warn_ok = notype[0] == "node count.ts" and notype[1] == "0" and "MODULE_TYPELESS_PACKAGE_JSON" in notype[2] and log("12")[2] in notype[2]
+ok &= warn_ok
+print(f"run 16 (no \"type\") warns MODULE_TYPELESS_PACKAGE_JSON with the same counts: {warn_ok}")
+t15 = log("15")[2]
+real = re.search(r"real\t0m([\d.]+)s", t15).group(1)
+time_ok = log("13")[2] in t15 and f"手元で{round(float(real), 1)}秒" in article
+ok &= time_ok
+print(f"run 15 real {real}s matches article seconds: {time_ok}")
 print("ALL OK" if ok else "MISMATCH")

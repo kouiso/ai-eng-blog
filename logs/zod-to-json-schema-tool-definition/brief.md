@@ -48,5 +48,8 @@ zod のスキーマを1回だけ書き、ツール定義と入力の検証の両
 
 ## 講座の前後
 
-- prev: `zod-validate-llm-json-output`（計画 #7。`content/articles/` に draft の原稿あり。公開も予約もされていない）
-- next: `llm-json-parse-error-fix`（計画 #9。原稿なし）
+2026-11-10 に `content/articles/` の frontmatter を読んで更新した。
+
+- prev: `zod-validate-llm-json-output`（計画 #7。`content/articles/` に `status: draft`、`publish_at: null` の原稿あり。その `next` はこの記事。公開も予約もされていない）
+- next: `llm-json-parse-error-fix`（計画 #9。`content/articles/` に `status: draft`、`publish_at: null` の原稿あり。その `prev` はこの記事で、本文44行目からこの記事へリンクしている。公開も予約もされていない）
+- 2026-10-31 の初版では next を「原稿なし」と書いていた。その後に次の記事の原稿ができたので直した。

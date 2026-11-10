@@ -1,5 +1,6 @@
 # 記事のコードブロックと logs/<slug>/code/ のファイル、記事の出力ブロックと run/*.log の出力部分が
 # 1文字も違わないかを比べる。記事の n 番目のコードブロックが何に当たるかは下の表で決める。
+# 2026-11-10 の再実行（run/13〜24）に合わせて、照合先のログの番号を 13〜21 にした。
 import re, sys, pathlib
 
 slug = "zod-to-json-schema-tool-definition"
@@ -25,21 +26,21 @@ expect = [
     ("json", code("package.json"), "package.json"),
     ("json", code("tsconfig.json"), "tsconfig.json"),
     ("bash", "npm install\n", "command"),
-    ("text", log_output("02").lstrip("\n"), "run/02 npm install output"),
+    ("text", log_output("14").lstrip("\n"), "run/14 npm install output"),
     ("ts", code("src/schema.ts"), "src/schema.ts"),
     ("ts", code("src/tool.ts"), "src/tool.ts"),
-    ("text", strip_npm_header(log_output("08")), "run/08 typecheck error (return json experiment)"),
+    ("text", strip_npm_header(log_output("20")), "run/20 typecheck error (return json experiment)"),
     ("bash", "npm run typecheck\nnode src/tool.ts\n", "commands"),
-    ("text", log_output("04"), "run/04 tool output"),
+    ("text", log_output("16"), "run/16 tool output"),
     ("ts", code("src/check-input.ts"), "src/check-input.ts"),
     ("bash", "node src/check-input.ts\n", "command"),
-    ("text", log_output("06"), "run/06 check-input output"),
+    ("text", log_output("18"), "run/18 check-input output"),
     ("ts", code("src/compare-io.ts"), "src/compare-io.ts"),
     ("bash", "node src/compare-io.ts\n", "command"),
-    ("text", log_output("05"), "run/05 compare-io output"),
+    ("text", log_output("17"), "run/17 compare-io output"),
     ("ts", code("src/date-error.ts"), "src/date-error.ts"),
     ("bash", "node src/date-error.ts\n", "command"),
-    ("text", log_output("07"), "run/07 date-error output"),
+    ("text", log_output("19"), "run/19 date-error output"),
 ]
 ok = True
 if len(blocks) != len(expect):
@@ -55,9 +56,9 @@ for i, ((lang, body), (elang, ebody, label)) in enumerate(zip(blocks, expect), 1
         ok = False
         print(f"NG #{i} {label}\n--- article\n{body!r}\n--- expected\n{ebody!r}")
 # 記事のコマンドとログのコマンドの対応
-cmds = {"01": "mkdir -p zod-tool-schema/src", "02": "npm install", "03": "npm run typecheck",
-        "04": "node src/tool.ts", "05": "node src/compare-io.ts", "06": "node src/check-input.ts",
-        "07": "node src/date-error.ts", "08": "npm run typecheck", "09": "npm run typecheck"}
+cmds = {"13": "mkdir -p zod-tool-schema/src", "14": "npm install", "15": "npm run typecheck",
+        "16": "node src/tool.ts", "17": "node src/compare-io.ts", "18": "node src/check-input.ts",
+        "19": "node src/date-error.ts", "20": "npm run typecheck", "21": "npm run typecheck"}
 for n, c in cmds.items():
     t = (logs / "run" / f"{n}.log").read_text(encoding="utf-8")
     m = re.search(r"^command: (.*)$", t, re.M); e = re.search(r"^exit: (\d+)$", t, re.M)

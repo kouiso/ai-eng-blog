@@ -1,6 +1,6 @@
 # gate: rag-bm25-search-typescript
 
-判定日: 2026-10-31。原稿: `content/articles/rag-bm25-search-typescript.md`（428行。行番号はすべてこの版）。
+判定日: 2026-10-31、再判定 2026-11-10。原稿: `content/articles/rag-bm25-search-typescript.md`（428行。行番号はすべて 2026-11-10 の版。51行目の文を1つ削っただけで、行の数と位置は前の版と同じ）。
 
 ## 判定の前に読んだもの
 
@@ -13,19 +13,33 @@
 
 `07-ai-buntai-laws.md` と `10-ai-buntai-handoff.md` は、スキルの表で判定の前に読むガイドに入っていないので読んでいない。
 
+### 2026-11-10 の再判定
+
+レビューで3点の指摘を受け、3点とも原稿とファイルを読み直して正しいと確かめた。直したことは次のとおり。
+
+1. G07 の根拠が古かった。`rag-chunking-japanese-text` の原稿はもうある（`status: draft`、`publish_at: null`、12行目 `prev: "rag-bm25-search-typescript"`、58行目でこの記事へリンク）。`content/articles/` は18本で、すべて `status: draft`、`publish_at: null`。G07 は NG のままで、理由を書き直した。
+2. G06 は6本だけを見て判定していた。18本の frontmatter を読み直し、RAG の検索に触れる4本の検索意図を `selection.md` に書き直した。判定は OK のまま。
+3. 51行目「手順は20分ほどで終わります。」には、時間を測った記録が無かった。測っていない時間の断定は書かない（guides/05 §4「曖昧表現の具体化」、guides/09 §3 の4「具体性の検証」）ので、文を削った。C23 と C27 の根拠からも消した。
+
+原稿を変えたので、記事の手順を最初から実行し直した（`run/01.log`〜`17.log` を 2026-11-10 の実行で上書き）。`verified_at`、`updated`、末尾の日付を 2026-11-10 にした。lint 2本と補助チェック2本も実行し直した。
+
+再判定の前に、2026-11-10 に次の節を Read と `sed -n` で読み直した。`guides/01` §3「リード文」と §5「内部リンク」。`guides/03`「5つの不在」「引用（mention）と使用（use）の区別」「記号NG」。`guides/04`「重言」「翻訳調」。`guides/05` 全文（183行）。`guides/08`「密度基準総表」。`guides/09` §2 と §3。
+
+再判定した項目は G01、G02、G04〜G09、C03、C16、C23、C25、C27、C33。ほかの項目は、削った文にも実行結果にも関わらないので前の判定のまま。前の判定の根拠にある行番号は、今の版でも同じ行を指す。
+
 ## A. このリポジトリで足しているゲート
 
 | # | 条件 | 確かめ方と記録先 | 判定 | 根拠 |
 |---|---|---|---|---|
-| G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」「lint との関係」を読んで判定。`lint/ai-smell.txt` 3行目 `✅ クリーン`、4行目 `use 0件 / 📎mention 0件`、5行目 `✅ 致命なし`、10行目 `exit=0`。frontmatter（1〜47行目）の mention も0件。warn 0件（`lint/judgments.md`） |
-| G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。`lint/writing-lint.txt` 1行目 `428行/158文`、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。DENSITY は10カウンタすべて0回で、上限は guides/08 の標準レジスターと一致。WATCH 節なし、SHOULD 0件、INFO 0件 |
+| G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」「lint との関係」を読んで判定。`lint/ai-smell.txt` 3行目 `✅ クリーン`、4行目 `use 0件 / 📎mention 0件`、5行目 `✅ 致命なし`、10行目 `exit=0`。frontmatter（1〜47行目）の mention も0件。warn 0件（`lint/judgments.md`）。2026-11-10 の実行でも同じ出力 |
+| G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。`lint/writing-lint.txt`（2026-11-10 の実行）1行目 `428行/157文`、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。DENSITY は10カウンタすべて0回で、上限は guides/08 の標準レジスターと一致。WATCH 節なし、SHOULD 0件、INFO 0件 |
 | G03 | 下の B の全項目を満たす | `gate.md` | OK | B は C01〜C38 がすべて OK、C39（任意）は「あり」 |
-| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | `lint/check-code-and-outputs.txt`（ALL OK）: 記事のコード7つ（`package.json`、`tokenize.ts`、`show-tokens.ts`、`bm25.ts`、`docs.ts`、`search.ts`、`context.ts`）が `code/` と1文字も違わず、記事のコマンド10個が記事にあり、ログのコマンドと引数が同じで、記事の実行結果9つが `run/` から機械的に取り出したものと一致。実行は `run/01.log`〜`14.log`（2026-10-31 09:26 UTC、node v22.22.0、ICU 77.1、記事の手順の順）。一致した語の確認は `run/15.log`、型は `run/16.log`（tsc 7.0.2、`tsc_exit=0`）、外へ出ないことは `run/17.log`（`unshare -rn` の中で9つの `node` コマンドが exit=0、外への fetch は `EAI_AGAIN`）。API は呼ばない（`needs_api_key: false`、43行目） |
-| G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている。料金の目安がある。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 412〜426行目に出典の表（9件、題名、URL、確認日 2026-10-31）。断定した文は（出典n）で表を引く（`sources.md` に文ごとの対応、実行ログと計算を根拠にした文は後半の表）。料金は 393〜397行目で、記事の手順は無料（依存なし、ネットワークも使わない、`run/17.log`）、プロンプトを Claude に送ると料金がかかり、Claude Haiku 5.5 は 100万トークンあたり入力 $0.10、出力 $0.50（10万トークン以下のプロンプト、出典9）。送る処理は実行していないので「無料」とは書いていない。frontmatter 9〜11行目の `cost_estimate`、`run_environment: "Node.js 22.22.0（ICU 77.1）、依存パッケージなし"`（`run/*.log` の見出し `node: v22.22.0`、`icu: 77.1`、`code/package.json` に依存なし）、`verified_at: "2026-10-31"`（最後の実行 `run/17.log` の日付） |
-| G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | `content/articles/` の frontmatter を全件読んだ（6本、`selection.md` に列挙）。main_keyword「RAG」の記事は無く、RAG の検索部分を BM25 で作る方法に答える記事は無い |
-| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | リンクは本文にある。前: 53行目 `/posts/structured-output-methods-compare`（frontmatter 12行目 `prev`）。次: 410行目 `/posts/rag-chunking-japanese-text`（13行目 `next`）。どちらも `content/plan.md` の並び（#10、#12）による計画上の slug で、パスは既存の原稿と同じ `/posts/<slug>` にした。2本とも `content/articles/` に原稿が無く、公開も予約もされていない。今この記事を公開すると2本ともリンク切れになる。既存の原稿6本はどれも `status: draft`（`publish_at: null`）で、公開済みか予約済みの記事は0本なので、関連記事への内部リンク（3本以上のとき）は対象外。リンク先の slug: `structured-output-methods-compare`、`rag-chunking-japanese-text` |
-| G08 | 本文の最後の段落が「AI 支援で執筆」を含む決まった表記になっている | 原稿の末尾 | OK | 428行目「AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。」。日付は最後の実行（`run/17.log`）と同じ |
-| G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 原稿と `logs/rag-bm25-search-typescript/` 全体（この gate.md を書く前）に `ANTHROPIC`、`sk-ant`、`token`、`password`、`secret`、`api_key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を大文字小文字を区別せず Python でかけた。該当は、出典の URL のドメイン `anthropic.com`、`selection.md` の環境変数の名前と `unset` の記録、関数名 `tokenize` とファイル名 `show-tokens.ts`、FAQ の id `password`、frontmatter の `needs_api_key`、`code/README.md` の作業場所の説明（scratchpad の語だけで、パスは無い）。値としての API キーやトークンは0件（コードはキーを使わない）。ログの作業フォルダのパスは `run.sh` が `/path/to` に置き換えた。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分、名前の各語とメールのローカル部と数字の ID）、ユーザーのメールアドレスのローカル部、ユーザーの GitHub アカウント名、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）を1語ずつかけ、すべて0件 |
+| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | `lint/check-code-and-outputs.txt`（ALL OK）: 記事のコード7つ（`package.json`、`tokenize.ts`、`show-tokens.ts`、`bm25.ts`、`docs.ts`、`search.ts`、`context.ts`）が `code/` と1文字も違わず、記事のコマンド10個が記事にあり、ログのコマンドと引数が同じで、記事の実行結果9つが `run/` から機械的に取り出したものと一致。実行は `run/01.log`〜`14.log`（2026-11-10 06:52 UTC、node v22.22.0、ICU 77.1、記事の手順の順。2026-10-31 の実行を上書き）。`check-code-and-outputs.txt` も 2026-11-10 に実行し直した。一致した語の確認は `run/15.log`、型は `run/16.log`（tsc 7.0.2、`tsc_exit=0`）、外へ出ないことは `run/17.log`（`unshare -rn` の中で9つの `node` コマンドが exit=0、外への fetch は `EAI_AGAIN`）。API は呼ばない（`needs_api_key: false`、43行目） |
+| G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている。料金の目安がある。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 412〜426行目に出典の表（9件、題名、URL、確認日 2026-10-31）。断定した文は（出典n）で表を引く（`sources.md` に文ごとの対応、実行ログと計算を根拠にした文は後半の表）。料金は 393〜397行目で、記事の手順は無料（依存なし、ネットワークも使わない、`run/17.log`）、プロンプトを Claude に送ると料金がかかり、Claude Haiku 5.5 は 100万トークンあたり入力 $0.10、出力 $0.50（10万トークン以下のプロンプト、出典9）。送る処理は実行していないので「無料」とは書いていない。frontmatter 9〜11行目の `cost_estimate`、`run_environment: "Node.js 22.22.0（ICU 77.1）、依存パッケージなし"`（`run/*.log` の見出し `node: v22.22.0`、`icu: 77.1`、`code/package.json` に依存なし）、`verified_at: "2026-11-10"`（最後の実行 `run/17.log` の日付）。出典の確認日は 2026-10-31 のまま（出典は読み直していない） |
+| G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | 2026-11-10 に `content/articles/` の frontmatter を全件読み直した（この記事のほかに17本、`selection.md` に列挙。初回の判定は6本だけを見ていた）。RAG の検索に触れる4本の検索意図は、`rag-chunking-japanese-text` がチャンク分け、`rag-local-embeddings-transformers-js` が埋め込みのベクトル検索、`rag-hybrid-search-rrf` が RRF で2つの検索を合わせること、`rag-retrieval-eval-recall-mrr` が検索器の採点。`rag-hybrid-search-rrf` は `tokenize.ts` と `bm25.ts` を再掲するが、132行目で BM25 の式の意味をこの記事に任せている。RAG の検索部分を BM25 で作る方法に答える記事はこの記事だけ |
+| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | リンクは本文にある。前: 53行目 `/posts/structured-output-methods-compare`（frontmatter 12行目 `prev`）。次: 410行目 `/posts/rag-chunking-japanese-text`（13行目 `next`）。パスは既存の原稿と同じ `/posts/<slug>`。2026-11-10 に確かめたリンク先の状態は次のとおり。前の `structured-output-methods-compare` は `content/articles/` に原稿が無く、公開も予約もされていない。次の `rag-chunking-japanese-text` は原稿があるが、`status: draft`、`publish_at: null` で、公開も予約もされていない（12行目 `prev` はこの記事、58行目でこの記事へリンク）。今この記事を公開すると2本ともリンク切れになるので NG。`content/articles/` の18本はすべて `status: draft`、`publish_at: null` で、公開済みか予約済みの記事は0本。関連記事への内部リンク（3本以上のとき）は対象外。リンク先の slug: `structured-output-methods-compare`、`rag-chunking-japanese-text` |
+| G08 | 本文の最後の段落が「AI 支援で執筆」を含む決まった表記になっている | 原稿の末尾 | OK | 428行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。日付は最後の実行（`run/17.log`）と同じ |
+| G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 原稿と `logs/rag-bm25-search-typescript/` 全体（この gate.md を書く前）に `ANTHROPIC`、`sk-ant`、`token`、`password`、`secret`、`api_key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を大文字小文字を区別せず Python でかけた。該当は、出典の URL のドメイン `anthropic.com`、`selection.md` の環境変数の名前と `unset` の記録、関数名 `tokenize` とファイル名 `show-tokens.ts`、FAQ の id `password`、frontmatter の `needs_api_key`、`code/README.md` の作業場所の説明（scratchpad の語だけで、パスは無い）。値としての API キーやトークンは0件（コードはキーを使わない）。ログの作業フォルダのパスは `run.sh` が `/path/to` に置き換えた。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分、名前の各語とメールのローカル部と数字の ID）、ユーザーのメールアドレスのローカル部、ユーザーの GitHub アカウント名、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）を1語ずつかけ、すべて0件。2026-11-10 の再判定: 原稿の変更は文を1つ削っただけで、語を足していない。上書きした `run/` のログと `lint/` の出力を含む `logs/rag-bm25-search-typescript/` と原稿に、`sk-ant`、`password`、`secret`、`api_key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を大文字小文字を区別せず `grep -rli` でかけた。新しく出たのは `run/15.log` の FAQ の id `password` だけ。`sk-ant-`、`/tmp/claude`、`/home/user` は、この gate.md の検索語の一覧を除いて0件 |
 | G10 | `target_query` が `keywords/*.csv` のどれかの行のキーワードと1文字も違わない。CSV が無いとき、null のとき、CSV に無い値のときは不合格（「CSV 待ち」） | `selection.md` | NG | `keywords/` に CSV が無い（README.md だけ）。`target_query` は null（7行目）。値は作っていない。CSV が届くまで下書きのまま止める |
 
 ## B. checklist.md の全項目（原文のまま）
@@ -34,7 +48,7 @@
 |---|---|---|---|---|
 | C01 | 設計（→ 01-seo-for-dev-blogs.md） | 「誰の、どんな検索に答える記事か」が1行で言える | OK | guides/01 冒頭の原則と §1。`brief.md` の C01 の1行（TypeScript の経験があり RAG を組み始めた人が、RAG の検索部分を API キーなしで BM25 で書く方法を検索したときに答える）。検索語そのものは G10 のとおり未確定 |
 | C02 | 設計（→ 01-seo-for-dev-blogs.md） | タイトルにキーワードが含まれ、具体的（「徹底解説」「完全ガイド」を使っていない） | OK | guides/01 §3「タイトルの作り方」。2行目「RAG の検索部分を BM25 で作る【TypeScript、API キーなしで動く】」。講座のキーワード「RAG」を先頭に置き、「BM25」「TypeScript」「API キーなし」で具体にした。タイトルはワークフローの指示で与えられたもの。「徹底解説」「完全ガイド」は0件 |
-| C03 | 設計（→ 01-seo-for-dev-blogs.md） | リード文の3行で「何が解決するか」が伝わる | OK | guides/01 §3「リード文が最重要」。49行目の3文で、解決すること（API キーも依存パッケージも使わずに RAG の検索部分を書ける）、方法（`Intl.Segmenter` で語に分けて BM25 の式でスコアを付ける）、載せる結果（FAQ 8件での実際のスコアと、答えの文書が出てこない例）を示した |
+| C03 | 設計（→ 01-seo-for-dev-blogs.md） | リード文の3行で「何が解決するか」が伝わる | OK | guides/01 §3「リード文が最重要」。49行目の3文で、解決すること（API キーも依存パッケージも使わずに RAG の検索部分を書ける）、方法（`Intl.Segmenter` で語に分けて BM25 の式でスコアを付ける）、載せる結果（FAQ 8件での実際のスコアと、答えの文書が出てこない例）を示した。2026-11-10 に51行目の「手順は20分ほどで終わります。」を削った。51行目は対象読者の1文になり、49行目の3文はそのまま |
 | C04 | 設計（→ 01-seo-for-dev-blogs.md） | 検索意図のタイプ（やり方/エラー/比較/概念）に構成が合っている | OK | guides/01 §1 の表でやり方に合うのはチュートリアルか解説。guides/02 タイプ1 を原本で読み、要素ごとに照合した（`brief.md` の表）。リード（49〜51行目）→ 前提（82行目）→ 手順（105、161、215、332行目、各コードと実行結果）→ ハマりどころ（278、298行目）→ 確認（399行目）と次の記事（410行目） |
 | C05 | 構成（→ 02-article-structures.md） | 結論先行になっている（答え → 理由 → 詳細） | OK | guides/02 共通の原則1。リード（49行目）の1文目が答え。最初の H2（55行目）は見出し自体が BM25 のやること（質問の語を含む文書にスコアを付けて並べる）で、式と既定値が続く。手順の詳細はその後 |
 | C06 | 構成（→ 02-article-structures.md） | 1見出し1トピック。見出しを読むだけで流れがわかる | OK | guides/02 共通の原則2。H2 は 55（BM25 がやること）、82（準備）、105（日本語を語に分ける）、161（スコアの関数）、215（FAQ に質問を投げる）、278（語が一致しない質問）、298（b と長い文書）、332（プロンプトにする）、393（料金）、399（確認）、412（出典）。H3 は無い |
@@ -47,24 +61,24 @@
 | C13 | AI臭（→ 03-anti-ai.md） | 章境界アナウンス（ここから〜/ここまで〜してきました/次は〜）が無い | OK | guides/03 症状⑫。「ここから」「ここまで」「次は」「次の節」は0件（PAT。「ここまでの実行結果」は途中の版で直した）。「次の式」（59行目）「次のとおり」（322行目）「次の4つ」（401行目）は直後の内容を指す語。410行目「講座の次の記事」はスキルが求める講座の前後リンク |
 | C14 | AI臭（→ 03-anti-ai.md） | テンプレ比喩（地図/土台/車の両輪/潤滑油/スパイス…）を使っていない | OK | guides/03 症状⑬の一覧。ai-smell-lint の⑬0件。比喩は使っていない。73行目「頭打ち」は飽和（出典3 の saturation）を言う慣用の和語で、一覧の語に当たらない |
 | C15 | AI臭（→ 03-anti-ai.md） | 「〜じゃない。〜だ。」の対比構文が1記事に2回以上出ていない | OK | guides/03 症状⑧、guides/08 B-1。writing-lint の B-1 0回、ai-smell-lint の⑧0件、PAT の「ではな」「じゃな」「ではありません」0件 |
-| C16 | AI臭（→ 03-anti-ai.md） | 文長に緩急がある（短文と長文が混ざっている） | OK | guides/03 不在4。`prose-check.txt` で地の文と frontmatter の文長が9〜60字、20字以下10文、41〜60字51文。例 88行目「作業フォルダを作って移動します。」、280行目「BM25 は、質問と同じ語を含む文書しか見つけられません。」の短文の前後に長い説明が続く |
+| C16 | AI臭（→ 03-anti-ai.md） | 文長に緩急がある（短文と長文が混ざっている） | OK | guides/03 不在4。`prose-check.txt` で地の文と frontmatter の文長が9〜60字、20字以下9文、41〜60字51文（2026-11-10 の `prose-check.txt`。削った「手順は20分ほどで終わります。」の分だけ短文が1つ減った）。例 88行目「作業フォルダを作って移動します。」、280行目「BM25 は、質問と同じ語を含む文書しか見つけられません。」の短文の前後に長い説明が続く |
 | C17 | AI臭（→ 03-anti-ai.md） | 同じ語尾が3回以上連続していない | OK | guides/03 症状⑥と語尾の反復チェック。`prose-check.txt` の SAME3 0 |
 | C18 | AI臭（→ 03-anti-ai.md） | 一文を短くしすぎて主語・目的語を削っていない（ブツ切り回避） | OK | guides/03 症状⑮（目視）。地の文を読み、主語か目的語が抜けて意味が取れない文が無いことを確かめた。60字に収めるために分けた文も「`k1` の既定値は、Lucene と Elasticsearch のどちらも 1.2 です（出典3、出典4）。`b` の既定値は、どちらも 0.75 です（出典3、出典4）。」（78行目）のように主語を残した |
 | C19 | AI臭（→ 03-anti-ai.md） | ですます/である調が統一されている（常体落ちが無い） | OK | guides/03 症状⑮、guides/05 §7。地の文の文末を Python で調べ、ですます以外は0件（`judgments.md` の「文末の調査」）。表のセル（「その語が文書に出た回数」など）と箇条書きの「〜か」は guides/05 §7 の例外 |
 | C20 | コロケーション（→ 04-collocation.md） | 「課題・問題・エラー・目標・効果」に付く動詞が正しい | OK | guides/04「動詞と目的語のミスマッチ」。「課題」「問題」「目標」「効果」は0件。「エラー」は「エラーコードのような文字列」（296行目）だけで、動詞を取らない |
 | C21 | コロケーション（→ 04-collocation.md） | 漢語サ変動詞の助詞（が/を）が合っている（速度が向上する／速度を向上させる） | OK | guides/04「自動詞・他動詞の取り違え」。サ変動詞は「実行します」「保存します」「一致しません」「計算しても」「確認」。「`.ts` のファイルを…実行します」「文書の「使えます」は質問の「使える」と一致しない」は他動詞に を、自動詞に が／は／と で、取り違えなし（目視） |
 | C22 | コロケーション（→ 04-collocation.md） | 形容詞と名詞が合っている（理解は深い、精度は高い） | OK | guides/04「形容詞・連体修飾と名詞のミスマッチ」。形容詞は「長い文書」「短い `returns`」「大きく」（`idf` が）「広く正確」（検索結果が）程度で、表の誤用なし（目視） |
-| C23 | コロケーション（→ 04-collocation.md） | 重言が無い（まず最初に／throwを投げる／約〜程度） | OK | guides/04「重言」。「まず最初に」なし。「約 0.057」「約 1.281」「約 0.915」は「約」だけで「程度」と重ねていない。「20分ほど」も「約」と重ねていない |
+| C23 | コロケーション（→ 04-collocation.md） | 重言が無い（まず最初に／throwを投げる／約〜程度） | OK | guides/04「重言」。「まず最初に」なし。「約 0.057」「約 1.281」「約 0.915」は「約」だけで「程度」と重ねていない |
 | C24 | コロケーション（→ 04-collocation.md） | 翻訳調が無い（影響を作る → 影響を与える） | OK | guides/04「翻訳調」。「〜を作る（make）」「〜を持っている（have）」型なし（目視）。「関数を作ります」（163行目）「プロンプトの文字列を作る」（334行目）は実際にコードと値を作る技術的な記述 |
-| C25 | 正確さ（→ 05-technical-writing.md） | 60字超の長文を分割した | OK | guides/05 §1「文の長さ」。`prose-check.txt` で60字超 0（最長60字）。途中の版の9文と表のセル1つを分けた（`judgments.md`）。インラインコード、Markdown のリンク（URL を含む）、（出典n）も1字ずつ数え、見出し、表のセル、箇条書き、frontmatter の文字列も数えた。除外はコードブロックと URL だけのセル（件数は `prose-check.txt` 2行目） |
+| C25 | 正確さ（→ 05-technical-writing.md） | 60字超の長文を分割した | OK | guides/05 §1「文の長さ」。`prose-check.txt` で60字超 0（最長60字）。途中の版の9文と表のセル1つを分けた（`judgments.md`）。インラインコード、Markdown のリンク（URL を含む）、（出典n）も1字ずつ数え、見出し、表のセル、箇条書き、frontmatter の文字列も数えた。除外はコードブロックと URL だけのセル（件数は `prose-check.txt` 2行目）。2026-11-10 に `prose-check.py` を実行し直し、`LONG>60: 0`、最長60字 |
 | C26 | 正確さ（→ 05-technical-writing.md） | 用語が記事全体で統一されている | OK | guides/05 §4「用語の統一」と §7。「語」（109行目で `Intl.Segmenter` の区切りを語と呼ぶと定義。`isWordLike` と境目の説明だけ仕様の言い方に合わせて「単語」）、「文書」（「ドキュメント」は0件）、「質問」、「スコア」（「点数」は0件）、「作業フォルダ」（「ディレクトリ」0件）、「バージョン」（「版」0件）。「資料」はプロンプトの文面の語で、プロンプトに入る文書を指す箇所（389、391行目）だけで使った。半角と全角の間には空白 |
-| C27 | 正確さ（→ 05-technical-writing.md） | 数量・期間が具体的な数値（早めに → 1週間以内に） | OK | guides/05 §4「曖昧表現の具体化」。8件、1.2、0.75、0.5〜0.8、1.2〜2、22.18.0、20分ほど、3倍以上、3回、0.040、0.057、219、27.375、22語、83語、0.1、0.318、9つ、`$0.10`、`$0.50`、10万トークン、100万トークン。「数個」「早めに」型なし |
+| C27 | 正確さ（→ 05-technical-writing.md） | 数量・期間が具体的な数値（早めに → 1週間以内に） | OK | guides/05 §4「曖昧表現の具体化」。8件、1.2、0.75、0.5〜0.8、1.2〜2、22.18.0、3倍以上、3回、0.040、0.057、219、27.375、22語、83語、0.1、0.318、9つ、`$0.10`、`$0.50`、10万トークン、100万トークン。「数個」「早めに」型なし。51行目の「20分ほど」は、測った記録が無いので 2026-11-10 に文ごと削った（具体的な数値でも、確かめられない数値は書かない） |
 | C28 | 正確さ（→ 05-technical-writing.md） | AND/ORが明確（「AやB」で曖昧にしていない） | OK | guides/05 §4「AND/ORの明確化」。並列の「や」は0件（`prose-check.txt` の YA 2件は「ために」「しやすい」の一部）。AND は「Lucene と Elasticsearch のどちらも」（78行目）「ポイントと送料と配送日数の文」（391行目）、箇条書きは「次の4つをすべて」（401行目）。OR は「同義語の表を作って埋めますか。それとも埋め込みの検索を足しますか。」（408行目） |
 | C29 | 正確さ（→ 05-technical-writing.md） | ですます/である調が混在していない | OK | guides/05 §7。C19 と同じ文末の調査で、ですます調だけ |
 | C30 | 記号（→ 03-anti-ai.md） | `**太字**` のアスタリスク残りが無い（コードブロック外） | OK | guides/03 記号NG。`prose-check.txt` の PAT `**` 0件（コードブロックの外） |
 | C31 | 記号（→ 03-anti-ai.md） | `—`（em-dash）`──`（罫線）を使っていない | OK | guides/03 記号NG。`—`、`─`、`―` 0件（PAT）、writing-lint B-5 0回 |
 | C32 | 記号（→ 03-anti-ai.md） | `：`+半角スペース、`／`での概念並列を使っていない | OK | guides/03 記号NG。`： `、`：`、`／` は0件（PAT）。コードブロック内のプロンプトの `質問: ` は対象外 |
-| C33 | 機械チェック | `python3 scripts/ai-smell-lint.py 記事.md` を実行し、FATALがゼロ | OK | スキル手順7のコマンド（`python3 docs/tech-writing-pack/scripts/ai-smell-lint.py content/articles/rag-bm25-search-typescript.md > logs/rag-bm25-search-typescript/lint/ai-smell.txt 2>&1; echo "exit=$?" >> …`）で、428行の版に FATAL 0、`exit=0` |
+| C33 | 機械チェック | `python3 scripts/ai-smell-lint.py 記事.md` を実行し、FATALがゼロ | OK | スキル手順7のコマンド（`python3 docs/tech-writing-pack/scripts/ai-smell-lint.py content/articles/rag-bm25-search-typescript.md > logs/rag-bm25-search-typescript/lint/ai-smell.txt 2>&1; echo "exit=$?" >> …`）で、428行の版（2026-11-10）に FATAL 0、`exit=0` |
 | C34 | 機械チェック | warnは目視で要否を判断した | OK | guides/03「lint との関係」。warn 0件で判断の対象なし（`lint/judgments.md`） |
 | C35 | 機械チェック | FATAL/warnが「自分が使っている(use)」か「悪い例の引用(📎mention)」かを確認した（引用なら合格） | OK | guides/03「引用（mention）と使用（use）の区別」。FATAL、warn、mention がすべて0件で、区別が要る検出なし |
 | C36 | 機械チェック | 悪い例を引用したときは、引用符でくくり・悪い例と明示し・直後に直し方を置いた | OK | guides/03「悪い例を引用するときの書き方」。文章の悪い例は引用していない。うまくいかない検索の例（「返金はいつ？」、278〜296行目）は、答えの文書が出てこない例だと見出しで明示し、原因（「は」だけが一致、`idf` 約 0.057）と対処（埋め込みの検索を足す、下限を置く）を直後に置いた |
@@ -80,4 +94,4 @@
 
 ## 結論
 
-G07（前後リンクの先が未公開）と G10（CSV 待ち）に落ちたので、`status: draft` のまま止める。G07 は前後の記事（`structured-output-methods-compare`、`rag-chunking-japanese-text`）が公開か予約されれば通る。G10 はラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば通る。どちらも、この記事の原稿を直しても解消しない。
+G07（前後リンクの先が未公開）と G10（CSV 待ち）に落ちたので、`status: draft` のまま止める。G07 は、前の記事 `structured-output-methods-compare`（原稿がまだ無い）と、次の記事 `rag-chunking-japanese-text`（原稿は下書き、未予約）が、この記事より前に公開か予約されれば通る。G10 はラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば通る。どちらも、この記事の原稿を直しても解消しない。

@@ -1,4 +1,4 @@
-date: 2026-10-31T08:55:03+00:00
+date: 2026-11-10T06:35:46+00:00
 cwd: (作業フォルダ retry-mock)
 node: v22.22.0 / npm: 10.9.4
 note: ターミナル1。モックサーバーを起動したまま、04〜09 のクライアントを順に実行し、最後に Ctrl+C の代わりに SIGINT で止めた
@@ -7,22 +7,22 @@ command: node server.ts
 mock API: http://127.0.0.1:4010
 rate-limit #1 +0ms -> 429
 rate-limit #2 +1012ms -> 429
-rate-limit #3 +2018ms -> 200
+rate-limit #3 +2017ms -> 200
 overloaded #1 +0ms -> 529
-overloaded #2 +394ms -> 529
-overloaded #3 +1251ms -> 529
+overloaded #2 +464ms -> 529
+overloaded #3 +1452ms -> 529
 bad-request #1 +0ms -> 400
 spend-cap #1 +0ms -> 429
-spend-cap #2 +444ms -> 429
-spend-cap #3 +1276ms -> 429
+spend-cap #2 +464ms -> 429
+spend-cap #3 +1308ms -> 429
 long-wait #1 +0ms -> 429
 my-loop #1 +0ms -> 529
-my-loop #2 +499ms -> 529
-my-loop #3 +1477ms -> 529
-my-loop #4 +2485ms -> 529
-my-loop #5 +2869ms -> 529
-my-loop #6 +3760ms -> 529
-my-loop #7 +4765ms -> 529
-my-loop #8 +5152ms -> 529
-my-loop #9 +5982ms -> 529
+my-loop #2 +402ms -> 529
+my-loop #3 +1171ms -> 529
+my-loop #4 +2177ms -> 529
+my-loop #5 +2673ms -> 529
+my-loop #6 +3555ms -> 529
+my-loop #7 +4559ms -> 529
+my-loop #8 +5017ms -> 529
+my-loop #9 +5825ms -> 529
 ----- exit=130 -----

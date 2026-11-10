@@ -1,4 +1,4 @@
-## writing-lint v2: llm-api-cost-estimate-js-tiktoken.md (type=article, register=standard, 326行/181文)
+## writing-lint v2: llm-api-cost-estimate-js-tiktoken.md (type=article, register=standard, 324行/179文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

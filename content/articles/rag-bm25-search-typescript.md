@@ -8,7 +8,7 @@ target_query: null
 course_step: 3
 cost_estimate: "記事のコードは Node.js の組み込み機能だけで動き、API を呼ばないので無料です。検索結果を Claude に渡して回答させると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0（ICU 77.1）、依存パッケージなし"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "structured-output-methods-compare"
 next: "rag-chunking-japanese-text"
 sources:
@@ -43,12 +43,12 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 RAG の検索部分は、BM25 なら API キーも依存パッケージも使わずに TypeScript で書けます。日本語は Node.js に組み込みの `Intl.Segmenter` で語に分け、BM25 の式でスコアを付けます。架空のネットショップの FAQ 8件に質問を投げ、実際に出たスコアと、答えの文書が出てこない質問の例まで載せます。
 
-対象は、TypeScript で何か作ったことがあり、RAG を自分で組んでみたい人です。手順は20分ほどで終わります。
+対象は、TypeScript で何か作ったことがあり、RAG を自分で組んでみたい人です。
 
 講座はこの記事から RAG に入ります。[前の記事](/posts/structured-output-methods-compare)は構造化出力の比較です。
 
@@ -425,4 +425,4 @@ node context.ts "返金はいつ？"
 | 8 | String.prototype.normalize()（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize | 2026-10-31 |
 | 9 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | 2026-10-31 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

@@ -8,7 +8,7 @@ target_query: null
 course_step: 1
 cost_estimate: "記事の手順は外部に通信しないので無料です。本物の API に送ると、トークン数に応じた料金がかかります。"
 run_environment: "Node.js 22.22.0、@anthropic-ai/sdk 1.3.0"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "llm-api-cost-estimate-js-tiktoken"
 next: "claude-api-authentication-error"
 sources:
@@ -40,20 +40,22 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 Claude API の 429 は組織のレート制限、529 は API 全体の混雑を表すエラーです（出典1）。公式の TypeScript SDK は、どちらも既定で2回まで自動でリトライします（出典3）。自分でリトライのループを書く必要はなく、SDK が諦めたあとのエラーだけを受け取れば足ります。
 
 この記事では、SDK の `baseURL` を手元のモックサーバーに向けて、429 と 529 を返させました。キーにはダミーの文字列を渡すので、リクエストは手元の外に出ません。リトライの回数と間隔は、サーバーが受け取った時刻のログで確かめています。
 
-対象は、JS か TypeScript で何か作ったことがあり、LLM の API をこれから組み込む人です。講座の前の記事は「[料金の見積もり](/llm-api-cost-estimate-js-tiktoken)」です。
+対象は、JS か TypeScript で何か作ったことがあり、LLM の API をこれから組み込む人です。講座の前の記事では、リクエストの前に料金を見積もりました。この記事は[前の記事](/posts/llm-api-cost-estimate-js-tiktoken)の続きです。
 
 ## 結論は自前のリトライを外して maxRetries に任せること
 
 直すのは、SDK の呼び出しを包む自前のループです。SDK の中でも2回リトライするので、送る回数が掛け算で増えます。
 
-変更前のコードは、529 が返ったら1秒待って3回まで呼び直す `my-loop.ts` です。
+変更前のコードは、エラーの種類を見ずに、失敗するたびに1秒待って呼び直す `my-loop.ts` です。呼ぶのは最初の1回を含めて3回までで、3回目の失敗のあとも1秒待ってから終わります。
+
+送り先の `127.0.0.1:4010` は、手元で動かすモックサーバーです。作り方と動かし方は、後の「モックサーバーで SDK 1.3.0 のリトライを確かめる」に書きました。
 
 ```ts
 import Anthropic from "@anthropic-ai/sdk";
@@ -90,14 +92,14 @@ attempt 3 failed: 529 {"type":"error","error":{"type":"overloaded_error","messag
 
 ```text
 my-loop #1 +0ms -> 529
-my-loop #2 +499ms -> 529
-my-loop #3 +1477ms -> 529
-my-loop #4 +2485ms -> 529
-my-loop #5 +2869ms -> 529
-my-loop #6 +3760ms -> 529
-my-loop #7 +4765ms -> 529
-my-loop #8 +5152ms -> 529
-my-loop #9 +5982ms -> 529
+my-loop #2 +402ms -> 529
+my-loop #3 +1171ms -> 529
+my-loop #4 +2177ms -> 529
+my-loop #5 +2673ms -> 529
+my-loop #6 +3555ms -> 529
+my-loop #7 +4559ms -> 529
+my-loop #8 +5017ms -> 529
+my-loop #9 +5825ms -> 529
 ```
 
 自前の1回ごとに、SDK が最初の送信と2回のリトライで3回送っています。3回のループで、合わせて9回です。混雑している API に、6秒で9回送ったことになります。
@@ -257,7 +259,7 @@ npm install
 ```
 
 ```text
-added 8 packages, and audited 9 packages in 3s
+added 8 packages, and audited 9 packages in 2s
 
 found 0 vulnerabilities
 ```
@@ -284,19 +286,19 @@ node client.ts long-wait
 
 ```text
 $ node client.ts rate-limit
-ok (2070ms): { type: 'text', text: 'mock: ok' }
+ok (2074ms): { type: 'text', text: 'mock: ok' }
 
 $ node client.ts overloaded
-InternalServerError (1306ms): status=529 type=overloaded_error
+InternalServerError (1501ms): status=529 type=overloaded_error
 
 $ node client.ts bad-request
-BadRequestError (63ms): status=400 type=invalid_request_error
+BadRequestError (69ms): status=400 type=invalid_request_error
 
 $ node client.ts spend-cap
-spend cap (1333ms): 来月まで待つか上限を上げる
+spend cap (1369ms): 来月まで待つか上限を上げる
 
 $ node client.ts long-wait
-APIUserAbortError (10003ms): status=undefined type=null
+APIUserAbortError (10004ms): status=undefined type=null
 ```
 
 1つ目のターミナルには、サーバーが受け取ったリクエストが並びます。
@@ -305,14 +307,14 @@ APIUserAbortError (10003ms): status=undefined type=null
 mock API: http://127.0.0.1:4010
 rate-limit #1 +0ms -> 429
 rate-limit #2 +1012ms -> 429
-rate-limit #3 +2018ms -> 200
+rate-limit #3 +2017ms -> 200
 overloaded #1 +0ms -> 529
-overloaded #2 +394ms -> 529
-overloaded #3 +1251ms -> 529
+overloaded #2 +464ms -> 529
+overloaded #3 +1452ms -> 529
 bad-request #1 +0ms -> 400
 spend-cap #1 +0ms -> 429
-spend-cap #2 +444ms -> 429
-spend-cap #3 +1276ms -> 429
+spend-cap #2 +464ms -> 429
+spend-cap #3 +1308ms -> 429
 long-wait #1 +0ms -> 429
 ```
 
@@ -320,13 +322,13 @@ long-wait #1 +0ms -> 429
 
 ### 429 は retry-after の1秒を守って3回目に成功した
 
-`rate-limit` は、2回目まで 429 と `retry-after: 1` を返すシナリオです。3回目は成功を返します。サーバーのログでは、3回のリクエストの間隔が 1012ms と 1006ms でした。
+`rate-limit` は、2回目まで 429 と `retry-after: 1` を返すシナリオです。3回目は成功を返します。サーバーのログでは、3回のリクエストの間隔が 1012ms と 1005ms でした。
 
-SDK は、応答に `retry-after` があれば、その秒数だけ待ってから送り直します（出典4）。クライアントには成功の結果だけが返り、2回の 429 はコードから見えません。429 のたびに自分で待つコードは要らない、と判断しています。
+SDK は、応答に `retry-after` があれば、その秒数だけ待ってから送り直します（出典4）。クライアントには成功の結果だけが返り、2回の 429 はコードから見えません。SDK の中で待つので、アプリのコードに、429 のたびに待つ処理を足す必要はありません。
 
 ### 529 は約0.5秒、約1秒と間隔を倍にして3回で諦めた
 
-`overloaded` のシナリオは、いつも 529 を返します。間隔は 394ms と 857ms で、3回目のあとに `InternalServerError` が投げられました。
+`overloaded` のシナリオは、いつも 529 を返します。間隔は 464ms と 988ms で、3回目のあとに `InternalServerError` が投げられました。
 
 `retry-after` が無いとき、SDK は待ち時間を自分で決めます。最初は0.5秒で、リトライのたびに倍にし、8秒を上限にします（出典4）。そこから最大25%を引いて、待ち時間をばらつかせます（出典4）。1回目は 375〜500ms、2回目は 750〜1000ms の範囲になる計算で、ログの値も収まっています。
 
@@ -350,7 +352,7 @@ SDK が諦めたあとも 429 か 529 が続くなら、次の3つを確かめ�
 
 ### retry-after が長いと SDK はその秒数だけ待ち続ける
 
-1.3.0 の SDK は、`retry-after` が正の値なら、その秒数をそのまま待ちます（出典4）。待ち時間の上限は、タイマーで表せる約24.8日です（出典4）。リクエストごとの `timeout` は、リトライの間の待ち時間を区切りません（出典4）。
+1.3.0 の SDK は、`retry-after` が正の値なら、その秒数をそのまま待ちます（出典4）。ただし、タイマーで表せる 2^31 - 1 ms（約24.9日）を超える値は使いません（出典4）。そのときは `retry-after` が無いときと同じく、0.5秒から倍にしていく待ち時間になります（出典4）。リクエストごとの `timeout` は、リトライの間の待ち時間を区切りません（出典4）。
 
 `long-wait` のシナリオは、`retry-after: 30` を返します。`client.ts` は10秒の `AbortSignal.timeout` を `signal` に渡しています。そのため10秒で `APIUserAbortError` になりました。画面の向こうで人が待っているなら、待てる時間を `signal` で決めておくのが安全です。
 
@@ -378,7 +380,7 @@ API の応答には、毎回 `request-id` ヘッダーが付きます（出典1�
 
 自分のアプリでは、ユーザーを何秒まで待たせますか。
 
-講座の次の記事は「[認証エラーの直し方](/claude-api-authentication-error)」です。
+講座の次の記事では、認証エラーの直し方を扱います。[次の記事](/posts/claude-api-authentication-error)に進んでください。
 
 ## 出典
 
@@ -395,4 +397,4 @@ API の応答には、毎回 `request-id` ヘッダーが付きます（出典1�
 | 7 | Node.js v22 Modules: TypeScript | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-10-31 |
 | 8 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | 2026-10-31 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

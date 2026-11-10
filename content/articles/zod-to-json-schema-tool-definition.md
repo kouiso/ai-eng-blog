@@ -8,7 +8,7 @@ target_query: null
 course_step: 2
 cost_estimate: "記事のコードは API を呼ばないので無料です。作ったツール定義を Claude API に送ると、ツールの名前、説明、スキーマが入力トークンとして料金に数えられます。"
 run_environment: "Node.js 22.22.0、zod 4.6.7、Anthropic SDK 1.3.0、tsc 7.0.2"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "zod-validate-llm-json-output"
 next: "llm-json-parse-error-fix"
 sources:
@@ -48,11 +48,14 @@ sources:
   - url: "https://www.npmjs.com/package/@anthropic-ai/sdk"
     title: "@anthropic-ai/sdk (npm)"
     accessed: 2026-10-31
+  - url: "https://nodejs.org/docs/latest-v23.x/api/typescript.html"
+    title: "Modules: TypeScript | Node.js v23 Documentation"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 Claude API のツール定義に書く `input_schema` は、zod のスキーマから作れます。使うのは zod v4 の `z.toJSONSchema()` です。変換のときに `{ io: "input" }` を渡すと、`.default()` の項目は必須の一覧から外れます。モデルにとっては、省略してよい項目として伝わります。
@@ -61,7 +64,7 @@ Claude API のツール定義に書く `input_schema` は、zod のスキーマ�
 
 確かめたのは、変換と型のチェックと、手で作った見本の検証までです。作った定義を Claude API に送る操作は、API キーが無いので実行していません。API がこの定義をそのまま受け付けるかどうかは、この記事では確かめていません。
 
-対象は、TypeScript で何か作ったことがあり、zod でオブジェクトのスキーマを書いたことがある人です。書き写すコードは7ファイルで、合わせて99行あります。いちばん時間のかかるコマンドは `npm install` で、2026-10-31 の実測では3秒でした。
+対象は、TypeScript で何か作ったことがあり、zod でオブジェクトのスキーマを書いたことがある人です。書き写すコードは7ファイルで、合わせて99行あります。いちばん時間のかかるコマンドは `npm install` で、2026-11-10 の実測では2秒でした。
 
 講座の前の記事は、[zod での検証](/posts/zod-validate-llm-json-output)です。`safeParse` のエラーの読み方は、前の記事に書いています。
 
@@ -77,7 +80,7 @@ Anthropic の TypeScript SDK には、`betaZodTool` という関数もありま�
 
 ## 前提となる環境
 
-Node.js は 22.18.0 以上を使ってください。22.18.0 から、Node.js は `.ts` のファイルの型の部分を取り除いて、そのまま実行します（出典10）。型のチェックはしないので、型は `tsc` で別に確かめます（出典10）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。
+Node.js は、22 系なら 22.18.0 以上、23 系以降なら 23.6.0 以上を使ってください。これらの版から、Node.js は `.ts` のファイルの型の部分を取り除いて実行します（出典10、出典13）。型のチェックはしないので、型は `tsc` で別に確かめます（出典10）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。
 
 | パッケージ | バージョン |
 |---|---|
@@ -170,7 +173,7 @@ npm install
 手元の出力では、脆弱性の警告は0件でした。
 
 ```text
-added 13 packages, and audited 14 packages in 3s
+added 13 packages, and audited 14 packages in 2s
 
 1 package is looking for funding
   run `npm fund` for details
@@ -422,7 +425,7 @@ zod のスキーマ1つから、ツール定義の `input_schema` と、返っ�
 
 ## 出典
 
-確認日は、どれも 2026-10-31 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典13 が 2026-11-10、ほかは 2026-10-31 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
@@ -438,5 +441,6 @@ zod のスキーマ1つから、ツール定義の `input_schema` と、返っ�
 | 10 | Modules: TypeScript（Node.js v22） | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-10-31 |
 | 11 | anthropic-sdk-typescript sdk-v1.3.0 messages.ts | https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/resources/messages/messages.ts | 2026-10-31 |
 | 12 | @anthropic-ai/sdk（npm） | https://www.npmjs.com/package/@anthropic-ai/sdk | 2026-10-31 |
+| 13 | Modules: TypeScript（Node.js v23） | https://nodejs.org/docs/latest-v23.x/api/typescript.html | 2026-11-10 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
