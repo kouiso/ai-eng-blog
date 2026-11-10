@@ -24,3 +24,12 @@
 - course_step 1 と 2 の残り（#1、#2、#5、#6、#10）と course_step 3 の #14（`rag-answer-with-citations-claude`）は、API を呼んで応答を見せる記事で有効なキーが要る。`ANTHROPIC_API_KEY` が unset なので外れる。
 - 計画上の重なりの決め事（`plan.md`「重なりを避けるために決めたこと」と計画表の内部リンク先 11、13）: この記事（#12）は文書をチャンクに分ける処理だけを扱う。BM25 の検索（#11）は作り直さず、前の記事へのリンクにとどめる。埋め込みでのベクトル化と検索（#13 `rag-local-embeddings-transformers-js`）には踏み込まず、次の記事へのリンクにする。
 - CSV が届いたら `target_query` を CSV の行から選び直し、合う行が無ければ差し替える（`plan.md` の前提）。
+
+## 2026-11-10 の再確認（既存記事との重なり）
+
+選んだ日（2026-10-31）の確認は、その時点の7本だけが相手だった。2026-11-10 には `content/articles/` にこの記事のほか17本があるので、frontmatter（`title`、`main_keyword`、`target_query`）を全件読み直し、本文に `grep -c チャンク` をかけた。
+
+- 増えた10本: `ai-agent-safe-file-tool`、`llm-eval-dataset-from-logs`、`llm-eval-harness-fixtures`、`mcp-connection-closed-fix`、`mcp-inspector-debug`、`mcp-server-resources-prompts`、`mcp-server-streamable-http`、`rag-hybrid-search-rrf`、`rag-local-embeddings-transformers-js`、`rag-retrieval-eval-recall-mrr`。
+- main_keyword「RAG」は、`rag-bm25-search-typescript`（BM25 の検索器を作る）、`rag-hybrid-search-rrf`（BM25 とベクトル検索を RRF で合わせる）、`rag-local-embeddings-transformers-js`（FAQ 8件を手元の埋め込みモデルでベクトルにして検索する）の3本。`rag-retrieval-eval-recall-mrr` は main_keyword「LLM 評価」で、検索の結果を Recall@k と MRR で測る記事。
+- 「チャンク」の語は、17本のうち `rag-local-embeddings-transformers-js` の1件（73行目、この記事へ戻るリンクの文）だけで、ほかの16本は0件。`rag-hybrid-search-rrf`（132〜134行目）と `rag-retrieval-eval-recall-mrr`（205行目）の「分け」は、文を `Intl.Segmenter` で語に分ける話で、文書をチャンクに分ける話ではない。
+- 日本語の文書をチャンクに分ける方法（やり方）に答える記事は、この記事のほかに無い。表記ゆれの範囲でも重ならない。17本の `target_query` はすべて null。

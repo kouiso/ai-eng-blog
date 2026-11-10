@@ -41,7 +41,15 @@ output run/27 in article: True
 run/31 (restored) output == run/06 output: True
 run/23 exception text in article: True
 AbortError line in article: True
-run/36: 30 runs, all ok=1, abort=1 in 4: True
+run/36: 30 runs, all ok=1, abort=1 in 3: True
+run/42 (no 405): 30 runs, all ok=1, notfound=2 in 30, abort=1 in 0: True
+run/38: tsc_exit=0 with @types/express: True
+run/47 curl OPTIONS command in article: True
+output run/47 in article: True
+run/47: 405 and no Access-Control-Allow header: True
+run/48: POST with allowed Origin is 200 without Access-Control-Allow-Origin: True
+server.cors-check.ts == server.ts with ALLOWED_ORIGINS = ["http://localhost:5173"]: True
+article names http://localhost:5173 as the ALLOWED_ORIGINS value: True
 run/21, 22: 500 with 0 bytes: True
 run/19: server printed only the start line: True
 run/37: 7 TS7006 errors without @types/express: True
@@ -83,4 +91,16 @@ run 35 exit=130
 run 36 exit=0
 run 37 exit=0
 run 38 exit=0
+run 39 exit=1
+run 40 exit=0
+run 41 exit=130
+run 42 exit=0
+run 43 exit=0
+run 44 exit=1
+run 45 exit=0
+run 46 exit=130
+run 47 exit=0
+run 48 exit=0
+run 49 exit=0
+run 50 exit=0
 ALL OK

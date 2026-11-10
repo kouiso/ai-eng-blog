@@ -1,0 +1,10 @@
+date: 2026-11-10 07:05:48 +0000
+cwd: /path/to/hybrid-search
+node: v22.22.0
+npm: 10.9.4
+command: bash ../code/extra/env-check.sh
+exit: 0
+elapsed: 4 ms
+--- stdout+stderr ---
+HF_TOKEN unset
+HUGGING_FACE_HUB_TOKEN unset

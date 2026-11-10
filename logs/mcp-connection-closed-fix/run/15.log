@@ -1,29 +1,9 @@
-date: 2026-11-02T15:39:36Z
+date: 2026-11-10T07:35:51Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
-claude: 2.1.316 (Claude Code)
-HOME: 使い捨てのフォルダ（ログでは ~）
 command:
-  claude mcp add notes --scope user -- nodee server.ts
-  claude mcp list
-  claude mcp get notes
-  claude mcp remove notes -s user
+  node other-errors.mjs
 --- output (stdout+stderr) ---
-Added stdio MCP server notes with command: nodee server.ts to user config
-File modified: ~/.claude.json
-Checking MCP server health…
-
-notes: nodee server.ts - × Failed to connect — ENOENT: Executable not found in $PATH: "nodee"
-notes:
-  Scope: User config (available in all your projects)
-  Status: × Failed to connect
-  Issue: ENOENT: Executable not found in $PATH: "nodee"
-  Type: stdio
-  Command: nodee
-  Args: server.ts
-  Environment:
-
-To remove this server, run: claude mcp remove notes -s user
-Removed MCP server notes from user config
-File modified: ~/.claude.json
+command not found: spawn nodee ENOENT (0s)
+no response: MCP error -32001: Request timed out (60s)
 --- exit=0

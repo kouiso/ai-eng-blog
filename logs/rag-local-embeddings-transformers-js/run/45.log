@@ -1,0 +1,15 @@
+date: 2026-11-10 07:03:53 +0000
+cwd: /path/to/art-rag-local-embeddings-transformers-js
+node: v22.22.0
+npm: 10.9.4
+command: bash -c mkdir local-embeddings-full && cp code/package.json code/embed.ts code/show-vector.ts code/docs.ts code/vector-search.ts code/search.ts code/count-tokens.ts local-embeddings-full/ && ls local-embeddings-full
+exit: 0
+elapsed: 8 ms
+--- stdout+stderr ---
+count-tokens.ts
+docs.ts
+embed.ts
+package.json
+search.ts
+show-vector.ts
+vector-search.ts

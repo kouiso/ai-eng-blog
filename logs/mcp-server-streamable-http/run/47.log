@@ -1,0 +1,22 @@
+date: 2026-11-10 07:17:23 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: curl -sS -i -X OPTIONS http://127.0.0.1:3000/mcp \
+  -H "Origin: http://localhost:5173" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: content-type"
+exit: 0
+elapsed: 12 ms
+--- stdout+stderr ---
+HTTP/1.1 405 Method Not Allowed
+X-Powered-By: Express
+Allow: POST
+Content-Type: application/json; charset=utf-8
+Content-Length: 83
+ETag: W/"53-qWBZ1FV06PjPTACBvsrFktOcrII"
+Date: Tue, 10 Nov 2026 07:17:23 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}

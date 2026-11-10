@@ -1,58 +1,13 @@
-date: 2026-10-31 14:06:15 +0000
+date: 2026-11-10 07:05:09 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
-command: bash -c "cp ../code/extra/offline-all.sh . && unshare -rn bash offline-all.sh"
+command: node hybrid.ts 返金はいつ？ 0
 exit: 0
-elapsed: 20407 ms
+elapsed: 1995 ms
 --- stdout+stderr ---
-network: EAI_AGAIN
-$ node hybrid.ts 利用限度額
-BM25  : error-e1021(2.685)
-vector: payment(0.837) error-e1021(0.833) shipping-fee(0.822) login(0.810) error-e1020(0.810)
-0.03252 error-e1021 (順位 1 / 2)
-0.01639 payment (順位 - / 1)
-0.01587 shipping-fee (順位 - / 3)
-exit=0
-$ node hybrid.ts 5営業日
-BM25  : cancel(2.395) delivery(1.529) returns(0.565)
-vector: shipping-fee(0.857) cancel(0.856) delivery(0.848) points(0.821) returns(0.816)
-0.03252 cancel (順位 1 / 2)
-0.03200 delivery (順位 2 / 3)
-0.03126 returns (順位 3 / 5)
-exit=0
-$ node hybrid.ts E1021 が出た
-BM25  : error-e1020(1.928) error-e1021(1.296) login(0.578) payment(0.537) points(0.442)
-vector: error-e1021(0.878) error-e1020(0.863) password(0.819) login(0.819) points(0.818)
-0.03252 error-e1020 (順位 1 / 2)
-0.03252 error-e1021 (順位 2 / 1)
-0.03150 login (順位 3 / 4)
-exit=0
-$ node hybrid.ts 届くのが遅い
-BM25  : login(0.673) error-e1020(0.641) payment(0.537) points(0.333) returns(0.109)
-vector: delivery(0.858) shipping-fee(0.847) returns(0.838) points(0.837) cancel(0.837)
-0.03126 returns (順位 5 / 3)
-0.03125 points (順位 4 / 4)
-0.01639 login (順位 1 / -)
-exit=0
-$ node hybrid.ts 届くのが遅い 0.1 1
-BM25  : login(0.673) error-e1020(0.641) payment(0.537) points(0.333) returns(0.109)
-vector: delivery(0.858) shipping-fee(0.847) returns(0.838) points(0.837) cancel(0.837)
-0.50000 login (順位 1 / -)
-0.50000 delivery (順位 - / 1)
-0.41667 returns (順位 5 / 3)
-exit=0
-$ node hybrid.ts 返金はいつ？
-BM25  : 
-vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
-0.01639 returns (順位 - / 1)
-0.01613 cancel (順位 - / 2)
-0.01587 points (順位 - / 3)
-exit=0
-$ node hybrid.ts 返金はいつ？ 0
 BM25  : points(0.032) shipping-fee(0.032) delivery(0.031) returns(0.031) payment(0.028)
 vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
 0.03227 points (順位 1 / 3)
 0.03202 returns (順位 4 / 1)
 0.03126 delivery (順位 3 / 5)
-exit=0

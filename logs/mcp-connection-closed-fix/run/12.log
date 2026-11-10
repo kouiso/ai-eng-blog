@@ -1,26 +1,9 @@
-date: 2026-11-02T15:38:24Z
+date: 2026-11-10T07:35:42Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
-claude: 2.1.316 (Claude Code)
-HOME: 使い捨てのフォルダ（ログでは ~）
 command:
-  claude mcp remove notes -s user
-  claude mcp add notes --scope user -- node "$PWD/server.ts"
-  (cd ~ && claude mcp list)
-  export NOTES_DIR="$PWD/notes"
-  (cd ~ && claude mcp list)
-  claude mcp remove notes -s user
+  echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"manual","version":"0.0.0"}}}' | NOTES_DIR="$PWD/notes" node server.ts
 --- output (stdout+stderr) ---
-Removed MCP server notes from user config
-File modified: ~/.claude.json
-Added stdio MCP server notes with command: node /path/to/notes-mcp/server.ts to user config
-File modified: ~/.claude.json
-Checking MCP server health…
-
-notes: node /path/to/notes-mcp/server.ts - × Failed to connect — CONNECTION_CLOSED: Connection closed
-Checking MCP server health…
-
-notes: node /path/to/notes-mcp/server.ts - √ Connected
-Removed MCP server notes from user config
-File modified: ~/.claude.json
+notes MCP server started (stdio)
+{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"notes","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
 --- exit=0

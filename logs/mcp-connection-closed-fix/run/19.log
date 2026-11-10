@@ -1,0 +1,41 @@
+date: 2026-11-10T07:36:58Z
+cwd: /path/to/notes-mcp
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command:
+  node check.ts node other.ts --flag
+  node check.ts sh -c "exec node other.ts x"
+  FOO=1 node check.ts node envneed.ts
+  node check.ts node config-server.ts
+--- output (stdout+stderr) ---
+ok: {"name":"other","version":"1.0.0"}
+tools: hello
+--- server stderr ---
+other started, args=--flag
+ok: {"name":"other","version":"1.0.0"}
+tools: hello
+--- server stderr ---
+other started, args=x
+ok: {"name":"other","version":"1.0.0"}
+tools: hello
+--- server stderr ---
+other started, args=
+failed: MCP error -32000: Connection closed
+--- server stderr ---
+node:fs:440
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open 'config.json'
+    at readFileSync (node:fs:440:20)
+    at file:///path/to/notes-mcp/config-server.ts:3:27
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'config.json'
+}
+
+Node.js v22.22.0
+--- exit=1

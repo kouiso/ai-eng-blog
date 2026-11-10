@@ -1,9 +1,10 @@
-date: 2026-11-02T15:45:20Z
+date: 2026-11-10T07:39:37Z
 cwd: <work>/llm-eval
 node: v22.22.0 / npm: 10.9.4
-command: node extra/gflag.ts
+command: node extra/boundary.ts
 --- output (stdout+stderr) ---
-1回目: true lastIndex = 5
-2回目: false lastIndex = 0
-3回目: true lastIndex = 5
+" 2026-11-20" true
+"2026-11-20\n" true
+"２０２６-１１-２０" true
+"2026-11-20。" false
 --- exit=0

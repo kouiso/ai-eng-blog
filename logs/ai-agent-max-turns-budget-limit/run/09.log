@@ -1,0 +1,8 @@
+date: 2026-11-10T07:24:31Z
+cwd: <work>/agent-limits
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: grep -n "^Error:" stderr.txt
+--- output (stdout+stderr) ---
+5:Error: Claude Code returned an error result: Reached maximum number of turns (1)
+--- exit=0

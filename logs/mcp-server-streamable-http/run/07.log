@@ -1,4 +1,4 @@
-date: 2026-11-02 15:04:51 +0000
+date: 2026-11-10 07:16:15 +0000
 cwd: /path/to/char-count-http
 node: v22.22.0
 npm: 10.9.4
@@ -8,7 +8,7 @@ command: curl -sS -X POST http://127.0.0.1:3000/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"count_chars","arguments":{"text":"こんにちは"}}}' \
   -w "\nstatus: %{http_code} %{content_type}\n"
 exit: 0
-elapsed: 15 ms
+elapsed: 12 ms
 --- stdout+stderr ---
 event: message
 data: {"result":{"content":[{"type":"text","text":"文字数: 5 / 行数: 1 / UTF-8: 15 バイト"}]},"jsonrpc":"2.0","id":1}

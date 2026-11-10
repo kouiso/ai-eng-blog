@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """記事のコードブロックが code/ のファイルと1文字も違わないこと、記事の実行結果が run/ のログの出力と
-1文字も違わないこと（末尾の改行だけは除く）を確かめる（gate.md の G04、C08 の根拠）。
+1文字も違わないこと（ファイルとログの末尾の改行1つだけを除く。コードブロックの閉じフェンスの前の改行に当たる）を確かめる（gate.md の G04、C08 の根拠）。
 使い方: python3 check-code-and-outputs.py <原稿.md> <logs/<slug>>
 """
 import re
@@ -10,12 +10,16 @@ art, logdir = sys.argv[1], sys.argv[2]
 text = open(art, encoding="utf-8").read()
 blocks = re.findall(r"^```(\w*)\n(.*?)\n```$", text, flags=re.M | re.S)
 
+def strip1(s):
+    # 末尾の改行を1つだけ外す。console.log が足した空行などは残して比べる
+    return s[:-1] if s.endswith("\n") else s
+
 def out(n):
     t = open(f"{logdir}/run/{n}.log", encoding="utf-8").read()
-    return t.split("--- output (stdout+stderr) ---\n", 1)[1].rsplit("--- exit=", 1)[0].rstrip("\n")
+    return strip1(t.split("--- output (stdout+stderr) ---\n", 1)[1].rsplit("--- exit=", 1)[0])
 
 def code(name):
-    return open(f"{logdir}/code/{name}", encoding="utf-8").read().rstrip("\n")
+    return strip1(open(f"{logdir}/code/{name}", encoding="utf-8").read())
 
 # 記事に出てくる順に、期待するもの
 expected = [

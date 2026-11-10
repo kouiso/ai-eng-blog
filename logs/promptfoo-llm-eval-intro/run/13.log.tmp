@@ -1,0 +1,6 @@
+date: 2026-11-10T07:56:56+00:00
+cwd: /tmp/claude-0/-home-user/b32719bc-be5c-5d56-9622-305cb5d25676/scratchpad/art-promptfoo-llm-eval-intro/promptfoo-intro
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ node check-auth.ts; echo "claude-agent-sdk $(npm pkg get version --prefix node_modules/@anthropic-ai/claude-agent-sdk 2>/dev/null)"; npx promptfoo --version
+----

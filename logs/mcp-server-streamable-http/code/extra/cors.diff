@@ -1,0 +1,4 @@
+30c30
+< const ALLOWED_ORIGINS: string[] = [];
+---
+> const ALLOWED_ORIGINS: string[] = ["http://localhost:5173"];

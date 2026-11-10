@@ -8,7 +8,7 @@ target_query: null
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude Code の会話で Resources と Prompts を使うには、Claude Code を使える有料のプランか Console のアカウントが要ります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、zod 4.6.7、Linux x86_64（Inspector の確認は 2.13.0、型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-02"
+verified_at: "2026-11-10"
 prev: "mcp-inspector-debug"
 next: "mcp-connection-closed-fix"
 sources:
@@ -17,7 +17,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://modelcontextprotocol.io/specification/2025-11-25/server/resources"
     title: "MCP Specification 2025-11-25 Resources"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://modelcontextprotocol.io/specification/2025-11-25/server/prompts"
     title: "MCP Specification 2025-11-25 Prompts"
     accessed: 2026-11-02
@@ -26,7 +26,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x"
     title: "typescript-sdk v1.x README"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md"
     title: "typescript-sdk v1.x docs/server.md"
     accessed: 2026-11-02
@@ -41,13 +41,13 @@ sources:
     accessed: 2026-11-02
   - url: "https://www.npmjs.com/package/@modelcontextprotocol/sdk"
     title: "@modelcontextprotocol/sdk (npm)"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://nodejs.org/api/typescript.html"
     title: "Node.js Modules: TypeScript"
     accessed: 2026-11-02
   - url: "https://code.claude.com/docs/en/mcp"
     title: "Connect Claude Code to tools via MCP"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://code.claude.com/docs/en/setup"
     title: "Claude Code Advanced setup"
     accessed: 2026-11-02
@@ -59,7 +59,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://modelcontextprotocol.io/specification/2026-07-28/server"
     title: "MCP Specification 2026-07-28 Server Features Overview"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
     title: "Map (MDN)"
     accessed: 2026-11-02
@@ -70,7 +70,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-02
+updated: 2026-11-10
 ---
 
 MCP サーバーが公開できる機能は、ツールのほかに Resources と Prompts の2つがあります（出典1）。Resources は、クライアントが URI を指定して読み取るデータです（出典2）。Prompts は、ユーザーが選んで使うメッセージのひな形を指します（出典3）。この記事で作るのは、文章のルールを返す Resource と、見直しを頼む Prompt です。
@@ -83,7 +83,7 @@ read: [{"uri":"guide://glossary/prompt","mimeType":"text/plain","text":"ユー�
 
 確かめた範囲は、SDK のクライアントから一覧と取得の要求を送るところまでです。Claude Code の会話で Resources と Prompts を使う操作は、この記事では実行していません。
 
-対象は、MCP サーバーにツールを1つ作ったことがある人です。書き写すファイルは3つで、合わせて117行あります。いちばん待つのは `npm install` で、2026-11-02 の実測では2秒でした。
+対象は、MCP サーバーにツールを1つ作ったことがある人です。書き写すファイルは3つで、合わせて117行あります。いちばん待つのは、Inspector を初めて `npx` で動かすときです。2026-11-10 の実測では、パッケージのダウンロードを含めて12秒でした。`npm install` は3秒です。
 
 [前の記事](/posts/mcp-inspector-debug)では、Inspector でツールを調べました。ツールの作り方は[自作の記事](/posts/mcp-server-typescript-stdio)にあります。
 
@@ -97,9 +97,9 @@ MCP の仕様が3つの機能を分ける基準は、「誰が使うか」です
 | Resources | アプリ | ファイルの中身、git の履歴 |
 | Prompts | ユーザー | スラッシュコマンド、メニューの項目 |
 
-ツールは、呼ぶかどうかをモデルが決めます（出典1）。Resource の場合、会話に添えるかどうかを決めるのはクライアントのアプリです（出典2）。仕様は、ユーザーが一覧から選ぶ画面を例に挙げています（出典2）。Prompt は、ユーザーが自分で選んで使う前提の機能です（出典3）。
+ツールは、呼ぶかどうかをモデルが決めます（出典1）。Resource の場合、会話への取り込み方を決めるのはクライアントのアプリです（出典2）。仕様は、ユーザーが一覧から選ぶ画面を例に挙げています（出典2）。モデルの選択に合わせてアプリが自動で添える実装も、同じく例にあります（出典2）。Prompt は、ユーザーが自分で選んで使う前提の機能です（出典3）。
 
-手元の資料を会話に添えたいだけなら、ツールより Resource が向いています。モデルが呼ぶかどうかに任せず、添えるものを人とアプリが選べるからです。2026-07-28 の仕様でも、この3つの分け方は変わっていません（出典16）。
+手元の資料を会話に添えたいだけなら、ツールより Resource が向いています。Claude Code なら、ユーザーが `@` で選んで添えられるからです（出典12）。Resources を一覧して読むツールも、Claude Code がモデルに自動で用意します（出典12）。モデルが自分で読むときも、読む先は同じ Resource です。2026-07-28 の仕様でも、この3つの分け方は変わっていません（出典16）。
 
 ## 前提となる環境
 
@@ -120,7 +120,9 @@ v22.22.0
 | `@modelcontextprotocol/sdk` | 1.32.2 |
 | `zod` | 4.6.7 |
 
-SDK の版は 1.32.2 で、2026-11-02 の latest です（出典10）。v1 系は、2025-11-25 までの MCP の仕様に対応しています（出典5）。v1 系を選んだ理由は、講座の記事と特典サンプルで版をそろえるためです。
+SDK の版は 1.32.2 で、2026-11-10 の latest です（出典10）。v1 系はメンテナンスの系列で、MCP の仕様は 2025-11-25 の版までを実装しています（出典5）。2026-07-28 の仕様に対応しているのは、現在の安定版の v2 です（出典5）。v1 系で対応する予定はありません（出典5）。
+
+v2 は、別の名前のパッケージで出ています（出典5）。そのため、`@modelcontextprotocol/sdk` の latest は v1 系のままです（出典10）。v1 系にも、v2 のリリース（2026-07-27）から少なくとも6か月はバグとセキュリティの修正が出ます（出典5）。この記事は、講座の記事と特典サンプルで版をそろえるため、v1 系の 1.32.2 を使います。2026-07-28 の仕様の機能を使うときは、README から v2 の移行ガイドを読んでください（出典5）。
 
 作り終えたときのファイル構成は次の形です。`node_modules/` は `npm install` が作ります。
 
@@ -165,7 +167,7 @@ npm install
 
 ```text
 
-added 95 packages, and audited 96 packages in 2s
+added 95 packages, and audited 96 packages in 3s
 
 36 packages are looking for funding
   run `npm fund` for details
@@ -426,27 +428,27 @@ Claude Code は引数を空白で分けるので、1つの引数に空白は入�
 
 ## 出典
 
-確認日は、どれも 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典2、5、10、12、16 が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
 | 1 | MCP Specification 2025-11-25 Server Features Overview | https://modelcontextprotocol.io/specification/2025-11-25/server | 2026-11-02 |
-| 2 | MCP Specification 2025-11-25 Resources | https://modelcontextprotocol.io/specification/2025-11-25/server/resources | 2026-11-02 |
+| 2 | MCP Specification 2025-11-25 Resources | https://modelcontextprotocol.io/specification/2025-11-25/server/resources | 2026-11-10 |
 | 3 | MCP Specification 2025-11-25 Prompts | https://modelcontextprotocol.io/specification/2025-11-25/server/prompts | 2026-11-02 |
 | 4 | MCP Specification 2025-11-25 Schema Reference | https://modelcontextprotocol.io/specification/2025-11-25/schema | 2026-11-02 |
-| 5 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | 2026-11-02 |
+| 5 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | 2026-11-10 |
 | 6 | typescript-sdk v1.x docs/server.md | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md | 2026-11-02 |
 | 7 | typescript-sdk v1.x src/server/mcp.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/mcp.ts | 2026-11-02 |
 | 8 | typescript-sdk v1.x src/shared/protocol.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts | 2026-11-02 |
 | 9 | typescript-sdk v1.x src/types.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts | 2026-11-02 |
-| 10 | @modelcontextprotocol/sdk（npm） | https://www.npmjs.com/package/@modelcontextprotocol/sdk | 2026-11-02 |
+| 10 | @modelcontextprotocol/sdk（npm） | https://www.npmjs.com/package/@modelcontextprotocol/sdk | 2026-11-10 |
 | 11 | Node.js Modules: TypeScript | https://nodejs.org/api/typescript.html | 2026-11-02 |
-| 12 | Connect Claude Code to tools via MCP | https://code.claude.com/docs/en/mcp | 2026-11-02 |
+| 12 | Connect Claude Code to tools via MCP | https://code.claude.com/docs/en/mcp | 2026-11-10 |
 | 13 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 2026-11-02 |
 | 14 | MCP Inspector CLI Client README | https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md | 2026-11-02 |
 | 15 | MCP Specification 2025-11-25 Tools | https://modelcontextprotocol.io/specification/2025-11-25/server/tools | 2026-11-02 |
-| 16 | MCP Specification 2026-07-28 Server Features Overview | https://modelcontextprotocol.io/specification/2026-07-28/server | 2026-11-02 |
+| 16 | MCP Specification 2026-07-28 Server Features Overview | https://modelcontextprotocol.io/specification/2026-07-28/server | 2026-11-10 |
 | 17 | Map（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map | 2026-11-02 |
 | 18 | npm-exec（npm Docs v10） | https://docs.npmjs.com/cli/v10/commands/npm-exec | 2026-11-02 |
 
-AI 支援で執筆しました。コードは 2026-11-02 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

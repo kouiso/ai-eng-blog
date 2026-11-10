@@ -1,4 +1,4 @@
-date: 2026-11-02T15:24:36Z
+date: 2026-11-10T07:23:13Z
 cwd: /path/to/writing-helper-mcp
 node: v22.22.0 / npm: 10.9.4 / arch: x86_64
 command:
@@ -8,3 +8,4 @@ writing-helper MCP server started (stdio)
 resources: [ 'guide://style' ]
 templates: [ 'guide://glossary/{term}' ]
 --- exit=0
+--- elapsed=1s

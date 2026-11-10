@@ -1,0 +1,11 @@
+date: 2026-11-10T07:37:39Z
+cwd: <work>/vs-workflow
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node timing.ts
+--- output (stdout+stderr) ---
+答え: 返金
+duration_ms=5489、duration_api_ms=3135
+query() 全体: 6714ms
+--- exit=0

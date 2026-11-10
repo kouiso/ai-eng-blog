@@ -1,0 +1,49 @@
+blocks in article: 15 / expected: 15
+OK #1: bash cmd 02
+OK #2: text out 02
+OK #3: bash literal literal (128 chars)
+OK #4: text out 04
+OK #5: bash cmd 05
+OK #6: text out 05
+OK #7: markdown code rubric.md
+OK #8: ts code judge.ts
+OK #9: ts code grade.ts
+OK #10: bash cmd 09
+OK #11: text out 09
+OK #12: text literal literal (243 chars)
+OK #13: diff literal literal (120 chars)
+OK #14: markdown code rubric-vague.md
+OK #15: bash cmd 11
+table rows: 5
+OK table a: human=5 detailed=5(run/09 ('5', '5')) vague=5(run/11 ('5', '5'))
+OK table b: human=4 detailed=4(run/09 ('4', '4')) vague=3(run/11 ('4', '3'))
+OK table c: human=3 detailed=3(run/09 ('3', '3')) vague=2(run/11 ('3', '2'))
+OK table d: human=2 detailed=2(run/09 ('2', '2')) vague=3(run/11 ('2', '3'))
+OK table e: human=1 detailed=1(run/09 ('1', '1')) vague=1(run/11 ('1', '1'))
+OK quote run/09: total_cost_usd の合計（見積もり）: 0.0026
+OK quote run/11: 人の採点との一致: 2/5
+OK quote run/11: 返品送料はお客様負担という情報も省略されています
+OK quote run/09:   reason: 該当した規則: 5点。
+OK quote run/10:   reason: 規則5に当てはまります。
+OK quote run/13: tools=["StructuredOutput"]
+OK quote run/13: assistant tool_use name=StructuredOutput
+OK quote run/13: num_turns=2
+OK run/09 と run/10 の点が5件とも同じ: True
+OK run/06 c: human=3 judge=2
+OK run/07 c: human=3 judge=2
+OK run/08 c: human=3 judge=2
+OK run/01.log exit=0 (want 0)
+OK run/02.log exit=0 (want 0)
+OK run/03.log exit=0 (want 0)
+OK run/04.log exit=0 (want 0)
+OK run/05.log exit=0 (want 0)
+OK run/06.log exit=1 (want 1)
+OK run/07.log exit=1 (want 1)
+OK run/08.log exit=1 (want 1)
+OK run/09.log exit=0 (want 0)
+OK run/10.log exit=0 (want 0)
+OK run/11.log exit=1 (want 1)
+OK run/12.log exit=0 (want 0)
+OK run/13.log exit=0 (want 0)
+OK run/14.log exit=0 (want 0)
+ALL OK

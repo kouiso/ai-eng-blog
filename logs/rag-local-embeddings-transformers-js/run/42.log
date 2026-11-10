@@ -1,0 +1,18 @@
+date: 2026-11-10 07:03:17 +0000
+cwd: /path/to/local-embeddings
+node: v22.22.0
+npm: 10.9.4
+command: node count-tokens.ts
+exit: 0
+elapsed: 2921 ms
+--- stdout+stderr ---
+30 returns
+28 cancel
+19 payment
+22 shipping-fee
+26 delivery
+24 password
+26 login
+97 points
+短い文書 30 トークン 0.9863
+長い文書 1165 トークン 1.0000

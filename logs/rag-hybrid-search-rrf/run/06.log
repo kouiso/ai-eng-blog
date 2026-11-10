@@ -1,10 +1,10 @@
-date: 2026-10-31 14:05:26 +0000
+date: 2026-11-10 07:04:40 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
 command: node hybrid.ts 利用限度額
 exit: 0
-elapsed: 4236 ms
+elapsed: 3456 ms
 --- stdout+stderr ---
 BM25  : error-e1021(2.685)
 vector: payment(0.837) error-e1021(0.833) shipping-fee(0.822) login(0.810) error-e1020(0.810)

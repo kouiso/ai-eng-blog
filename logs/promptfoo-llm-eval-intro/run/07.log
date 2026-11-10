@@ -1,0 +1,18 @@
+date: 2026-11-10T07:56:17+00:00
+cwd: <work>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ node show-failures.ts
+----
+--- 指示だけ / 先月の請求額が2回引き落とされています。
+不合格の metric: ラベルだけ (Expected output to match regex "^(billing|bug|other)$")
+出力: "**分類: billing**\n\n理由: 「請求額が2回引き落とされている」は、料金・決済・引き落としに関する問い合わせであるため、請求(billing)に該当します。バグ報告でも一般的な質問でもなく、二重課金という金銭に関わる内容です。"
+--- 指示だけ / 保存ボタンを押すと画面が真っ白になります。
+不合格の metric: ラベルだけ (Expected output to match regex "^(billing|bug|other)$")
+出力: "bug\n\nこの問い合わせは、保存操作の際に画面が真っ白になるという不具合の報告なので「bug」に分類します。"
+--- 指示だけ / 御社のロゴを講演のスライドに使ってもよいですか。
+不合格の metric: ラベルだけ (Expected output to match regex "^(billing|bug|other)$")
+出力: "other\n\nこの問い合わせは、ロゴの使用許可を尋ねるもので、請求(billing)にも不具合(bug)にも当たりません。したがって分類は **other** です。"
+合格 3 / 6
+----
+exit=0

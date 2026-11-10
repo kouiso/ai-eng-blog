@@ -45,6 +45,6 @@ CSV が無く、検索ボリュームの列も無い。Google トレンドも、
 
 ## ANTHROPIC_API_KEY
 
-`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果: unset（2026-11-02）。
+`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果: unset（2026-11-02）。記事を直した 2026-11-10 にも unset。
 
 この記事のコードは LLM の API を呼ばない（SDK のクライアントと Claude Code の `claude mcp` でサーバーを直接起動する）ので、キーが無くても全部を実行できる（`needs_api_key: false`）。

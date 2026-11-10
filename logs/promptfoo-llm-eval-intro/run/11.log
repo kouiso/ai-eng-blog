@@ -1,0 +1,25 @@
+date: 2026-11-10T07:56:33+00:00
+cwd: <work>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ cat package.json
+----
+{
+  "name": "promptfoo-intro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.322",
+    "promptfoo": "0.125.1"
+  }
+}
+----
+exit=0

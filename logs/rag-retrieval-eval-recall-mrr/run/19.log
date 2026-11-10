@@ -1,10 +1,10 @@
-date: 2026-11-02 15:53:04 +0000
+date: 2026-11-10 07:49:43 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
 command: bash -c "node eval.ts 5 | tail -n 4"
 exit: 0
-elapsed: 2474 ms
+elapsed: 2163 ms
 --- stdout+stderr ---
 15問の平均
 bm25    Recall@5 0.933  MRR 0.867

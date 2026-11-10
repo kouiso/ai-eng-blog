@@ -1,4 +1,4 @@
-date: 2026-11-02T15:56:09Z
+date: 2026-11-10T16:45:50+09:00 (JST)
 cwd: <work>/typecheck
 node: v22.22.0 / npm: 10.9.4
 command: npm install --no-save --no-audit --no-fund typescript@7.0.2 @types/node@22.20.5 >/dev/null 2>&1 && npx tsc -v && npx tsc -p tsconfig.json && echo 'tsc: no errors'

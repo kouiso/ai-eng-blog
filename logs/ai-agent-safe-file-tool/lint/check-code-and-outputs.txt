@@ -30,3 +30,4 @@ OK #27: text out 06
 OK one-liner run/07.log command appears verbatim in article
 OK one-liner run/08.log command appears verbatim in article
 ALL OK
+exit=0

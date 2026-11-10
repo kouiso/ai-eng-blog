@@ -1,11 +1,11 @@
-units=197 excluded_url_only_cells=11
+units=198 excluded_url_only_cells=11
 C25 over60=0 max=60
-C16 prose sentences=133 min=12 max=60 le20=7 41to60=59
+C16 prose sentences=134 min=12 max=60 le20=8 41to60=61
 C17 SAME3(3字)=0 []
 C17 SAME3(2字・参考)=0 []
 C19 non-desumasu prose=5
   NON (69, '1. 1行ずつ JSON として読み、読めない行はとばす')
-  NON (70, '2. 低い評価（`bad`）が付いたログを先に、同じ扱いなら新しいログを先に並べる')
+  NON (70, '2. フィードバックが `bad` のログを先に、同じ扱いなら新しいログを先に並べる')
   NON (71, '3. 表記の揺れをそろえたキーで、重複した質問を1件にまとめる')
   NON (72, '4. カテゴリごとの件数を、全体の割合に合わせて決める（どのカテゴリも最低1件）')
   NON (73, '5. メールアドレスを伏せて、`cases.jsonl` に書き出す')

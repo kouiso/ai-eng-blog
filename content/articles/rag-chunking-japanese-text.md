@@ -329,7 +329,7 @@ export function chunkMarkdown(markdown: string, maxChars: number, overlapChars: 
 
 `budget` が0以下になるのは、見出しの並びだけで上限に届く場合です。そのまま進むと `splitLong` の `for` が終わらないので、その前に例外を投げるようにしました。
 
-`chunkSection` は、文を1つずつ足し、`budget` を超える手前でチャンクを閉じます。閉じると `takeTail` が末尾の `overlapChars` 字に収まる文を選び、次のチャンクの頭に置きます。重なりを文の単位で取るので、重なりの部分にも文の切れ端は入りません。
+`chunkSection` は、文を1つずつ足し、`budget` を超える手前でチャンクを閉じます。閉じると `takeTail` で末尾の `overlapChars` 字に収まる文を選び、次のチャンクの頭に置きます。重なりを文の単位で取るので、重なりの部分にも文の切れ端は入りません。
 
 重なりの文と次の文を足すと `budget` を超えることがあります。その場合は、`while` の中で重なりの文を前から捨てます。これで、どのチャンクも上限を超えません。
 

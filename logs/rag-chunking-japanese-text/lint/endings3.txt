@@ -1,0 +1,2 @@
+prose sentences: 151 in 29 runs
+SAME3: 0

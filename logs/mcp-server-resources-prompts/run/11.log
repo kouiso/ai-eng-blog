@@ -1,4 +1,4 @@
-date: 2026-11-02T15:24:51Z
+date: 2026-11-10T07:23:27Z
 cwd: /path/to/writing-helper-mcp
 node: v22.22.0 / npm: 10.9.4 / arch: x86_64
 command:
@@ -6,3 +6,4 @@ command:
 --- output (stdout+stderr) ---
 Version 7.0.2
 --- exit=0
+--- elapsed=3s

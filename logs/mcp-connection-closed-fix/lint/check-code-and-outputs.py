@@ -7,7 +7,7 @@
   全文のブロックはファイル全体と完全一致、抜き出したブロックはファイルの中に連続した行として含まれることを確かめる。
 - bash のブロックは、記事に出てくる順に run/NN.log の command と比べる（行頭の2字の字下げを外して完全一致）。
 - bash のブロックの直後にある text のブロックは、その実行の出力（--- output の行から --- exit の行の手前まで）と完全一致を確かめる。
-  initialize を送るブロックは、server.ts を直す前（10）と後（11）の2回実行し、出力の text ブロックも2つある。
+  initialize を送るブロックは、server.ts を直す前（11）と後（12）の2回実行し、出力の text ブロックも2つある。
 """
 import re
 import sys
@@ -39,11 +39,19 @@ for i, ((lang, body), (elang, kind, path)) in enumerate(zip(code_blocks, expect_
     passed = lang == elang and (body == src if kind == "full" else body in src)
     report(f"code#{i} {lang} {kind} == {path.relative_to(code_dir)}", passed)
 
-# 変更後の check.ts は、変更前に env の1行を足しただけか
-before = (code_dir / "check.ts").read_text(encoding="utf-8").split("\n")
-after = (code_dir / "after" / "check.ts").read_text(encoding="utf-8").split("\n")
-added = [l for l in after if l not in before]
-report("after/check.ts = check.ts + 1 line", len(after) == len(before) + 1 and added == ['  env: { NOTES_DIR: process.env.NOTES_DIR ?? "" },'], str(added))
+# 変更後の check.ts は、変更前の transport の1行を、env を作る4行と env を渡す transport の1行に置き換えただけか
+before = (code_dir / "check.ts").read_text(encoding="utf-8")
+after = (code_dir / "after" / "check.ts").read_text(encoding="utf-8")
+old_line = 'const transport = new StdioClientTransport({ command, args, stderr: "pipe" });\n'
+new_block = (
+    'const env: Record<string, string> = {};\n'
+    'for (const [key, value] of Object.entries(process.env)) {\n'
+    '  if (value !== undefined) env[key] = value;\n'
+    '}\n'
+    'const transport = new StdioClientTransport({ command, args, env, stderr: "pipe" });\n'
+)
+report("after/check.ts = check.ts with the transport line replaced by the env block",
+       before.count(old_line) == 1 and before.replace(old_line, new_block) == after)
 
 # 2. bash と直後の text
 def log_parts(n):
@@ -55,7 +63,7 @@ def log_parts(n):
     out = "\n".join(lines[o0 + 1:e0])
     return cmd, out, lines[e0]
 
-bash_logs = [["02"], ["03"], ["04"], ["05"], ["06"], ["07"], ["08"], ["09"], ["10", "11"]]
+bash_logs = [["02"], ["03"], ["04"], ["05"], ["06"], ["07"], ["08"], ["09"], ["10"], ["11", "12"]]
 seq = []  # (bash の本文, 直後の text の本文のリスト)
 for i, (lang, body) in enumerate(blocks):
     if lang == "bash":

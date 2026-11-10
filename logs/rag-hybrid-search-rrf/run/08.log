@@ -1,10 +1,10 @@
-date: 2026-10-31 14:05:28 +0000
+date: 2026-11-10 07:04:49 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
 command: node hybrid.ts 5営業日
 exit: 0
-elapsed: 2506 ms
+elapsed: 2563 ms
 --- stdout+stderr ---
 BM25  : cancel(2.395) delivery(1.529) returns(0.565)
 vector: shipping-fee(0.857) cancel(0.856) delivery(0.848) points(0.821) returns(0.816)

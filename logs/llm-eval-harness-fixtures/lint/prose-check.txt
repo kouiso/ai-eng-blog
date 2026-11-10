@@ -1,6 +1,6 @@
-units=168 excluded_url_only_cells=10
-C25 over60=0 max=59
-C16 prose sentences=105 min=11 max=59 le20=13 41to60=41
+units=170 excluded_url_only_cells=10
+C25 over60=0 max=60
+C16 prose sentences=107 min=11 max=60 le20=12 41to60=45
 C17 SAME3(3字)=0 []
 C17 SAME3(2字・参考)=0 []
 C19 non-desumasu prose=0
@@ -30,7 +30,8 @@ PAT さまざま: 0
 PAT 落ちる: 0
 PAT 効く: 0
 PAT 回す: 2
-    (4, 'description: "LLM の回答を、完全一致、部分一致、正規表現の3つの関数で採点する T')
+    (4, 'description: "LLM の回答を、完全一致、部分一致、正規表現の3つの方法で採点する T')
     (52, 'プロンプトを1行直すたびに LLM の回答を目で読み直していると、テストケースの件数だけ読む量が増え')
 PAT 仕様書: 0
 PAT 地図: 0
+exit=0

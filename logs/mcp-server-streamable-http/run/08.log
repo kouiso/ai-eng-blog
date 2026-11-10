@@ -1,4 +1,4 @@
-date: 2026-11-02 15:04:51 +0000
+date: 2026-11-10 07:16:15 +0000
 cwd: /path/to/char-count-http
 node: v22.22.0
 npm: 10.9.4
@@ -7,7 +7,7 @@ command: curl -sS -X POST http://127.0.0.1:3000/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"count_chars","arguments":{"text":"こんにちは"}}}' \
   -w "\nstatus: %{http_code} %{content_type}\n"
 exit: 0
-elapsed: 20 ms
+elapsed: 12 ms
 --- stdout+stderr ---
 {"jsonrpc":"2.0","error":{"code":-32000,"message":"Not Acceptable: Client must accept both application/json and text/event-stream"},"id":null}
 status: 406 application/json

@@ -1,0 +1,10 @@
+date: 2026-11-10 07:05:21 +0000
+cwd: /path/to/hybrid-search
+node: v22.22.0
+npm: 10.9.4
+command: bash -c "cp ../code/extra/tsconfig.typecheck-skiplib.json . && npx tsc --version && npx tsc -p tsconfig.typecheck-skiplib.json; echo tsc_exit=$?"
+exit: 0
+elapsed: 735 ms
+--- stdout+stderr ---
+Version 7.0.2
+tsc_exit=0

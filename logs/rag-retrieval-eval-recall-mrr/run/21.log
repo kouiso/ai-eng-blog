@@ -1,10 +1,10 @@
-date: 2026-11-02 15:56:07 +0000
+date: 2026-11-10 07:48:58 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
-command: bash -c "cp ../code/extra/explain.ts . && node explain.ts 返金はいつ？ 'E1021 が出た' カードが使えない"
+command: node explain.ts 返金はいつ？ カードが使えない "E1021 が出た"
 exit: 0
-elapsed: 156 ms
+elapsed: 92 ms
 --- stdout+stderr ---
 ### 返金はいつ？ [ '返金', 'は', 'いつ' ]
    returns は len 22
@@ -17,6 +17,12 @@ elapsed: 156 ms
    error-e1020 は len 25
    error-e1021 は len 28
    points は len 83
+### カードが使えない [ 'カード', 'が', '使', 'え', 'ない' ]
+   payment が,使,え len 11
+   login が,ない len 24
+   error-e1020 カード,が,ない len 25
+   error-e1021 カード,え len 28
+   points が,使,え len 83
 ### E1021 が出た [ 'e1021', 'が', '出', 'た' ]
    payment が len 11
    password た len 22
@@ -24,9 +30,3 @@ elapsed: 156 ms
    error-e1020 が,出,た len 25
    error-e1021 e1021,た len 28
    points が,た len 83
-### カードが使えない [ 'カード', 'が', '使', 'え', 'ない' ]
-   payment が,使,え len 11
-   login が,ない len 24
-   error-e1020 カード,が,ない len 25
-   error-e1021 カード,え len 28
-   points が,使,え len 83

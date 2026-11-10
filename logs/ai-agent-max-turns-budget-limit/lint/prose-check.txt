@@ -1,0 +1,43 @@
+units=194 excluded_url_only_cells=10
+C25 over60=1 max=63
+  OVER (2, 'fm-title', 63, 'AI エージェントが止まらないのを防ぐ【Claude Agent SDK の maxTurns と maxBudgetUsd】')
+C16 prose sentences=112 min=13 max=60 le20=10 41to60=34
+C17 SAME3(3字)=0 []
+C17 SAME3(2字・参考)=0 []
+C19 non-desumasu prose=0
+PAT bold **: 0
+PAT em-dash —: 0
+PAT 罫線 ─: 0
+PAT ― U+2015: 0
+PAT 全角コロン ：: 0
+PAT 全角スラッシュ ／: 0
+PAT 徹底解説: 0
+PAT 完全ガイド: 0
+PAT でしょう: 0
+PAT かもしれ: 0
+PAT ここから: 0
+PAT ここまで: 0
+PAT 次は: 0
+PAT まとめ: 0
+PAT 整理: 0
+PAT 見ていき: 0
+PAT 解説します: 0
+PAT 紹介します: 0
+PAT ではなく: 0
+PAT ではありません: 0
+PAT じゃない: 0
+PAT や（並列候補）: 0
+PAT さまざま: 0
+PAT 落ちる: 0
+PAT 効く: 1
+    (141, 'にしておくと、トップレベルで  を書けます（出典4）。 のファイルは、 にそのまま渡せば動きます。N')
+PAT 回す: 0
+PAT 仕様書: 0
+PAT 地図: 0
+PAT だけ（B-3 切り詰めの候補）: 0
+PAT 設計書: 0
+PAT レシピ: 0
+PAT まず最初: 0
+PAT ここでは: 0
+PAT 注意が必要: 0
+PAT 可能性があります: 0

@@ -1,0 +1,27 @@
+date: 2026-11-10T07:37:00Z
+cwd: /path/to/notes-mcp
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude: 2.1.322 (Claude Code)
+HOME: 使い捨てのフォルダ（ログでは ~）
+command:
+  export DUMP_TO="$PWD/server-env.txt"
+  claude mcp add dump --scope user -- node "$PWD/envdump.ts"
+  (cd ~ && claude mcp list)
+  claude mcp remove dump -s user
+  env | cut -d= -f1 | sort > shell-env.txt
+  echo "shell: $(wc -l < shell-env.txt) names / server: $(wc -l < server-env.txt) names"
+  echo "only in shell: $(comm -23 shell-env.txt server-env.txt | tr "\n" " ")"
+  echo "only in server: $(comm -13 shell-env.txt server-env.txt | tr "\n" " ")"
+  rm -f shell-env.txt server-env.txt
+--- output (stdout+stderr) ---
+Added stdio MCP server dump with command: node /path/to/notes-mcp/envdump.ts to user config
+File modified: ~/.claude.json
+Checking MCP server health…
+
+dump: node /path/to/notes-mcp/envdump.ts - √ Connected
+Removed MCP server dump from user config
+File modified: ~/.claude.json
+shell: 172 names / server: 171 names
+only in shell: CLAUDE_CODE_CHILD_SESSION 
+only in server: CLAUDE_PROJECT_DIR 
+--- exit=0

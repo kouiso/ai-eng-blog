@@ -1,0 +1,12 @@
+date: 2026-11-10 07:04:32 +0000
+cwd: /path/to/local-embeddings-full
+node: v22.22.0
+npm: 10.9.4
+command: bash -c du -s node_modules/* node_modules/@*/* | sort -n | tail -4
+exit: 0
+elapsed: 14 ms
+--- stdout+stderr ---
+46820	node_modules/@img
+143764	node_modules/onnxruntime-web
+149400	node_modules/@huggingface
+560948	node_modules/onnxruntime-node

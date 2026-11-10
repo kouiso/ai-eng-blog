@@ -1,4 +1,4 @@
-date: 2026-11-02T15:24:34Z
+date: 2026-11-10T07:23:11Z
 cwd: /path/to/writing-helper-mcp
 node: v22.22.0 / npm: 10.9.4 / arch: x86_64
 command:
@@ -39,3 +39,4 @@ error: -32002 MCP error -32002: MCP error -32002: Resource not found
 error: -32602 MCP error -32602: MCP error -32602: Resource memo://today not found
 error: -32602 MCP error -32602: MCP error -32602: Invalid arguments for prompt review-text: Invalid input: expected string, received undefined at text
 --- exit=0
+--- elapsed=0s

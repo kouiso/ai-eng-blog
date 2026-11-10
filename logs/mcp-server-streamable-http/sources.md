@@ -1,6 +1,8 @@
 # sources: mcp-server-streamable-http
 
-アクセス日はすべて 2026-11-02。番号は原稿の出典の表（本文の「（出典n）」）と同じ。frontmatter の `sources` も同じ14件・同じ順。
+アクセス日は、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02。番号は原稿の出典の表（本文の「（出典n）」）と同じ。frontmatter の `sources` も同じ17件・同じ順。
+
+2026-11-10 の取得: 出典3は `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md`、出典15と16は同じページの Markdown 版（URL の末尾に `.md`）、出典17は MDN のページ（HTTP 200、題名「Cross-Origin Resource Sharing (CORS) - HTTP | MDN」）と、その原稿 `https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/http/guides/cors/index.md` を curl で取って読んだ。記事に載せた出典15、16の URL（`.md` なし）も HTTP 200 を返すことを確かめた。
 
 github.com のページ（出典3〜9）は、このセッションのプロキシ経由では HTML が 403 を返したため、同じブランチの同じファイルを `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/<パス>` から取得して読んだ（10ファイルとも HTTP 200）。記事には読者が開く github.com の URL を載せた。npm のページ（出典10）も 403 だったので、npm レジストリを `npm view @modelcontextprotocol/sdk version engines` で引いた（`run/33.log`）。
 
@@ -10,7 +12,7 @@ github.com のページ（出典3〜9）は、このセッションのプロキ�
 |---|---|---|---|---|
 | 1 | MCP Specification 2025-11-25 Transports | https://modelcontextprotocol.io/specification/2025-11-25/basic/transports | 標準のトランスポートは stdio と Streamable HTTP の2つ。サーバーは独立したプロセスで複数のクライアントの接続を扱える。POST と GET を受ける1つの MCP エンドポイントを用意する（MUST）。メッセージは1つずつ新しい POST で送る（MUST）。Security Warning: すべての接続で Origin を検証（MUST）、Origin があって不正なら 403（MUST）、手元では 127.0.0.1 だけに bind（SHOULD）、認証を実装（SHOULD）。これが無いと DNS リバインディングで外のウェブサイトから手元のサーバーを操作されうる。POST の Accept は application/json と text/event-stream の両方（MUST）。リクエストへの応答は text/event-stream か application/json（どちらでもよい）。GET には SSE を返すか 405（MUST）。セッション ID は割り当ててもよい（MAY） | 「Streamable HTTP は…2つの標準のトランスポートの1つ」「もう1つは stdio」「独立したプロセス…複数のクライアントの接続」「POST と GET を受ける1つの URL」「新しい POST で送ります」「セッション ID を割り当てるかどうかはサーバーが選べます」「127.0.0.1 だけで待ち受けることを勧めています」「すべての接続で Origin ヘッダーを確かめる」「不正な Origin には 403」「GET には SSE で応じるか、405」「SSE か application/json のどちらで返しても」「Accept には、2つの形式を両方書く決まり」「外のウェブサイトから手元のサーバーを操作される恐れ」「DNS リバインディングを挙げています」「Origin の検査も、仕様が同じ攻撃への対策として求めて」「すべての接続で認証を実装するよう勧めて」 |
 | 2 | MCP Specification 2025-11-25 Lifecycle | https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle | 「The initialization phase MUST be the first interaction between client and server.」 | 「初期化をクライアントとサーバーの最初のやり取りにする決まり」 |
-| 3 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | v1.x はメンテナンスの系列。MCP の仕様は 2025-11-25 まで実装。v2 のリリース（2026-07-27）から少なくとも6か月、バグ修正とセキュリティ更新を続ける | 「v1 系はメンテナンスを続ける系列」「2025-11-25 のものまで」「v2 系が出た 2026-07-27 から、少なくとも6か月」 |
+| 3 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | 2026-11-10 に取り直して確かめた。v1.x はメンテナンスの系列（the maintenance line）。MCP の仕様は 2025-11-25 まで実装。2026-07-28 の仕様への対応は v1.x では予定が無く、v2 にある。v2 は「the current stable release」で、`@modelcontextprotocol/server` と `@modelcontextprotocol/client` の別のパッケージ。v2 のリリース（2026-07-27）から少なくとも6か月、バグ修正とセキュリティ更新を続ける | 「v1 系はメンテナンスを続ける系列」「2025-11-25 のものまで」「v2 系が出た 2026-07-27 から、少なくとも6か月」「v1 系が対応しているのが、2025-11-25 の仕様まで」「2026-07-28 の仕様に対応しているのは v2 系」「v2 系を今の安定したリリースと呼んで」 |
 | 4 | typescript-sdk v1.x docs/server.md | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md | Streamable HTTP は「recommended for remote servers」。Stateless（セッションを追わない、simple API-style servers に向く）と Stateful の2通り。「Bearer token authentication」の節がある | 「リモートには Streamable HTTP を勧めます」「ステートレスとステートフルの2通り」「API のような単純なサーバーに向く」「Bearer トークンで認証する例」 |
 | 5 | typescript-sdk v1.x src/server/express.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/express.ts | `createMcpExpressApp` は express のアプリを作り、host が既定の 127.0.0.1（または localhost、::1）なら `localhostHostValidation()` を入れ、`express.json()` を入れて返す。`listen` は呼ばない。`allowedHosts` を渡すとその一覧で Host を検査する。host が 0.0.0.0 か :: で allowedHosts が無ければ検査を入れず警告だけ出す | 「SDK が用意する Express のアプリの作り方」「`express.json()` を入れるので」「Host ヘッダーの検査も入ります」「待ち受けを始めません」「Host の名前は `allowedHosts` に渡します」 |
 | 6 | typescript-sdk v1.x hostHeaderValidation.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/middleware/hostHeaderValidation.ts | `localhostHostValidation()` が許すのは `localhost`、`127.0.0.1`、`[::1]`。注記: DNS リバインディングは、ドメインの名前を localhost のアドレスに向けて同一オリジンポリシーを回避し、悪意のあるサイトに手元のサーバーを触らせる攻撃。このミドルウェアはその対策 | 「許す名前は…3つ」「攻撃者のドメインの名前を 127.0.0.1 に向け…手口」「SDK の Host の検査は、この手口を防ぐため」 |
@@ -23,18 +25,23 @@ github.com のページ（出典3〜9）は、このセッションのプロキ�
 | 13 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 「Claude Code requires a Pro, Max, Ultra, Team, Enterprise, or Console account. The free claude.ai plan does not include Claude Code access.」 | 「有料のプランか Console のアカウントが要ります」「無料の claude.ai のプランには、Claude Code が含まれていません」、frontmatter の `cost_estimate` |
 | 14 | Get started with custom connectors using remote MCP | https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp | Claude は Anthropic のクラウドからリモートの MCP サーバーにつなぐ（claude.ai、Desktop、モバイルのどれでも）。サーバーは Anthropic の IP 範囲からインターネット越しに届く必要がある。社内ネットワーク、VPN の内側、ファイアウォールで塞いだサーバーにはつながらない。カスタムコネクタは Free、Pro、Max、Ultra、Team、Enterprise で使え、Free は1つまで。URL は `11175166-getting-started-…` から `…-get-started-…` にリダイレクトされた | 「手元のサーバーにつながりません」「Anthropic のクラウドからリモートの MCP サーバーにつなぎます」「Anthropic の IP アドレスからインターネット越しに届く場所」「Anthropic の IP アドレスから届く場所にサーバーを置きます」「無料のプランでも1つまで」 |
 
+| 15 | MCP Specification 2026-07-28 Key Changes | https://modelcontextprotocol.io/specification/2026-07-28/changelog | 前の版 2025-11-25 からの変更。Major changes の1: Streamable HTTP からプロトコルのセッションと `Mcp-Session-Id` ヘッダーを削除。2: `initialize` と `notifications/initialized` のハンドシェイクを削除。4: HTTP の GET エンドポイント（と `resources/subscribe`）を `subscriptions/listen` に置き換え。Minor changes の4: Streamable HTTP の POST に `Mcp-Method` と `Mcp-Name` のヘッダーを必須にする | 「Streamable HTTP の決まりを次のように変えました」と箇条書きの4項目、「この初期化のやり取りそのものが無くなりました」 |
+| 16 | MCP Specification 2026-07-28 Streamable HTTP | https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http | 冒頭の注記: 2026-07-28 で GET のストリームのエンドポイントとセッションを削除。Security & Endpoint: すべての接続で Origin を検証（MUST）、Origin があって不正なら 403（MUST）、手元では 127.0.0.1 だけに bind（SHOULD）。Earlier Streamable HTTP Revisions: この版だけに対応するサーバーは、古いクライアントからの GET と DELETE に 405 を返す（SHOULD） | 「Origin を確かめ、不正なら 403 を返す決まりは、2026-07-28 の仕様にも残っています」「古いクライアントからの GET には 405 を返すよう勧めています」 |
+| 17 | Cross-Origin Resource Sharing (CORS)（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | Content-Type が `application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain` 以外（`application/json` など）のリクエストは simple request に当たらず、ブラウザは先に OPTIONS でプリフライトを送り、サーバーが認めてから実際のリクエストを送る。プリフライトには `Access-Control-Request-Method` と `Access-Control-Request-Headers` が付く。プリフライトが要らないリクエストでも、応答をスクリプトに渡すにはサーバーが `Access-Control-Allow-Origin` で許す必要がある | 「別の Origin へ JSON を POST する前に OPTIONS を送ります」「これをプリフライトと呼びます」「プリフライトを認めないので、ブラウザは続く POST を送りません」「このヘッダーが無い応答は、ページのスクリプトから読めません」、公開の箇条書きの「CORS の応答も要ります」 |
+
 ## 出典ではなく実行ログを根拠にした文
 
 | 原稿の文 | 根拠 |
 |---|---|
 | 書き写すコードは4ファイルで121行、`src/server.ts` は69行 | `wc -l`（package.json 20、tsconfig.json 13、server.ts 69、check.ts 19） |
-| `npm install` は3秒 | `run/03.log`（`audited 109 packages in 3s`） |
+| `npm install` は 2026-11-10 の実測で4秒 | `run/03.log`（`audited 109 packages in 4s`） |
 | express が SDK の依存で、手元では 5.3.0 | `run/32.log`（`@modelcontextprotocol/sdk@1.32.2` の下に `express@5.3.0`） |
-| `@types/express` を外すと `tsc` が7件のエラー | `run/37.log`（TS7006 が7件、`tsc_exit=1`）、戻すと0件 `run/38.log` |
+| `@types/express` を外すと `tsc` が7件のエラー | `run/37.log`（TS7006 が7件、`tsc_exit=1`）、戻すと0件 `run/38.log`（`tsc_exit=0`） |
 | `tsconfig.json` は前の記事と同じ | `logs/mcp-server-typescript-stdio/code/tsconfig.json` と `diff` で差分なし |
 | `createServer` の中身は前の記事のツールの登録と同じ | `logs/mcp-server-typescript-stdio/code/src/server.ts` の `registerTool` 呼び出しと、インデントのほか差分なし |
 | `ok:` の行が前の記事と1文字も違わない | `run/06.log` と `content/articles/mcp-server-typescript-stdio.md` の `ok:` の行 |
-| 30回中4回、AbortError の行が増える。30回とも `ok:` あり | `run/36.log` |
+| 2026-11-10 の30回中3回、AbortError の行が増える。30回とも `ok:` あり | `run/36.log`（回ごとに `ok=1` 30回、`abort=1` 3回） |
+| 2026-11-02 の30回では4回 | 2026-11-02 の版のログ（コミット `29c1a8e` の `logs/mcp-server-streamable-http/run/36.log`）。その版の `lint/check-code-and-outputs.txt` 44行目 `run/36: 30 runs, all ok=1, abort=1 in 4: True`（`git show 29c1a8e:logs/mcp-server-streamable-http/lint/check-code-and-outputs.txt` で読める）。run/ は 2026-11-10 にすべて取り直したので、今の `run/36.log` は 11-10 の30回 |
 | curl の応答が `text/event-stream` で `event: message` と `data:` の行 | `run/07.log` |
 | 初期化を飛ばしても結果が返った | `run/07.log`（`tools/call` だけを送って 200） |
 | Accept が無いと 406、GET に 405、Origin と Host で 403 | `run/08.log`〜`11.log` |
@@ -42,6 +49,8 @@ github.com のページ（出典3〜9）は、このセッションのプロキ�
 | Claude Code での登録から削除まで、`√ Connected` | `run/12.log`〜`16.log` |
 | 使い回すと `connect` の2回目の POST が 500、その後の curl も 500 と空の本文、サーバーには起動のログだけ | `run/17.log`〜`22.log`、`run/19.log`（終了まで起動の1行だけ） |
 | 例外の文言 | `run/23.log`（`code/extra/reuse-cause.mjs`） |
-| 405 の受け口を消すと Not Found の行が2つ | `run/24.log`〜`27.log` |
+| 405 の受け口を消すと Not Found の行が2つ。30回とも同じ | `run/24.log`〜`27.log`、30回は `run/39.log`〜`43.log`（`run/42.log` で `notfound=2` が30回、`ok=1` が30回、`abort=1` は0回） |
+| `ALLOWED_ORIGINS` に `"http://localhost:5173"` を入れると、OPTIONS のプリフライトに 405 が返り、`Access-Control-Allow-` のヘッダーが無い。Origin 付きの POST は 200 だが `Access-Control-Allow-Origin` が無い | `run/44.log`（`code/extra/server.cors-check.ts` との差分は `ALLOWED_ORIGINS` の1行、`code/extra/cors.diff`）、`run/45`〜`48.log`、戻したのは `run/49`、`50.log` |
 | 戻すと手順3と同じ出力 | `run/28.log`〜`31.log` |
-| SDK 1.32.2 が npm の latest | `run/33.log` |
+| SDK 1.32.2 が npm の latest | `run/33.log`（2026-11-10 にも `version = '1.32.2'`） |
+| Claude Code 2.1.322（frontmatter の `run_environment`、前提の節） | `run/12.log` |

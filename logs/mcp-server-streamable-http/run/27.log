@@ -1,10 +1,10 @@
-date: 2026-11-02 15:04:58 +0000
+date: 2026-11-10 07:16:21 +0000
 cwd: /path/to/char-count-http
 node: v22.22.0
 npm: 10.9.4
 command: npm run check
 exit: 0
-elapsed: 513 ms
+elapsed: 453 ms
 --- stdout+stderr ---
 
 > char-count-http@0.1.0 check
@@ -15,4 +15,3 @@ client error: Streamable HTTP error: Failed to open SSE stream: Not Found
 tools: [ 'count_chars' ]
 ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
 session: undefined
-client error: SSE stream disconnected: AbortError: This operation was aborted

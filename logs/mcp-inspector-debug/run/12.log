@@ -1,4 +1,4 @@
-date: 2026-11-02T15:14:29Z
+date: 2026-11-10T07:30:51Z
 cwd: /path/to/inspector-demo
 node: v22.22.0 / npm: 10.9.4
 command:
@@ -70,15 +70,15 @@ command:
   - button "Clear"
   - button "Export"
   - button "Expand all":
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 95ms
+  - paragraph: 86ms
   - text: OK tools/list
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server notifications/initialized
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 227ms
+  - paragraph: 191ms
   - text: OK initialize
 - contentinfo:
   - paragraph: v2.13.0
@@ -116,15 +116,15 @@ command:
   - button "Clear"
   - button "Export"
   - button "Expand all":
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 95ms
+  - paragraph: 86ms
   - text: OK tools/list
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server notifications/initialized
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 227ms
+  - paragraph: 191ms
   - text: OK initialize
 === 4. text に 2026 を入れて Execute Tool を押したあと
 - main:
@@ -153,20 +153,20 @@ command:
   - button "Clear"
   - button "Export"
   - button "Expand all":
-  - paragraph: 15:14:39
+  - paragraph: 07:31:00
   - text: client → server
-  - paragraph: 74ms
+  - paragraph: 47ms
   - text: OK tools/call
   - paragraph: count_chars
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 95ms
+  - paragraph: 86ms
   - text: OK tools/list
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server notifications/initialized
-  - paragraph: 15:14:33
+  - paragraph: 07:30:55
   - text: client → server
-  - paragraph: 227ms
+  - paragraph: 191ms
   - text: OK initialize
 === 5. 右側の Console を開いたあと
 - main:
@@ -193,6 +193,6 @@ command:
   - textbox "Console sort direction": Newest First
   - button "Clear"
   - button "Export"
-  - paragraph: 3:14:33 PM
+  - paragraph: 7:30:55 AM
   - paragraph: char-count MCP server started (stdio)
 --- exit=0

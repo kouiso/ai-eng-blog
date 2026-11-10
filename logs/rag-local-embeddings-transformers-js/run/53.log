@@ -1,0 +1,12 @@
+date: 2026-11-10 07:04:32 +0000
+cwd: /path/to/local-embeddings-full
+node: v22.22.0
+npm: 10.9.4
+command: bash -c uname -sm; npm ls @huggingface/transformers onnxruntime-node
+exit: 0
+elapsed: 418 ms
+--- stdout+stderr ---
+Linux x86_64
+local-embeddings@ /path/to/local-embeddings-full
+`-- @huggingface/transformers@4.3.2
+  `-- onnxruntime-node@1.30.0

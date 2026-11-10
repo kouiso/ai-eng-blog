@@ -27,6 +27,8 @@
 | `rag-bm25-search-typescript`、`rag-chunking-japanese-text`、`rag-local-embeddings-transformers-js`、`rag-hybrid-search-rrf` | RAG | 検索部分の作り方 | なし（検索の良し悪しを測る記事は計画の #28 で、まだ無い） |
 | `ai-agent-safe-file-tool` | AIエージェント | ファイル操作ツールの安全な作り方 | なし |
 
+2026-11-10 の読み直し（3版目のゲート判定のため）: `content/articles/*.md` の frontmatter を全件読み直した（この記事のほか20本）。2026-11-02 から増えたのは `ai-agent-max-turns-budget-limit`、`ai-agent-vs-workflow`、`claude-agent-sdk-first-agent`（AIエージェント）、`rag-retrieval-eval-recall-mrr`、`llm-eval-dataset-from-logs`（LLM 評価）。LLM 評価の2本は、RAG の検索器を Recall@k と MRR で測る記事と、ログからテストケースを選んで JSONL にする記事で、LLM の回答を完全一致、部分一致、正規表現で採点するこの記事とは答える検索意図が違う。重なりは無い。`keywords/` は `README.md` だけで CSV は無く、`ANTHROPIC_API_KEY` は `unset` のまま（どちらも 2026-11-10 に確認）。
+
 `target_query` はどの記事も null なので、検索語での突き合わせはできない。上の判断は記事の中身で行った。計画の #27（LLM-as-a-Judge）、#29（promptfoo）とは、`content/plan.md` の「重なりを避けるために決めたこと」のとおり、自作のコードでの採点と、LLM や既製のツールでの採点に分けている。
 
 ## 外した候補

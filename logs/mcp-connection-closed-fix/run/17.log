@@ -1,17 +1,15 @@
-date: 2026-11-02T15:39:41Z
+date: 2026-11-10T07:36:55Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
 command:
-  cat package.json
+  npm install --no-save typescript@7.0.2 @types/node@22.20.5 > /dev/null && npx tsc -v && npx tsc -p tsconfig.typecheck.json && echo "typecheck ok"
+  npx tsc -p tsconfig.direct.json; echo "direct-env exit=$?"
 --- output (stdout+stderr) ---
-{
-  "name": "notes-mcp",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.2",
-    "zod": "4.6.7"
-  }
-}
+Version 7.0.2
+typecheck ok
+direct-env.ts(15,61): error TS2322: Type 'ProcessEnv' is not assignable to type 'Record<string, string>'.
+  'string' index signatures are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+direct-env exit=1
 --- exit=0

@@ -1,0 +1,10 @@
+date: 2026-11-10T07:56:31+00:00
+cwd: <tc>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ npm init -y > /dev/null && npm install --save-exact typescript@7.0.2 @types/node@22.20.5 > /dev/null 2>&1; npx tsc -v; npx tsc -p tsconfig.json; echo "tsc_exit=$?"
+----
+Version 7.0.2
+tsc_exit=0
+----
+exit=0

@@ -1,0 +1,11 @@
+date: 2026-11-10 07:17:23 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: npm run build
+exit: 0
+elapsed: 429 ms
+--- stdout+stderr ---
+
+> char-count-http@0.1.0 build
+> tsc

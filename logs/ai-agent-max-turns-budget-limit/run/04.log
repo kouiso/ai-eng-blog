@@ -1,0 +1,19 @@
+date: 2026-11-10T07:24:02Z
+cwd: <work>/agent-limits
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: node turns-limit.ts 2
+--- output (stdout+stderr) ---
+maxTurns: 2
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+subtype: error_max_turns
+num_turns: 3
+terminal_reason: max_turns
+total_cost_usd: 0.00069775
+errors: Reached maximum number of turns (2)
+catch: Claude Code returned an error result: Reached maximum number of turns (2)
+--- exit=0

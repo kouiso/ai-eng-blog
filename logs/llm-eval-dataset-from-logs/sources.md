@@ -1,6 +1,6 @@
 # sources: llm-eval-dataset-from-logs
 
-アクセス日はすべて 2026-11-02。frontmatter の `sources` と、本文末尾の出典の表（番号も同じ）に同じ URL を入れた。
+アクセス日はすべて 2026-11-02。2026-11-10 の直しでは出典を足していない（直した文の根拠は下の「出典ではなく実行ログと原稿を根拠にした文」）。frontmatter の `sources` と、本文末尾の出典の表（番号も同じ）に同じ URL を入れた。
 
 | # | 題名 | URL | 確かめたこと | 記事の根拠にした文 |
 |---|---|---|---|---|
@@ -16,7 +16,7 @@
 | 10 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | Model pricing の表に "Claude Haiku 5.5 (for prompts up to 100,000 tokens) ... $0.10 / MTok ... $0.50 / MTok"（Base input tokens、Output tokens） | 「料金がかかるのはモデルに回答を作らせる操作」の単価と、10万トークン以下の場合という条件の文 |
 | 11 | wc（The Open Group Base Specifications Issue 8） | https://pubs.opengroup.org/onlinepubs/9799919799/utilities/wc.html | -l: "Write to the standard output the number of <newline> characters in each input file." | 「最後の行にも改行を付ける」の、`wc -l` は改行の数を出力するという文 |
 
-## 出典ではなく実行ログを根拠にした文
+## 出典ではなく実行ログと原稿を根拠にした文
 
 | 記事の文 | 根拠 |
 |---|---|
@@ -32,6 +32,10 @@
 | 型の誤りが無い（TypeScript 7.0.2） | `run/10.log` |
 | Node.js 22.22.0、npm 10.9.4、Linux x86_64 | `run/*.log` の見出し、`run/12.log` |
 | 4ファイルで111行 | `wc -l` で `build-cases.ts` 77行、`check-cases.ts` 12行、`package.json` 6行、`logs.jsonl` 16行 |
+| 講座の前の記事を読まなくても、コードは動きます（61行目） | `code/extra/run-all.sh` は空のフォルダ `eval-dataset` を作り、記事の4ファイルだけを置いて実行する。`run/02.log`〜`05.log` がどれも exit=0。前の記事の中身には触れていない（前の記事は原稿が無い） |
+| RAG の検索の評価には、質問ごとに正解の文書の id も要ります（356行目） | 講座の `content/articles/rag-retrieval-eval-recall-mrr.md` 55行目「用意するのは、質問と正解の文書の組です」、112行目「正解の id の配列を受け取ります」。リンク先の記事そのものの記述で、356行目の同じ段落からリンクしている |
+| 見本のログには文書を指す欄が無いので、質問と正解の文書の組はこの手順では作れません（356行目） | `code/logs.jsonl` の欄は `ts`、`category`、`question`、`answer`、`feedback` だけ。`build-cases.ts` が書き出す欄は `id`、`category`、`question`、`logged_answer`、`feedback`、`source_ts` だけ（`run/03.log`） |
+| スクリプトはモデルを呼ばないので、API キーは要りません（4行目 description、57行目） | `build-cases.ts` と `check-cases.ts` は `node:fs` の `readFileSync`、`writeFileSync` だけを使う。`run/11.log` で、外への `fetch` が失敗する環境でも同じ出力 |
 
 ## 調べたが記事に使わなかったもの
 

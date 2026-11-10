@@ -1,0 +1,43 @@
+date: 2026-11-10T07:55:49+00:00
+cwd: <work>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ npx promptfoo eval --no-share -o results.jsonl
+echo $?
+----
+Starting evaluation eval-xO0-2026-11-10T07:55:52
+Running 6 test cases (up to 4 at a time)...
+
+┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
+│ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
+│                              │                              │ 指示だけ                     │ 形も指定                     │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **分類: billing**     │ [PASS] billing               │
+│                              │                              │ 理由:                        │                              │
+│                              │                              │ 請求額が2回引き落とされてい… │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] bug                   │ [PASS] bug                   │
+│                              │                              │ この問い合わせは、保存ボタ…  │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
+│                              │                              │ 理由:                        │                              │
+│                              │                              │ 問い合わせの内容は、ロゴの…  │                              │
+└──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
+✓ Eval complete (ID: eval-xO0-2026-11-10T07:55:52)
+
+» View results: promptfoo view
+» Feedback: https://promptfoo.dev/feedback
+
+Total Tokens: 16,993
+  Provider: 16,993 (16,045 prompt, 948 completion, 621 reasoning)
+
+Results:
+  ✓ 3 passed (50.00%)
+  ✗ 3 failed (50.00%)
+  0 errors (0%)
+Duration: 11s (concurrency: 4)
+
+Writing output to results.jsonl
+100
+----
+exit=0

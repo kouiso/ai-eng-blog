@@ -1,0 +1,20 @@
+date: 2026-11-10T07:24:07Z
+cwd: <work>/agent-limits
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: node turns-limit.ts 10
+--- output (stdout+stderr) ---
+maxTurns: 10
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答3: Read を呼ぶ
+応答3: Read を呼ぶ
+subtype: success
+num_turns: 5
+terminal_reason: completed
+total_cost_usd: 0.00105244
+result: - payment.md: # 支払い方法
+- parking.md: # 駐車場
+- cancel.md: # 予約の取り消し
+--- exit=0

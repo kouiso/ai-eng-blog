@@ -1,9 +1,8 @@
-date: 2026-11-02T15:38:23Z
+date: 2026-11-10T07:35:42Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
 command:
   echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"manual","version":"0.0.0"}}}' | NOTES_DIR="$PWD/notes" node server.ts
 --- output (stdout+stderr) ---
 notes MCP server started (stdio)
-{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"notes","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
 --- exit=0

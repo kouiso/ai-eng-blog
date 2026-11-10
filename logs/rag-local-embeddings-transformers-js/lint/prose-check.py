@@ -1,4 +1,4 @@
-# rag-local-embeddings-transformers-js 用に logs/rag-bm25-search-typescript/lint/prose-check.py を写したもの（1行目のこの注記のほかは変えていない。PATS もそのまま）。
+# rag-local-embeddings-transformers-js 用に logs/rag-bm25-search-typescript/lint/prose-check.py を写したもの。2026-11-10 に ending() を語尾の2字で比べる形に直した（3字だと「です」の連続を見逃した）。ほかは変えていない（PATS もそのまま）。
 # 補助チェック（C16, C17, C25, C26, C28, C30-C32 の目視の補助）。
 # checklist とガイドに無い除外は入れない: インラインコード、バッククオート、出典の番号も
 # そのまま1字ずつ数える。frontmatter の文字列（title, description, cost_estimate,
@@ -67,10 +67,12 @@ lens = [len(s) for _, k, s in prose]
 if lens:
     print(f"prose length min {min(lens)} / max {max(lens)} / short(<=20) {sum(1 for n in lens if n <= 20)} / long(41-60) {sum(1 for n in lens if 40 < n <= 60)}")
 
+# 語尾は（出典n）を外したあとの、句点の前の2字で比べる（「です」「ます」「した」「せん」）。
+# 3字で比べると語尾の前の名詞まで入り（「トです」「倍です」）、「です」の連続を見逃す。
 def ending(s):
     s = s.rstrip("。")
     s = re.sub(r"（[^（）]*）$", "", s)
-    return s[-3:]
+    return s[-2:]
 body = [x for x in sents if x[1] == "prose"]
 same3 = 0
 for k in range(len(body) - 2):

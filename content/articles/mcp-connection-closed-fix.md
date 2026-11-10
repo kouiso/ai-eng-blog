@@ -17,7 +17,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts"
     title: "typescript-sdk v1.x src/client/stdio.ts"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts"
     title: "typescript-sdk v1.x src/shared/protocol.ts"
     accessed: 2026-11-02
@@ -29,13 +29,13 @@ sources:
     accessed: 2026-11-02
   - url: "https://code.claude.com/docs/en/mcp"
     title: "Connect Claude Code to tools via MCP"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://code.claude.com/docs/en/setup"
     title: "Claude Code Advanced setup"
     accessed: 2026-11-02
   - url: "https://nodejs.org/api/typescript.html"
     title: "Node.js Modules: TypeScript"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://nodejs.org/api/child_process.html"
     title: "Node.js Child process"
     accessed: 2026-11-02
@@ -46,26 +46,26 @@ sources:
     title: "typescript-sdk v1.x src/server/stdio.ts"
     accessed: 2026-11-02
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには、Claude Code を使える有料のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、Claude Code 2.1.316、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-02"
+run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、Claude Code 2.1.322、Linux x86_64（型の確認は TypeScript 7.0.2）"
+verified_at: "2026-11-10"
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-02
+updated: 2026-11-10
 ---
 
 MCP サーバーに `Connection closed` でつながらないとき、サーバーのプロセスはもう終了しています。SDK のクライアントは、プロセスが終わると待っていた要求をこのエラーで打ち切ります（出典4）。終了した理由を知る手がかりは、サーバーが stderr に書いた行です。
 
-この記事では、その行を表示する確認用のクライアントを TypeScript で作ります。手元で再現した原因は3つで、どれも stderr を読めば見分けられました。
+この記事では、その行を表示する確認用のクライアントを TypeScript で作ります。自分のサーバーの起動コマンドを渡せば、そのサーバーの stderr も読めます。手元で再現した原因は3つで、どれも stderr を読めば見分けられました。
 
-| stderr に出た行 | 原因 | 直し方 |
+| stderr に出た行 | 手元で再現した原因 | 直し方 |
 |---|---|---|
-| サーバー自身が投げたエラー | 起動時の環境変数が足りない | クライアントの設定で渡す |
+| サーバー自身が投げたエラー | 文面にあるもの（この記事では環境変数）が足りない | 文面が求めるものを渡す |
 | `Cannot find module` | 起動するファイルのパスが違う | 絶対パスで登録する |
 | エラーの行が無い | サーバーが接続を始めずに終わった | `server.connect()` を呼ぶ |
 
-対象は、TypeScript で stdio の MCP サーバーを作り、つなごうとしている人です。つなぐ側は Claude Code か、公式 SDK のクライアントを想定しています。書き写すコードは3ファイルで63行です。
+対象は、TypeScript で stdio の MCP サーバーを作り、つなごうとしている人です。つなぐ側は Claude Code か、公式 SDK のクライアントを想定しています。書き写すコードは3ファイルで71行です。
 
 講座の前の記事は、Resources と Prompts の回でした。[前の記事](/posts/mcp-server-resources-prompts)から続けて読めます。この記事は、作ったサーバーにつながらないときに読む回です。
 
@@ -93,9 +93,9 @@ stderr を読む道具として、SDK のクライアントで小さな確認用
 |---|---|
 | `@modelcontextprotocol/sdk` | 1.32.2 |
 | `zod` | 4.6.7 |
-| Claude Code（原因1と原因2の確認で使う） | 2.1.316 |
+| Claude Code（原因1と原因2の確認で使う） | 2.1.322 |
 
-この記事では、`.ts` のファイルを `node` でそのまま実行します。Node.js は 22.18.0 から、フラグなしで `.ts` の型を取り除いて実行します（出典9）。22.18.0 以上を使ってください。型の検査はしないので（出典9）、手元では TypeScript 7.0.2 の `tsc` でも型を確かめました。
+この記事では、`.ts` のファイルを `node` でそのまま実行します。Node.js は、`.ts` の型を取り除いてから動かします（出典9）。フラグなしで動くのは、22 系では 22.18.0 から、23 系以降では 23.6.0 からです（出典9）。23.0.0 から 23.5.0 は、22.18.0 より新しくてもフラグが要ります（出典9）。22 系なら 22.18.0 以上、それより新しい系列なら 23.6.0 以上を使ってください。型の検査はしないので（出典9）、手元では TypeScript 7.0.2 の `tsc` でも型を確かめました。
 
 ### 作業フォルダとメモのファイル
 
@@ -171,17 +171,19 @@ Claude Code の公式ページにも、API キーを環境変数で渡して登�
 
 ### stderr を表示する check.ts
 
-`check.ts` は、サーバーを起動して `count_notes` を呼びます。失敗したら、エラーの文面とサーバーの stderr を並べて表示します。
+`check.ts` は、引数で渡したコマンドでサーバーを起動し、接続してからツールの一覧を取ります。失敗したら、エラーの文面とサーバーの stderr を並べて表示します。
 
 ```ts
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
-const transport = new StdioClientTransport({
-  command: process.execPath,
-  args: [process.argv[2] ?? "server.ts"],
-  stderr: "pipe",
-});
+const [command, ...args] = process.argv.slice(2);
+if (!command) {
+  console.error("使い方: node check.ts <コマンド> [引数...]");
+  process.exit(2);
+}
+
+const transport = new StdioClientTransport({ command, args, stderr: "pipe" });
 let serverStderr = "";
 transport.stderr?.on("data", (chunk) => {
   serverStderr += chunk.toString();
@@ -190,8 +192,11 @@ transport.stderr?.on("data", (chunk) => {
 const client = new Client({ name: "check-client", version: "0.0.0" });
 try {
   await client.connect(transport);
-  const result = await client.callTool({ name: "count_notes", arguments: {} });
-  console.log("ok:", JSON.stringify(result));
+  console.log("ok:", JSON.stringify(client.getServerVersion()));
+  if (client.getServerCapabilities()?.tools) {
+    const { tools } = await client.listTools();
+    console.log("tools:", tools.map((tool) => tool.name).join(", "));
+  }
 } catch (error) {
   console.log("failed:", error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
@@ -202,9 +207,11 @@ try {
 }
 ```
 
-要になるのは `stderr: "pipe"` の1行です。既定の `"inherit"` では、サーバーの stderr は親の画面に流れるだけです（出典3）。`"pipe"` にすると、SDK は stderr のストリームを接続の前から渡します（出典3）。起動直後に終わったサーバーの出力を取りこぼさないための作りです（出典3）。
+要になるのは `stderr: "pipe"` の指定です。既定の `"inherit"` では、サーバーの stderr は親の画面に流れるだけです（出典3）。`"pipe"` にすると、SDK は stderr のストリームを接続の前から渡します（出典3）。起動直後に終わったサーバーの出力を取りこぼさないための作りです（出典3）。
 
-`command` には `process.execPath` を渡しました。今動いている `node` の絶対パスなので、PATH の違いに左右されません。`args` の1つ目は、起動するファイルです。引数を省くと `server.ts` を起動し、引数を渡すとそのファイルを起動します。
+`command` と `args` には、`check.ts` に渡した引数をそのまま使います。1つ目がサーバーを起動するコマンドで、残りはそのコマンドの引数です。`claude mcp add` では、`--` より後ろがサーバーを起動するコマンドです（出典7）。その並びを `node check.ts` の後ろに書けば、登録したサーバーを同じコマンドで起動できます。
+
+接続に成功したときの表示は、サーバーの名前と版です。ツールを持つサーバーなら、その名前の一覧も出ます。ツールは呼ばないので、ツールの名前を `check.ts` に書く必要はありません。
 
 次のコマンドで依存を入れてください。
 
@@ -213,7 +220,7 @@ npm install
 ```
 
 ```text
-added 95 packages, and audited 96 packages in 4s
+added 95 packages, and audited 96 packages in 2s
 
 36 packages are looking for funding
   run `npm fund` for details
@@ -221,10 +228,10 @@ added 95 packages, and audited 96 packages in 4s
 found 0 vulnerabilities
 ```
 
-`NOTES_DIR` に `notes` の絶対パスを入れて、`check.ts` を実行します。
+`check.ts` に `node server.ts` を渡して実行します。`NOTES_DIR` には、`notes` の絶対パスを入れました。
 
 ```bash
-NOTES_DIR="$PWD/notes" node check.ts
+NOTES_DIR="$PWD/notes" node check.ts node server.ts
 ```
 
 ```text
@@ -247,65 +254,82 @@ Node.js v22.22.0
 
 コマンドの先頭で `NOTES_DIR` を設定したのに、サーバーは「設定されていません」と言って終わっています。これが1つ目の原因です。
 
-## 原因1 サーバー自身のエラーで終わるなら起動時の環境変数を疑う
+## 原因1 サーバー自身が投げたエラーは文面が原因を指す
 
-サーバーが自分で投げたエラーは、起動に必要なものが足りないという知らせです。この記事の例で足りないのは、環境変数でした。
+サーバーが自分で投げたエラーなら、何が足りないかは stderr の文面に書かれています。この記事の例で足りないのは、環境変数 `NOTES_DIR` でした。
 
-SDK のクライアントは、親のプロセスの環境変数をすべてはサーバーに渡しません。決まった変数だけを選んで渡します。
+環境変数とは別の理由で投げたエラーも、同じように stderr に出ました。手元で試したのは、無い設定ファイル `config.json` を読むサーバーです。stderr に出たのは `ENOENT: no such file or directory` の行です。無いと言われたのは `config.json` でした。この場合に用意するのは、設定ファイルのほうです。
+
+環境変数が足りなくなった原因は、SDK のクライアント側にあります。SDK のクライアントは、親のプロセスの環境変数をすべてはサーバーに渡しません。決まった変数だけを選んで渡します。
 
 Linux と macOS で渡るのは、6つの変数です（出典3）。名前は `HOME`、`LOGNAME`、`PATH`、`SHELL`、`TERM`、`USER` です。Windows では、`APPDATA` と `PATH` を含む12個が渡ります（出典3）。`NOTES_DIR` はどちらにも入っていないので、シェルで設定してもサーバーには届きません。
 
 ### SDK のクライアントは env に書いた変数を足して渡す
 
-直すには、`StdioClientTransport` の `env` に渡したい変数を書きます。`check.ts` の `transport` を作る部分を、次のように変えます。
+直すには、`StdioClientTransport` の `env` に渡したい変数を書きます。`check.ts` では、シェルの環境変数をすべて `env` に写すことにしました。`transport` を作る行を、次のように変えます。
 
 変更前です。
 
 ```ts
-const transport = new StdioClientTransport({
-  command: process.execPath,
-  args: [process.argv[2] ?? "server.ts"],
-  stderr: "pipe",
-});
+const transport = new StdioClientTransport({ command, args, stderr: "pipe" });
 ```
 
-変更後です。`env` の1行を足しました。
+変更後です。`env` を作る4行を足し、`StdioClientTransport` に `env` を渡しました。
 
 ```ts
-const transport = new StdioClientTransport({
-  command: process.execPath,
-  args: [process.argv[2] ?? "server.ts"],
-  env: { NOTES_DIR: process.env.NOTES_DIR ?? "" },
-  stderr: "pipe",
-});
+const env: Record<string, string> = {};
+for (const [key, value] of Object.entries(process.env)) {
+  if (value !== undefined) env[key] = value;
+}
+const transport = new StdioClientTransport({ command, args, env, stderr: "pipe" });
 ```
 
-SDK は、既定で渡す変数に `env` の中身を重ねてからサーバーを起動します（出典3）。そのため、`env` には足りない変数だけを書けば十分です。同じコマンドで、もう一度実行します。
+`env` の型は `Record<string, string>` です（出典3）。手元で `process.env` をそのまま渡すと、`tsc` が型のエラーを出しました。値の型が `string | undefined` で、`string` に代入できないというエラーです。そのため、値が文字列のものだけを写しました。
+
+SDK は、既定で渡す変数に `env` の中身を重ねてからサーバーを起動します（出典3）。同じコマンドで、もう一度実行します。
 
 ```bash
-NOTES_DIR="$PWD/notes" node check.ts
+NOTES_DIR="$PWD/notes" node check.ts node server.ts
 ```
 
 ```text
-ok: {"content":[{"type":"text","text":"メモ: 2 件"}]}
+ok: {"name":"notes","version":"0.1.0"}
+tools: count_notes
 --- server stderr ---
 notes MCP server started (stdio)
 ```
 
-`notes` にある `.md` は2つなので、`メモ: 2 件` が正しい結果です。stderr には、起動のログだけが残っています。
+`tools:` の行に、`server.ts` が登録した `count_notes` が出ました。シェルで設定した `NOTES_DIR` が、今度はサーバーに届いています。自分で書いた SDK のクライアントでも、直し方は同じです。サーバーが求める変数を、`env` に書いて渡してください。
 
 ### Claude Code では -e で登録に書く
 
-Claude Code では、`claude mcp add` の `-e` で環境変数を渡します（出典7）。原因2のコマンドにも、`-e NOTES_DIR=…` を付けました。
+Claude Code では、`claude mcp add` の `-e` で環境変数を渡します（出典7）。`-e` を書く位置は、サーバーの名前より後ろ、`--` より前です（出典7）。作業フォルダで登録して、つながるかを確かめます。
 
-シェルで `export` した変数も、Claude Code 2.1.316 ではサーバーに届きました。`-e` を付けずに登録し、`export` の前と後で `claude mcp list` を比べた結果です。前は `Connection closed`、後は `Connected` と出ました。ただ、この届き方は claude を起動したシェルの設定しだいです。登録に `-e` で書いておけば、どのシェルから起動しても同じ値が渡ります。
+```bash
+claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node server.ts
+claude mcp list
+```
+
+```text
+Added stdio MCP server notes with command: node server.ts to user config
+File modified: ~/.claude.json
+Checking MCP server health…
+
+notes: node server.ts - √ Connected
+```
+
+`Connected` と出たので、`-e` で渡した `NOTES_DIR` はサーバーに届いています。設定は使い捨てのフォルダに書いたので、出力の中のパスは置き換えました。
+
+シェルで `export` した変数も、Claude Code 2.1.322 ではサーバーに届きました。`-e` を付けずに登録し、`export` の前と後で `claude mcp list` を比べた結果です。前は `Connection closed`、後は `Connected` と出ました。ただ、この届き方は claude を起動したシェルの設定しだいです。登録に `-e` で書いておけば、どのシェルから起動しても同じ値が渡ります。
+
+直した `check.ts` も、シェルの環境変数をサーバーに渡します。Claude Code 2.1.322 で、シェルとサーバーの変数の名前を比べました。違ったのは、Claude Code 自身の変数だけです。登録の `-e` に書いた変数は、`check.ts` を実行するコマンドの前に書いて渡します。
 
 ## 原因2 Cannot find module は起動するファイルのパスの誤り
 
 `Cannot find module` は、`node` が起動するファイルを見つけられなかったという意味です。ファイル名の書き間違いを、`check.ts` の引数で再現しました。
 
 ```bash
-NOTES_DIR="$PWD/notes" node check.ts servr.ts
+NOTES_DIR="$PWD/notes" node check.ts node servr.ts
 ```
 
 ```text
@@ -337,26 +361,19 @@ Node.js v22.22.0
 
 書き間違いより気づきにくいのが、相対パスでの登録です。SDK のクライアントは、`cwd` を指定しなければ自分の作業フォルダでサーバーを起動します（出典3）。相対パスは、その作業フォルダから探されます。
 
-Claude Code で同じことを確かめました。`server.ts` を相対パスで登録し、2つのフォルダで `claude mcp list` を実行します。
+原因1では、作業フォルダで `node server.ts` を登録し、`Connected` を確かめました。同じ登録のまま、ホームフォルダで `claude mcp list` を実行します。
 
 ```bash
-claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node server.ts
-claude mcp list
 (cd ~ && claude mcp list)
 ```
 
 ```text
-Added stdio MCP server notes with command: node server.ts to user config
-File modified: ~/.claude.json
-Checking MCP server health…
-
-notes: node server.ts - √ Connected
 Checking MCP server health…
 
 notes: node server.ts - × Failed to connect — CONNECTION_CLOSED: Connection closed
 ```
 
-括弧の中は、ホームフォルダに移ってから実行し、終わると元のフォルダに戻ります。結果は、作業フォルダで `Connected` でした。ホームフォルダでは、同じ登録が `Connection closed` で失敗しています。相対パスの `server.ts` を探す起点は、claude を実行したフォルダでした。
+括弧の中は、ホームフォルダに移ってから実行し、終わると元のフォルダに戻ります。同じ登録が、ホームフォルダでは `Connection closed` で失敗しました。相対パスの `server.ts` を探す起点は、claude を実行したフォルダでした。
 
 `claude mcp list` は、失敗した理由を状態の後ろに付けて表示します（出典7）。ただし、stderr の `Cannot find module` までは出ません。
 
@@ -378,7 +395,7 @@ Checking MCP server health…
 notes: node /path/to/notes-mcp/server.ts - √ Connected
 ```
 
-ホームフォルダから実行しても、`Connected` と出るようになりました。設定は使い捨てのフォルダに書いたので、出力の中のパスは置き換えています。試し終えたら、`claude mcp remove notes -s user` で登録を消せます。
+ホームフォルダから実行しても、`Connected` と出るようになりました。試し終えたら、`claude mcp remove notes -s user` で登録を消せます。
 
 ## 原因3 エラーの行が無ければサーバーが接続を始めていない
 
@@ -393,7 +410,7 @@ await server.connect(new StdioServerTransport());
 そのうえで、原因1で直した `check.ts` を同じコマンドで実行します。
 
 ```bash
-NOTES_DIR="$PWD/notes" node check.ts
+NOTES_DIR="$PWD/notes" node check.ts node server.ts
 ```
 
 ```text
@@ -431,7 +448,7 @@ notes MCP server started (stdio)
 
 ## Connection closed 以外の文面は別の原因を指す
 
-似た場面で出ても、文面が違えば原因も違います。手元で出た2つの文面を、SDK 1.32.2 と Claude Code 2.1.316 の表示で並べます。
+似た場面で出ても、文面が違えば原因も違います。手元で出た2つの文面を、SDK 1.32.2 と Claude Code 2.1.322 の表示で並べます。
 
 | 状況 | SDK のクライアントの文面 | Claude Code の表示 |
 |---|---|---|
@@ -442,7 +459,7 @@ notes MCP server started (stdio)
 
 答えないときの `-32001` は、SDK の RequestTimeout の番号です（出典5）。SDK は、応答を既定で60秒待ちます（出典4）。手元でも、失敗の表示まで60秒かかりました。Claude Code では、サーバーの起動を待つ時間を環境変数 `MCP_TIMEOUT` で変えられます（出典7）。
 
-stdout にログを書いた場合は、SDK 1.32.2 のクライアントでは接続が切れませんでした。SDK は JSON として読めない行でエラーを報告し、次の行を読み続けます（出典3）。[自作の記事](/posts/mcp-server-typescript-stdio)で確かめています。MCP Inspector の CLI に出た場合の読み方も、別の記事に書きました。[Inspector の記事](/posts/mcp-inspector-debug)を見てください。
+stdout にログを書いた場合は、SDK 1.32.2 のクライアントでは接続が切れませんでした。SDK は JSON として読めない行でエラーを報告し、次の行を読み続けます（出典3）。この動きは、講座で stdio の MCP サーバーを作った回に実行して確かめています。[サーバーを作る回](/posts/mcp-server-typescript-stdio)の stdout の節です。MCP Inspector の CLI で出た `Connection closed` の読み方は、別の記事にあります。[MCP Inspector で調べる記事](/posts/mcp-inspector-debug)を見てください。
 
 ## 料金がかからない範囲
 
@@ -454,32 +471,32 @@ stdout にログを書いた場合は、SDK 1.32.2 のクライアントでは�
 
 `Connection closed` が出たら、次の順に確かめてください。
 
-1. サーバーの stderr を表示します。Claude Code に理由が出なければ、同じコマンドと環境変数で `check.ts` から起動してください。
-2. stderr にサーバー自身のエラーがあれば、求められた環境変数を `env` か `-e` で渡します。
+1. サーバーの stderr を表示します。Claude Code なら、登録の `--` より後ろを `node check.ts` の後ろに並べてください。`-e` の変数は、そのコマンドの前に書きます。自分で書いた SDK のクライアントなら、`stderr: "pipe"` を足して stderr を読みます。
+2. stderr にサーバー自身のエラーがあれば、文面が求めるものを用意してください。環境変数なら、`env` か `-e` で渡します。
 3. `Cannot find module` があれば、パスを絶対パスに直してください。
 4. エラーの行が無ければ、`initialize` の1行を `echo` で送り、応答が返るかを見ます。
 
-どの原因も、確かめる道具は同じ `check.ts` でした。あなたのサーバーは、起動に必要な環境変数をいくつ読んでいますか。
+どの原因でも、手がかりはサーバーの stderr にありました。あなたのサーバーは、起動に必要な環境変数をいくつ読んでいますか。
 
 講座の次の記事からは、LLM の評価に入ります。回答を自動で採点するコードを TypeScript で書きます。[次の記事](/posts/llm-eval-harness-fixtures)に進んでください。
 
 ## 出典
 
-確認日は、どれも 2026-11-02 です。本文の（出典1）から（出典12）までの番号は、この表の番号を指します。
+確認日は、出典3、7、9 が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）から（出典12）までの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
 | 1 | MCP Specification 2025-11-25 Transports | https://modelcontextprotocol.io/specification/2025-11-25/basic/transports | 2026-11-02 |
 | 2 | MCP Specification 2025-11-25 Lifecycle | https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle | 2026-11-02 |
-| 3 | typescript-sdk v1.x src/client/stdio.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts | 2026-11-02 |
+| 3 | typescript-sdk v1.x src/client/stdio.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts | 2026-11-10 |
 | 4 | typescript-sdk v1.x src/shared/protocol.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts | 2026-11-02 |
 | 5 | typescript-sdk v1.x src/types.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts | 2026-11-02 |
 | 6 | JSON-RPC 2.0 Specification | https://www.jsonrpc.org/specification | 2026-11-02 |
-| 7 | Connect Claude Code to tools via MCP | https://code.claude.com/docs/en/mcp | 2026-11-02 |
+| 7 | Connect Claude Code to tools via MCP | https://code.claude.com/docs/en/mcp | 2026-11-10 |
 | 8 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 2026-11-02 |
-| 9 | Node.js Modules: TypeScript | https://nodejs.org/api/typescript.html | 2026-11-02 |
+| 9 | Node.js Modules: TypeScript | https://nodejs.org/api/typescript.html | 2026-11-10 |
 | 10 | Node.js Child process | https://nodejs.org/api/child_process.html | 2026-11-02 |
 | 11 | @modelcontextprotocol/sdk（npm） | https://www.npmjs.com/package/@modelcontextprotocol/sdk | 2026-11-02 |
 | 12 | typescript-sdk v1.x src/server/stdio.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/stdio.ts | 2026-11-02 |
 
-AI 支援で執筆しました。コードは 2026-11-02 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

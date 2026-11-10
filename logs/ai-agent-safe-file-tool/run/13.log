@@ -1,0 +1,53 @@
+date: 2026-11-10T07:16:49Z
+cwd: <work>/safe-file-tool
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+command: node setup.ts && echo '--- 1回目' && node try-safe.ts && echo '--- 2回目（setup.ts なし）' && node try-safe.ts && node setup.ts && echo '--- setup.ts のあと' && node try-safe.ts
+--- output (stdout+stderr) ---
+見本のファイルを作りました
+--- 1回目
+[readTextFile]
+  notes/todo.md -> 読めた: # TODO
+  ../outside/private.txt -> 拒否: 作業フォルダの外は読めません。
+  ../workspace-old/memo.txt -> 拒否: 作業フォルダの外は読めません。
+  /etc/hostname -> 拒否: notes/todo.md のように、作業フォルダからの相対パスで指定してください。
+  notes/shortcut.txt -> 拒否: リンクの先が作業フォルダの外か、許可していない種類のファイルです。
+  .env -> 拒否: 扱えるのは .md、.txt のファイルだけです。
+  notes/big.md -> 拒否: 20000 バイトを超えるファイルは読めません（30000 バイト）。
+  notes/nothing.md -> 拒否: notes/nothing.md はありません。
+[writeTextFile]
+  out/summary.md -> 書けた
+  out/summary.md -> 拒否: out/summary.md は既にあります。別の名前にしてください。
+  notes/todo.md -> 拒否: 書き込めるのは out/ の下だけです。
+  out/report.md -> 拒否: out/report.md は既にあります。別の名前にしてください。
+--- 2回目（setup.ts なし）
+[readTextFile]
+  notes/todo.md -> 読めた: # TODO
+  ../outside/private.txt -> 拒否: 作業フォルダの外は読めません。
+  ../workspace-old/memo.txt -> 拒否: 作業フォルダの外は読めません。
+  /etc/hostname -> 拒否: notes/todo.md のように、作業フォルダからの相対パスで指定してください。
+  notes/shortcut.txt -> 拒否: リンクの先が作業フォルダの外か、許可していない種類のファイルです。
+  .env -> 拒否: 扱えるのは .md、.txt のファイルだけです。
+  notes/big.md -> 拒否: 20000 バイトを超えるファイルは読めません（30000 バイト）。
+  notes/nothing.md -> 拒否: notes/nothing.md はありません。
+[writeTextFile]
+  out/summary.md -> 拒否: out/summary.md は既にあります。別の名前にしてください。
+  out/summary.md -> 拒否: out/summary.md は既にあります。別の名前にしてください。
+  notes/todo.md -> 拒否: 書き込めるのは out/ の下だけです。
+  out/report.md -> 拒否: out/report.md は既にあります。別の名前にしてください。
+見本のファイルを作りました
+--- setup.ts のあと
+[readTextFile]
+  notes/todo.md -> 読めた: # TODO
+  ../outside/private.txt -> 拒否: 作業フォルダの外は読めません。
+  ../workspace-old/memo.txt -> 拒否: 作業フォルダの外は読めません。
+  /etc/hostname -> 拒否: notes/todo.md のように、作業フォルダからの相対パスで指定してください。
+  notes/shortcut.txt -> 拒否: リンクの先が作業フォルダの外か、許可していない種類のファイルです。
+  .env -> 拒否: 扱えるのは .md、.txt のファイルだけです。
+  notes/big.md -> 拒否: 20000 バイトを超えるファイルは読めません（30000 バイト）。
+  notes/nothing.md -> 拒否: notes/nothing.md はありません。
+[writeTextFile]
+  out/summary.md -> 書けた
+  out/summary.md -> 拒否: out/summary.md は既にあります。別の名前にしてください。
+  notes/todo.md -> 拒否: 書き込めるのは out/ の下だけです。
+  out/report.md -> 拒否: out/report.md は既にあります。別の名前にしてください。
+--- exit=0

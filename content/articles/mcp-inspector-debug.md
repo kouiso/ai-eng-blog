@@ -6,82 +6,85 @@ tags: ["MCPサーバー", "MCP Inspector", "TypeScript"]
 main_keyword: "MCPサーバー"
 target_query: null
 course_step: 5
-cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには、Claude Code を使える有料のプランか Console のアカウントが要ります。"
+cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには Claude Code が要ります。Claude Code は、Pro、Max などのプランか Console のアカウント、または Amazon Bedrock、Microsoft Foundry などの API の提供元を通して使えます。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、MCP Inspector 2.13.0、SDK 1.32.2、zod 4.6.7、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-02"
+verified_at: "2026-11-10"
 prev: "mcp-server-streamable-http"
 next: "mcp-server-resources-prompts"
 sources:
   - url: "https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector"
     title: "MCP Inspector (Model Context Protocol Documentation)"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/inspector"
     title: "modelcontextprotocol/inspector README"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md"
     title: "MCP Inspector CLI Client README"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md"
     title: "Migrating from Inspector v1 to v2"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/inspector/blob/main/docs/environment-variables.md"
     title: "MCP Inspector Environment variables"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://www.npmjs.com/package/@modelcontextprotocol/inspector"
     title: "@modelcontextprotocol/inspector (npm)"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://docs.npmjs.com/cli/v10/commands/npm-exec"
     title: "npm-exec (npm Docs v10)"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://nodejs.org/api/typescript.html"
     title: "Node.js Modules: TypeScript"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
     title: "MCP Specification 2025-11-25 Tools"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://www.npmjs.com/package/@modelcontextprotocol/sdk"
     title: "@modelcontextprotocol/sdk (npm)"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://code.claude.com/docs/en/setup"
     title: "Claude Code Advanced setup"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
+  - url: "https://github.com/modelcontextprotocol/inspector/blob/main/docs/secret-storage.md"
+    title: "MCP Inspector Where secrets are stored"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-02
+updated: 2026-11-10
 ---
 
-MCP Inspector は、LLM を通さずに MCP サーバーのツールを呼べる公式の開発ツールです（出典1）。CLI モードなら、ツールの一覧も呼び出しの結果も、1行のコマンドで JSON として返ります。成否を表すのは終了コードです（出典3）。この記事では、2.13.0 の CLI と画面の両方で、文字数を数えるツールを持つサーバーを調べます。
+MCP Inspector は、MCP サーバーのテストとデバッグに使う公式の開発ツールです（出典1）。CLI モードなら、ツールの一覧も呼び出しの結果も、1行のコマンドで JSON として返ります。成否を表すのは終了コードです（出典3）。手元では、API キーを使わず、LLM も通さずに、自作のサーバーのツールを呼べました。この記事では、2.13.0 の CLI と、ブラウザで開く画面の両方で、文字数を数えるツールを持つサーバーを調べます。
 
 CLI で `--tool-arg text=2026` と書くと、`2026` は数値として送られます。文字列を受け取るツールは、入力のエラーを返しました。手元で引っかかったこの落とし穴の直し方も、実行結果付きで書いています。
 
 確かめた範囲は、Linux の端末で CLI のコマンドを打つところと、画面をブラウザで操作するところまでです。画面の操作には、ヘッドレスの Chromium と Playwright を使いました。
 
-対象は、MCP サーバーを TypeScript で書き始めた人です。書き写すファイルは2つで、合わせて40行あります。いちばん待つのは `npm install` で、2026-11-02 の実測では13秒でした。
+対象は、MCP サーバーを TypeScript で書き始めた人です。書き写すファイルは2つで、合わせて40行あります。いちばん待つのは `npm install` で、2026-11-10 の実測では9秒でした。
 
 講座の[前の記事](/posts/mcp-server-streamable-http)は、HTTP で動かす回です。この記事では、stdio 方式のサーバーを調べます。サーバーの作り方は、[自作の記事](/posts/mcp-server-typescript-stdio)に書きました。
 
-## MCP Inspector は MCP サーバーを直接呼ぶ公式の開発ツール
+## MCP Inspector の使い方は Web、CLI、TUI、mcpdo の4つ
 
-MCP Inspector は、MCP サーバーのテストとデバッグに使う公式のツールです（出典1）。パッケージは `@modelcontextprotocol/inspector` の1つです（出典2）。使い方は、次の4つに分かれます（出典2）。
+パッケージは `@modelcontextprotocol/inspector` の1つです（出典2）。使い方は、次の4つに分かれます（出典2）。
 
-- Web は、ブラウザで開く画面です。何も付けずに起動したときの既定です。
+- Web は、ブラウザで操作する画面で、何も付けずに起動したときの既定になります。
 - CLI は、`--cli` を付けて1回呼んで終わるコマンドです。
-- TUI は、`--tui` を付けて端末の中で操作する画面です。
-- mcpdo は、1度つないだ接続に続けてコマンドを送る試験的なコマンドです。
+- TUI は、`--tui` を付けて起動し、端末の中で操作します。
+- mcpdo は試験的なコマンドで、1度つないだ接続に続けてコマンドを送れます。
 
-この記事で使うのは CLI と Web の2つで、覚える順番は CLI が先です。結果がテキストで残り、サーバーを直すたびに同じコマンドを打ち直せるからです。画面は、やり取りのメッセージを目で追いたいときに開きます。
+この記事で使うのは CLI と Web の2つです。以下、Web のことを画面と書きます。覚える順番は CLI が先です。結果がテキストで残り、サーバーを直すたびに同じコマンドを打ち直せるからです。画面は、やり取りのメッセージを目で追いたいときに開きます。
 
 ### v2 では 6277 番のプロキシが無くなった
 
 Inspector の v2.0.0 は、2026-07-28 に npm で公開されました（出典6）。v1 は画面を 6274 番で、MCP のプロキシを 6277 番で動かしていました（出典4）。v2 が動かす Web のサーバーは、6274 番の1つです（出典4）。6277 番のポートか `MCP_PROXY_AUTH_TOKEN` が出てくる説明は、v1 のものです（出典4）。
 
-v1 はセキュリティの修正だけを受ける系列で、`@v1-latest` で入れられます（出典2）。2026-11-02 に `npm view` で確かめた latest は 2.13.0 でした（出典6）。
+v1 はセキュリティの修正だけを受ける系列で、`@v1-latest` で入れられます（出典2）。2026-11-10 に `npm view` で確かめた latest は 2.14.0 です（出典6）。公開日は 2026-11-05 でした（出典6）。
 
 ## 前提となる環境
 
-必要なのは、Node.js 22.19.0 以上と npm です（出典4）。npm は Node.js の版が合わないときに警告を出しますが、インストールは止めません（出典4）。先に版を見ておきます。
+この記事は、Inspector を 2.13.0 に固定して使います。2.13.0 が求める Node.js は 22.19.0 以上です（出典6）。2.14.0 からは、Node.js の下限が上がりました（出典4）。22 系は 22.23.4 以上、24 系は 24.22.1 以上、26 系は 26.12.1 以上です（出典4）。手元の 22.22.0 は 2.14.0 の条件に届かないので、2.13.0 を選びました。npm は Node.js の版が合わないときに警告を出しますが、インストールは止めません（出典4）。先に版を見ておきます。
 
 ```bash
 node -v
@@ -91,7 +94,7 @@ node -v
 v22.22.0
 ```
 
-この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。SDK は、2026-11-02 の latest の 1.32.2 です（出典10）。パッケージの版は次のとおりです。
+この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。SDK は、2026-11-10 の latest の 1.32.2 です（出典10）。パッケージの版は次のとおりです。
 
 | パッケージ | バージョン |
 |---|---|
@@ -170,7 +173,7 @@ await server.connect(new StdioServerTransport());
 console.error("char-count MCP server started (stdio)");
 ```
 
-`registerTool` の書き方と文字数の数え方は、上で挙げた自作の記事と同じです。最後の行は、起動のログを stderr に書いています。この行が Inspector のどこに出るかは、手順2で確かめました。
+`registerTool` の書き方と文字数の数え方は、上で挙げた自作の記事と同じです。最後の行は、起動のログを標準エラー出力（stderr）に書いています。この行が Inspector のどこに出るかは、手順2で確かめました。
 
 ファイルを置いたら、依存を入れます。
 
@@ -180,7 +183,7 @@ npm install
 
 ```text
 
-added 197 packages, and audited 198 packages in 13s
+added 197 packages, and audited 198 packages in 9s
 
 85 packages are looking for funding
   run `npm fund` for details
@@ -239,7 +242,7 @@ char-count MCP server started (stdio)
 }
 ```
 
-1行目は、サーバーが stderr に書いた起動のログです。CLI は、stdio のサーバーが stderr に書いた行をそのまま表示します（出典3）。この行が消えるのは、`--quiet` を付けたときだけです（出典3）。
+1行目は、サーバーが stderr に書いた起動のログです。CLI は、この行を結果の JSON の前に表示しました。`--quiet` を付けると、サーバーの stderr の行は出なくなります（出典3）。
 
 その下の JSON が、`tools/list` への応答です。クライアントは `tools/list` を送って、サーバーのツールを知ります（出典9）。Claude Code のようなクライアントが受け取るツールの定義も、この形です（出典9）。
 
@@ -329,7 +332,7 @@ v2 の CLI は、失敗の種類ごとに決まった終了コードで終わり
 | 4 | サーバーに届かない（名前を引けない、接続を拒まれた、時間切れ） |
 | 5 | ツールが `isError: true` を返したか、ツールが見つからない |
 
-失敗したときは、標準エラーに1行の JSON も出ます（出典3）。その `code` が、失敗の種類を表す決まった名前です（出典3）。
+失敗したときは、stderr に1行の JSON も出ます（出典3）。その `code` が、失敗の種類を表す決まった名前です（出典3）。
 
 ツールの名前を1文字間違えて呼んでみました。
 
@@ -409,11 +412,11 @@ MCP Inspector Web is up and running at:
 Opening browser...
 ```
 
-`[mcp-inspector]` で始まる5行は、OS のキーチェーンが無い環境でだけ出る警告です。Inspector は、サーバーに渡す環境変数の値と OAuth のトークンを秘密情報として保存します（出典2）。保存先は OS のキーチェーンです（出典2）。無ければ、`~/.mcp-inspector/secrets.json` に暗号化せずに書きます（出典2）。API キーを環境変数で渡すサーバーを調べるときは、この保存先を知っておいてください。
+`[mcp-inspector]` で始まる5行は、秘密情報の保存先についての警告です。Inspector は、サーバーに渡す環境変数の値と OAuth のトークンを秘密情報として保存します（出典2）。保存先は、使えれば OS のキーチェーンです（出典12）。キーチェーンが使えないと、保存先を切り替えたことを stderr で知らせます（出典12）。保存するファイルが暗号化されないときも、別の警告を出します（出典12）。手元の環境では、キーチェーンが使えませんでした。保存先は `~/.mcp-inspector/secrets.json` になり、暗号化もされません。API キーを環境変数で渡すサーバーを調べるときは、この保存先を知っておいてください。
 
 URL には、起動のたびに作られるトークンが付いています（出典1）。Inspector はこの URL をブラウザで開きます（出典1）。開かなかったときは、表示された URL を自分で開いてください。画面のサーバーは、既定で `127.0.0.1` の 6274 番で待ち受けます（出典5）。
 
-手元の環境には画面が無いので、表示された URL をヘッドレスの Chromium で開きました。次の4つを順に操作すると、ツールの結果が画面に出ます。ボタンの名前は、そのとき画面に出ていたものです。
+手元の環境にはディスプレイが無いので、表示された URL をヘッドレスの Chromium で開きました。次の4つを順に操作すると、ツールの結果が画面に出ます。ボタンの名前は、そのとき画面に出ていたものです。
 
 1. `node` のスイッチを入れると、表示が `Connected` に変わります。
 2. 上に出る `Tools` を選び、一覧の `count_chars` を押してください。
@@ -430,7 +433,7 @@ URL には、起動のたびに作られるトークンが付いています（�
 
 この記事の手順は、どれも LLM の API を呼ばないので、API の料金はかかりません。Inspector はオープンソースで、ライセンスは Apache-2.0 と MIT です（出典2）。
 
-料金が要るのは、調べたサーバーを Claude Code に登録し、会話で Claude にツールを呼ばせる操作です。Claude Code を使うには、有料のプランか Console のアカウントが要ります（出典11）。有料のプランは、Pro、Max、Ultra、Team、Enterprise の5つです（出典11）。この記事は、その操作をしていません。
+料金が要るのは、調べたサーバーを Claude Code に登録し、会話で Claude にツールを呼ばせる操作です。Claude Code を使うには、プランか Console のアカウントが要ります（出典11）。使えるプランは、Pro、Max、Ultra、Team、Enterprise の5つです（出典11）。無料の claude.ai のプランには、Claude Code が含まれていません（出典11）。Amazon Bedrock、Microsoft Foundry などの API の提供元でも使えます（出典11）。この記事は、その操作をしていません。
 
 ## Claude Code につなぐ前に Inspector で確かめる
 
@@ -440,20 +443,21 @@ URL には、起動のたびに作られるトークンが付いています（�
 
 ## 出典
 
-確認日は、どれも 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、どれも 2026-11-10 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
-| 1 | MCP Inspector（Model Context Protocol のドキュメント） | https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector | 2026-11-02 |
-| 2 | modelcontextprotocol/inspector README | https://github.com/modelcontextprotocol/inspector | 2026-11-02 |
-| 3 | MCP Inspector CLI Client README | https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md | 2026-11-02 |
-| 4 | Migrating from Inspector v1 to v2 | https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md | 2026-11-02 |
-| 5 | MCP Inspector Environment variables | https://github.com/modelcontextprotocol/inspector/blob/main/docs/environment-variables.md | 2026-11-02 |
-| 6 | @modelcontextprotocol/inspector（npm） | https://www.npmjs.com/package/@modelcontextprotocol/inspector | 2026-11-02 |
-| 7 | npm-exec（npm Docs v10） | https://docs.npmjs.com/cli/v10/commands/npm-exec | 2026-11-02 |
-| 8 | Node.js Modules: TypeScript | https://nodejs.org/api/typescript.html | 2026-11-02 |
-| 9 | MCP Specification 2025-11-25 Tools | https://modelcontextprotocol.io/specification/2025-11-25/server/tools | 2026-11-02 |
-| 10 | @modelcontextprotocol/sdk（npm） | https://www.npmjs.com/package/@modelcontextprotocol/sdk | 2026-11-02 |
-| 11 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 2026-11-02 |
+| 1 | MCP Inspector（Model Context Protocol のドキュメント） | https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector | 2026-11-10 |
+| 2 | modelcontextprotocol/inspector README | https://github.com/modelcontextprotocol/inspector | 2026-11-10 |
+| 3 | MCP Inspector CLI Client README | https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md | 2026-11-10 |
+| 4 | Migrating from Inspector v1 to v2 | https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md | 2026-11-10 |
+| 5 | MCP Inspector Environment variables | https://github.com/modelcontextprotocol/inspector/blob/main/docs/environment-variables.md | 2026-11-10 |
+| 6 | @modelcontextprotocol/inspector（npm） | https://www.npmjs.com/package/@modelcontextprotocol/inspector | 2026-11-10 |
+| 7 | npm-exec（npm Docs v10） | https://docs.npmjs.com/cli/v10/commands/npm-exec | 2026-11-10 |
+| 8 | Node.js Modules: TypeScript | https://nodejs.org/api/typescript.html | 2026-11-10 |
+| 9 | MCP Specification 2025-11-25 Tools | https://modelcontextprotocol.io/specification/2025-11-25/server/tools | 2026-11-10 |
+| 10 | @modelcontextprotocol/sdk（npm） | https://www.npmjs.com/package/@modelcontextprotocol/sdk | 2026-11-10 |
+| 11 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 2026-11-10 |
+| 12 | MCP Inspector Where secrets are stored | https://github.com/modelcontextprotocol/inspector/blob/main/docs/secret-storage.md | 2026-11-10 |
 
-AI 支援で執筆しました。コードは 2026-11-02 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

@@ -15,7 +15,7 @@ writeFileSync("workspace/.env", "SAMPLE_KEY=dummy-value\n");
 writeFileSync("workspace-old/memo.txt", "隣のフォルダのメモです\n");
 writeFileSync("outside/private.txt", "作業フォルダの外のファイルです\n");
 
-// 作業フォルダの中に、外を指すシンボリックリンクを2つ置きます。
+// 作業フォルダの中に、外を指すリンクを2つ置きます。
 symlinkSync("../../outside/private.txt", "workspace/notes/shortcut.txt");
 symlinkSync("../../outside/report.md", "workspace/out/report.md");
 

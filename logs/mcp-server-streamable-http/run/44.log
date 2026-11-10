@@ -1,0 +1,12 @@
+date: 2026-11-10 07:17:22 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: cp ../code/extra/server.cors-check.ts src/server.ts && diff ../code/src/server.ts src/server.ts
+exit: 1
+elapsed: 7 ms
+--- stdout+stderr ---
+30c30
+< const ALLOWED_ORIGINS: string[] = [];
+---
+> const ALLOWED_ORIGINS: string[] = ["http://localhost:5173"];

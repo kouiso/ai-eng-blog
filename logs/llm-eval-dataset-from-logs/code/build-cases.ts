@@ -35,7 +35,7 @@ lines.forEach((line, i) => {
   }
 });
 
-// bad の評価が付いたログを先に、同じ扱いなら新しいログを先に並べる
+// feedback が bad のログを先に、同じ扱いなら新しいログを先に並べる
 records.sort(
   (a, b) =>
     Number(b.feedback === "bad") - Number(a.feedback === "bad") ||

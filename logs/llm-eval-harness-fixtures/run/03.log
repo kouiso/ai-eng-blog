@@ -1,4 +1,4 @@
-date: 2026-11-02T15:45:19Z
+date: 2026-11-10T07:39:37Z
 cwd: <work>/llm-eval
 node: v22.22.0 / npm: 10.9.4
 command: node compare.ts

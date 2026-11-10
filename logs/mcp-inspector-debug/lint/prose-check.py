@@ -52,33 +52,37 @@ print(f"units={len(units)} excluded_url_only_cells={excluded_cells}")
 
 # C25 文の長さ（句点を含めて数える）
 over = [(n, k, len(s), s) for n, k, s in units if len(s) > 60]
-lens = [len(s) for _, k, s in units if k in ("prose", "fm-description")]
+lens = [len(s) for _, k, s in units if k in ("prose", "bullet", "fm-description")]
 print(f"C25 over60={len(over)} max={max(len(s) for _, _, s in units)}")
 for o in over:
     print("  OVER", o)
-print(f"C16 prose sentences={len(lens)} min={min(lens)} max={max(lens)} "
+print(f"C16 prose+bullet sentences={len(lens)} min={min(lens)} max={max(lens)} "
       f"le20={sum(1 for x in lens if x <= 20)} 41to60={sum(1 for x in lens if 41 <= x <= 60)}")
 
-# C17 同じ語尾の3連続（地の文の文。末尾の（出典n）と句点を外し、末尾3字で比べる）
-prose = [(n, s) for n, k, s in units if k == "prose"]
+# C17 同じ語尾の3連続。除外は入れない（2026-11-10 改訂。以前の版は地の文だけを見て箇条書きを飛ばしていた）。
+# 列A: frontmatter の title/description、見出し、地の文、箇条書き、表のセルを、原稿に出てくる順にすべて並べる。
+# 列B: 文として読む単位（地の文、箇条書き、番号付きの手順、description）だけを順に並べ、見出しと表をまたいで続けて数える。
+# どちらの列でも、末尾の句点・閉じ括弧・（出典n）を外してから、末尾3字と末尾2字の両方で比べる。
 def ending(s):
-    s = re.sub(r"[。！？]$", "", s)
-    s = re.sub(r"（出典\d+）$", "", s)
-    s = re.sub(r"[。！？]$", "", s)
-    return s[-3:]
-same3 = []
-for i in range(len(prose) - 2):
-    e = [ending(s) for _, s in prose[i:i + 3]]
-    if e[0] == e[1] == e[2]:
-        same3.append((prose[i][0], e[0]))
-# 「ます」「です」など2字の語尾でも3連続を見る（厳しめ）
-same3_2 = []
-for i in range(len(prose) - 2):
-    e = [ending(s)[-2:] for _, s in prose[i:i + 3]]
-    if e[0] == e[1] == e[2]:
-        same3_2.append((prose[i][0], e[0], [n for n, _ in prose[i:i + 3]]))
-print(f"C17 SAME3(3字)={len(same3)} {same3}")
-print(f"C17 SAME3(2字・参考)={len(same3_2)} {same3_2}")
+    prev = None
+    while prev != s:
+        prev = s
+        s = re.sub(r"[。！？]$", "", s)
+        s = re.sub(r"（出典\d+）$", "", s)
+        s = re.sub(r"[)）」』】]$", "", s)
+    return s
+seq_a = [(n, k, s) for n, k, s in units]
+seq_b = [(n, k, s) for n, k, s in units if k in ("prose", "bullet", "fm-description")]
+for label, seq in (("A(全単位)", seq_a), ("B(文の単位・見出しと表をまたぐ)", seq_b)):
+    for width in (3, 2):
+        hits = []
+        for i in range(len(seq) - 2):
+            e = [ending(s)[-width:] for _, _, s in seq[i:i + 3]]
+            if e[0] == e[1] == e[2]:
+                hits.append((e[0], [(n, k) for n, k, _ in seq[i:i + 3]]))
+        print(f"C17 {label} 末尾{width}字の3連続={len(hits)}")
+        for h in hits:
+            print("  SAME3", h)
 
 # C19/C29 文末（地の文と frontmatter の description）
 def is_desumasu(s):
@@ -86,8 +90,8 @@ def is_desumasu(s):
     t = re.sub(r"（出典\d+）$", "", t)
     t = re.sub(r"\)$", "", t)
     return bool(re.search(r"(です|ます|ません|ました|でした|ください|でしょうか|ますか|ませんか)$", t))
-non = [(n, s) for n, k, s in units if k in ("prose", "fm-description") and not is_desumasu(s)]
-print(f"C19 non-desumasu prose={len(non)}")
+non = [(n, s) for n, k, s in units if k in ("prose", "bullet", "fm-description") and not is_desumasu(s)]
+print(f"C19 non-desumasu prose+bullet={len(non)}")
 for x in non:
     print("  NON", x)
 

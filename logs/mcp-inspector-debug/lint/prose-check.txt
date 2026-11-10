@@ -1,9 +1,11 @@
-units=222 excluded_url_only_cells=11
+units=236 excluded_url_only_cells=12
 C25 over60=0 max=60
-C16 prose sentences=147 min=11 max=60 le20=11 41to60=70
-C17 SAME3(3字)=0 []
-C17 SAME3(2字・参考)=0 []
-C19 non-desumasu prose=0
+C16 prose+bullet sentences=163 min=11 max=60 le20=13 41to60=74
+C17 A(全単位) 末尾3字の3連続=0
+C17 A(全単位) 末尾2字の3連続=0
+C17 B(文の単位・見出しと表をまたぐ) 末尾3字の3連続=0
+C17 B(文の単位・見出しと表をまたぐ) 末尾2字の3連続=0
+C19 non-desumasu prose+bullet=0
 PAT bold **: 0
 PAT em-dash —: 0
 PAT 罫線 ─: 0
@@ -29,7 +31,8 @@ PAT や（並列候補）: 0
 PAT さまざま: 0
 PAT 落ちる: 0
 PAT 効く: 1
-    (102, 'は、TypeScript のまま  で実行します。Node.js は 22.18.0 から、型の記述')
+    (105, 'は、TypeScript のまま  で実行します。Node.js は 22.18.0 から、型の記述')
 PAT 回す: 0
 PAT 仕様書: 0
 PAT 地図: 0
+exit=0

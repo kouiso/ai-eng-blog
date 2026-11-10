@@ -1,9 +1,10 @@
-date: 2026-11-02 15:52:12 +0000
+date: 2026-11-10 07:49:16 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
-command: bash -c "cp ../code/extra/tsconfig.typecheck-skiplib.json . && npx tsc -p tsconfig.typecheck-skiplib.json; echo tsc_exit=$?"
+command: bash -c "npx tsc -v; npx tsc -p tsconfig.typecheck-skiplib.json; echo tsc_exit=$?"
 exit: 0
-elapsed: 572 ms
+elapsed: 758 ms
 --- stdout+stderr ---
+Version 7.0.2
 tsc_exit=0
