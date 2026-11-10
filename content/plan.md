@@ -53,10 +53,10 @@
 | 12 | 3 | RAG | `rag-chunking-japanese-text` | RAG 用に日本語の文書をチャンクに分ける【文字数、見出し、重なり】 | やり方 | ○ | 文字列を分ける処理だけで、外部サービスを使わない | 11, 13 |
 | 13 | 3 | RAG | `rag-local-embeddings-transformers-js` | 埋め込みを手元で作ってベクトル検索する【Transformers.js、API キー不要】 | やり方 | ○ | 埋め込みモデルは Hugging Face から無料で落としてローカルで動かす。ダウンロードできることは確認済み | 11, 15 |
 | 14 | 3 | RAG | `rag-answer-with-citations-claude` | RAG で検索結果を渡して出典つきで回答させる【Claude API】 | やり方 | × | 回答の生成に API を呼ぶ | 11, 6 |
-| 15 | 3 | RAG | `rag-hybrid-search-rrf` | BM25 とベクトル検索を RRF で合わせるハイブリッド検索【TypeScript】 | やり方 | ○ | 11 と 13 の結果を順位で合わせる計算だけ | 11, 13, 28 |
+| 15 | 3 | RAG | `rag-hybrid-search-rrf` | RAG のハイブリッド検索を TypeScript で作る【BM25 とベクトル検索を RRF で合わせる】 | やり方 | ○ | 11 と 13 の結果を順位で合わせる計算だけ | 11, 13, 28 |
 | 16 | 4 | AIエージェント | `ai-agent-tool-use-loop-typescript` | AI エージェントの中身を作る【tool use のループを TypeScript で自作】 | やり方 | × | モデルがツールを選ぶ部分は API を呼ばないと動かない | 8, 17, 18 |
 | 17 | 4 | AIエージェント | `claude-agent-sdk-first-agent` | Claude Agent SDK で最初のエージェントを動かす【TypeScript、自分の Claude プランで試す】 | やり方 | プラン | 記事の主題が Agent SDK そのもの。`query()` はプランのログインで動き、`apiKeySource` が `"none"` になることを確かめた。製品に組み込むときは API キーで認証すると本文に書く | 16, 18 |
-| 18 | 4 | AIエージェント | `ai-agent-max-turns-budget-limit` | AI エージェントが止まらないのを防ぐ【Claude Agent SDK の maxTurns と maxBudgetUsd】 | やり方 | プラン | 本物のループを Agent SDK で回し、`error_max_turns` と `error_max_budget_usd` で止まることと、そのあと例外が投げられることを示す（どちらも確かめた）。自作ループに上限を足す書き方は 16 に任せる | 17, 16 |
+| 18 | 4 | AIエージェント | `ai-agent-max-turns-budget-limit` | AI エージェントを上限で止める【Claude Agent SDK の maxTurns と maxBudgetUsd】 | やり方 | プラン | 本物のループを Agent SDK で回し、`error_max_turns` と `error_max_budget_usd` で止まることと、そのあと例外が投げられることを示す（どちらも確かめた）。自作ループに上限を足す書き方は 16 に任せる | 17, 16 |
 | 19 | 4 | AIエージェント | `ai-agent-safe-file-tool` | AI エージェントに渡すファイル操作ツールを安全に作る【パスの制限と許可リスト】 | やり方 | ○ | ツール関数に危ない入力を直接渡して確かめる。モデルにつなぐ部分は 16 へのリンクに任せ、この記事にはコードを置かない | 16, 21 |
 | 20 | 4 | AIエージェント | `ai-agent-vs-workflow` | AI エージェントとワークフローの違い【決まった手順なら LLM を順に呼ぶだけでいい】 | 概念 | プラン | 概念の記事で、Messages API の書き方は検索意図に入らない。ワークフローは `tools: []` と `maxTurns: 1` の `query()` をコードで順に呼び、エージェントはツールを渡した `query()` 1回で見せる | 16, 17 |
 | 21 | 5 | MCPサーバー | `mcp-server-typescript-stdio`（パイロット、作成済み） | MCP サーバーを TypeScript で自作する手順【SDK v1.32.2、Claude Code に接続まで】 | やり方 | ○ | 作成済み。stdio、ツール1つ、SDK のクライアントでの確認、`claude mcp add`、stdout のログの落とし穴を扱う | 22, 23, 24, 25 |
@@ -66,7 +66,7 @@
 | 25 | 5 | MCPサーバー | `mcp-connection-closed-fix` | MCP サーバーにつながらない（Connection closed）原因と直し方 | エラー | ○ | 失敗の再現も直したあとの確認も SDK のクライアントで行う。stdout にログを書く原因は 21 にあるのでリンクで済ませる | 21, 23 |
 | 26 | 6 | LLM 評価 | `llm-eval-harness-fixtures` | LLM の回答を自動で採点する仕組みを作る【完全一致、部分一致、正規表現】 | やり方 | ○ | 採点するのは手作りの見本の回答で、採点の処理だけを動かす。実際のモデルの出力とは書かない | 27, 30 |
 | 27 | 6 | LLM 評価 | `llm-as-a-judge-claude` | LLM-as-a-Judge で回答を採点する【Claude Agent SDK に採点基準と JSON スキーマを渡す】 | やり方 | プラン | 中身は採点基準の書き方と採点結果の受け取り方で、呼び出し口は問わない。`tools: []`、短い `systemPrompt`、`outputFormat` で採点結果を `structured_output` に受け取れることを確かめた。Structured Outputs の API の説明は 6 に任せる | 26, 29 |
-| 28 | 6 | LLM 評価 | `rag-retrieval-eval-recall-mrr` | RAG の検索の良し悪しを数字で測る【Recall@k と MRR を TypeScript で】 | やり方 | ○ | 11・15 の検索器と、手で作った質問と正解の組で計算する | 11, 15, 26 |
+| 28 | 6 | LLM 評価 | `rag-retrieval-eval-recall-mrr` | LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】 | やり方 | ○ | 11・15 の検索器と、手で作った質問と正解の組で計算する | 11, 15, 26 |
 | 29 | 6 | LLM 評価 | `promptfoo-llm-eval-intro` | promptfoo で LLM のプロンプトを評価する【設定ファイル1つから、Claude プランで動かす】 | やり方 | プラン | 記事の中身は promptfoo の設定（prompts、providers、tests、assert）。公式の `anthropic:claude-agent-sdk` プロバイダーに `apiKeyRequired: false` を付けて、モデルを呼ぶ評価が通ることを確かめた | 26, 27 |
 | 30 | 6 | LLM 評価 | `llm-eval-dataset-from-logs` | LLM 評価用のテストケースを作る【ログから選んで JSONL にする】 | やり方 | ○ | 手作りのログの見本から重複を除き、件数を揃えて書き出す処理だけ | 26, 28 |
 

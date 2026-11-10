@@ -31,3 +31,13 @@
 | 「テストケースの数を増やすと、こうした揺れも合否に表れやすくなります」 | 試していない推測 | `show-failures.ts` の出力を実行ごとに残す、という手順に置き換えた |
 | 60字を超えた14文（リンクを含む文、`PROMPTFOO_FAILED_TEST_EXIT_CODE` を含む文など） | C25。インラインコードとリンクの URL も書かれたとおりに数える | 文を分けるか、語を減らした。`lint/prose-check.txt` で `long(>60)=0 max=60` |
 | 見出し「{{inquiry}} に tests の vars が入る」「apiKeyRequired: false で、…」「npm audit fix --force は実行しない」 | コードの名前と半角コロンを地の文に置いていた | インラインコードでくくった |
+
+## 2026-11-10 の再実行
+
+コードを全部動かし直し（`run/01.log`〜`13.log` を 08:38〜08:39 UTC に取り直した）、記事の出力と数値を新しいログに合わせた。直したあとに lint 2本、`prose-check.py`、`check-code-and-outputs.py` を回し直した。
+
+| 行 | 検出 | use / mention | 判断 |
+|---|---|---|---|
+| 392 | prose-check C25 72字「2回目の `show-failures.ts` では、1回目は `bug` で始まっていた2件目の出力にも、太字の記号と「分類:」が付きました。」 | use（地の文） | 直した。「1回目の2件目の出力は、`bug` で始まっていました。」（28字）と「2回目の `show-failures.ts` では、その2件目にも太字の記号と「分類:」が付きました。」の2文に分けた |
+
+最後の実行の結果: ai-smell は use 0件 / mention 0件、`exit=0`。writing-lint は FATAL 0 / DENSITY超過 0 / SHOULD 0、`exit=0`（文の数が186から187に変わっただけで、ほかの出力は前の版と同じ）。warn、SHOULD、WATCH、INFO は0件で、判断する項目は増えていない。

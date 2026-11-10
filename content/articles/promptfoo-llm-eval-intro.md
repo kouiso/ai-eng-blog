@@ -122,7 +122,7 @@ npm install --save-exact promptfoo@0.125.1 @anthropic-ai/claude-agent-sdk@0.3.32
 npm warn deprecated @modelcontextprotocol/server-filesystem@2026.8.31: Date-based versions are no longer published. This package has resumed semantic versioning at 1.0.0: install the latest version.
 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 
-added 576 packages, and audited 577 packages in 36s
+added 576 packages, and audited 577 packages in 35s
 
 111 packages are looking for funding
   run `npm fund` for details
@@ -268,37 +268,37 @@ echo $?
 ```
 
 ```text
-Starting evaluation eval-Z3g-2026-11-10T07:59:24
+Starting evaluation eval-HDz-2026-11-10T08:38:50
 Running 6 test cases (up to 4 at a time)...
 
 ┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
 │ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
 │                              │                              │ 形の指定なし                 │ 形の指定あり                 │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] billing               │ [PASS] billing               │
-│                              │                              │ この問い合わせは、請求額(二… │                              │
-│                              │                              │ billing に分類します。       │                              │
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **分類: billing**     │ [PASS] billing               │
+│                              │                              │ 理由:                        │                              │
+│                              │                              │ 請求額が2回引き落とされたと… │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] bug                   │ [PASS] bug                   │
 │                              │                              │ この問い合わせは、保存操作…  │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
-│                              │                              │ ロゴの利用許諾に関する質問…  │                              │
-│                              │                              │ に分類します。               │                              │
+│                              │                              │ この問い合わせは、御社ロゴ…  │                              │
+│                              │                              │ other に分類します。         │                              │
 └──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
-✓ Eval complete (ID: eval-Z3g-2026-11-10T07:59:24)
+✓ Eval complete (ID: eval-HDz-2026-11-10T08:38:50)
 
 » View results: promptfoo view
 » Feedback: https://promptfoo.dev/feedback
 
-Total Tokens: 17,489
-  Provider: 17,489 (16,050 prompt, 1,439 completion, 1,138 reasoning)
+Total Tokens: 16,663
+  Provider: 16,663 (16,055 prompt, 608 completion, 250 reasoning)
 
 Results:
   ✓ 3 passed (50.00%)
   ✗ 3 failed (50.00%)
   0 errors (0%)
-Duration: 10s (concurrency: 4)
+Duration: 8s (concurrency: 4)
 
 Writing output to results.jsonl
 100
@@ -369,19 +369,19 @@ node show-failures.ts
 ```text
 --- 形の指定なし / 先月の請求額が2回引き落とされています。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "billing\n\nこの問い合わせは、請求額(二重引き落とし)に関する内容のため billing に分類します。"
+出力: "**分類: billing**\n\n理由: 請求額が2回引き落とされたという内容で、料金の請求・決済に関する問題です。"
 --- 形の指定なし / 保存ボタンを押すと画面が真っ白になります。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "bug\n\nこの問い合わせは、保存操作で画面が真っ白になるという不具合の報告なので「bug」に分類されます。料金や請求に関する内容は含まれていません。"
+出力: "bug\n\nこの問い合わせは、保存操作をきっかけに画面が真っ白になる(表示がクラッシュする)という不具合の報告なので、「bug」に分類します。課金に関する内容はなく、機能の不具合に当たるため「other」ではありません。"
 --- 形の指定なし / 御社のロゴを講演のスライドに使ってもよいですか。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "**分類: other**\n\nロゴの利用許諾に関する質問で、請求(billing)にも不具合(bug)にも当たらないため、other に分類します。"
+出力: "**分類: other**\n\nこの問い合わせは、御社ロゴの利用許可を求めるもので、請求(billing)にもバグ(bug)にも当たりません。ブランドロゴの使用可否に関する相談として other に分類します。"
 合格 3 / 6
 ```
 
 落ちた条件は、3件とも「ラベル1語」です。「分類が合う」は3件とも通っていて、モデルの分類は正しいとわかります。
 
-3件目は、Markdown の太字の記号と「分類:」まで付きました。この出力をそのまま受け取ると、アプリのコードは `other` を取り出せません。
+1件目と3件目は、Markdown の太字の記号と「分類:」まで付きました。この出力をそのまま受け取ると、アプリのコードはラベルの1語を取り出せません。
 
 採点を緩めない理由は[採点の記事](/posts/llm-eval-harness-fixtures)にあります。promptfoo の側で役に立ったのは、metric を分けておいたことです。「分類が合う」が通って「ラベル1語」だけが落ちたので、直す先はプロンプトの形の指定に絞れます。この設定では「形の指定あり」がその直し方です。
 
@@ -389,10 +389,10 @@ node show-failures.ts
 
 同じ設定のまま、もう1回 `eval` を動かしました。合格は同じ3件で、終了コードも 100 でした。
 
-違ったのは「形の指定なし」の出力の文面です。2回目の `show-failures.ts` では、2件目の出力の途中に太字の記号が出ました。
+違ったのは「形の指定なし」の出力の文面です。1回目の2件目の出力は、`bug` で始まっていました。2回目の `show-failures.ts` では、その2件目にも太字の記号と「分類:」が付きました。
 
 ```text
-出力: "bug\n\nこの問い合わせは「保存ボタンを押すと画面が真っ白になる」という現象の報告で、アプリケーションの不具合(クラッシュや描画の失敗)にあたるため、**bug** に分類します。課金に関する内容や、ほかの種類の問い合わせではありません。"
+出力: "**分類: bug**\n\n「保存ボタンを押すと画面が真っ白になります」は、操作に対してアプリが正しく動作しない不具合の報告です。請求や料金の内容ではなく、要望や質問でもないため、bug に分類します。"
 ```
 
 2回で同じ合否になっても、出力の文字列そのものは毎回変わります。文面の揺れまで比べたいときは、`show-failures.ts` の出力を実行ごとに残しておきます。
@@ -403,7 +403,7 @@ node show-failures.ts
 
 このプロバイダーは、ふつうは応答をキャッシュします（出典3）。ただし `apiKeyRequired: false` のときは、キャッシュを読まず、書きもしません（出典9）。
 
-2回の実行のトークン数は 17,489 と 17,201 で、2回目もモデルを6回呼んでいました。設定を変えずに `eval` を繰り返すと、そのたびに利用枠が減ります。
+2回の実行のトークン数は 16,663 と 17,829 で、2回目もモデルを6回呼んでいました。設定を変えずに `eval` を繰り返すと、そのたびに利用枠が減ります。
 
 ### システムプロンプトを差し替えると、トークン数はほぼ半分になった
 
@@ -411,16 +411,16 @@ node show-failures.ts
 
 | 設定 | Total Tokens | うち prompt |
 |---|---|---|
-| `custom_system_prompt` あり（1回目） | 17,489 | 16,050 |
-| `custom_system_prompt` なし | 31,477 | 29,913 |
+| `custom_system_prompt` あり（1回目） | 16,663 | 16,055 |
+| `custom_system_prompt` なし | 31,708 | 29,916 |
 
-1行を消すと、prompt のトークン数は 16,050 から 29,913 に増えました。増えた分は、既定で付く Claude Code のシステムプロンプトです（出典9）。
+1行を消すと、prompt のトークン数は 16,055 から 29,916 に増えました。増えた分は、既定で付く Claude Code のシステムプロンプトです（出典9）。
 
 合否は、どちらの設定でも同じ3件でした。評価したいのが自分のアプリのプロンプトなら、システムプロンプトもアプリと同じものに差し替えておくのが筋です。
 
 ### results.jsonl の cost は定価で換算した見積もり
 
-2回目の `results.jsonl` の `cost` を6件分足すと、0.00236732 ドルでした。モデルごとの内訳には、`costBasis` が `list` と入っています。
+2回目の `results.jsonl` の `cost` を6件分足すと、0.00268162 ドルでした。モデルごとの内訳には、`costBasis` が `list` と入っています。
 
 この数字は SDK の `total_cost_usd` と同じ見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典15）。プランで動かしたときの請求額としては読まず、使った量の目安にします。
 

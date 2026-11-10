@@ -1,40 +1,38 @@
-date: 2026-11-10T07:59:50+00:00
+date: 2026-11-10T08:39:10+00:00
 cwd: <work>
 node: v22.22.0  npm: 10.9.4
 ANTHROPIC_API_KEY: unset
 $ npx promptfoo eval --no-share -c promptfooconfig.no-system-prompt.yaml
 ----
-Starting evaluation eval-rOT-2026-11-10T07:59:52
+Starting evaluation eval-CQE-2026-11-10T08:39:12
 Running 6 test cases (up to 4 at a time)...
 
 ┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
 │ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
 │                              │                              │ 形の指定なし                 │ 形の指定あり                 │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **分類: billing**     │ [PASS] billing               │
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **billing**           │ [PASS] billing               │
 │                              │                              │ 「先月の請求額が2回引き落と… │                              │
-│                              │                              │ billing に該当します。       │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] **分類: bug**         │ [PASS] bug                   │
-│                              │                              │ 保存ボタンを押すと画面が真…  │                              │
+│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] **bug**               │ [PASS] bug                   │
+│                              │                              │ 「保存ボタンを押すと画面が…  │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
-│                              │                              │ この問い合わせは、ロゴの利…  │                              │
-│                              │                              │ に分類します。               │                              │
+│                              │                              │ ロゴの使用許可を求める問い…  │                              │
 └──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
-✓ Eval complete (ID: eval-rOT-2026-11-10T07:59:52)
+✓ Eval complete (ID: eval-CQE-2026-11-10T08:39:12)
 
 » View results: promptfoo view
 » Feedback: https://promptfoo.dev/feedback
 
-Total Tokens: 31,477
-  Provider: 31,477 (29,913 prompt, 1,564 completion, 1,220 reasoning)
+Total Tokens: 31,708
+  Provider: 31,708 (29,916 prompt, 1,792 completion, 1,419 reasoning)
 
 Results:
   ✓ 3 passed (50.00%)
   ✗ 3 failed (50.00%)
   0 errors (0%)
-Duration: 10s (concurrency: 4)
+Duration: 8s (concurrency: 4)
 
 ----
 exit=100

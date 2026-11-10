@@ -2,6 +2,10 @@
 
 判定日: 2026-11-10（初版の判定は 2026-11-02）。原稿: `content/articles/rag-retrieval-eval-recall-mrr.md`（581行。行番号はすべてこの版）。2026-11-10 にレビューの指摘6件を直し、コードを取り直し、lint を回し直した版を判定した（直した内容は `lint/judgments.md` の「2026-11-10 の直し」）。
 
+## 2026-11-10 の2回目の直し（C02）
+
+C02 の NG の原因のうち原稿の側にあるもの（タイトルに講座のメインキーワード「LLM 評価」が無い）を直した。2行目のタイトルを「RAG の検索の良し悪しを数字で測る【Recall@k と MRR を TypeScript で】」から「LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】」に変え、61行目のリードの1文に「LLM 評価の回のうち、」を足した。`content/plan.md` #28 と `brief.md` も直した。行数は変わらないので、行番号は下の判定のまま。直したあとに `ai-smell-lint.py` と `writing-lint.py` を回し直し、出力は直す前と同じ（FATAL 0、DENSITY超過 0、SHOULD 0）。`prose-check.txt`、`endings3.txt`、`endings-check.txt` も取り直し、60字超 0（最長60字）、SAME3 0、常体 0。判定の前に `guides/01-seo-for-dev-blogs.md`（§3 タイトルの作り方）と `guides/05-technical-writing.md`（§1 文の長さ）を読み直した。
+
 ## 判定の前に読んだもの
 
 2026-11-10 に、次を Read ツールで全文読んでから全項目を判定し直した。
@@ -19,7 +23,7 @@
 |---|---|---|---|---|
 | G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」「lint との関係」を読んで判定。2026-11-10 の `lint/ai-smell.txt` 3行目 `✅ クリーン`、4行目 `use 0件 / 📎mention 0件`、5行目 `✅ 致命なし`、10行目 `exit=0`。frontmatter（1〜53行目）の mention も0件。warn 0件（`lint/judgments.md`） |
 | G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。2026-11-10 の `lint/writing-lint.txt` 1行目 `581行/210文`、判定行 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、最終行 `exit=0`。DENSITY は10カウンタすべて0回で、上限は guides/08 の標準レジスターと一致。WATCH 節なし、SHOULD 0件、INFO 0件。B-2 三連反復が0でも、語尾の3連続は B-2 では見つけられないので C17 で別に確かめた |
-| G03 | 下の B の全項目を満たす | `gate.md` | NG | B の C02 が NG（照らし合わせるキーワードが CSV 待ちで決まっていない）。ほかの C01、C03〜C38 は OK、C39（任意）は「あり」 |
+| G03 | 下の B の全項目を満たす | `gate.md` | OK | B の C01〜C38 は全部 OK（C02 は 2026-11-10 にタイトルを直して OK）、C39（任意）は「あり」 |
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | 2026-11-10 07:48〜07:49 UTC に、記事の手順の順で `run/01.log`〜`22.log` を取り直した（node v22.22.0、npm 10.9.4、作業フォルダは使い捨て、`npm install` から）。`lint/check-code-and-outputs.txt`（ALL OK）: 記事のコード11個（`package.json`、`metrics.ts`、`check-metrics.ts`、`cases.ts`、`tokenize.ts`、`bm25.ts`、`docs.ts`、`embed.ts`、`vector-search.ts`、`rrf.ts`、`eval.ts`）が `code/` と1文字も違わず、記事のコマンド7つが記事にあり、ログのコマンドと同じで、記事の実行結果5つ（`run/06`、`08`、`18`、`19`、`12.log`）が記事のコードブロックと一致。ネットワークの無い名前空間での再実行 `run/16.log` の出力もオンラインの実行と同じ。`cases.ts` は git の HEAD から変わっていない（`run/cases-written-at.txt` との比較は、このセッションの権限で `run/` を読めないので省いた。`code/README.md` の「2026-11-10 の再実行」）。型は `run/14.log`（記事のファイルのエラー0件、`node_modules/@huggingface/` の型定義の12件で `tsc_exit=1`）と `run/15.log`（skipLibCheck で `tsc_exit=0`）で、本文 82行目もこの条件どおりに書いた。API は呼ばない（`needs_api_key: false`、49行目） |
 | G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている。料金の目安がある。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 563〜579行目に出典の表（11件、題名、URL、確認日 2026-11-02）。断定した文は（出典n）で表を引く（`sources.md` に文ごとの対応。実行ログを根拠にした文は後半の表で、2026-11-10 のログに合わせて直した）。2026-11-10 に足した文（82行目の型の結果、460行目の語と idf とスコア）は実行ログが根拠で、出典の要る外部の事実は足していない。料金は 540〜546行目で、記事のコードは API を呼ばないので無料、モデルのダウンロードはトークンなしでできた（`run/17.log`）、料金がかかるのは検索結果を Claude に渡して回答させる操作で、Claude Haiku 5.5 は 100万トークンあたり入力 0.10 ドル、出力 0.50 ドル（10万トークン以下のプロンプト、出典11）。frontmatter 9〜11行目の `cost_estimate`、`run_environment`（`run/*.log` の見出し `node: v22.22.0`、`npm: 10.9.4`、`run/20.log` の `Linux x86_64`、`code/package.json` の 4.3.2、`code/embed.ts` の `dtype: "q8"`、`run/14.log` の `Version 7.0.2`）、`verified_at: "2026-11-10"`（最後の実行 `run/16`〜`22.log` の日付） |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | 2026-11-10 に `content/articles/` の frontmatter を全件読み直した（この記事のほか21本）。main_keyword「LLM 評価」は `llm-eval-harness-fixtures`（回答を文字列で採点）、`llm-eval-dataset-from-logs`（ログからテストケースを作る）、`llm-as-a-judge-claude`（LLM に回答を採点させる）の3本で、検索の結果を Recall@k と MRR で測る方法に答える記事は無い。RAG の4本は検索器を作る記事とチャンク分割の記事 |
@@ -33,7 +37,7 @@
 | # | 区分 | 項目 | 判定 | 根拠 |
 |---|---|---|---|---|
 | C01 | 設計（→ 01-seo-for-dev-blogs.md） | 「誰の、どんな検索に答える記事か」が1行で言える | OK | guides/01 冒頭の原則と §1。`brief.md` の C01 の1行（TypeScript で RAG の検索を組んでいて、変えたときに良くなったかを数字で確かめたい人が、RAG の検索の評価を Recall@k と MRR で計算する方法を検索したときに答える）。検索語そのものは G10 のとおり未確定で、C02 で扱う |
-| C02 | 設計（→ 01-seo-for-dev-blogs.md） | タイトルにキーワードが含まれ、具体的（「徹底解説」「完全ガイド」を使っていない） | NG | guides/01 §3「タイトルの作り方」（キーワードを左寄せで含める）と §2。照らし合わせるキーワードが決まっていない。`target_query` は null（7行目）で、`keywords/` に CSV が無い（G10）。講座のメインキーワード「LLM 評価」（6行目 `main_keyword`）もタイトル（2行目「RAG の検索の良し悪しを数字で測る【Recall@k と MRR を TypeScript で】」）に入っていない。2026-11-02 の判定は「タイトルはワークフローの指示で与えられた」「CSV が届いたら確かめ直す」を理由に OK にしていたが、キーワードが無い状態では「含まれ」を確かめられないので、G10 と同じ理由（CSV 待ち）で NG にした（レビューの指摘）。「徹底解説」「完全ガイド」は0件で、指標名2つと言語を入れて具体にした点は満たしている。CSV が届いたら、選んだ語をタイトルの前のほうに入れて決め直し、判定し直す |
+| C02 | 設計（→ 01-seo-for-dev-blogs.md） | タイトルにキーワードが含まれ、具体的（「徹底解説」「完全ガイド」を使っていない） | OK | guides/01 §3「タイトルの作り方」（キーワードを左寄せで含める、具体的にする）を 2026-11-10 に読み直して判定。2行目のタイトルを「LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】」（51字）に直した。講座のメインキーワード「LLM 評価」（6行目 `main_keyword`、5行目 tags の1つ目）を左端に置き、対象（RAG の検索）、動作（採点する）、指標名2つ、言語で具体にした。タイトルと本文をつなぐため、61行目のリードに「LLM 評価の回のうち」を足した。「徹底解説」「完全ガイド」は0件（`prose-check.txt` の PAT）。前回 NG にした理由は2つあった。(1) 講座のメインキーワードがタイトルに無い、(2) `target_query` が CSV 待ちで決まっていない。(1) は原稿の側の原因なので、タイトルを直して解消した。(2) は G10 が同じ原因を NG として数えており（`target_query` は null のまま、値は作っていない）、ほかの記事の gate（`ai-agent-vs-workflow`、`claude-agent-sdk-first-agent`、`promptfoo-llm-eval-intro` など）と同じく C02 では二重に数えない。CSV が届いて `target_query` を選んだら、その語がタイトルの左寄せに入っているかを C02 として判定し直す |
 | C03 | 設計（→ 01-seo-for-dev-blogs.md） | リード文の3行で「何が解決するか」が伝わる | OK | guides/01 §3「リード文が最重要」。55行目の最初の2文で、解決すること（RAG の検索が良くなったかを2つの数字で判定できる）と、用意するもの（質問と正解の文書の組）を示し、続けて2つの指標の定義を置いた。57行目で、採点する3つの検索器と結果（ベクトル検索が MRR 0.967 で最も高い、差は3問だけ）を示した |
 | C04 | 設計（→ 01-seo-for-dev-blogs.md） | 検索意図のタイプ（やり方/エラー/比較/概念）に構成が合っている | OK | guides/01 §1 の表でやり方に合うのはチュートリアルか解説。guides/02 タイプ1 と照合した（`brief.md` の表）。リード（55〜61行目）→ 前提（78行目）→ 手順（110、166、201、351行目、各コードと実行結果）→ 動作確認と読み方（448、470、502行目）→ 料金（540行目）→ 確認と関連記事・次の記事（548〜561行目） |
 | C05 | 構成（→ 02-article-structures.md） | 結論先行になっている（答え → 理由 → 詳細） | OK | guides/02 共通の原則1。リード（55行目）の1文目が答え。最初の H2（63行目）は見出し自体が2つの指標の違い（取りこぼし、最初の正解の順位）で、定義と出典が続く。コードと結果の読み方はその後 |
@@ -74,13 +78,14 @@
 
 ## 集計
 
-- A: OK 7（G01、G02、G04、G05、G06、G08、G09）/ NG 3（G03、G07、G10）（全10項目）
-- B: OK 37 / NG 1（C02）/ 任意・あり 1（全39項目）
-- 合計: OK 44 / NG 4（G03、G07、G10、C02）/ 任意・あり 1（全49項目）
+- A: OK 8（G01、G02、G03、G04、G05、G06、G08、G09）/ NG 2（G07、G10）（全10項目）
+- B: OK 38 / NG 0 / 任意・あり 1（全39項目）
+- 合計: OK 46 / NG 2（G07、G10）/ 任意・あり 1（全49項目）
 
 ## 結論
 
 `status: draft` のまま止める。
 
 - G07 は、前後の記事（`llm-as-a-judge-claude`、`promptfoo-llm-eval-intro`）と関連記事が公開か予約されれば通る。前の記事は 2026-11-10 に原稿ができたが draft で、次の記事は原稿が無い。この記事の原稿を直しても解消しない。
-- C02（と、それによる G03）と G10 は、ラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば判定できる。そのときは選んだ語をタイトルの前のほうに入れて決め直し、C02 を判定し直す。今の原稿を直しても解消しない。
+- G10 は、ラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば判定できる。そのときは選んだ語がタイトルの左寄せに入っているかを見て、C02 も判定し直す。今の原稿を直しても G10 は解消しない。
+- C02（と、それによる G03）は 2026-11-10 にタイトルを直して OK にした（上の C02 の行）。

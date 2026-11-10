@@ -26,10 +26,10 @@
 | 事実 | ログ |
 |---|---|
 | `model: haiku` で `claude-haiku-5-5` が使われた | `run/12.log`（`costBasis=claude-haiku-5-5:list`）、`run/13.log` |
-| 6件の評価、合格3件、終了コード 100、トークン数 17,489 / 16,050 | `run/04.log` |
-| 2回目も合格3件、終了コード 100、トークン数 17,201 | `run/06.log` |
-| `custom_system_prompt` なしで 31,477 / 29,913、合格3件 | `run/08.log` |
-| `cost` の合計 0.00236732 ドル、`costBasis` が `list` | `run/12.log` |
+| 6件の評価、合格3件、終了コード 100、トークン数 16,663 / 16,055 | `run/04.log` |
+| 2回目も合格3件、終了コード 100、トークン数 17,829 | `run/06.log` |
+| `custom_system_prompt` なしで 31,708 / 29,916、合格3件 | `run/08.log` |
+| `cost` の合計 0.00268162 ドル、`costBasis` が `list` | `run/12.log` |
 | `apiKeySource` が `none` | `run/13.log` |
 | `npm audit fix --force` が promptfoo@0.5.1 を入れる | `run/09.log` |
 | `prompt.label`、`vars` のフィールド名（`response.output` は出典8の JSONL の例にもある） | 作業フォルダの `results.jsonl` を開いて確かめた（セッションの ID を含むのでリポジトリには置いていない）。`show-failures.ts` が実際にその名前で読めたこと（`run/05.log`）が裏付け |

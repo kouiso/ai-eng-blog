@@ -10,13 +10,13 @@
 | `extra/run-all.sh` | 記事の手順どおりに作業フォルダを作り、コマンドを1つずつ実行して `run/01.log`〜`11.log` に残すスクリプト（記事には載せない） |
 | `extra/run-extra.sh` | `run-all.sh` のあとに同じ作業フォルダで補助の確認を2つ実行し、`run/12.log`、`13.log` に残す（記事には載せない） |
 | `extra/promptfooconfig.no-system-prompt.yaml` | 記事の設定から `custom_system_prompt` の1行だけを消したもの。記事の「システムプロンプトを差し替えると」の表の2行目（`run/08.log`） |
-| `extra/sum-cost.ts` | `results.jsonl` の `cost` を合計し、`costBasis` を表示する（`run/12.log`。記事の 0.00236732 ドルの根拠） |
+| `extra/sum-cost.ts` | `results.jsonl` の `cost` を合計し、`costBasis` を表示する（`run/12.log`。記事の 0.00268162 ドルの根拠） |
 | `extra/check-auth.ts` | 同じ SDK とログインで `query()` を1回動かし、init の `apiKeySource` を表示する（`run/13.log`。スキルの「Claude プランで動かす記事」4の記録） |
 | `extra/tsconfig.typecheck.json` | `show-failures.ts` の型の確認用（`run/10.log`。TypeScript 7.0.2、`@types/node` 22.20.5、`strict`。記事には載せない） |
 
 ## 実行について
 
-- 実行は 2026-11-10。作業フォルダはスクラッチの領域に作り、終わったあとに消した。`node_modules` と `results.jsonl` はここに置いていない（`results.jsonl` には呼び出しごとのセッションの ID が入るため）。
+- 実行は 2026-11-10。今のログは、同日 08:38〜08:39 UTC に `run-all.sh` と `run-extra.sh` で空の作業フォルダから全部やり直したもの（前の版のログは上書きした）。作業フォルダはスクラッチの領域に作り、終わったあとに消した。`node_modules` と `results.jsonl` はここに置いていない（`results.jsonl` には呼び出しごとのセッションの ID が入るため）。
 - モデルを呼ぶ `run/04.log`、`06.log`、`08.log`、`13.log` は、オーナー自身の Claude プランでログイン済みの環境で動かした。`ANTHROPIC_API_KEY` は unset（各ログの4行目）、init の `apiKeySource` は `none`（`run/13.log`）。
 - ログは `run-all.sh` の `clean` を通して保存した。通したのは3つの置き換えだけで、ほかは出力のまま。
   1. ANSI の色コードを外した（promptfoo の表は色付きで出る）
