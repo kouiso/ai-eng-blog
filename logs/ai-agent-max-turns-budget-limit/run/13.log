@@ -1,0 +1,22 @@
+date: 2026-11-10T07:26:57Z
+cwd: <work>/agent-limits
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: node budget-limit.ts 0.0021
+--- output (stdout+stderr) ---
+maxBudgetUsd: 0.0021
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+subtype: success
+num_turns: 5
+terminal_reason: completed
+total_cost_usd: 0.00085736
+result: docs フォルダには .md ファイルが 3 つあり、1 行目の見出しは次のとおりです。
+
+- payment.md: # 支払い方法
+- parking.md: # 駐車場
+- cancel.md: # 予約の取り消し
+--- exit=0

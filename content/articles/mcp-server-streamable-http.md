@@ -7,8 +7,8 @@ main_keyword: "MCPサーバー"
 target_query: null
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせる操作には、Claude Code を使える有料のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.316"
-verified_at: "2026-11-02"
+run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322"
+verified_at: "2026-11-10"
 prev: "mcp-server-typescript-stdio"
 next: "mcp-inspector-debug"
 sources:
@@ -20,7 +20,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x"
     title: "modelcontextprotocol/typescript-sdk (v1.x branch) README"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md"
     title: "typescript-sdk v1.x docs/server.md"
     accessed: 2026-11-02
@@ -54,11 +54,20 @@ sources:
   - url: "https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp"
     title: "Get started with custom connectors using remote MCP"
     accessed: 2026-11-02
+  - url: "https://modelcontextprotocol.io/specification/2026-07-28/changelog"
+    title: "MCP Specification 2026-07-28 Key Changes"
+    accessed: 2026-11-10
+  - url: "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http"
+    title: "MCP Specification 2026-07-28 Streamable HTTP"
+    accessed: 2026-11-10
+  - url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
+    title: "Cross-Origin Resource Sharing (CORS) (MDN)"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-02
+updated: 2026-11-10
 ---
 
 HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
@@ -71,21 +80,32 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 確かめたのは、SDK のクライアント、curl、`claude mcp` で呼ぶところまでです。サーバーはインターネットに公開していません。claude.ai からつなぐ操作も、Claude にツールを呼ばせる操作も実行していません。
 
-対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。時間がかかるのは `npm install` で、2026-11-02 の実測では3秒でした。
+対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。依存を入れる `npm install` は、2026-11-10 の実測で4秒でした。
 
 ## Streamable HTTP は1つの URL に POST で JSON-RPC を送る方式
 
 Streamable HTTP は、MCP の仕様が定める2つの標準のトランスポートの1つです（出典1）。もう1つは stdio です（出典1）。サーバーは独立したプロセスとして動き、複数のクライアントの接続を受けられます（出典1）。
 
-サーバーは、POST と GET を受ける1つの URL を用意します（出典1）。仕様はこの URL を MCP エンドポイントと呼びます。クライアントは JSON-RPC のメッセージを1つずつ、新しい POST で送ります（出典1）。
+2025-11-25 の仕様では、サーバーは POST と GET を受ける1つの URL を用意します（出典1）。仕様はこの URL を MCP エンドポイントと呼びます。クライアントは JSON-RPC のメッセージを1つずつ、新しい POST で送ります（出典1）。
 
 SDK の docs/server.md は、リモートには Streamable HTTP を勧めます（出典4）。同じページによれば、動かし方はステートレスとステートフルの2通りです（出典4）。ステートレスはセッションを追わない形で、API のような単純なサーバーに向くと書かれています（出典4）。
 
-この記事のサーバーはステートレスです。仕様でも、セッション ID を割り当てるかどうかはサーバーが選べます（出典1）。ツールを1つ呼ぶだけなら、リクエストの間で覚えておくものがありません。
+この記事のサーバーはステートレスです。2025-11-25 の仕様では、セッション ID を割り当てるかどうかはサーバーが選べます（出典1）。ツールを1つ呼ぶだけなら、リクエストの間で覚えておくものがありません。
+
+### 2026-07-28 の仕様ではセッションと GET の受け口が無くなった
+
+この記事で「仕様」と書いたら、2025-11-25 の仕様のことです。使う SDK の v1 系が対応しているのが、2025-11-25 の仕様までだからです（出典3）。新しい 2026-07-28 の仕様は、Streamable HTTP の決まりを次のように変えました（出典15）。
+
+- セッションと `Mcp-Session-Id` ヘッダーは廃止されました（出典15）
+- `initialize` で始まる初期化のやり取りも、仕様から消えています（出典15）
+- GET の受け口は、`subscriptions/listen` に置き換わりました（出典15）
+- POST には `Mcp-Method` と `Mcp-Name` のヘッダーが必須です（出典15）
+
+Origin を確かめ、不正なら 403 を返す決まりは、2026-07-28 の仕様にも残っています（出典16）。2026-07-28 の仕様のクライアントとは、この記事のサーバーをつないでいません。
 
 ## 前提となる環境
 
-必要なのは Node.js です。SDK 1.32.2 は Node.js 18 以上を指定しています（出典10）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。手順5では Claude Code 2.1.316 も使います。
+必要なのは Node.js です。SDK 1.32.2 は Node.js 18 以上を指定しています（出典10）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。手順5では Claude Code 2.1.322 も使います。
 
 | パッケージ | バージョン |
 |---|---|
@@ -96,6 +116,8 @@ SDK の docs/server.md は、リモートには Streamable HTTP を勧めます�
 | `@types/express`（開発用） | 5.0.6 |
 
 SDK は v1 系の 1.32.2 を使います。v1.x ブランチの README によれば、v1 系はメンテナンスを続ける系列です（出典3）。対応する MCP の仕様は 2025-11-25 のものまでです（出典3）。修正は v2 系が出た 2026-07-27 から、少なくとも6か月続きます（出典3）。v1 系を選んだ理由は前の記事と同じで、特典サンプルとバージョンをそろえるためです。
+
+2026-07-28 の仕様に対応しているのは v2 系です（出典3）。同じ README は、v2 系を今の安定したリリースと呼んでいます（出典3）。2027-01-27 を過ぎて v1 系の修正が止まったら、この記事を v2 系で書き直します。
 
 Express は自分で入れる必要がありません。SDK 1.32.2 が `express` を依存に持っていて、手元では 5.3.0 が入りました。`@types/express` だけは自分で入れます。外して試すと、`req` と `res` の型が決まらず、`tsc` が7件のエラーを出しました。
 
@@ -173,7 +195,7 @@ npm install
 ```
 
 ```text
-added 108 packages, and audited 109 packages in 3s
+added 108 packages, and audited 109 packages in 4s
 
 36 packages are looking for funding
   run `npm fund` for details
@@ -269,7 +291,7 @@ Origin の検査は、ミドルウェアとして自分で書きました。仕�
 
 SDK のトランスポートにも `allowedOrigins` という指定があります。ただし 1.32.2 では非推奨で、外のミドルウェアを使うよう書かれています（出典7）。この記事では `ALLOWED_ORIGINS` を空にしたので、Origin の付いたリクエストはすべて断ります。
 
-`app.all` は、POST 以外を 405 で断る受け口です。仕様では、GET には SSE で応じるか、405 を返す決まりです（出典1）。SDK のステートレスの例も、GET と DELETE に 405 を返します（出典8）。
+`app.all` は、POST 以外を 405 で断る受け口です。仕様では、GET には SSE で応じるか、405 を返す決まりです（出典1）。2026-07-28 の仕様も、古いクライアントからの GET には 405 を返すよう勧めています（出典16）。SDK のステートレスの例も、GET と DELETE に 405 を返します（出典8）。
 
 ## 3. SDK のクライアントで呼ぶと結果は stdio と同じ
 
@@ -330,13 +352,13 @@ session: undefined
 
 `ok:` の行は、前の記事の stdio のサーバーと1文字も違いません。トランスポートを替えても、ツールの結果は変わりません。`session: undefined` は、サーバーがセッション ID を返さなかったことを示します。ステートレスにした結果のとおりです。
 
-同じクライアントを30回続けて動かすと、4回で最後に次の1行が増えました。
+2026-11-10 に同じクライアントを30回続けて動かすと、3回で最後に次の1行が増えました。
 
 ```text
 client error: SSE stream disconnected: AbortError: This operation was aborted
 ```
 
-30回とも `ok:` の行は出ていました。`close()` は読みかけの通信を打ち切り、その打ち切りが SSE の切断として報告されます（出典9）。ツールの結果とは関係が無いので、この行は気にしなくて構いません。
+2026-11-02 に試したときは、30回中4回でした。出る回数は、動かすたびに変わります。どちらの30回でも、`ok:` の行は毎回出ていました。`close()` は読みかけの通信を打ち切り、その打ち切りが SSE の切断として報告されます（出典9）。ツールの結果とは関係が無いので、この行は気にしなくて構いません。
 
 サーバーを止めるときは、1つ目のターミナルで Ctrl+C を押します。
 
@@ -364,7 +386,7 @@ status: 200 text/event-stream
 
 仕様では、サーバーは SSE か `application/json` のどちらで返してもかまいません（出典1）。SDK のトランスポートは、指定しなければ SSE で返します（出典7）。
 
-この curl は、初期化を飛ばしていきなりツールを呼んでいます。仕様では、初期化をクライアントとサーバーの最初のやり取りにする決まりです（出典2）。手元の 1.32.2 のステートレスのサーバーは、それでも結果を返しました。中身を覗くための送り方として使ってください。
+この curl は、初期化を飛ばしていきなりツールを呼んでいます。仕様では、初期化をクライアントとサーバーの最初のやり取りにする決まりです（出典2）。手元の 1.32.2 のステートレスのサーバーは、それでも結果を返しました。中身を覗くための送り方として使ってください。2026-07-28 の仕様では、この初期化のやり取りそのものが無くなりました（出典15）。
 
 ### Accept に text/event-stream が無いと 406
 
@@ -433,7 +455,38 @@ status: 403 application/json; charset=utf-8
 
 Origin は、自分で書いたミドルウェアが断りました。Host は `createMcpExpressApp()` の検査が断っています。手順3と手順4の成功からわかるとおり、SDK のクライアントと curl は Origin を付けていません。そのため、手順3の確認では Origin の検査が働いているかわかりません。書いたら、この curl で 403 が返ることまで確かめてください。
 
-自分のブラウザのページから呼ぶ場合は、そのページの Origin を `ALLOWED_ORIGINS` に足します。
+### ブラウザのページから呼ぶには CORS の応答も要る
+
+ブラウザのページから呼ぶには、`ALLOWED_ORIGINS` に Origin を足すだけでは足りません。`ALLOWED_ORIGINS` に `"http://localhost:5173"` を入れて試しています。
+
+ブラウザは、別の Origin へ JSON を POST する前に OPTIONS を送ります（出典17）。送ってよいかをサーバーに尋ねるためで、これをプリフライトと呼びます（出典17）。ブラウザが送るものと同じヘッダーを、curl で付けました。
+
+```bash
+curl -sS -i -X OPTIONS http://127.0.0.1:3000/mcp \
+  -H "Origin: http://localhost:5173" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: content-type"
+```
+
+```text
+HTTP/1.1 405 Method Not Allowed
+X-Powered-By: Express
+Allow: POST
+Content-Type: application/json; charset=utf-8
+Content-Length: 83
+ETag: W/"53-qWBZ1FV06PjPTACBvsrFktOcrII"
+Date: Tue, 10 Nov 2026 07:17:23 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}
+```
+
+OPTIONS には、`app.all` の受け口が 405 を返しました。`Access-Control-Allow-` で始まるヘッダーは、1つもありません。サーバーがプリフライトを認めないので、ブラウザは続く POST を送りません（出典17）。
+
+Origin を付けた POST を curl で直接送ると、200 で結果が返りました。ただし、その応答にも `Access-Control-Allow-Origin` のヘッダーが付いていません。このヘッダーが無い応答は、ページのスクリプトから読めません（出典17）。
+
+ブラウザから呼ぶなら、OPTIONS に答えて CORS のヘッダーを返す処理を足す必要があります。この記事のコードには入れておらず、足した形も試していません。
 
 ## 5. Claude Code には --transport http で登録する
 
@@ -531,12 +584,11 @@ client error: Streamable HTTP error: Failed to open SSE stream: Not Found
 tools: [ 'count_chars' ]
 ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
 session: undefined
-client error: SSE stream disconnected: AbortError: This operation was aborted
 ```
 
 SDK のクライアントは、初期化のあとに GET で SSE を開こうとします（出典9）。受け口が無いと、Express は GET に 404 を返します。クライアントは、405 を「SSE が無いサーバー」の印として黙って受け入れます（出典9）。404 のような失敗は、`Failed to open SSE stream` として報告されます（出典9）。
 
-ツールの結果は正しく返っているので、見逃しやすい行です。仕様どおり 405 を返せば、この行は出ません。最後の行は、手順3で書いた30回中4回の行と同じものです。
+ツールの結果は正しく返っているので、見逃しやすい行です。この形のまま30回動かしても、毎回 Not Found の行が2つ出ました。405 を返せば、この行は出ません。
 
 ## claude.ai からつなぐには公開 URL と認証が要る
 
@@ -546,7 +598,7 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 
 - 公開する URL。Anthropic の IP アドレスから届く場所にサーバーを置きます（出典14）
 - 認証。仕様はすべての接続で認証を実装するよう勧めています（出典1）。SDK の docs/server.md には、Bearer トークンで認証する例があります（出典4）
-- Origin と Host の許可リスト。公開するページの Origin は `ALLOWED_ORIGINS` に足します。Host の名前は `allowedHosts` に渡します（出典5）
+- Origin と Host の許可リスト。Host の名前は `allowedHosts` に渡します（出典5）。ブラウザから呼ぶなら、`ALLOWED_ORIGINS` への追加と CORS の応答も要ります（出典17）
 
 カスタムコネクタは、無料のプランでも1つまで足せます（出典14）。この記事では公開も接続もしていないので、3つとも未確認の項目です。
 
@@ -566,13 +618,13 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 
 ## 出典
 
-確認日は、どれも 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
 | 1 | MCP Specification 2025-11-25 Transports | https://modelcontextprotocol.io/specification/2025-11-25/basic/transports | 2026-11-02 |
 | 2 | MCP Specification 2025-11-25 Lifecycle | https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle | 2026-11-02 |
-| 3 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | 2026-11-02 |
+| 3 | typescript-sdk v1.x README | https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x | 2026-11-10 |
 | 4 | typescript-sdk v1.x docs/server.md | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md | 2026-11-02 |
 | 5 | typescript-sdk v1.x src/server/express.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/express.ts | 2026-11-02 |
 | 6 | typescript-sdk v1.x hostHeaderValidation.ts | https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/middleware/hostHeaderValidation.ts | 2026-11-02 |
@@ -584,5 +636,8 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 | 12 | Connect Claude Code to tools via MCP | https://code.claude.com/docs/en/mcp | 2026-11-02 |
 | 13 | Claude Code Advanced setup | https://code.claude.com/docs/en/setup | 2026-11-02 |
 | 14 | Get started with custom connectors using remote MCP | https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp | 2026-11-02 |
+| 15 | MCP Specification 2026-07-28 Key Changes | https://modelcontextprotocol.io/specification/2026-07-28/changelog | 2026-11-10 |
+| 16 | MCP Specification 2026-07-28 Streamable HTTP | https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http | 2026-11-10 |
+| 17 | Cross-Origin Resource Sharing（CORS）（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | 2026-11-10 |
 
-AI 支援で執筆しました。コードは 2026-11-02 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

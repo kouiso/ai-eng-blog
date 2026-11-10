@@ -1,27 +1,15 @@
-date: 2026-11-02T15:38:18Z
+date: 2026-11-10T07:35:38Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude: 2.1.322 (Claude Code)
+HOME: 使い捨てのフォルダ（ログでは ~）
 command:
-  NOTES_DIR="$PWD/notes" node check.ts servr.ts
+  claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node server.ts
+  claude mcp list
 --- output (stdout+stderr) ---
-failed: MCP error -32000: Connection closed
---- server stderr ---
-node:internal/modules/cjs/loader:1386
-  throw err;
-  ^
+Added stdio MCP server notes with command: node server.ts to user config
+File modified: ~/.claude.json
+Checking MCP server health…
 
-Error: Cannot find module '/path/to/notes-mcp/servr.ts'
-    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
-    at Function._load (node:internal/modules/cjs/loader:1192:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
-    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
-    at node:internal/main/run_main_module:36:49 {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: []
-}
-
-Node.js v22.22.0
---- exit=1
+notes: node server.ts - √ Connected
+--- exit=0

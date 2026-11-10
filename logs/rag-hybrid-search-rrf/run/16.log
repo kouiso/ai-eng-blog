@@ -1,10 +1,13 @@
-date: 2026-10-31 14:05:55 +0000
+date: 2026-11-10 07:05:07 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
-command: bash -c "cp ../code/extra/tsconfig.typecheck-skiplib.json . && npx tsc --version && npx tsc -p tsconfig.typecheck-skiplib.json; echo tsc_exit=$?"
+command: node hybrid.ts 返金はいつ？
 exit: 0
-elapsed: 1241 ms
+elapsed: 1794 ms
 --- stdout+stderr ---
-Version 7.0.2
-tsc_exit=0
+BM25  : 
+vector: returns(0.849) cancel(0.829) points(0.822) payment(0.816) delivery(0.804)
+0.01639 returns (順位 - / 1)
+0.01613 cancel (順位 - / 2)
+0.01587 points (順位 - / 3)

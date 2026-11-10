@@ -1,20 +1,26 @@
-date: 2026-11-02T15:38:27Z
+date: 2026-11-10T07:35:43Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
-claude: 2.1.316 (Claude Code)
+claude: 2.1.322 (Claude Code)
 HOME: 使い捨てのフォルダ（ログでは ~）
 command:
-  env -i PATH="$PATH" HOME="$HOME" HTTPS_PROXY=http://127.0.0.1:9 HTTP_PROXY=http://127.0.0.1:9 bash -c '
-  claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node "$PWD/server.ts"
-  claude mcp list
   claude mcp remove notes -s user
-  '
+  claude mcp add notes --scope user -- node "$PWD/server.ts"
+  (cd ~ && claude mcp list)
+  export NOTES_DIR="$PWD/notes"
+  (cd ~ && claude mcp list)
+  claude mcp remove notes -s user
 --- output (stdout+stderr) ---
+Removed MCP server notes from user config
+File modified: ~/.claude.json
 Added stdio MCP server notes with command: node /path/to/notes-mcp/server.ts to user config
 File modified: ~/.claude.json
 Checking MCP server health…
 
-notes: node /path/to/notes-mcp/server.ts - ✔ Connected
+notes: node /path/to/notes-mcp/server.ts - × Failed to connect — CONNECTION_CLOSED: Connection closed
+Checking MCP server health…
+
+notes: node /path/to/notes-mcp/server.ts - √ Connected
 Removed MCP server notes from user config
 File modified: ~/.claude.json
 --- exit=0

@@ -48,7 +48,7 @@ export async function readTextFile(input: string): Promise<string> {
     throw new ToolInputError("作業フォルダの外は読めません。");
   }
   try {
-    // シンボリックリンクをたどった先でも、同じ2つを確かめます。
+    // リンクをたどった先でも、同じ2つを確かめます。
     const real = await realpath(target);
     if (!isInside(root, real) || !hasAllowedExtension(real)) {
       throw new ToolInputError("リンクの先が作業フォルダの外か、許可していない種類のファイルです。");

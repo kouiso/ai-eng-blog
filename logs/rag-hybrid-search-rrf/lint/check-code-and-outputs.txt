@@ -22,15 +22,24 @@ run/08.log command in article: True, matches log: True (node hybrid.ts 5営業�
 run/09.log command in article: True, matches log: True (node hybrid.ts "E1021 が出た")
 run/10.log command in article: True, matches log: True (node hybrid.ts 届くのが遅い)
 run/11.log command in article: True, matches log: True (node hybrid.ts 届くのが遅い 0.1 1)
-run/12.log command in article: True, matches log: True (node hybrid.ts 返金はいつ？)
-run/13.log command in article: True, matches log: True (node hybrid.ts 返金はいつ？ 0)
+run/12.log command in article: True, matches log: True (node hybrid.ts 届くのが遅い 0.7)
+run/16.log command in article: True, matches log: True (node hybrid.ts 返金はいつ？)
+run/17.log command in article: True, matches log: True (node hybrid.ts 返金はいつ？ 0)
+3-line bash block in article: True
+run/13.log command matches block line: True (node hybrid.ts 利用限度額 0.7)
+run/14.log command matches block line: True (node hybrid.ts 5営業日 0.7)
+run/15.log command matches block line: True (node hybrid.ts "E1021 が出た" 0.7)
 output run/06.log in article: True
 output run/08.log in article: True
 output run/09.log in article: True
 output run/10.log in article: True
 output run/11.log in article: True
 output run/12.log in article: True
-output run/13.log in article: True
+output run/16.log in article: True
+output run/17.log in article: True
+table row 利用限度額: True (log ['error-e1021', 'payment', 'shipping-fee'] / ['error-e1021', 'payment', 'shipping-fee'])
+table row 5営業日: True (log ['cancel', 'delivery', 'returns'] / ['cancel', 'delivery', 'shipping-fee'])
+table row E1021 が出た: True (log ['error-e1020', 'error-e1021', 'login'] / ['error-e1020', 'error-e1021', 'password'])
 run 01 exit=0
 run 02 exit=0
 run 03 exit=0
@@ -50,4 +59,8 @@ run 16 exit=0
 run 17 exit=0
 run 18 exit=0
 run 19 exit=0
+run 20 exit=0
+run 21 exit=0
+run 22 exit=0
+run 23 exit=0
 ALL OK

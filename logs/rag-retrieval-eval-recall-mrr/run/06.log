@@ -1,10 +1,10 @@
-date: 2026-11-02 15:51:24 +0000
+date: 2026-11-10 07:48:20 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
 command: node check-metrics.ts
 exit: 0
-elapsed: 78 ms
+elapsed: 74 ms
 --- stdout+stderr ---
 Recall@1: 0
 Recall@3: 0.5

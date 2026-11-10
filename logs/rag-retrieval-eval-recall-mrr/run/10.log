@@ -1,10 +1,10 @@
-date: 2026-11-02 15:51:37 +0000
+date: 2026-11-10 07:48:33 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
 command: node eval.ts 1
 exit: 0
-elapsed: 2322 ms
+elapsed: 2673 ms
 --- stdout+stderr ---
 bm25    vector  hybrid   質問
 1       1       1        返品は何日以内ならできますか

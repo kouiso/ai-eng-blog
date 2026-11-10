@@ -1,21 +1,21 @@
-date: 2026-10-31T14:11:00Z
+date: 2026-11-10T07:16:48Z
 cwd: <work>/safe-file-tool
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
 command: ls -l workspace/notes workspace/out outside
 --- output (stdout+stderr) ---
 outside:
 total 8
--rw-r--r-- 1 root root 46 Oct 31 14:10 private.txt
--rw-r--r-- 1 root root  9 Oct 31 14:11 report.md
+-rw-r--r-- 1 root root 46 Nov 10 07:16 private.txt
+-rw-r--r-- 1 root root  9 Nov 10 07:16 report.md
 
 workspace/notes:
 total 36
--rw-r--r-- 1 root root 30000 Oct 31 14:10 big.md
-lrwxrwxrwx 1 root root    25 Oct 31 14:10 shortcut.txt -> ../../outside/private.txt
--rw-r--r-- 1 root root    28 Oct 31 14:10 todo.md
+-rw-r--r-- 1 root root 30000 Nov 10 07:16 big.md
+lrwxrwxrwx 1 root root    25 Nov 10 07:16 shortcut.txt -> ../../outside/private.txt
+-rw-r--r-- 1 root root    28 Nov 10 07:16 todo.md
 
 workspace/out:
 total 4
-lrwxrwxrwx 1 root root 23 Oct 31 14:10 report.md -> ../../outside/report.md
--rw-r--r-- 1 root root  9 Oct 31 14:10 summary.md
+lrwxrwxrwx 1 root root 23 Nov 10 07:16 report.md -> ../../outside/report.md
+-rw-r--r-- 1 root root  9 Nov 10 07:16 summary.md
 --- exit=0

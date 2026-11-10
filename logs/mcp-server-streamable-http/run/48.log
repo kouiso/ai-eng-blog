@@ -1,0 +1,23 @@
+date: 2026-11-10 07:17:23 +0000
+cwd: /path/to/char-count-http
+node: v22.22.0
+npm: 10.9.4
+command: curl -sS -i -X POST http://127.0.0.1:3000/mcp \
+  -H "Origin: http://localhost:5173" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+exit: 0
+elapsed: 47 ms
+--- stdout+stderr ---
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+x-accel-buffering: no
+content-length: 652
+Date: Tue, 10 Nov 2026 07:17:23 GMT
+
+event: message
+data: {"result":{"tools":[{"name":"count_chars","title":"文字数を数える","description":"日本語の文章の文字数・行数・UTF-8 のバイト数を返す。文字数は見た目の1文字を1と数え、改行も1文字に含める。行数は改行（LF）で区切った数で、末尾が改行なら最後の空の行も1行と数える。","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"text":{"type":"string","minLength":1,"maxLength":10000,"description":"数えたい文章"}},"required":["text"]},"execution":{"taskSupport":"forbidden"}}]},"jsonrpc":"2.0","id":1}

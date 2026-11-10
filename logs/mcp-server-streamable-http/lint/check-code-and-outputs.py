@@ -3,16 +3,19 @@
 # 機械的に取り出したものと一致することを調べる。
 # logs/rag-hybrid-search-rrf/lint/check-code-and-outputs.py を、この記事のファイル名と
 # ログの書式（code/extra/run.sh の出力。コマンドは1つの文字列のまま記録）に合わせて書き換えたもの。
-# 使い方: python3 logs/mcp-server-streamable-http/lint/check-code-and-outputs.py（リポジトリのルートで）
-import re
+# 使い方: python3 logs/mcp-server-streamable-http/lint/check-code-and-outputs.py [run のフォルダ]（リポジトリのルートで）
+# run のフォルダを渡すと、run/ の代わりにそこのログを読む（2026-11-10 は、run/ へ写す前の同じログを作業場所で読んだ）。
+import re, sys
 
 L = "logs/mcp-server-streamable-http/"
 article = open("content/articles/mcp-server-streamable-http.md", encoding="utf-8").read()
 blocks = re.findall(r"```(\w+)\n(.*?)\n```", article, re.S)
 fences = [b for _, b in blocks]
 
+RUN = (sys.argv[1].rstrip("/") + "/") if len(sys.argv) > 1 else L + "run/"
+
 def run(n):
-    t = open(L + f"run/{n:02d}.log", encoding="utf-8").read()
+    t = open(RUN + f"{n:02d}.log", encoding="utf-8").read()
     head, out = t.split("--- stdout+stderr ---\n", 1)
     cmd = re.search(r"^command: (.*?)\nexit: ", head, re.M | re.S).group(1)
     code = re.search(r"^exit: (\d+)$", head, re.M).group(1)
@@ -67,10 +70,21 @@ check("run/23 exception text in article", run(23)[1].split("2nd threw: ", 1)[1] 
 abort_line = "client error: SSE stream disconnected: AbortError: This operation was aborted"
 check("AbortError line in article", abort_line in fences)
 r36 = run(36)[1]
-check("run/36: 30 runs, all ok=1, abort=1 in 4", r36.count("ok=1") == 30 and r36.count("abort=1") == 4)
+check("run/36: 30 runs, all ok=1, abort=1 in 3", r36.count("ok=1") == 30 and r36.count("abort=1") == 3)
+r42 = run(42)[1]
+check("run/42 (no 405): 30 runs, all ok=1, notfound=2 in 30, abort=1 in 0", r42.count("ok=1") == 30 and r42.count("notfound=2") == 30 and r42.count("abort=1") == 0)
+check("run/38: tsc_exit=0 with @types/express", run(38)[1].endswith("tsc_exit=0"))
+# ブラウザのプリフライト: 記事の curl がログの command: と同じで、出力も記事のとおり。405 で Access-Control-* が無い
+check("run/47 curl OPTIONS command in article", run(47)[0] in fences)
+check("output run/47 in article", run(47)[1] in fences)
+check("run/47: 405 and no Access-Control-Allow header", run(47)[1].startswith("HTTP/1.1 405") and "access-control-allow" not in run(47)[1].lower())
+check("run/48: POST with allowed Origin is 200 without Access-Control-Allow-Origin", run(48)[1].startswith("HTTP/1.1 200") and "access-control-allow-origin" not in run(48)[1].lower())
+cors = open(L + "code/extra/server.cors-check.ts", encoding="utf-8").read().rstrip("\n")
+check("server.cors-check.ts == server.ts with ALLOWED_ORIGINS = [\"http://localhost:5173\"]", srv.replace("const ALLOWED_ORIGINS: string[] = [];", 'const ALLOWED_ORIGINS: string[] = ["http://localhost:5173"];') == cors)
+check("article names http://localhost:5173 as the ALLOWED_ORIGINS value", '`"http://localhost:5173"`' in article)
 check("run/21, 22: 500 with 0 bytes", all("status: 500  0 bytes" == run(n)[1] for n in (21, 22)))
 check("run/19: server printed only the start line", run(19)[1].splitlines()[-1].startswith("char-count MCP server:") and "Error" not in run(19)[1])
 check("run/37: 7 TS7006 errors without @types/express", run(37)[1].count("error TS7006") == 7)
-for n in range(1, 39):
+for n in range(1, 51):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")

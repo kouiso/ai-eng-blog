@@ -4,7 +4,7 @@
 
 ## 読んだ CSV
 
-`keywords/` には `README.md` しか無く、CSV は1つも無い（2026-11-02 に `ls -la keywords/` で確認）。ラッコキーワードの CSV はまだ届いていない。
+`keywords/` には `README.md` しか無く、CSV は1つも無い（2026-11-02 に `ls -la keywords/` で確認。2026-11-10 にも同じコマンドで、`README.md` だけだった）。ラッコキーワードの CSV はまだ届いていない。
 
 そのため、キーワードは CSV から選んでいない。`target_query` は null のままにし、検索語を作って書いていない。ゲート G10 は NG（CSV 待ち）で、記事は `status: draft` で止める。この記事を書いたのは、ワークフローの指示（CSV なしで書き進め、G10 を NG にして下書きで止める）によるもので、テーマ、タイトル、slug は `content/plan.md` の #22 に従った。
 
@@ -18,7 +18,7 @@
 
 ## 既存記事との重なり（G06）
 
-`content/articles/*.md` の frontmatter（title、main_keyword、target_query）を全件読んだ（2026-11-02、この記事のほか11本）。
+`content/articles/*.md` の frontmatter（title、main_keyword、target_query）を全件読んだ。最初は 2026-11-02 で、この記事のほか11本だった。2026-11-10 に読み直すと、この記事のほか17本あった（`ls content/articles/` で18ファイル）。下の表は 2026-11-10 の17本。2026-11-02 より後に増えた6本は、行の末尾に「11-10 に追加」と書いた。
 
 | slug | main_keyword | 答える検索意図 | 重なり |
 |---|---|---|---|
@@ -32,7 +32,13 @@
 | `rag-local-embeddings-transformers-js` | RAG | 手元の埋め込みでベクトル検索 | なし |
 | `rag-hybrid-search-rrf` | RAG | BM25 とベクトル検索を RRF で合わせる | なし |
 | `ai-agent-safe-file-tool` | AIエージェント | エージェントのファイル操作ツールを安全に作る | なし |
+| `llm-eval-harness-fixtures` | LLM 評価 | 完全一致、部分一致、正規表現で回答を採点する | なし（11-10 に追加） |
+| `llm-eval-dataset-from-logs` | LLM 評価 | ログから評価用のテストケースを選んで JSONL にする | なし（11-10 に追加） |
+| `rag-retrieval-eval-recall-mrr` | LLM 評価 | RAG の検索を Recall@k と MRR で測る | なし（11-10 に追加） |
 | `mcp-server-typescript-stdio` | MCPサーバー | MCP サーバーの作り方（stdio、ツール1つ、SDK のクライアントでの確認、Claude Code への接続、stdout のログの落とし穴） | なし。あちらは stdio（クライアントがサーバーを子プロセスとして起動する方式）で作る記事。この記事は同じツール `count_chars` を Streamable HTTP（HTTP の1つの URL で受ける方式）で公開する記事で、答える検索は「HTTP で動かす方法」。ツールの中身（`Intl.Segmenter` で数える理由、入力エラーの返り方）と stdout のログの話は繰り返さず、前の記事へのリンクにした |
+| `mcp-inspector-debug` | MCPサーバー | MCP Inspector の CLI と画面で、自作のサーバーのツールを調べる | なし（11-10 に追加）。調べる道具の記事で、HTTP で受けるサーバーの作り方には答えない。本文が調べるのは stdio のサーバーで、「Streamable」「--transport http」を含む行は frontmatter の `prev: "mcp-server-streamable-http"`（12行目）と、この記事への前のリンク（63行目）の2行だけ（`grep -n -i`） |
+| `mcp-server-resources-prompts` | MCPサーバー | ツール以外の Resources と Prompts を登録する | なし（11-10 に追加）。サーバーの機能の記事で、トランスポートの話は無い（「streamable」「transport http」0件） |
+| `mcp-connection-closed-fix` | MCPサーバー | stdio のサーバーにつながらない Connection closed の原因と直し方 | なし（11-10 に追加）。stdio のプロセスが応答前に終わる場合のエラーの記事で、HTTP の話は無い（「streamable」「transport http」0件） |
 
 `target_query` はどの記事も null なので、検索語での突き合わせはできない。上の判断は記事の中身で行った。
 

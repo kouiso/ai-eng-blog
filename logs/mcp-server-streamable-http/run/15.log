@@ -1,10 +1,10 @@
-date: 2026-11-02 15:04:53 +0000
+date: 2026-11-10 07:16:17 +0000
 cwd: /path/to/char-count-http
 node: v22.22.0
 npm: 10.9.4
 command: claude mcp get char-count-http
 exit: 0
-elapsed: 602 ms
+elapsed: 413 ms
 --- stdout+stderr ---
 char-count-http:
   Scope: User config (available in all your projects)

@@ -26,13 +26,21 @@ header() {
 log_run() {
   local n="$1" cmd="$2" f="$RUN_DIR/$1.log"
   header "$cmd" > "$f"
+  local t0=$(date +%s)
   bash -c "$cmd" 2>&1 | mask >> "$f"
   local code=${PIPESTATUS[0]}
+  local t1=$(date +%s)
   echo "--- exit=$code" >> "$f"
+  echo "--- elapsed=$((t1 - t0))s" >> "$f"
 }
 
 cd "$WORK_PARENT"
 rm -rf writing-helper-mcp
+# 読者の初回と同じ条件で待ち時間を測るため、npm のキャッシュ（npx のパッケージも入る）を空のフォルダにする
+rm -rf "$WORK_PARENT/npm-cache-empty"
+export npm_config_cache="$WORK_PARENT/npm-cache-empty"
+# 空のキャッシュでは npm の更新のお知らせ（npm notice）が出る。2026-11-02 の実行には出ていないので、比べられるよう切る
+export npm_config_update_notifier=false
 had_dir=no; [ -e "$HOME/.mcp-inspector" ] && had_dir=yes
 
 log_run 01 'node -v'

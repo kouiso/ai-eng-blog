@@ -1,0 +1,26 @@
+date: 2026-11-10T06:45:36Z
+cwd: <work>/zod-llm-check
+node: v22.22.0 / npm: 10.9.4
+command: unshare -rn ./offline-all.sh
+----- stdout+stderr -----
+## node check.ts ok
+exit=0
+## node check.ts wrong-type
+exit=0
+## node check.ts bad-enum
+exit=0
+## node check.ts extra-key
+exit=0
+## node check.ts many
+exit=0
+## node lowercase-enum.ts
+exit=0
+## node retry-message.ts
+exit=0
+## node pretty-ja.ts
+exit=0
+## node strip.ts
+exit=0
+## outbound fetch
+EAI_AGAIN
+----- exit=0 -----

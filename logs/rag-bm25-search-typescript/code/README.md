@@ -1,6 +1,6 @@
 # code: rag-bm25-search-typescript
 
-記事 `content/articles/rag-bm25-search-typescript.md` に載せたコードと1文字も違わないファイル。2026-10-31 に、記事のコードブロックとの一致を `../lint/check-code-and-outputs.py` で確かめた（結果は `../lint/check-code-and-outputs.txt`、ALL OK）。
+記事 `content/articles/rag-bm25-search-typescript.md` に載せたコードと1文字も違わないファイル。2026-10-31 と 2026-11-10 に、記事のコードブロックとの一致を `../lint/check-code-and-outputs.py` で確かめた（結果は `../lint/check-code-and-outputs.txt`、最後の実行も ALL OK）。
 
 | ファイル | 記事での位置 |
 |---|---|
@@ -18,7 +18,7 @@
 
 ## 実行ログ（`../run/`）
 
-実行はすべて scratchpad の使い捨てフォルダで行い、終わったあと消した。作業フォルダの1つ上に、このフォルダへのシンボリックリンク `code` を置き、ファイルは `cp ../code/<file> .` で置いた（記事では読者がファイルを書いて保存する手順）。記事の手順と同じ順に実行した。
+実行はすべて scratchpad の使い捨てフォルダで行い、終わったあと消した。今の `01.log`〜`17.log` は 2026-11-10 に記事の手順を最初から実行し直したもの（2026-10-31 の実行を上書き）。作業フォルダの1つ上に、このフォルダへのシンボリックリンク `code` を置き、ファイルは `cp ../code/<file> .` で置いた（記事では読者がファイルを書いて保存する手順）。記事の手順と同じ順に実行した。
 
 | ログ | コマンド |
 |---|---|

@@ -1,4 +1,4 @@
-date: 2026-11-02T15:24:49Z
+date: 2026-11-10T07:23:26Z
 cwd: /path/to/writing-helper-mcp
 node: v22.22.0 / npm: 10.9.4 / arch: x86_64
 command:
@@ -28,4 +28,5 @@ writing-helper MCP server started (stdio)
   ]
 }
 --- exit=0
+--- elapsed=1s
 --- note: 実行前に ~/.mcp-inspector があったか: no。実行後の ~/.mcp-inspector の中身: 

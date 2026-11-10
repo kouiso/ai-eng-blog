@@ -2,6 +2,7 @@ code package.json: True
 code schema.ts: True
 code samples.ts: True
 code check.ts: True
+code lowercase-enum.ts: True
 code retry-message.ts: True
 code pretty-ja.ts: True
 code strip.ts: True
@@ -12,6 +13,7 @@ command 'node check.ts wrong-type': True
 command 'node check.ts bad-enum': True
 command 'node check.ts extra-key': True
 command 'node check.ts many': True
+command 'node lowercase-enum.ts': True
 command 'node retry-message.ts': True
 command 'node pretty-ja.ts': True
 command 'node strip.ts': True
@@ -21,9 +23,10 @@ output run/06.log (node check.ts wrong-type): True
 output run/07.log (node check.ts bad-enum): True
 output run/08.log (node check.ts extra-key): True
 output run/09.log (node check.ts many): True
-output run/10.log (cp (code)/retry-message.ts . && node retry-message.ts): True
-output run/11.log (cp (code)/pretty-ja.ts . && node pretty-ja.ts): True
-output run/12.log (cp (code)/strip.ts . && node strip.ts): True
+output run/10.log (cp (code)/lowercase-enum.ts . && node lowercase-enum.ts): True
+output run/11.log (cp (code)/retry-message.ts . && node retry-message.ts): True
+output run/12.log (cp (code)/pretty-ja.ts . && node pretty-ja.ts): True
+output run/13.log (cp (code)/strip.ts . && node strip.ts): True
 run 01 exit=0
 run 02 exit=0
 run 03 exit=0
@@ -38,4 +41,5 @@ run 11 exit=0
 run 12 exit=0
 run 13 exit=0
 run 14 exit=0
+run 15 exit=0
 ALL OK

@@ -1,6 +1,6 @@
-units=254 excluded_url_only_cells=12
+units=282 excluded_url_only_cells=12
 C25 over60=0 max=60
-C16 prose sentences=167 min=6 max=60 le20=12 41to60=77
+C16 prose sentences=195 min=6 max=60 le20=10 41to60=95
 C17 SAME3(3字)=0 []
 C17 SAME3(2字・参考)=0 []
 C19 non-desumasu prose=0
@@ -32,3 +32,4 @@ PAT 効く: 0
 PAT 回す: 0
 PAT 仕様書: 0
 PAT 地図: 0
+exit=0

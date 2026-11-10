@@ -1,10 +1,10 @@
-date: 2026-10-31 14:05:31 +0000
+date: 2026-11-10 07:04:52 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
 command: node hybrid.ts "E1021 が出た"
 exit: 0
-elapsed: 2707 ms
+elapsed: 2026 ms
 --- stdout+stderr ---
 BM25  : error-e1020(1.928) error-e1021(1.296) login(0.578) payment(0.537) points(0.442)
 vector: error-e1021(0.878) error-e1020(0.863) password(0.819) login(0.819) points(0.818)

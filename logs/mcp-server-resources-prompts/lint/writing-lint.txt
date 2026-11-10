@@ -1,4 +1,4 @@
-## writing-lint v2: mcp-server-resources-prompts.md (type=article, register=standard, 452行/197文)
+## writing-lint v2: mcp-server-resources-prompts.md (type=article, register=standard, 454行/208文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

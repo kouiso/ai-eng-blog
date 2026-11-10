@@ -1,0 +1,10 @@
+date: 2026-11-10 07:05:50 +0000
+cwd: /path/to/hybrid-search
+node: v22.22.0
+npm: 10.9.4
+command: bash -c "cp ../code/extra/check-norm.ts . && node check-norm.ts"
+exit: 0
+elapsed: 1972 ms
+--- stdout+stderr ---
+次元数 384 長さ 1.000000
+次元数 384 長さ 1.000000

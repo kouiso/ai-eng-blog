@@ -1,4 +1,4 @@
-date: 2026-11-02T15:56:08Z
+date: 2026-11-10T16:45:50+09:00 (JST)
 cwd: <work>/eval-dataset
 node: v22.22.0 / npm: 10.9.4
 command: wc -l cases.jsonl

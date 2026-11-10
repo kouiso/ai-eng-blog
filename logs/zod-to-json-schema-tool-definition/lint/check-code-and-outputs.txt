@@ -3,28 +3,28 @@ OK #2 commands step1
 OK #3 package.json
 OK #4 tsconfig.json
 OK #5 command
-OK #6 run/02 npm install output
+OK #6 run/14 npm install output
 OK #7 src/schema.ts
 OK #8 src/tool.ts
-OK #9 run/08 typecheck error (return json experiment)
+OK #9 run/20 typecheck error (return json experiment)
 OK #10 commands
-OK #11 run/04 tool output
+OK #11 run/16 tool output
 OK #12 src/check-input.ts
 OK #13 command
-OK #14 run/06 check-input output
+OK #14 run/18 check-input output
 OK #15 src/compare-io.ts
 OK #16 command
-OK #17 run/05 compare-io output
+OK #17 run/17 compare-io output
 OK #18 src/date-error.ts
 OK #19 command
-OK #20 run/07 date-error output
-run/01.log command=OK exit=0
-run/02.log command=OK exit=0
-run/03.log command=OK exit=0
-run/04.log command=OK exit=0
-run/05.log command=OK exit=0
-run/06.log command=OK exit=0
-run/07.log command=OK exit=0
-run/08.log command=OK exit=1
-run/09.log command=OK exit=0
+OK #20 run/19 date-error output
+run/13.log command=OK exit=0
+run/14.log command=OK exit=0
+run/15.log command=OK exit=0
+run/16.log command=OK exit=0
+run/17.log command=OK exit=0
+run/18.log command=OK exit=0
+run/19.log command=OK exit=0
+run/20.log command=OK exit=1
+run/21.log command=OK exit=0
 ALL OK

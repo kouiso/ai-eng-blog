@@ -1,0 +1,19 @@
+date: 2026-11-10 07:48:58 +0000
+cwd: /path/to/retrieval-eval
+node: v22.22.0
+npm: 10.9.4
+command: node bm25-terms.ts "E1021 が出た"
+exit: 0
+elapsed: 86 ms
+--- stdout+stderr ---
+# E1021 が出た terms=[e1021,が,出,た]
+  term e1021 df=1 idf=1.9924
+  term が df=4 idf=0.8938
+  term 出 df=1 idf=1.9924
+  term た df=4 idf=0.8938
+  payment len=11 sum=0.5372 createSearch=0.5372 [が:0.5372]
+  password len=22 sum=0.4408 createSearch=0.4408 [た:0.4408]
+  login len=24 sum=0.5778 createSearch=0.5778 [が:0.5778]
+  error-e1020 len=25 sum=1.9285 createSearch=1.9285 [が:0.5716 出:0.9366 た:0.4202]
+  error-e1021 len=28 sum=1.2963 createSearch=1.2963 [e1021:0.8949 た:0.4015]
+  points len=83 sum=0.4418 createSearch=0.4418 [が:0.2209 た:0.2209]

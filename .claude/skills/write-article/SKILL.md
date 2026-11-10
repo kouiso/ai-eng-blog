@@ -86,7 +86,7 @@ AI 組み込み開発、つまり「自分のアプリに LLM を組み込む開
 1. `keywords/` にある CSV をすべて読む。CSV が1つも無ければ、その時点で止めて「CSV 待ち」と報告する。ユーザーが CSV なしで書き進めるよう明示したときだけ先へ進めるが、その記事は `target_query: null`、ゲート G10 は NG、`status: draft` のままにする。CSV に無いキーワードを `target_query`、`brief.md`、`selection.md` に作って書かない。
 2. 候補の絞り込みは次の順で行う。
    1. 既存記事と重ならないこと。`content/articles/*.md` の frontmatter（`title`、`main_keyword`、`target_query`）を全件読み、同じ検索意図に答える記事が既にある語は外す。表記ゆれ（「LLM API 使い方」と「LLM API 使い方 初心者」など）は同じ意図とみなす。
-   2. `ANTHROPIC_API_KEY` の有無。`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` で確かめる（値そのものは表示しない、ログにも残さない）。`unset` のあいだは、API を呼ばずに書けるテーマ（MCP サーバー、zod での検証、RAG の検索部分など）を先に選ぶ。API を呼ぶ記事を書いた場合、その記事はゲートで下書き止まりになる。
+   2. `ANTHROPIC_API_KEY` の有無。`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` で確かめる（値そのものは表示しない、ログにも残さない）。`unset` のあいだは、API を呼ばずに書けるテーマ（MCP サーバー、zod での検証、RAG の検索部分など）を先に選ぶ。Messages API を呼ぶ記事を書いた場合、その記事はゲートで下書き止まりになる。Agent SDK か `claude -p` の記事は「Claude プランで動かす記事（Agent SDK、claude -p）」に従えば `unset` でも動かせる。
    3. 講座の順番。`course_step` の小さい語を優先する。ただし上の2が優先。
    4. 人気度。CSV に検索ボリュームの列があればそれで比べる。ラッコの無料プランには無いので、無ければ Google トレンドで候補を比べ（日本、過去12か月）、同じ条件なら高い語を選ぶ。トレンドの値は比較用の 0〜100 で、検索回数ではない。小さい語は 0 になるので、0 同士は差が無いものとして扱う。公開後は Search Console の実測を優先する。guides/01 の「ビッグキーワードを避けて、具体的なロングテールを狙う」に従い、メインキーワード単体は狙わない。
 3. 選んだ理由を `logs/<slug>/selection.md` に書く（書式は「logs/<slug>/ の中身」を参照）。
@@ -149,7 +149,7 @@ checklist の C08「コードはコピペで動く形（import・前提を省略
 3. 実行の記録を `logs/<slug>/run/` に残す。1回の実行で1ファイル（`01.log`、`02.log` …）。中身は、実行日時、実行したコマンド、`node -v` などのランタイムのバージョン、終了コード、標準出力と標準エラー。
 4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。
 5. API キーやトークンは、ログにも記事にも絶対に残さない。出力に混ざったら `***` に置き換えてから保存する。このリポジトリは public です。
-6. `ANTHROPIC_API_KEY` が `unset` のときに API を呼ぶコードは、実行できないので C38 を満たせない。その記事は下書きで止める。Claude Code 自身の通信経路をサンプルコードから使うことは不正利用になるので、回避策として使わない。
+6. `ANTHROPIC_API_KEY` が `unset` のときに Messages API（`@anthropic-ai/sdk`）を呼ぶコードは、実行できないので C38 を満たせない。その記事は下書きで止める。このセッションの内部の認証情報を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。読者に見せるコード自体が Claude Agent SDK か `claude -p` の記事は、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。
 7. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
 
 ### 7. lint を2本とも回す
@@ -214,6 +214,23 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 
 `content/articles/` に `status: scheduled` か `published` の記事が無い状態で書いた1本目は、パイロットです。予約公開まで通したら、ゲートの結果と気になった点をユーザーに報告し、返事があるまで2本目に進みません。
 
+## Claude プランで動かす記事（Agent SDK、claude -p）
+
+読者に見せるコードが Claude Agent SDK（`@anthropic-ai/claude-agent-sdk`）か `claude -p` の記事は、オーナー自身の Claude プランでログインした Claude Code で動かして検証してよい。オーナーが自分で使う範囲の利用で、次の2つのページの条件の内側にある（どちらも 2026-11-10 確認）。
+
+- https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan （Claude プランでログインしていれば、Agent SDK と `claude -p` の利用はプランの利用枠から引かれる）
+- https://code.claude.com/docs/en/legal-and-compliance の「Usage policy」（プランの利用枠は Claude Code と Agent SDK の個人の通常利用が前提。他の開発者が自分のアプリに claude.ai のログインを組み込むこと、利用者に代わって Free・Pro・Max・Ultra のプランの認証情報で通信を中継すること、claude.ai の認証情報やセッショントークンを集めたり保存したりすることは禁止。Agent SDK を使って製品やサービスを作る開発者は API キーで認証する）
+
+守ること。
+
+1. 対象は、記事の検索意図が Agent SDK、`claude -p`、または呼び出し口を問わない内容（概念、採点基準、評価ツールの設定など）の記事だけ。Messages API の書き方や Messages API の機能が検索意図の中心にある記事を、検証できるようにするために Agent SDK の記事へ作り替えない。そうした記事は `needs_api_key: true` のまま、`ANTHROPIC_API_KEY` が入るまで下書きで止める（どの記事がどちらかは `content/plan.md` の「キー不要」の列）。
+2. 本文に、このコードは読者自身の Claude プランの利用枠を使うこと、個人で試す用途に限ること、ほかの人に使わせるアプリやサービスに組み込むときは Claude Console で発行した API キーで認証することを書き、上の2つの URL を出典に入れる。
+3. 料金は、プランの利用枠から引かれることを書く。SDK の `total_cost_usd` は定価で換算した見積もりで、プランで動かしたときの請求額ではない（型定義のコメントに「An estimate, not a billing statement」とある）。`cost_estimate` もこれに合わせる。
+4. `run/` のログには、SDK の init メッセージの `apiKeySource`（`"none"` なら API キーを使っていない）と、Agent SDK と Claude Code のバージョンを残す。ログイン中のアカウント名、メールアドレス、セッションの ID、認証情報はログにも記事にも残さない。
+5. 認証情報は Claude Code のログインに任せる。このセッションの内部の認証情報やトークンを取り出してコードに渡したり、`@anthropic-ai/sdk` から使ったりしない。
+
+2026-11-10 にこの環境で確かめた挙動（Agent SDK 0.3.322、Claude Code 2.1.322）は `content/plan.md` の「プラン（Agent SDK、claude -p）の判定基準」にある。
+
 ## 公開前ゲート
 
 ひとつでも落ちたら、その記事は下書きで止めて報告します。
@@ -225,7 +242,7 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 | G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` |
 | G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` |
 | G03 | 下の B の全項目を満たす | `gate.md` |
-| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` |
+| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。Messages API を呼ぶ記事（`needs_api_key: true`）で `ANTHROPIC_API_KEY` が無いときは不合格。Agent SDK や `claude -p` の記事は、オーナーの Claude プランで動かしたログがあれば合格（「Claude プランで動かす記事」） | `code/`、`run/` |
 | G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている（frontmatter の `sources` だけでは不合格）。料金の目安がある（API を呼ぶ記事は出典付きの金額、呼ばない記事は無料の範囲と、有料になる操作）。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` |
 | G07 | 講座の前後リンク（`prev`、`next` のうち存在するもの）と、既存記事が3本以上なら関連記事への内部リンクが本文にある。リンク先は公開済みか先に予約済み | `gate.md` にリンク先の slug を列挙 |
@@ -324,7 +341,7 @@ updated: 2026-10-30             # 最後に原稿を直した日
 | `prev` / `next` | 必須（値は null 可） | 講座の順番で前後にある記事の slug。同じ `course_step` の中は公開順で並べる |
 | `sources` | 必須（1件以上） | `url`、`title`、`accessed`（YYYY-MM-DD）。`sources.md` と一致させる |
 | `ai_assisted` | 必須 | 常に `true` |
-| `needs_api_key` | 必須 | `true` で `ANTHROPIC_API_KEY` が無ければ、ゲート G04 で不合格 |
+| `needs_api_key` | 必須 | `true` で `ANTHROPIC_API_KEY` が無ければ、ゲート G04 で不合格。Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は、Claude プランで検証できる環境でも `true` のまま。本文のコードが Agent SDK か `claude -p` だけなら `false` |
 | `status` | 必須 | 手順9と10で更新する |
 | `publish_at` | 予約後に必須 | 1日1本になるように入れる |
 | `updated` | 必須 | 直すたびに更新する |

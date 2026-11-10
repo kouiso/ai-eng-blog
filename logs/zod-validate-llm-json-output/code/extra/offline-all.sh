@@ -3,7 +3,7 @@
 for s in ok wrong-type bad-enum extra-key many; do
   echo "## node check.ts $s"; node check.ts "$s" > /dev/null; echo "exit=$?"
 done
-for f in retry-message.ts pretty-ja.ts strip.ts; do
+for f in lowercase-enum.ts retry-message.ts pretty-ja.ts strip.ts; do
   echo "## node $f"; node "$f" > /dev/null; echo "exit=$?"
 done
 echo "## outbound fetch"

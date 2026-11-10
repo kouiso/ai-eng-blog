@@ -24,3 +24,29 @@
 - course_step 2 の `claude-structured-outputs-json`、`structured-output-methods-compare`: `ANTHROPIC_API_KEY` が unset で、API を呼ぶコードを動かせない（C38 を満たせない）。
 - course_step 2 の `zod-validate-llm-json-output`: 原稿がすでにある（重なり）。
 - course_step 2 の `llm-json-parse-error-fix`: キー不要で書けるが、今回はワークフローの指示で #8 を選んだ。CSV が届けば検索ボリュームで順を見直す候補。
+
+## 2026-11-10 の再確認（重なり）
+
+上の絞り込み1は 2026-10-31 時点の4本で判断していた。2026-11-10 には `content/articles/` に、この記事のほかに17本の原稿がある。17本の frontmatter（`title`、`main_keyword`、`target_query`、`course_step`、`description`、`status`）を全件読み直した。17本とも `status: draft`、`publish_at: null`、`target_query: null`。
+
+| slug | main_keyword | 答える内容（title と description から） | この記事との重なり |
+|---|---|---|---|
+| `ai-agent-safe-file-tool` | AIエージェント | ファイル操作ツールのパスの制限と許可リスト | 無し。528行目で「`input_schema` は、zod のスキーマから作れます」とこの記事へリンクするだけで、変換の方法は書いていない |
+| `llm-api-429-retry-sdk-mock` | LLM API | 429・529 エラーと SDK の自動リトライ | 無し |
+| `llm-api-cost-estimate-js-tiktoken` | LLM API | js-tiktoken でトークンを数えて料金を見積もる | 無し |
+| `llm-eval-dataset-from-logs` | LLM 評価 | ログから評価用のテストケースを JSONL にする | 無し |
+| `llm-eval-harness-fixtures` | LLM 評価 | 完全一致、部分一致、正規表現での採点 | 無し |
+| `llm-json-parse-error-fix` | 構造化出力 | LLM の JSON が `JSON.parse` で SyntaxError になる原因と直し方 | 無し。講座で次の記事（`prev` がこの記事）。答えるのはエラーの直し方（トラブル解決）で、スキーマの変換は扱わない |
+| `mcp-connection-closed-fix` | MCPサーバー | MCP の Connection closed の原因と直し方 | 無し |
+| `mcp-inspector-debug` | MCPサーバー | MCP Inspector でツール一覧と呼び出しを調べる | 無し。246行目に、MCP SDK が zod の制約を JSON Schema に置き換えた結果を Inspector で読む段落がある。答える検索は MCP サーバーの調べ方で、`z.toJSONSchema` もツール定義の作り方も扱わない |
+| `mcp-server-resources-prompts` | MCPサーバー | Resources と Prompts の公開 | 無し |
+| `mcp-server-streamable-http` | MCPサーバー | Streamable HTTP のサーバー | 無し |
+| `mcp-server-typescript-stdio` | MCPサーバー | MCP サーバーを TypeScript で自作する | 無し |
+| `rag-bm25-search-typescript` | RAG | BM25 での検索 | 無し |
+| `rag-chunking-japanese-text` | RAG | 日本語の文書をチャンクに分ける | 無し |
+| `rag-hybrid-search-rrf` | RAG | BM25 とベクトル検索を RRF で合わせる | 無し |
+| `rag-local-embeddings-transformers-js` | RAG | Transformers.js で埋め込みを手元で作る | 無し |
+| `rag-retrieval-eval-recall-mrr` | LLM 評価 | Recall@k と MRR で検索を採点する | 無し |
+| `zod-validate-llm-json-output` | 構造化出力 | LLM の出力 JSON を zod の safeParse で検証し、issues を読む | 無し。講座で前の記事（`next` がこの記事）。答えるのは返ってきた JSON の検証で、変換は扱わない |
+
+`grep -n toJSONSchema content/articles/*.md` は、この記事の行だけが出る（2026-11-10）。zod のスキーマを JSON Schema に変換してツール定義に使う記事は、この記事のほかに無い。どれも `target_query` は null なので、検索語そのものでの比較は CSV が届いてからになる（G10）。

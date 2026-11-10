@@ -44,8 +44,8 @@ TypeScript で MCP サーバーを作り始めた人が、MCP Inspector の使�
 この記事の骨格:
 
 - リード: Inspector で何がわかるか（CLI の1コマンドでツール一覧、呼び出しの結果と終了コード）、完成形の出力、対象読者、所要時間
-- H2 MCP Inspector はサーバーを直接呼ぶ公式の開発ツール（定義、4つの使い方、v2 で変わった点）
-- H2 前提となる環境（Node.js 22.19.0 以上、パッケージの版、ファイル構成）
+- H2 MCP Inspector の使い方は Web、CLI、TUI、mcpdo の4つ（4つの使い方、v2 で変わった点）。2026-11-10 に見出しを直した（旧「MCP Inspector はサーバーを直接呼ぶ公式の開発ツール」は「直接呼ぶ」に出典が無かった）
+- H2 前提となる環境（2.13.0 に固定する理由と Node.js の版の条件、パッケージの版、ファイル構成）
 - H2 1. 調べるサーバーは server.ts の1ファイル（package.json、server.ts、npm install、版の確認）
 - H2 2. tools/list でクライアントに渡るツールの定義が見える
 - H2 3. tools/call の引数は --tool-arg で渡す

@@ -1,6 +1,6 @@
 # code: llm-api-429-retry-sdk-mock
 
-記事 `content/articles/llm-api-429-retry-sdk-mock.md` に載せたコードと1文字も違わないファイル。2026-10-31 に、記事のコードブロックとの一致を `../lint/check-code-and-outputs.py` で確かめた（結果は `../lint/check-code-and-outputs.txt`、ALL OK）。
+記事 `content/articles/llm-api-429-retry-sdk-mock.md` に載せたコードと1文字も違わないファイル。2026-11-10 に、記事のコードブロックとの一致を `../lint/check-code-and-outputs.py` で確かめた（結果は `../lint/check-code-and-outputs.txt`、ALL OK）。
 
 | ファイル | 記事での位置 |
 |---|---|
@@ -10,13 +10,14 @@
 | `my-loop.ts` | 同じ節の変更前のコード |
 | `extra/err-name.ts` | 記事には載せない確認用。`err.name` が `Error` になることを確かめた（`run/10.log`） |
 | `extra/netns-all.sh`、`extra/lo-up.py` | 記事には載せない確認用。ループバックだけのネットワーク名前空間（`unshare -rn`）で全シナリオを動かし、外への通信が `ENETUNREACH` になることを確かめた（`run/11.log`） |
+| `extra/huge-retry-after.ts` | 記事には載せない確認用（2026-11-10 に追加）。`retry-after` が 2^31 - 1 ms を超えると、SDK 1.3.0 がその値を捨てて既定の待ち時間に切り替えることを確かめた（`run/13.log`） |
 | `extra/tsconfig.typecheck.json` | 記事には載せない確認用。Node.js の型ストリップは型を調べないので、別フォルダで `tsc` 7.0.2 にかけた（`run/12.log`） |
 
 依存は `^` なしの完全固定（`@anthropic-ai/sdk` 1.3.0）。`node_modules` はこのフォルダに置いていない。
 
 ## 実行ログ（`../run/`）
 
-実行はすべて scratchpad の使い捨てフォルダで行い、終わったあと消した。ログのパスはリポジトリのルートからの相対パスに置き換えてある。
+01〜12 は 2026-10-31 の実行を、2026-11-10 に同じコマンドで実行し直したログで上書きした（前の版は git の履歴にある）。13 は 2026-11-10 に足した。実行はすべて scratchpad の使い捨てフォルダで行い、終わったあと消した。ログのパスはリポジトリのルートからの相対パスに置き換えてある。
 
 | ログ | コマンド |
 |---|---|
@@ -28,3 +29,4 @@
 | 10.log | `extra/err-name.ts`（`err.name` の確認） |
 | 11.log | `extra/netns-all.sh`（外へ出られない環境で全シナリオ） |
 | 12.log | `npx tsc -p .`（型チェック、exit=0） |
+| 13.log | `extra/huge-retry-after.ts`（`retry-after: 2147484` を捨てて 402ms で送り直すことの確認） |

@@ -1,0 +1,47 @@
+description: 問い合わせを分類するプロンプトを2通り比べる
+
+prompts:
+  - label: 形の指定なし
+    raw: |
+      次の問い合わせを billing、bug、other のどれかに分類してください。
+
+      問い合わせ: {{inquiry}}
+  - label: 形の指定あり
+    raw: |
+      次の問い合わせを billing、bug、other のどれかに分類してください。
+      答えはラベルの英単語1つだけを小文字で返し、ほかの文字は書かないでください。
+
+      問い合わせ: {{inquiry}}
+
+providers:
+  - id: anthropic:claude-agent-sdk
+    config:
+      apiKeyRequired: false
+      model: haiku
+      max_turns: 1
+
+defaultTest:
+  assert:
+    - type: regex
+      value: '^(billing|bug|other)$'
+      metric: ラベル1語
+
+tests:
+  - vars:
+      inquiry: 先月の請求額が2回引き落とされています。
+    assert:
+      - type: icontains
+        value: billing
+        metric: 分類が合う
+  - vars:
+      inquiry: 保存ボタンを押すと画面が真っ白になります。
+    assert:
+      - type: icontains
+        value: bug
+        metric: 分類が合う
+  - vars:
+      inquiry: 御社のロゴを講演のスライドに使ってもよいですか。
+    assert:
+      - type: icontains
+        value: other
+        metric: 分類が合う

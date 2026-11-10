@@ -9,7 +9,8 @@ code embed.ts: True
 code vector-search.ts: True
 code rrf.ts: True
 code eval.ts: True
-cases.ts sha256 unchanged since run/cases-written-at.txt: True
+cases.ts sha256 now: 6e132bb2547a95d68a483f6c4243597982b42757d45a6465a8da199ca0838fd0 (comparison with run/cases-written-at.txt skipped)
+cases.ts unchanged since git HEAD: True
 command 'mkdir retrieval-eval' in article: True
 command 'npm install' in article: True
   run/03.log command matches: True (npm install)
@@ -56,4 +57,5 @@ run 18 exit=0
 run 19 exit=0
 run 20 exit=0
 run 21 exit=0
+run 22 exit=0
 ALL OK

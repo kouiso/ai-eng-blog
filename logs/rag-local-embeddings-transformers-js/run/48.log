@@ -1,0 +1,20 @@
+date: 2026-11-10 07:04:11 +0000
+cwd: /path/to/art-rag-local-embeddings-transformers-js
+node: v22.22.0
+npm: 10.9.4
+command: bash -c ls -l local-embeddings/node_modules/onnxruntime-node/bin/napi-v6/linux/x64 local-embeddings-full/node_modules/onnxruntime-node/bin/napi-v6/linux/x64
+exit: 0
+elapsed: 5 ms
+--- stdout+stderr ---
+local-embeddings-full/node_modules/onnxruntime-node/bin/napi-v6/linux/x64:
+total 311900
+-rw-r--r-- 1 root root  45828512 Nov 10 07:03 libonnxruntime.so.1
+-rw-rw-rw- 1 root root 272054000 Nov 10 07:04 libonnxruntime_providers_cuda.so
+-rw-rw-rw- 1 root root     14632 Nov 10 07:04 libonnxruntime_providers_shared.so
+-rw-rw-rw- 1 root root   1084896 Nov 10 07:04 libonnxruntime_providers_tensorrt.so
+-rw-r--r-- 1 root root    389488 Nov 10 07:03 onnxruntime_binding.node
+
+local-embeddings/node_modules/onnxruntime-node/bin/napi-v6/linux/x64:
+total 45144
+-rw-r--r-- 1 root root 45828512 Nov 10 07:02 libonnxruntime.so.1
+-rw-r--r-- 1 root root   389488 Nov 10 07:02 onnxruntime_binding.node

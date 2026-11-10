@@ -48,5 +48,7 @@ log_run 09 "ls -l workspace/notes workspace/out outside"
 log_run 10 "node setup.ts && node $CODE_DIR/extra/hard-link.ts"
 log_run 11 "node $CODE_DIR/extra/dotdot-name.ts"
 log_run 12 "$TC_DIR/node_modules/.bin/tsc -v && $TC_DIR/node_modules/.bin/tsc -p $CODE_DIR/extra/tsconfig.typecheck.json --typeRoots $TC_DIR/node_modules/@types; echo tsc_exit=\$?"
+# try-safe.ts を setup.ts なしで2回続けると結果が変わること、setup.ts のあとは元に戻ることの確認（記事の注意書きの裏付け）
+log_run 13 "node setup.ts && echo '--- 1回目' && node try-safe.ts && echo '--- 2回目（setup.ts なし）' && node try-safe.ts && node setup.ts && echo '--- setup.ts のあと' && node try-safe.ts"
 cd "$WORK_PARENT"
 rm -rf safe-file-tool

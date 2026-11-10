@@ -1,4 +1,4 @@
-date: 2026-11-02T15:45:23Z
+date: 2026-11-10T07:39:41Z
 cwd: <work>/llm-eval
 node: v22.22.0 / npm: 10.9.4
 command: unshare -rn bash -c 'node -e "fetch(\"https://example.com\").then(()=>console.log(\"fetch: ok\"),e=>console.log(\"fetch: failed\", e.cause?.code ?? e.message))"; node run-eval.ts; echo "終了コード: $?"; node compare.ts; echo "終了コード: $?"'

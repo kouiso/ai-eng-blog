@@ -8,7 +8,7 @@ target_query: null
 course_step: 4
 cost_estimate: "記事のコードは API を呼ばないので無料です。モデルにつないで動かすと、ツールの定義と結果の文字列も入力トークンとして料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）、Linux x86_64"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "ai-agent-max-turns-budget-limit"
 next: "ai-agent-vs-workflow"
 sources:
@@ -36,31 +36,37 @@ sources:
   - url: "https://platform.claude.com/docs/en/about-claude/pricing"
     title: "Pricing"
     accessed: 2026-10-31
+  - url: "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links"
+    title: "Create symbolic links (Microsoft Learn)"
+    accessed: 2026-11-10
+  - url: "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createsymboliclinkw"
+    title: "CreateSymbolicLinkW function (Microsoft Learn)"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 
 AI エージェントのファイル操作ツールは、モデルが渡したパスをそのまま開くと作業フォルダの外まで読みます。防ぐ手立ては、`realpath` で実体に直したパスを `path.relative` で中か外か判定することです。そのうえで、拡張子、書き込み先、ツール名を許可リストで絞ります。
 
-対象は、tool use で AI エージェントを作り始めた人です。この記事のコードは API を呼ばず、危ない入力をツールの関数に直接渡して確かめます。モデルにつなぐループのコードは、この記事には載せていません。ループは[別の記事](/posts/ai-agent-tool-use-loop-typescript)で扱います。
+対象は、tool use で AI エージェントを作り始めた人です。この記事のコードは API を呼ばず、危ない入力をツールの関数に直接渡して確かめます。モデルにつなぐループのコードは、この記事には載せていません。ループは[別の記事](/posts/ai-agent-tool-use-loop-typescript)で扱う予定です。
 
-講座の前の記事では、エージェントのループを最大ターン数とトークン予算で止めました。この記事は[前の記事](/posts/ai-agent-max-turns-budget-limit)の続きです。今回は、そのループから呼ばれるツールの関数に検査を入れます。
+この記事は[前の記事](/posts/ai-agent-max-turns-budget-limit)の続きです。講座の前の回では、エージェントのループを最大ターン数とトークン予算で止める予定にしています。今回は、そのループから呼ばれるツールの関数に検査を入れます。
 
-## モデルが渡すパスは4つの検査を通してから開く
+## モデルが渡すパスは、実体の場所と種類を確かめてから開く
 
 ツールに届くパスは、モデルが作った文字列です。ツールの結果には外から来た文章が入り、そこに仕込まれた指示でモデルが誘導されることがあります（出典6）。OWASP は、この種の弱点を Excessive Agency と呼んでいます（出典5）。予想外の出力か、操作された出力に従って、害のある操作が実行される弱点です（出典5）。
 
-この記事の関数は、次の4つの検査をすべて通ったパスを開き、1つでも通らなければ断ります。
+この記事の関数は、次の表の検査をすべて通ったパスを開き、1つでも通らなければ断ります。
 
 | 検査 | 断る入力の例 | 使う関数 |
 |---|---|---|
 | 1. 絶対パスを断る | `/etc/hostname` | `path.isAbsolute` |
 | 2. 作業フォルダの中かを判定する | `../outside/private.txt`、`../workspace-old/memo.txt` | `path.resolve`、`path.relative` |
-| 3. リンクの先も同じ判定にかける | `notes/shortcut.txt`（外を指すリンク） | `realpath` |
+| 3. シンボリックリンク（以下、リンク）の先も同じ判定にかける | `notes/shortcut.txt`（外を指すリンク） | `realpath` |
 | 4. 許可リストで絞る | `.env`、30,000 バイトのファイル、`delete_file` というツール名 | `path.extname`、`stat`、`Map` |
 
 守りの本体は2と3です。1と4は、モデルに直し方を伝える役と、作業フォルダの中にある読ませたくないファイルを除く役を受け持ちます。
@@ -118,12 +124,14 @@ writeFileSync("workspace/.env", "SAMPLE_KEY=dummy-value\n");
 writeFileSync("workspace-old/memo.txt", "隣のフォルダのメモです\n");
 writeFileSync("outside/private.txt", "作業フォルダの外のファイルです\n");
 
-// 作業フォルダの中に、外を指すシンボリックリンクを2つ置きます。
+// 作業フォルダの中に、外を指すリンクを2つ置きます。
 symlinkSync("../../outside/private.txt", "workspace/notes/shortcut.txt");
 symlinkSync("../../outside/report.md", "workspace/out/report.md");
 
 console.log("見本のファイルを作りました");
 ```
+
+`setup.ts` は、`symlinkSync` でリンクを作ります。Windows では、リンクを作る権利を既定で持つのは Administrators グループです（出典9）。昇格していないプロセスから作るには、開発者モードを有効にしておく必要があります（出典10）。Windows で試すときは、管理者として開いたターミナルで実行してください。この記事のコードは Linux でしか動かしていません。
 
 実行します。
 
@@ -135,7 +143,7 @@ node setup.ts
 見本のファイルを作りました
 ```
 
-できあがる配置は次のとおりです。`->` は、シンボリックリンク（以下、リンク）が指す先を表します。エージェントに渡す作業フォルダは `workspace` です。`workspace-old` と `outside` は、その外にあります。
+できあがる配置は次のとおりです。`->` は、リンクが指す先を表します。エージェントに渡す作業フォルダは `workspace` です。`workspace-old` と `outside` は、その外にあります。
 
 ```text
 safe-file-tool/
@@ -144,7 +152,7 @@ safe-file-tool/
     notes/todo.md
     notes/big.md          30,000 バイト
     notes/shortcut.txt    -> ../../outside/private.txt
-    out/report.md         -> ../../outside/report.md（リンク先はまだ無い）
+    out/report.md         -> ../../outside/report.md（リンクの先はまだ無い）
   workspace-old/memo.txt
   outside/private.txt
 ```
@@ -153,7 +161,7 @@ safe-file-tool/
 
 ## 素朴な実装は ../ とリンクで作業フォルダの外を読む
 
-先に、守りの無い実装と、よく見かける守り方の2つを動かします。次のファイルを `naive-tool.ts` として保存してください。
+先に、守りの無い実装と、よく見かける守り方を動かします。次のファイルを `naive-tool.ts` として保存してください。
 
 ```ts
 import { readFile } from "node:fs/promises";
@@ -176,7 +184,7 @@ export async function readWithPrefixCheck(input: string): Promise<string> {
 }
 ```
 
-4つの入力を2つの関数に渡すファイルを、`try-naive.ts` として保存します。
+`try-naive.ts` は、両方の関数に同じ入力を順に渡すファイルです。次の内容で保存します。
 
 ```ts
 import { readNaive, readWithPrefixCheck } from "./naive-tool.ts";
@@ -279,7 +287,7 @@ export async function readTextFile(input: string): Promise<string> {
     throw new ToolInputError("作業フォルダの外は読めません。");
   }
   try {
-    // シンボリックリンクをたどった先でも、同じ2つを確かめます。
+    // リンクをたどった先でも、同じ2つを確かめます。
     const real = await realpath(target);
     if (!isInside(root, real) || !hasAllowedExtension(real)) {
       throw new ToolInputError("リンクの先が作業フォルダの外か、許可していない種類のファイルです。");
@@ -329,11 +337,11 @@ node -e 'console.log(require("node:path").win32.relative("C:\\work", "D:\\secret
 D:\secret.txt
 ```
 
-`readTextFile` は、文字列の判定を通ったパスを `realpath` にかけます。`realpath` が返すのは、`.` と `..` とシンボリックリンクをたどった正規の絶対パスです（出典2）。その結果にも、`isInside` と拡張子の判定をかけます。
+`readTextFile` は、文字列の判定を通ったパスを `realpath` にかけます。`realpath` が返すのは、`.` と `..` とリンクをたどった正規の絶対パスです（出典2）。その結果にも、`isInside` と拡張子の判定をかけます。
 
 入力に対する `path.isAbsolute` の判定は、モデルに直し方を伝えるために置きました。Node.js の説明は、この関数を Path Traversal の対策に使うのは安全でないとしています（出典1）。外に出ないことを保証しているのは、`isInside` のほうです。
 
-### 8つの読み込みと4つの書き込みの結果
+### 危ない入力を渡した読み込みと書き込みの結果
 
 読み込みと書き込みに危ない入力を渡すファイルを、`try-safe.ts` として保存します。
 
@@ -397,6 +405,8 @@ node try-safe.ts
   out/report.md -> 拒否: out/report.md は既にあります。別の名前にしてください。
 ```
 
+`try-safe.ts` は、実行すると `out/summary.md` を作ります。そのため2回目の実行では、最初の書き込みも「既にあります」と断られます。記事と同じ結果を見るには、先に `node setup.ts` で見本を作り直してください。
+
 読み込みで通ったのは、`notes/todo.md` の1つです。素朴な実装で読めた3つの外のファイルは、文字列の判定かリンクの判定で断られました。
 
 存在しないファイルへの返事も見てください。`realpath` は、存在しないパスに ENOENT のエラーを投げます（出典2）。そのエラーの `path` には、絶対パスが入ります（出典2）。`toToolError` はパスを含まない文に置き換えるので、モデルにフォルダの構成が伝わりません。
@@ -409,9 +419,9 @@ node try-safe.ts
 
 ## 書き込みは out/ の下に限り、既にある名前には書かない
 
-書き込みには、2つの許可リストを重ねました。1つ目は書き込み先のフォルダで、`out/` の下に限ります。2つ目は拡張子で、読み込みと同じ `.md` と `.txt` です。
+書き込み先のフォルダと拡張子の両方を、許可リストで絞りました。フォルダは `out/` の下に限り、拡張子は読み込みと同じ `.md` と `.txt` です。
 
-`writeTextFile` は、親フォルダを `realpath` で実体に直してから書きます。書くときの `"wx"` は、パスが既にあると失敗するフラグです（出典2）。POSIX では、パスがシンボリックリンクなら、リンク先が無くても失敗します（出典2）。`out/report.md` を断れた理由は、この動きにあります。
+`writeTextFile` は、親フォルダを `realpath` で実体に直してから書きます。書くときの `"wx"` は、パスが既にあると失敗するフラグです（出典2）。POSIX では、パスがリンクなら、リンクの先が無くても失敗します（出典2）。`out/report.md` を断れた理由は、この動きにあります。
 
 フラグを付けない `writeFile` で、同じリンクに書いた場合を確かめました。次のファイルを `naive-write.ts` として保存し、実行してください。
 
@@ -429,9 +439,10 @@ node naive-write.ts
 
 ```text
 # 要約
+
 ```
 
-作業フォルダの外に `outside/report.md` ができ、書いた内容が入っていました。`writeFile` の既定のフラグは `"w"` で（出典2）、ファイルが無ければ作ります（出典2）。リンク先が無くても、外にファイルが作られるのはこのためです。
+作業フォルダの外に `outside/report.md` ができ、書いた内容が入っていました。`writeFile` の既定のフラグは `"w"` で（出典2）、ファイルが無ければ作ります（出典2）。リンクの先が無くても、外にファイルが作られるのはこのためです。
 
 ## ツール名も許可リストにして、エラーは is_error で返す
 
@@ -545,7 +556,7 @@ node try-tools.ts
 
 ## 確認すること
 
-AI エージェントにファイル操作のツールを渡す前に、次の5つをすべて確かめます。
+AI エージェントにファイル操作のツールを渡す前に、次の項目をすべて確かめます。
 
 - 入力のパスを作業フォルダの絶対パスにつなぎ、`path.relative` で中かを判定しているか
 - `realpath` でリンクをたどった先にも、同じ判定をかけているか
@@ -555,11 +566,11 @@ AI エージェントにファイル操作のツールを渡す前に、次の5�
 
 MCP サーバーは[別の記事](/posts/mcp-server-typescript-stdio)で作りました。
 
-講座の次の記事では、AI エージェントとワークフローの違いを扱います。決まった手順なら、LLM を順に呼ぶ形で足りる場面があります。[次の記事](/posts/ai-agent-vs-workflow)に進んでください。
+講座の次の回では、AI エージェントとワークフローの違いを扱う予定です。続きは[次の記事](/posts/ai-agent-vs-workflow)です。
 
 ## 出典
 
-確認日は、どれも 2026-10-31 です。本文の（出典1）〜（出典8）は、この表の番号を指します。
+確認日は、表の右端の列に書きました。本文の（出典1）〜（出典10）は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
@@ -571,5 +582,7 @@ MCP サーバーは[別の記事](/posts/mcp-server-typescript-stdio)で作り�
 | 6 | Handle tool calls | https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls | 2026-10-31 |
 | 7 | Define tools | https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools | 2026-10-31 |
 | 8 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | 2026-10-31 |
+| 9 | Create symbolic links（Microsoft Learn） | https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links | 2026-11-10 |
+| 10 | CreateSymbolicLinkW function（Microsoft Learn） | https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createsymboliclinkw | 2026-11-10 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

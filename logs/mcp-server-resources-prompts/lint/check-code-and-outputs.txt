@@ -13,3 +13,4 @@ OUT after run/04.log: SAME
 CMD 'npx -y @modelcontextprotocol/inspector@2.13.0 --cli node server.ts --method resources/read --uri guide://style': run/09.log exit=0
 OUT after run/09.log: SAME
 ALL OK
+exit=0

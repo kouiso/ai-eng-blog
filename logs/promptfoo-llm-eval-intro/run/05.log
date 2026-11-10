@@ -1,0 +1,18 @@
+date: 2026-11-10T07:59:35+00:00
+cwd: <work>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ node show-failures.ts
+----
+--- 形の指定なし / 先月の請求額が2回引き落とされています。
+不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
+出力: "billing\n\nこの問い合わせは、請求額(二重引き落とし)に関する内容のため billing に分類します。"
+--- 形の指定なし / 保存ボタンを押すと画面が真っ白になります。
+不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
+出力: "bug\n\nこの問い合わせは、保存操作で画面が真っ白になるという不具合の報告なので「bug」に分類されます。料金や請求に関する内容は含まれていません。"
+--- 形の指定なし / 御社のロゴを講演のスライドに使ってもよいですか。
+不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
+出力: "**分類: other**\n\nロゴの利用許諾に関する質問で、請求(billing)にも不具合(bug)にも当たらないため、other に分類します。"
+合格 3 / 6
+----
+exit=0

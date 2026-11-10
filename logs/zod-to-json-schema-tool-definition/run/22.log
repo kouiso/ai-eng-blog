@@ -1,0 +1,8 @@
+date: 2026-11-10 06:45:29 +0000
+cwd: /path/to/zod-tool-schema
+node: v22.22.0
+npm: 10.9.4
+command: node extra/email-pattern.mjs
+exit: 0
+--- stdout+stderr ---
+pattern === z.regexes.email.source: true

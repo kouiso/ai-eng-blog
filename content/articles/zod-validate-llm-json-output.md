@@ -8,7 +8,7 @@ target_query: null
 course_step: 2
 cost_estimate: "記事のコードは zod しか使わず API を呼ばないので無料です。再依頼の文をモデルに送ると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、zod 4.6.7"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "claude-structured-outputs-json"
 next: "zod-to-json-schema-tool-definition"
 sources:
@@ -20,7 +20,7 @@ sources:
     accessed: 2026-10-31
   - url: "https://zod.dev/api"
     title: "Defining schemas | Zod"
-    accessed: 2026-10-31
+    accessed: 2026-11-10
   - url: "https://zod.dev/error-customization"
     title: "Customizing errors | Zod"
     accessed: 2026-10-31
@@ -32,7 +32,7 @@ sources:
     accessed: 2026-10-31
   - url: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
     title: "Structured outputs"
-    accessed: 2026-10-31
+    accessed: 2026-11-10
   - url: "https://nodejs.org/docs/latest-v22.x/api/typescript.html"
     title: "Node.js v22 Modules: TypeScript"
     accessed: 2026-10-31
@@ -43,7 +43,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 LLM が返した JSON は、`JSON.parse` のあとに zod の `safeParse` で検証します。失敗したら、`error.issues` を `path`、`code`、`message` の順に読みます。手で作った5つの見本を検証し、実際に出た issues をそのまま載せて読み方を示します。
@@ -75,15 +75,17 @@ zod 4.6.7 の issue の `code` は11種類あります（出典5）。この記�
 | `unrecognized_keys` | `"confidence":0.9` | スキーマに無いキー（`z.strictObject` のとき） |
 | `too_big` | `"priority":5` | `max` で決めた上限を超えた |
 
-## Structured Outputs を使っても文字数と範囲は自分で確かめる
+## 文字数と数値の範囲は受け取る側で確かめる
 
-モデル側の仕組みだけでは防げない違反があるので、検証のコードは省けません。
+Structured Outputs は文字数と範囲の制約に対応しないので、受け取った応答をどこで確かめるかを決めます。
 
 Claude の Structured Outputs は、出力をスキーマに合わせる機能です（出典7）。それでも、数値の `minimum` と `maximum` には対応していません（出典7）。文字数の `minLength` と `maxLength` も同じです（出典7）。多くの SDK のヘルパーは、これらを送る前に外してフィールドの説明文に移します（出典7）。
 
 文字列の候補（JSON Schema の `enum`）は、大文字と小文字の違いまでは保証されません（出典7）。`max_tokens` で途中まで切れた出力も、スキーマに合わないことがあります（出典7）。Structured Outputs を使わないときは、必須のフィールドの抜けと型のずれも起こり得ます（出典7）。
 
-公式の TypeScript SDK には `zodOutputFormat()` があります（出典7）。これを使うと、`parse()` が応答を検証します（出典7）。この記事は SDK を使わない形で、受け取った JSON を zod で検証します。モデルの出力をアプリに渡す前には、文字数と数値の範囲まで自分のコードで確かめるべきです。
+公式の TypeScript SDK には `zodOutputFormat()` があります（出典7）。zod のスキーマをこれで包み、`parse()` に渡して使います（出典7）。このとき `parse()` は、外した制約も元のスキーマのとおりに応答で確かめます（出典7）。同じ SDK の `jsonSchemaOutputFormat()` は、応答を検証しません（出典7）。API が対応しない制約に反する値も、そのまま通します（出典7）。
+
+この記事は SDK を使わずに、受け取った JSON を zod で検証します。SDK を通さないとき、または検証しないヘルパーを使うときは、文字数と数値の範囲まで自分のコードで確かめます。`zodOutputFormat()` と `parse()` を使うなら、同じ確認を重ねて書かずに済みます（出典7）。
 
 ## 使うバージョンと準備
 
@@ -119,7 +121,7 @@ npm install
 
 ```text
 
-added 1 package, and audited 2 packages in 709ms
+added 1 package, and audited 2 packages in 1s
 
 1 package is looking for funding
   run `npm fund` for details
@@ -237,7 +239,7 @@ node check.ts bad-enum
 ]
 ```
 
-`values` に候補の一覧が入ります。見本の `"Bug"` は、候補の `"bug"` と頭文字の大小しか違いません。この違いは Structured Outputs でも起こり得ます（出典7）。公式は、大文字と小文字を区別せずに比べるよう勧めています（出典7）。
+`values` に候補の一覧が入ります。見本の `"Bug"` は、候補の `"bug"` と頭文字の大小しか違いません。この違いは Structured Outputs でも起こり得ます（出典7）。公式は、大文字と小文字を区別せずに比べるよう勧めています（出典7）。`z.enum` は区別して比べるので、`"Bug"` を拒みました。勧めに沿う書き方は「大文字と小文字の違いは z.enum の前にそろえる」の節に載せています。
 
 ### unrecognized_keys は path が空の配列
 
@@ -292,6 +294,49 @@ node check.ts many
 見本 `many` には違反を3つ入れ、issues も3件返りました。最初の違反で止まらないので、この見本では1回の検証で3か所すべてがわかりました。
 
 `too_big` の `maximum` は上限の3です。`inclusive: true` と `message` の `<=3` から、3 は許されるとわかります。`summary` のキーが無いときは、`invalid_type` になります。`message` には `received undefined` と出ます。`[ 'tags', 1 ]` の 1 は配列の添字で、2つ目の要素の `3` を指しています。
+
+## 大文字と小文字の違いは z.enum の前にそろえる
+
+公式の勧めに沿うなら、受け取った文字列を小文字に直してから `z.enum` の候補と比べます。
+
+```ts
+import * as z from "zod";
+import { Ticket } from "./schema.ts";
+import { samples } from "./samples.ts";
+
+const Category = z
+  .string()
+  .toLowerCase()
+  .pipe(z.enum(["bug", "billing", "other"]));
+
+for (const value of ["Bug", "BILLING", "feature"]) {
+  const result = Category.safeParse(value);
+  console.log(value, "->", result.success ? result.data : result.error.issues[0]?.code);
+}
+
+const CaseInsensitiveTicket = Ticket.extend({ category: Category });
+const ticket = CaseInsensitiveTicket.safeParse(JSON.parse(samples["bad-enum"]));
+console.log("bad-enum:", ticket.success, ticket.data?.category);
+```
+
+このファイルを `lowercase-enum.ts` として保存し、実行します。
+
+```bash
+node lowercase-enum.ts
+```
+
+```text
+Bug -> bug
+BILLING -> billing
+feature -> invalid_value
+bad-enum: true bug
+```
+
+`z.string().toLowerCase()` は、文字列を小文字に変えます（出典3）。`.pipe()` は、変えたあとの値を次のスキーマの `z.enum` に渡します（出典3）。`"Bug"` と `"BILLING"` は、候補の値に直りました。候補に無い `"feature"` は、`invalid_value` のままです。
+
+`.extend()` は、同じ名前のキーを上書きします（出典3）。`CaseInsensitiveTicket` は、`category` だけを差し替えたスキーマです。見本 `bad-enum` はこれで検証を通り、`category` は `"bug"` になりました。
+
+小文字にそろえてよいのは、候補どうしが大文字と小文字だけで違わないときです。公式も、そうした候補を作らないよう勧めています（出典7）。この記事の `Ticket` は、`invalid_value` を見せるために `z.enum` のままにしました。アプリでモデルの出力を受けるときは、差し替えた形を使います。
 
 ## prettifyError でモデルへの再依頼の文を作る
 
@@ -420,18 +465,18 @@ LLM の出力を受け取る処理では、次の4つをすべて確かめます
 
 ## 出典
 
-確認日は、どれも 2026-10-31 です。本文の（出典1）〜（出典9）は、この表の番号を指します。
+本文の（出典1）〜（出典9）は、この表の番号を指します。出典3と出典7は、2026-11-10 に読み直しました。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
 | 1 | Basic usage（Zod） | https://zod.dev/basics | 2026-10-31 |
 | 2 | Formatting errors（Zod） | https://zod.dev/error-formatting | 2026-10-31 |
-| 3 | Defining schemas（Zod） | https://zod.dev/api | 2026-10-31 |
+| 3 | Defining schemas（Zod） | https://zod.dev/api | 2026-11-10 |
 | 4 | Customizing errors（Zod） | https://zod.dev/error-customization | 2026-10-31 |
 | 5 | colinhacks/zod v4.6.7 core/errors.ts | https://github.com/colinhacks/zod/blob/v4.6.7/packages/zod/src/v4/core/errors.ts | 2026-10-31 |
 | 6 | zod（npm） | https://www.npmjs.com/package/zod | 2026-10-31 |
-| 7 | Structured outputs | https://platform.claude.com/docs/en/build-with-claude/structured-outputs | 2026-10-31 |
+| 7 | Structured outputs | https://platform.claude.com/docs/en/build-with-claude/structured-outputs | 2026-11-10 |
 | 8 | Node.js v22 Modules: TypeScript | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-10-31 |
 | 9 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | 2026-10-31 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

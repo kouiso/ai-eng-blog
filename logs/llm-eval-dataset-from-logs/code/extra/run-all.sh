@@ -12,7 +12,7 @@ log_run() {
   local cmd="$*"
   local f="$RUN_DIR/$n.log"
   {
-    echo "date: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    echo "date: $(TZ=Asia/Tokyo date '+%Y-%m-%dT%H:%M:%S%:z') (JST)"
     echo "cwd: <work>/$(basename "$PWD")"
     echo "node: $(node -v) / npm: $(npm -v)"
     echo "command: ${cmd//$CODE_DIR/<code>}"

@@ -35,3 +35,21 @@
 
 - `run/11.log`: `npm ls --depth=0`（入ったバージョンが `package.json` と同じことの確認）
 - `run/12.log`: `npx tsc -v`（`Version 7.0.2`）
+
+## 2026-11-10 の再実行（run/13〜24）
+
+記事の前提の文（Node.js の版）を直したときに、同じ `extra/run.sh` で、空の作業フォルダから同じ手順をもう一度通しました。番号の対応は次のとおりです。
+
+| 2026-10-31 | 2026-11-10 | コマンド |
+|---|---|---|
+| `run/01` | `run/13` | `mkdir -p zod-tool-schema/src` |
+| `run/02` | `run/14` | `npm install`（所要時間が 3s から 2s に変わった。記事の出力は `run/14` に合わせた） |
+| `run/03` | `run/15` | `npm run typecheck` |
+| `run/04`〜`07` | `run/16`〜`19` | `node src/tool.ts`、`node src/compare-io.ts`、`node src/check-input.ts`、`node src/date-error.ts` |
+| `run/08` | `run/20` | `return json;` に変えた版で `npm run typecheck`（終了コード 1） |
+| `run/09` | `run/21` | 元に戻して `npm run typecheck` |
+| `run/10` | `run/22` | `extra/email-pattern.mjs` の実行（2026-11-10 は作業フォルダに `extra/` を置いて `node extra/email-pattern.mjs`。結果は `true`） |
+| `run/11` | `run/23` | `npm ls --depth=0` |
+| `run/12` | `run/24` | `npx tsc -v`（`Version 7.0.2`） |
+
+`lint/check-code-and-outputs.py` は、2026-11-10 からは `run/13`〜`21` と照合しています。

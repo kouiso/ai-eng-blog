@@ -1,0 +1,14 @@
+date: 2026-11-10T07:21:10Z
+cwd: <work>/first-agent
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322
+--- output (stdout+stderr) ---
+
+added 105 packages, and audited 106 packages in 6s
+
+36 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+--- exit=0

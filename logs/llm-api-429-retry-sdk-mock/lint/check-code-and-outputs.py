@@ -32,6 +32,6 @@ for name, text in checks.items():
     hit = text in fences
     ok &= hit
     print(f"output {name}: {hit}")
-for n in range(1, 13):
+for n in range(1, 14):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")

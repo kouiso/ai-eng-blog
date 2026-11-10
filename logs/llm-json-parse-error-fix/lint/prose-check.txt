@@ -1,6 +1,6 @@
-units=149 excluded_url_only_cells=6
+units=180 excluded_url_only_cells=6
 C25 over60=0 max=60
-C16 prose sentences=93 min=6 max=60 le20=7 41to60=50
+C16 prose sentences=109 min=6 max=60 le20=9 41to60=57
 C17 SAME3(3字)=0 []
 C17 SAME3(2字・参考)=0 []
 C19 non-desumasu prose=0

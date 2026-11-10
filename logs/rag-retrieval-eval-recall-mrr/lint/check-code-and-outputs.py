@@ -4,14 +4,18 @@
 # logs/rag-bm25-search-typescript/lint/check-code-and-outputs.py を、この記事のファイル名と
 # ログの書式（code/extra/run.sh の出力）に合わせて書き換えたもの。
 # 使い方: python3 logs/rag-retrieval-eval-recall-mrr/lint/check-code-and-outputs.py（リポジトリのルートで）
-import hashlib, re
+# 2026-11-10: 環境変数 RUN_DIR でログを読むフォルダを替えられるようにした（既定は run/）。
+# CASES_REC=skip のときは run/cases-written-at.txt との比較をせず、cases.ts の今の sha256 と、
+# git の HEAD から cases.ts が変わっていないかだけを出す。
+import hashlib, os, re, subprocess
 
 L = "logs/rag-retrieval-eval-recall-mrr/"
 article = open("content/articles/rag-retrieval-eval-recall-mrr.md", encoding="utf-8").read()
+RUN = os.environ.get("RUN_DIR", L + "run/").rstrip("/") + "/"
 fences = [b for _, b in re.findall(r"```(\w+)\n(.*?)\n```", article, re.S)]
 
 def run(n):
-    t = open(L + f"run/{n:02d}.log", encoding="utf-8").read()
+    t = open(RUN + f"{n:02d}.log", encoding="utf-8").read()
     cmd = re.search(r"^command: (.*)$", t, re.M).group(1)
     code = re.search(r"^exit: (\d+)$", t, re.M).group(1)
     out = t.split("--- stdout+stderr ---\n", 1)[1].rstrip("\n")
@@ -27,10 +31,16 @@ for f in files:
     print(f"code {f}: {hit}")
 
 # cases.ts が、検索器を動かす前に記録したハッシュから変わっていないこと
-rec = open(L + "run/cases-written-at.txt", encoding="utf-8").read().split()[3]
 now = hashlib.sha256(open(L + "code/cases.ts", "rb").read()).hexdigest()
-ok &= rec == now
-print(f"cases.ts sha256 unchanged since run/cases-written-at.txt: {rec == now}")
+if os.environ.get("CASES_REC") == "skip":
+    clean = subprocess.run(["git", "diff", "--quiet", "HEAD", "--", L + "code/cases.ts"]).returncode == 0
+    ok &= clean
+    print(f"cases.ts sha256 now: {now} (comparison with run/cases-written-at.txt skipped)")
+    print(f"cases.ts unchanged since git HEAD: {clean}")
+else:
+    rec = open(L + "run/cases-written-at.txt", encoding="utf-8").read().split()[3]
+    ok &= rec == now
+    print(f"cases.ts sha256 unchanged since run/cases-written-at.txt: {rec == now}")
 
 # 記事のコマンド → ログの番号とログに残るコマンド
 cmds = [("mkdir retrieval-eval\ncd retrieval-eval", None, None),
@@ -68,6 +78,6 @@ for a, b in [(18, 10), (19, 11)]:
     ok &= same
     print(f"run/{a:02d}.log equals last 4 lines of run/{b:02d}.log: {same}")
 
-for n in range(1, 22):
-    print(f"run {n:02d} exit={run(n)[2]}" if n != 20 else f"run 20 exit={re.search(r'^exit: (\d+)$', open(L + 'run/20.log', encoding='utf-8').read(), re.M).group(1)}")
+for n in range(1, 23):
+    print(f"run {n:02d} exit={run(n)[2]}" if n != 20 else f"run 20 exit={re.search(r'^exit: (\d+)$', open(RUN + '20.log', encoding='utf-8').read(), re.M).group(1)}")
 print("ALL OK" if ok else "MISMATCH")

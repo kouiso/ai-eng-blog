@@ -1,4 +1,4 @@
-date: 2026-11-02T15:56:09Z
+date: 2026-11-10T16:45:50+09:00 (JST)
 cwd: <work>/missing-field
 node: v22.22.0 / npm: 10.9.4
 command: cat logs.jsonl; node build-cases.ts

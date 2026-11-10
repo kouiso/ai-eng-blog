@@ -37,9 +37,10 @@ log_run 03 "node compare.ts"
 mkdir extra
 cp "$CODE_DIR"/extra/*.ts extra/
 log_run 04 "node extra/no-normalize.ts"
-log_run 05 "node extra/gflag.ts"
+log_run 05 "node extra/boundary.ts"
 log_run 06 "node extra/missing-answer.ts"
 log_run 09 "node extra/format-only.ts"
+log_run 11 "node extra/stringify.ts"
 # 型の確認は記事の作業フォルダとは別のフォルダで行う（記事の package.json に依存を足さないため）
 cd "$WORK_PARENT"
 mkdir typecheck

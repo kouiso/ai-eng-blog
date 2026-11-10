@@ -1,0 +1,43 @@
+date: 2026-11-10T07:59:21+00:00
+cwd: <work>
+node: v22.22.0  npm: 10.9.4
+ANTHROPIC_API_KEY: unset
+$ npx promptfoo eval --no-share -o results.jsonl
+echo $?
+----
+Starting evaluation eval-Z3g-2026-11-10T07:59:24
+Running 6 test cases (up to 4 at a time)...
+
+┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
+│ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
+│                              │                              │ 形の指定なし                 │ 形の指定あり                 │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] billing               │ [PASS] billing               │
+│                              │                              │ この問い合わせは、請求額(二… │                              │
+│                              │                              │ billing に分類します。       │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] bug                   │ [PASS] bug                   │
+│                              │                              │ この問い合わせは、保存操作…  │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
+│                              │                              │ ロゴの利用許諾に関する質問…  │                              │
+│                              │                              │ に分類します。               │                              │
+└──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
+✓ Eval complete (ID: eval-Z3g-2026-11-10T07:59:24)
+
+» View results: promptfoo view
+» Feedback: https://promptfoo.dev/feedback
+
+Total Tokens: 17,489
+  Provider: 17,489 (16,050 prompt, 1,439 completion, 1,138 reasoning)
+
+Results:
+  ✓ 3 passed (50.00%)
+  ✗ 3 failed (50.00%)
+  0 errors (0%)
+Duration: 10s (concurrency: 4)
+
+Writing output to results.jsonl
+100
+----
+exit=0

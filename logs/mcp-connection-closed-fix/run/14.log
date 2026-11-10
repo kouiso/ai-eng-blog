@@ -1,9 +1,20 @@
-date: 2026-11-02T15:38:33Z
+date: 2026-11-10T07:35:45Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+claude: 2.1.322 (Claude Code)
+HOME: 使い捨てのフォルダ（ログでは ~）
 command:
-  node other-errors.mjs
+  env -i PATH="$PATH" HOME="$HOME" HTTPS_PROXY=http://127.0.0.1:9 HTTP_PROXY=http://127.0.0.1:9 bash -c '
+  claude mcp add notes --scope user -e NOTES_DIR="$PWD/notes" -- node "$PWD/server.ts"
+  claude mcp list
+  claude mcp remove notes -s user
+  '
 --- output (stdout+stderr) ---
-command not found: spawn nodee ENOENT (0s)
-no response: MCP error -32001: Request timed out (60s)
+Added stdio MCP server notes with command: node /path/to/notes-mcp/server.ts to user config
+File modified: ~/.claude.json
+Checking MCP server health…
+
+notes: node /path/to/notes-mcp/server.ts - ✔ Connected
+Removed MCP server notes from user config
+File modified: ~/.claude.json
 --- exit=0

@@ -44,8 +44,17 @@ CSV が無く、検索ボリュームの列も無い。Google トレンドも、
 - ほかの9本（LLM API、構造化出力、RAG、AIエージェント）は MCP の Inspector を扱っていない。
 - 書いている間に `content/articles/mcp-server-streamable-http.md`（`status: draft`）が増えた。2026-11-02 に frontmatter と本文の `Inspector` を確かめた。HTTP でサーバーを動かす記事で、Inspector は次の記事（この記事）への案内の1か所だけに出る。重なりは無い。
 
+### 2026-11-10 の読み直し
+
+`content/articles/` は20ファイルになっていた（この記事のほかに19本。2026-11-10 に `ls content/articles | wc -l` で20）。19本の frontmatter（`title`、`main_keyword`、`target_query`、`course_step`、`prev`、`next`、`status`）を全件読み直した。`target_query` はどれも null、`status` はどれも `draft`。本文に `Inspector` が出るのは次の3本だけ（`grep -c -i inspector`）。
+
+- `mcp-server-resources-prompts`（1行目から読んだ見出し: Resources と Prompts の登録、SDK のクライアントでの確認、Claude Code での呼び出し）。答える意図は Resources と Prompts の公開で、この記事（Inspector の使い方）と分かれる。Inspector は H3「Inspector の CLI でも同じ要求を送れる」（384行目）で `resources/read` を1回送るだけで、`prev: "mcp-inspector-debug"` と88行目のリンクでこの記事に任せている。
+- `mcp-connection-closed-fix`（見出し: Connection closed の意味、確認用のクライアント `check.ts`、原因1〜3、ほかの文面、確かめる順番）。答える意図は `Connection closed` のエラーの直し方（トラブル解決）。原因2（303行目）で `Cannot find module` を扱い、この記事の手順4のファイル名の誤り（`servr.ts`）と同じ例が出る。この記事はその例を終了コード1の読み方として1回見せるだけで、原因の切り分けは382行目のリンクで向こうに任せている。向こうは445行目でこの記事にリンクしていて、Inspector の使い方は書いていない（`Inspector` の出現は445行目の1行だけ）。重なりは1例が接するところだけで、検索意図は重ならない。
+- `mcp-server-streamable-http`（frontmatter 13行目の `next` と、615行目の次の記事への案内の2か所）。上と同じく重なりは無い。
+- ほかの16本（LLM API、構造化出力、RAG、AIエージェント、LLM 評価）は `Inspector` が0回で、MCP Inspector を扱っていない。
+
 ## ANTHROPIC_API_KEY
 
-`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果: unset（2026-11-02）。
+`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果: unset（2026-11-02）。2026-11-10 にもう一度確かめ、unset。
 
 この記事のコードは LLM の API を呼ばない（Inspector がサーバーを直接呼ぶ）ので、キーが無くても全部を実行できる（`needs_api_key: false`）。

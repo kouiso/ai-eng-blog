@@ -1,13 +1,13 @@
-date: 2026-11-02 15:51:23 +0000
+date: 2026-11-10 07:48:20 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
 command: npm install
 exit: 0
-elapsed: 24378 ms
+elapsed: 17231 ms
 --- stdout+stderr ---
 
-added 46 packages, and audited 47 packages in 24s
+added 46 packages, and audited 47 packages in 17s
 
 12 packages are looking for funding
   run `npm fund` for details

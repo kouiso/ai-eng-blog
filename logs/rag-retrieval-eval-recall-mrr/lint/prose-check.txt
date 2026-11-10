@@ -1,12 +1,11 @@
-sentences: 237 (prose+frontmatter 169, headings 12, table cells 56)
-not counted: code block lines 281, URL-only table cells 11 (lines [567, 568, 569, 570, 571, 572, 573, 574, 575, 576, 577])
-LONG>60: 0  (50<len<=60: 34)
-prose length min 13 / max 60 / short(<=20) 8 / long(41-60) 81
+sentences: 244 (prose+frontmatter 176, headings 12, table cells 56)
+not counted: code block lines 281, URL-only table cells 11 (lines [569, 570, 571, 572, 573, 574, 575, 576, 577, 578, 579])
+LONG>60: 0  (50<len<=60: 39)
+prose length min 13 / max 60 / short(<=20) 8 / long(41-60) 87
 SAME3: 0
 AND/OR candidates (や in prose, judge by eye):
-  YA 197 えられる質問ばかりが残りやすくなります
-  YA 466 ハイブリッド検索をやめてベクトル検索に切り替
-  YA 466 質問を増やして測り直します
-  YA 536 質問を増やしても同じ向きになるかは
-  YA 536 増やしたあとで測り直します
-  YA 544 質問を何問に増やしても料金は変わりません
+  YA 197 えられる質問ばかりが残りやすくなるからです
+  YA 468 ハイブリッド検索をやめてベクトル検索に切り替
+  YA 538 質問を増やしても同じ向きになるかは
+  YA 538 増やしたあとで測り直します
+  YA 546 質問を何問に増やしても料金は変わりません

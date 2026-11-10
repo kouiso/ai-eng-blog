@@ -1,7 +1,7 @@
 ---
 title: "LLM の回答を自動で採点する仕組みを作る【完全一致、部分一致、正規表現】"
 slug: "llm-eval-harness-fixtures"
-description: "LLM の回答を、完全一致、部分一致、正規表現の3つの関数で採点する TypeScript のプログラムを作ります。採点するのは手で書いた見本の回答なので、API キーは要りません。合格率が基準を下回ると、終了コード 1 で終わります。"
+description: "LLM の回答を、完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムを作ります。採点するのは手で書いた見本の回答なので、API キーは要りません。合格率が基準を下回ると、終了コード 1 で終わります。"
 tags: ["LLM 評価", "TypeScript"]
 main_keyword: "LLM 評価"
 target_query: null
@@ -14,7 +14,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://nodejs.org/docs/latest-v22.x/api/typescript.html"
     title: "Node.js v22 Modules: TypeScript"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"
     title: "String.prototype.normalize() - JavaScript | MDN"
     accessed: 2026-11-02
@@ -23,7 +23,7 @@ sources:
     accessed: 2026-11-02
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test"
     title: "RegExp.prototype.test() - JavaScript | MDN"
-    accessed: 2026-11-02
+    accessed: 2026-11-10
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Lookbehind_assertion"
     title: "Lookbehind assertion - JavaScript | MDN"
     accessed: 2026-11-02
@@ -41,12 +41,12 @@ sources:
     accessed: 2026-11-02
 cost_estimate: "記事のコードは API を呼ばないので無料です。見本の代わりにモデルの回答を採点すると、回答を作らせる分の API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-02"
+verified_at: "2026-11-10"
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-02
+updated: 2026-11-10
 ---
 
 プロンプトを1行直すたびに LLM の回答を目で読み直していると、テストケースの件数だけ読む量が増えます。この記事で作るのは、回答を完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムです。合格率が基準を下回ると終了コード 1 で終わるので、変更で回答が悪くなったことに実行1回で気づけます。
@@ -59,7 +59,7 @@ updated: 2026-11-02
 
 ## 採点の方法は期待する答えの形で決まる
 
-3つの採点方法は、どれも文字列どうしを比べる関数です。どれを使うかは、テストケースで期待する答えがどんな形かで決めます。
+3つの採点方法は、どれも回答の文字列を決まった規則で調べるので、モデルを呼びません。どれを使うかは、テストケースで期待する答えがどんな形かで決めます。
 
 | 期待する答えの形 | 採点の方法 | この記事の例 |
 |---|---|---|
@@ -71,9 +71,9 @@ Anthropic の評価の作り方のページは、コードでの採点を最も�
 
 ## 動かした環境と作るファイル
 
-動かしたのは Node.js 22.22.0 と npm 10.9.4 で、OS は Linux（x86_64）です。`.ts` を `node` でそのまま実行するため、Node.js 22.18.0 以上が要ります（出典2）。
+動かしたのは Node.js 22.22.0 と npm 10.9.4 で、OS は Linux（x86_64）です。Node.js 22 系で `.ts` を `node` のまま実行するには、22.18.0 以降が要ります（出典2）。
 
-Node.js は 22.18.0 から、型の記述を取り除いて `.ts` を実行します（出典2）。型の検査はしません（出典2）。手元では、TypeScript 7.0.2 の `tsc` でも型の誤りが無いことを確かめました。
+Node.js 22 系は 22.18.0 から、型の記述を取り除いて `.ts` を実行します（出典2）。型の検査はしません（出典2）。手元では、TypeScript 7.0.2 の `tsc` でも型の誤りが無いことを確かめました。
 
 作業フォルダ `llm-eval` を作って移ります。
 
@@ -105,9 +105,9 @@ llm-eval/
 }
 ```
 
-## graders.ts に置く3つの採点関数
+## graders.ts の grade 関数が3つの採点方法を切り替える
 
-採点関数は、回答の文字列と採点の指定を受け取り、合否と理由を返します。指定の種類は `exact`、`contains`、`regex` の3つです。
+採点関数 `grade` は、回答の文字列と採点の指定を受け取り、合否と理由を返します。指定の種類は `exact`、`contains`、`regex` の3つで、分岐は `switch` 文です。
 
 `graders.ts` を置きます。
 
@@ -156,11 +156,11 @@ NFKC は、見た目が違っても同じ文字として扱ってよい文字を
 
 正規表現も、`normalize` を通したあとの文字列にかけます。そのため、パターンの中の数字と英字は半角の小文字で書きます。
 
-### 正規表現は採点のたびに new RegExp で作る
+### 正規表現のパターンは文字列で持たせる
 
 `regex` の指定は、パターンを文字列で持たせました。テストケースを JSON に書き出せる形にしておくためです。
 
-正規表現のオブジェクトは、採点のたびに `new RegExp` で作ります。`g` フラグ付きの正規表現では、`test()` を呼ぶたびに `lastIndex` が進むからです（出典5）。続けて呼ぶと、その位置から探し始めます（出典5）。同じ正規表現を使い回して同じ回答に3回かけると、手元では true、false、true と結果が入れ替わりました。
+文字列のパターンは、採点のたびに `new RegExp` で正規表現のオブジェクトに直してから使います。`test()` は、一致する箇所があれば true を、無ければ false を返します（出典5）。
 
 ## テストケースと見本の回答を分けた2つのファイル
 
@@ -244,7 +244,7 @@ console.log(`合格 ${passed}/${cases.length} (${Math.round(rate * 100)}%)、基
 if (rate < THRESHOLD) process.exitCode = 1;
 ```
 
-不合格のときだけ、回答を `JSON.stringify` で表示します。前後の空白と改行まで見えるのが、`JSON.stringify` を使う理由です。見本の回答が無いテストケースは、空の文字列として採点します。手元で空の文字列を3つの採点関数に渡すと、どれも不合格でした。
+不合格のときだけ、回答を `JSON.stringify` で表示します。回答が引用符でくくられ、中の改行は `\n` と表示されます。どこまでが回答かを1行で読めるのが、`JSON.stringify` を使う理由です。見本の回答が無いテストケースは、空の文字列として採点します。手元で空の文字列を3つの方法のどれで採点しても、不合格でした。
 
 `process.exitCode` に入れた値は、プロセスが正常に終わったときの終了コードになります（出典8）。
 
@@ -274,7 +274,7 @@ FAIL delivery-date [regex] /^\d{4}-\d{2}-\d{2}$/ に合わない
 
 この2件を合格にしたくなっても、採点を部分一致に緩めることはしません。質問は「1語で」「日付だけを」と形を指定していて、余計な文字が付いた回答は、受け取る側のコードで扱えないからです。直すのはプロンプトの側で、形の指定を強めるか、構造化出力で JSON を返させます。
 
-`delivery-date` の正規表現は、`^` で先頭を、`$` で末尾を指定しています（出典7）。日付の前後に1文字でも付けば不合格です。ただし、この正規表現が見ているのは形だけで、「2026-11-21」と答えても合格になります。日付の値まで確かめたいテストケースには、完全一致を使ってください。
+`delivery-date` の正規表現は、`^` で先頭を、`$` で末尾を指定しています（出典7）。かける相手は `normalize` を通したあとの回答です。前後の空白と改行は取り除かれ、全角の数字は半角になります。手元では「 2026-11-20」も「２０２６-１１-２０」も合格でした。日付の後ろに句点を付けた回答は、不合格です。ただし、この正規表現が見ているのは形だけで、「2026-11-21」と答えても合格になります。日付の値まで確かめたいテストケースには、完全一致を使ってください。
 
 ## 部分一致は「13件」の答えも3件として通す
 
@@ -326,19 +326,19 @@ regex:    { pass: false, reason: '/(?<!\\d)3件/ に合わない' }
 
 ## 出典
 
-確認日は、どれも 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典2と出典5が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
 | 1 | Define success criteria and build evaluations | https://platform.claude.com/docs/en/test-and-evaluate/develop-tests | 2026-11-02 |
-| 2 | Node.js v22 Modules: TypeScript | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-11-02 |
+| 2 | Node.js v22 Modules: TypeScript | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-11-10 |
 | 3 | String.prototype.normalize()（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize | 2026-11-02 |
 | 4 | String.prototype.includes()（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes | 2026-11-02 |
-| 5 | RegExp.prototype.test()（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test | 2026-11-02 |
+| 5 | RegExp.prototype.test()（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test | 2026-11-10 |
 | 6 | Lookbehind assertion（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Lookbehind_assertion | 2026-11-02 |
 | 7 | Input boundary assertion（MDN） | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Input_boundary_assertion | 2026-11-02 |
 | 8 | Node.js v22 Process | https://nodejs.org/docs/latest-v22.x/api/process.html | 2026-11-02 |
 | 9 | Setting exit codes for actions（GitHub Docs） | https://docs.github.com/en/actions/how-tos/create-and-publish-actions/set-exit-codes | 2026-11-02 |
 | 10 | Pricing | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-02 |
 
-AI 支援で執筆しました。コードは 2026-11-02 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

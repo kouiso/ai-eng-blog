@@ -1,0 +1,15 @@
+date: 2026-11-10 07:04:17 +0000
+cwd: /path/to/local-embeddings-full
+node: v22.22.0
+npm: 10.9.4
+command: bash -c ls -l node_modules/onnxruntime-node/bin/napi-v6/linux/x64; du -sh node_modules
+exit: 0
+elapsed: 26 ms
+--- stdout+stderr ---
+total 311900
+-rw-r--r-- 1 root root  45828512 Nov 10 07:03 libonnxruntime.so.1
+-rw-rw-rw- 1 root root 272054000 Nov 10 07:04 libonnxruntime_providers_cuda.so
+-rw-rw-rw- 1 root root     14632 Nov 10 07:04 libonnxruntime_providers_shared.so
+-rw-rw-rw- 1 root root   1084896 Nov 10 07:04 libonnxruntime_providers_tensorrt.so
+-rw-r--r-- 1 root root    389488 Nov 10 07:03 onnxruntime_binding.node
+763M	node_modules

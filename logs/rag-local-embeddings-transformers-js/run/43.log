@@ -1,0 +1,46 @@
+date: 2026-11-10 07:03:42 +0000
+cwd: /path/to/local-embeddings
+node: v22.22.0
+npm: 10.9.4
+command: unshare -rn bash ../code/extra/offline-all.sh
+exit: 0
+elapsed: 10465 ms
+--- stdout+stderr ---
+network: EAI_AGAIN
+$ node show-vector.ts 返金はいつ？
+次元数 384
+先頭の3つ [ '0.0815', '-0.0418', '-0.0304' ]
+長さ 1.0000
+exit=0
+$ node search.ts 返金はいつ？
+0.852 returns
+0.832 cancel
+0.823 points
+exit=0
+$ node search.ts 家に届くまで何日？
+0.859 delivery
+0.836 shipping-fee
+0.835 returns
+exit=0
+$ node search.ts 宿題を手伝って 8
+0.797 shipping-fee
+0.793 points
+0.792 login
+0.790 payment
+0.785 returns
+0.785 delivery
+0.780 password
+0.779 cancel
+exit=0
+$ node count-tokens.ts
+30 returns
+28 cancel
+19 payment
+22 shipping-fee
+26 delivery
+24 password
+26 login
+97 points
+短い文書 30 トークン 0.9863
+長い文書 1165 トークン 1.0000
+exit=0

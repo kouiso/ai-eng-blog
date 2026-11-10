@@ -1,4 +1,4 @@
-date: 2026-10-31T14:11:00Z
+date: 2026-11-10T07:16:48Z
 cwd: <work>/safe-file-tool
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
 command: node -e 'console.log(require("node:path").win32.relative("C:\\work", "D:\\secret.txt"))'

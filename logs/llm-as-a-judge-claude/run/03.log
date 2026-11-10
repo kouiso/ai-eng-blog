@@ -1,0 +1,25 @@
+date: 2026-11-10T07:43:37Z
+cwd: <work>/llm-judge
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: npm init -y
+npm pkg set type=module
+--- output (stdout+stderr) ---
+Wrote to <work>/llm-judge/package.json:
+
+{
+  "name": "llm-judge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
+
+--- exit=0

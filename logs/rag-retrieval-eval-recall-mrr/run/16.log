@@ -1,10 +1,10 @@
-date: 2026-11-02 15:52:27 +0000
+date: 2026-11-10 07:49:38 +0000
 cwd: /path/to/retrieval-eval
 node: v22.22.0
 npm: 10.9.4
-command: bash -c "cp ../code/extra/offline-all.sh . && unshare -rn bash offline-all.sh"
+command: unshare -rn bash offline-all.sh
 exit: 0
-elapsed: 9528 ms
+elapsed: 8012 ms
 --- stdout+stderr ---
 network: EAI_AGAIN
 $ node check-metrics.ts

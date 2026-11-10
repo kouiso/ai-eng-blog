@@ -1,0 +1,15 @@
+date: 2026-11-10 07:04:17 +0000
+cwd: /path/to/local-embeddings-full
+node: v22.22.0
+npm: 10.9.4
+command: bash -c ONNXRUNTIME_NODE_INSTALL=skip npm install
+exit: 0
+elapsed: 615 ms
+--- stdout+stderr ---
+
+added 2 packages, and audited 49 packages in 533ms
+
+14 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities

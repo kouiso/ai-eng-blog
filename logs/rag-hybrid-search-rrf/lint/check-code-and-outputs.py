@@ -34,8 +34,8 @@ for lang, body in re.findall(r"```(\w+)\n(.*?)\n```", article, re.S):
 
 cmds = {3: "npm install", 6: "node hybrid.ts 利用限度額", 8: "node hybrid.ts 5営業日",
         9: 'node hybrid.ts "E1021 が出た"', 10: "node hybrid.ts 届くのが遅い",
-        11: "node hybrid.ts 届くのが遅い 0.1 1", 12: "node hybrid.ts 返金はいつ？",
-        13: "node hybrid.ts 返金はいつ？ 0"}
+        11: "node hybrid.ts 届くのが遅い 0.1 1", 12: "node hybrid.ts 届くのが遅い 0.7",
+        16: "node hybrid.ts 返金はいつ？", 17: "node hybrid.ts 返金はいつ？ 0"}
 hit = "mkdir hybrid-search\ncd hybrid-search" in fences
 ok &= hit
 print(f"command 'mkdir hybrid-search / cd hybrid-search' in article: {hit}")
@@ -47,10 +47,32 @@ for n, cmd in cmds.items():
     ok &= in_article and same
     print(f"run/{n:02d}.log command in article: {in_article}, matches log: {same} ({logged})")
 
-for n in [6, 8, 9, 10, 11, 12, 13]:
+# 3行の bash ブロック（下限 0.7 で前の3つの質問を実行し直す）は、1行ずつ run/13〜15.log のコマンドと同じか
+multi = {13: "node hybrid.ts 利用限度額 0.7", 14: "node hybrid.ts 5営業日 0.7", 15: 'node hybrid.ts "E1021 が出た" 0.7'}
+block = "\n".join(multi.values())
+hit = block in fences
+ok &= hit
+print(f"3-line bash block in article: {hit}")
+for n, cmd in multi.items():
+    same = run(n)[0] == cmd
+    ok &= same
+    print(f"run/{n:02d}.log command matches block line: {same} ({run(n)[0]})")
+
+for n in [6, 8, 9, 10, 11, 12, 16, 17]:
     hit = run(n)[1] in fences
     ok &= hit
     print(f"output run/{n:02d}.log in article: {hit}")
-for n in range(1, 20):
+
+# 表「下限 0.1 の上位3件／下限 0.7 の上位3件」の各行が、ログの合わせた上位3件の id と一致するか
+def top3(n):
+    return [l.split()[1] for l in run(n)[1].splitlines() if re.match(r"^\d\.\d{5} ", l)]
+rows = {"利用限度額": (6, 13), "5営業日": (8, 14), "E1021 が出た": (9, 15)}
+for q, (a, b) in rows.items():
+    m = re.search(r"^\| " + re.escape(q) + r" \| (.*?) \| (.*?) \|$", article, re.M)
+    cells = [[x.strip("`") for x in c.split("、")] for c in m.groups()] if m else None
+    same = cells == [top3(a), top3(b)]
+    ok &= same
+    print(f"table row {q}: {same} (log {top3(a)} / {top3(b)})")
+for n in range(1, 24):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")

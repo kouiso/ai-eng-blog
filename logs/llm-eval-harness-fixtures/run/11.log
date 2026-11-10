@@ -1,0 +1,7 @@
+date: 2026-11-10T07:39:38Z
+cwd: <work>/llm-eval
+node: v22.22.0 / npm: 10.9.4
+command: node extra/stringify.ts
+--- output (stdout+stderr) ---
+     回答: "neutral です。\n以上です。"
+--- exit=0

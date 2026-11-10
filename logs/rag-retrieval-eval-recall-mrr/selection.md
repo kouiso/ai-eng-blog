@@ -24,3 +24,7 @@
 - course_step 6 の #27（`llm-as-a-judge-claude`）と #29（`promptfoo-llm-eval-intro`）は、モデルを呼ぶのでキーが要る（`plan.md`）。`ANTHROPIC_API_KEY` が unset なので書けない。
 - 計画上の重なりの決め事（`plan.md`「重なりを避けるために決めたこと」）: 「11（BM25 を作る）と 28（検索を測る）は、作る記事と測る記事に分けます。28 は 11 の検索器をそのまま使います。」に従い、この記事は検索器の作り方を説明せず、BM25 とハイブリッド検索の記事の6ファイルをそのまま使って測るところに絞った。
 - CSV が届いたら `target_query` を CSV の行から選び直し、合う行が無ければ差し替える（`plan.md` の前提）。
+
+## 2026-11-10 の再確認
+
+原稿を直したときに、`content/articles/` の frontmatter（`title`、`main_keyword`、`target_query`）を全件読み直した（この記事のほか21本）。2026-11-02 のあとに増えた記事のうち、main_keyword が「LLM 評価」なのは `llm-as-a-judge-claude`（LLM に回答を採点させる）で、検索の結果を Recall@k と MRR で測る方法に答える記事は、ほかに無い。`keywords/` には CSV が無く（README.md だけ）、`target_query` は null のまま。`ANTHROPIC_API_KEY` は 2026-11-10 に確かめて unset（この記事は API を呼ばない）。

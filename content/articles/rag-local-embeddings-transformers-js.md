@@ -8,7 +8,7 @@ target_query: null
 course_step: 3
 cost_estimate: "記事の手順は API キーも有料のサービスも使わないので無料です。モデルは Hugging Face のアカウントなしでダウンロードできました。埋め込みを有料の API で作ると、トークン数に応じた料金がかかります。"
 run_environment: "Node.js 22.22.0、@huggingface/transformers 4.3.2、Linux x64"
-verified_at: "2026-10-31"
+verified_at: "2026-11-10"
 prev: "rag-chunking-japanese-text"
 next: "rag-answer-with-citations-claude"
 sources:
@@ -51,11 +51,23 @@ sources:
   - url: "https://docs.voyageai.com/docs/pricing"
     title: "Pricing (Voyage AI)"
     accessed: 2026-10-31
+  - url: "https://huggingface.co/Xenova/multilingual-e5-small"
+    title: "Xenova/multilingual-e5-small"
+    accessed: 2026-11-10
+  - url: "https://huggingface.co/docs/transformers.js/index"
+    title: "Transformers.js"
+    accessed: 2026-11-10
+  - url: "https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/pipelines/feature-extraction.js"
+    title: "transformers.js 4.3.2 src/pipelines/feature-extraction.js"
+    accessed: 2026-11-10
+  - url: "https://huggingface.co/docs/transformers.js/api/tokenizers"
+    title: "Transformers.js tokenizers"
+    accessed: 2026-11-10
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-10
 ---
 
 RAG の検索に使う埋め込みは、Transformers.js を使えば手元の Node.js で作れます。モデルは多言語に対応した multilingual-e5-small で、API キーは要りません。この記事では、FAQ 8件と質問をベクトルにして、近い順に並べるところまで TypeScript で書きます。
@@ -68,19 +80,19 @@ RAG の検索に使う埋め込みは、Transformers.js を使えば手元の No
 0.823 points
 ```
 
-対象は、TypeScript で何か作ったことがあり、RAG の検索部分を自分で組んでいる人です。書き写すファイルは6つで、`npm install` で入れる依存は1つです。
+対象は、TypeScript で何か作ったことがあり、RAG の検索部分を自分で組んでいる人です。書き写すファイルは7つで、`npm install` で入れる依存は1つです。
 
-[前の記事](/posts/rag-chunking-japanese-text)では、文書をチャンクに分けました。講座のこの記事では、分けた文字列をベクトルにします。
+[前の記事](/posts/rag-chunking-japanese-text)では、文書をチャンクに分けました。講座のこの記事では、文字列をベクトルにする部分を作ります。検索する文書は、チャンクに分けるまでもない短い FAQ 8件です。チャンクがモデルの入力の上限に収まるかを数える方法も載せます。
 
-## 埋め込みの検索は質問と文書をベクトルにして近い順に並べる
+## ベクトル検索は質問と文書をベクトルにして近い順に並べる
 
-埋め込みは、文の意味の近さを測れるように、文を数の並びにしたものです（出典1）。この数の並びをベクトルと呼びます。質問と文書を同じモデルでベクトルにし、質問に近い文書から順に返すのが埋め込みの検索です。
+埋め込みは、文の意味の近さを測れるように、文を数の並びにしたものです（出典1）。この数の並びをベクトルと呼びます。質問と文書を同じモデルでベクトルにし、質問に近い文書から順に返すのがベクトル検索です。
 
 近さには、2つのベクトルのコサイン類似度を使います（出典2）。長さを1にそろえたベクトルなら、コサイン類似度は内積と同じ値です（出典1）。内積は、同じ位置の数どうしを掛けて、全部を足した値です。
 
-BM25 は、質問と同じ語を含む文書しか見つけられません。BM25 の検索は、[別の記事](/posts/rag-bm25-search-typescript)で作りました。そこでは、「返金はいつ？」の答えの文書が上位3件に入りませんでした。埋め込みの検索は語の一致を数えないので、言い換えた文書にもスコアが付きます。
+BM25 は、質問と同じ語を含む文書しか見つけられません。BM25 の検索は、[別の記事](/posts/rag-bm25-search-typescript)で作りました。そこでは、「返金はいつ？」の答えの文書が上位3件に入りませんでした。ベクトル検索は語の一致を数えないので、言い換えた文書にもスコアが付きます。
 
-使うモデルは intfloat/multilingual-e5-small です。100の言語に対応し、1つの文を384次元のベクトルにします（出典2）。ライセンスは MIT です（出典2）。Transformers.js では、ONNX の形式に変換したモデルを使います（出典3）。リポジトリの名前は Xenova/multilingual-e5-small です（出典3）。
+使うモデルは intfloat/multilingual-e5-small です。100の言語に対応し、1つの文を384次元のベクトルにします（出典2）。ライセンスは MIT です（出典2）。Transformers.js は、モデルを ONNX Runtime で動かします（出典15）。e5 を ONNX に変換したものは、Xenova/multilingual-e5-small にあります（出典14）。
 
 ## 使うバージョンと準備
 
@@ -123,13 +135,21 @@ du -sh node_modules
 
 Linux x64 では、`onnxruntime-node` が追加のファイルを取ってきます（出典9）。取ってくるのは CUDA 12 用のライブラリで、取得元は NuGet です（出典9）。GPU で動かすためのファイルで、macOS と Windows では取ってきません（出典9）。CUDA のライブラリは、1ファイルで 272,054,000 バイトありました。
 
-GPU を使わないなら、このダウンロードは止められます（出典10）。環境変数 `ONNXRUNTIME_NODE_INSTALL` に `skip` を入れて実行します。
+GPU を使わないなら、このダウンロードは止められます（出典10）。環境変数 `ONNXRUNTIME_NODE_INSTALL` に `skip` を入れて、依存を入れ直します。
 
 ```bash
+rm -rf node_modules
 ONNXRUNTIME_NODE_INSTALL=skip npm install
+du -sh node_modules
 ```
 
-別のフォルダでこのコマンドを使うと、`node_modules` は 484M でした。CUDA のライブラリが無くても、CPU での検索の結果は同じ値になりました。
+```text
+502M	node_modules
+```
+
+先に `node_modules` を消すのは、入れたフォルダで実行し直しても CUDA のライブラリが残るからです。消さずに実行したときは、272,054,000 バイトのファイルがそのまま残りました。
+
+このあとの実行結果は、この入れ方で出したものです。CUDA のライブラリを入れたフォルダでも、同じ値になりました。
 
 ## モデルを読み込んで1文を384次元のベクトルにする
 
@@ -150,7 +170,7 @@ export async function embed(texts: string[]): Promise<number[][]> {
 
 `"feature-extraction"` は、モデルから文のベクトルを取り出すパイプラインの名前です（出典4）。`dtype: "q8"` で、8ビットに量子化したモデルのファイルを選びます（出典5、出典6）。
 
-`pooling: "mean"` は、トークンごとのベクトルの平均を取る指定です（出典4）。平均を取ると、1つの文が1本のベクトルになります。`normalize: true` が、長さを1にそろえる指定です（出典4）。
+`pooling: "mean"` は、トークンごとのベクトルの平均を取る指定です（出典4）。トークンは、トークナイザーが文を分けた単位です（出典17）。平均を取ると、1つの文が1本のベクトルになります。`normalize: true` が、長さを1にそろえる指定です（出典4）。
 
 どちらも、省くと何もしない設定が既定です（出典4）。`pooling` を省くと、トークンの数だけのベクトルが返ります（出典4）。`tolist()` は、結果を JavaScript の入れ子の配列に直します（出典4）。
 
@@ -196,11 +216,11 @@ du -sh node_modules/@huggingface/transformers/.cache
 130M	node_modules/@huggingface/transformers/.cache
 ```
 
-保存されたのは4ファイルです。モデル本体のほかの3つは、設定の `config.json` とトークナイザーのファイル2つでした。モデル本体の `onnx/model_quantized.onnx` は、118,308,185 バイトです（出典3）。
+保存されたのは4ファイルです。モデル本体のほかの3つは、設定の `config.json` とトークナイザーのファイル2つでした。本体の `onnx/model_quantized.onnx` は、118,308,185 バイトあります（出典3）。
 
-`dtype` を省いたときに読むのは、fp32 の `model.onnx` です（出典6）。こちらは 470,268,533 バイトで、q8 のおよそ4倍です（出典3）。既定が q8 になるのは、WebAssembly で動かすときだけです（出典6）。ダウンロードを小さくするために、この記事は q8 にしました。
+`dtype` を省くと、fp32 の `model.onnx` を読みます（出典6）。こちらは 470,268,533 バイトで、q8 のおよそ4倍です（出典3）。q8 が既定になるのは、WebAssembly で動かすときに限られます（出典6）。ダウンロードを小さくするために、この記事は q8 にしました。
 
-記事を書いた環境では、ダウンロードを含む初回の実行が4.3秒、2回目が2.6秒でした。`node_modules` を消すとモデルも消え、次の実行でまたダウンロードします。保存先は `env.cacheDir` で変えられます（出典7）。
+記事を書いた環境では、ダウンロードを含む初回の実行が3.3秒、2回目が1.7秒でした。`node_modules` を消すとモデルも消え、次の実行でまたダウンロードします。保存先は `env.cacheDir` で変えられます（出典7）。
 
 ## FAQ 8件をベクトルにして検索する
 
@@ -322,15 +342,67 @@ e5 のコサイン類似度は、0.7から1.0のあたりに集まります（�
 
 0.5 のような固定の下限で切ると、宿題の質問でも8件すべてが残ります。この記事では下限を置かず、上位3件をそのまま返すことにしました。答えが無いと判断する役は、検索結果を受け取って回答を作る側に任せます。
 
+## 512トークンを超えた部分はエラーを出さずに切り捨てられる
+
+multilingual-e5-small が読むのは、1つの文書の先頭から512トークンまでです（出典2）。Transformers.js の `feature-extraction` は、長すぎる分を切り捨てます（出典16）。
+
+切り捨てたことは、エラーにも警告にもなりません。文書のトークン数を数え、上限を超えた文書がどうなるかを試すのが、次の `count-tokens.ts` です。
+
+```ts
+import { AutoTokenizer } from "@huggingface/transformers";
+import { docs } from "./docs.ts";
+import { embed } from "./embed.ts";
+
+const tokenizer = await AutoTokenizer.from_pretrained("Xenova/multilingual-e5-small");
+const count = (text: string) => tokenizer.encode(text).length;
+
+for (const doc of docs) {
+  console.log(count(`passage: ${doc.text}`), doc.id);
+}
+
+async function similarityWithExtra(text: string): Promise<string> {
+  const [a, b] = await embed([text, `${text}返金は5営業日以内です。`]);
+  return a.reduce((sum, x, i) => sum + x * b[i], 0).toFixed(4);
+}
+
+const short = `passage: ${docs[0].text}`;
+const long = `passage: ${docs.map((doc) => doc.text).join("").repeat(5)}`;
+console.log("短い文書", count(short), "トークン", await similarityWithExtra(short));
+console.log("長い文書", count(long), "トークン", await similarityWithExtra(long));
+```
+
+トークナイザーは、`embed.ts` と同じリポジトリから読み込みます（出典17）。`encode` はトークンの ID の配列を返すので、配列の長さがトークン数になります（出典17）。`similarityWithExtra` は、文書と、その末尾に1文を足した文書の内積を返す関数です。
+
+```bash
+node count-tokens.ts
+```
+
+```text
+30 returns
+28 cancel
+19 payment
+22 shipping-fee
+26 delivery
+24 password
+26 login
+97 points
+短い文書 30 トークン 0.9863
+長い文書 1165 トークン 1.0000
+```
+
+FAQ 8件のうち、最も長い `points` でも97トークンでした。短い文書は、1文足すと内積が 0.9863 に下がります。1165トークンの長い文書では、1文足しても 1.0000 のままでした。足した1文は512トークンより後ろにあり、ベクトルに何も反映されていません。
+
+前の記事のように文字数でチャンクの上限を決めたら、できたチャンクを `count` と同じ方法で数えます。512トークンを超えたチャンクは、超えた部分が検索に使われません。
+
 ## 2回目からはネットワークが無くても動く
 
-モデルを一度ダウンロードしたあとは、検索にネットワークを使いません。ネットワークの無い環境で、記事の `node` のコマンド4つを実行し直しました。4つとも成功し、スコアも同じ値でした。
+モデルを一度ダウンロードしたあとは、検索にネットワークを使いません。ネットワークの無い環境で、記事の `node` のコマンド5つを実行し直しました。5つとも成功し、出力も同じでした。
 
 Transformers.js は、Node.js ではファイルシステムのキャッシュを既定で使います（出典7）。外からの読み込みを禁止するなら、`env.allowRemoteModels` を `false` にします（出典7）。
 
 ## 料金がかからない範囲
 
-記事の手順は、API キーも有料のサービスも使わないので無料です。モデルのダウンロードには、Hugging Face のアカウントもトークンも使いませんでした。初回の実行で取得したファイルは4つです。
+記事の手順は、API キーも有料のサービスも使わないので無料です。モデルのダウンロードには、Hugging Face のアカウントもアクセストークンも使いませんでした。初回の実行で取得したファイルは4つです。
 
 Hugging Face は、ログインしていない利用者にもダウンロードを許しています（出典12）。回数の上限は IP アドレスごとに5分で3,000回で、2025年9月時点の値です（出典12）。
 
@@ -338,16 +410,16 @@ Hugging Face は、ログインしていない利用者にもダウンロード�
 
 Voyage AI の voyage-4-lite は、100万トークンあたり $0.02 です（出典13）。最初の2億トークンは、どのアカウントも無料です（出典13）。この記事では Voyage AI の API を呼んでいないので、実際の金額は確かめていません。
 
-手元で動かす分、ディスクと CPU の時間は使います。この記事の環境では、`node_modules` が 745M、モデルが 130M でした。
+手元で動かす分、ディスクと CPU の時間は使います。この記事の環境では、モデルが 130M、`node_modules` が 745M でした。CUDA のライブラリを入れなければ、`node_modules` は 502M です。
 
 ## 確認すること
 
-自分の文書で埋め込みの検索を組むときは、次の4つをすべて確かめます。
+自分の文書でベクトル検索を組むときは、次の4つをすべて確かめます。
 
 - 質問の頭に `query: `、文書の頭に `passage: ` を付けたか
 - `pooling: "mean"` と `normalize: true` を指定しているか
 - スコアの値で切らずに、順位で使うようにしたか
-- 文書が、モデルの上限の512トークンに収まっているか（出典2）
+- `count-tokens.ts` と同じ方法で数え、文書が512トークンに収まっているか
 
 関係のない質問を見分けるには、自分のデータでスコアの下限を測りますか。それとも、回答を作るモデルに「わかりません」と答えさせますか。
 
@@ -355,7 +427,7 @@ Voyage AI の voyage-4-lite は、100万トークンあたり $0.02 です（出
 
 ## 出典
 
-確認日は、どれも 2026-10-31 です。本文の（出典1）〜（出典13）は、この表の番号を指します。
+確認日は、出典1〜13 が 2026-10-31、出典14〜17 が 2026-11-10 です。本文の（出典1）〜（出典17）は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
@@ -372,5 +444,9 @@ Voyage AI の voyage-4-lite は、100万トークンあたり $0.02 です（出
 | 11 | Node.js v22 Modules: TypeScript | https://nodejs.org/docs/latest-v22.x/api/typescript.html | 2026-10-31 |
 | 12 | Hub Rate limits（Hugging Face） | https://huggingface.co/docs/hub/rate-limits | 2026-10-31 |
 | 13 | Pricing（Voyage AI） | https://docs.voyageai.com/docs/pricing | 2026-10-31 |
+| 14 | Xenova/multilingual-e5-small（モデルカード） | https://huggingface.co/Xenova/multilingual-e5-small | 2026-11-10 |
+| 15 | Transformers.js | https://huggingface.co/docs/transformers.js/index | 2026-11-10 |
+| 16 | transformers.js 4.3.2 の src/pipelines/feature-extraction.js | https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/pipelines/feature-extraction.js | 2026-11-10 |
+| 17 | Transformers.js tokenizers | https://huggingface.co/docs/transformers.js/api/tokenizers | 2026-11-10 |
 
-AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

@@ -12,3 +12,4 @@ OUT after 'node run-eval.ts; echo "終了コード: $?"' vs run/02.log: SAME
 CMD 'node compare.ts': run/03.log exit=0
 OUT after 'node compare.ts' vs run/03.log: SAME
 ALL OK
+exit=0

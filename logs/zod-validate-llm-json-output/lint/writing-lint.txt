@@ -1,4 +1,4 @@
-## writing-lint v2: zod-validate-llm-json-output.md (type=article, register=standard, 437行/136文)
+## writing-lint v2: zod-validate-llm-json-output.md (type=article, register=standard, 482行/155文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

@@ -66,9 +66,25 @@ lens = [len(s) for _, k, s in prose]
 if lens:
     print(f"prose length min {min(lens)} / max {max(lens)} / short(<=20) {sum(1 for n in lens if n <= 20)} / long(41-60) {sum(1 for n in lens if 40 < n <= 60)}")
 
+# C17: guides/03 症状⑥「「〜です。〜です。〜です。」の語尾3連続」と「語尾の反復チェック」
+# （特に「〜ましょう」「〜でしょう」「〜です」「〜ません」）に合わせ、文末の助動詞の形で比べる。
+# 末尾3字で比べると「ーです」「のです」「1 です」が別の語尾になり、同じ「です」の連続を
+# 見落とす（2026-11-10 に直した）。（出典n）を外したあと、下の形のどれで終わるかで分類し、
+# どれにも当たらない文だけ末尾3字で比べる。段落、コードブロック、表、見出しをまたいでも
+# 地の文の並びとして続けて数える（読者が続けて読む順のまま）。
+ENDINGS = ["ませんでした", "ましょう", "でしょう", "ですか", "ますか", "でした", "ました",
+           "ません", "です", "ます"]
 def ending(s):
+    s = s.rstrip("。？！")
+    while True:
+        t = re.sub(r"（[^（）]*）$", "", s)
+        if t == s:
+            break
+        s = t
     s = s.rstrip("。")
-    s = re.sub(r"（[^（）]*）$", "", s)
+    for e in ENDINGS:
+        if s.endswith(e):
+            return e
     return s[-3:]
 body = [x for x in sents if x[1] == "prose"]
 same3 = 0

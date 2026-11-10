@@ -1,10 +1,43 @@
-date: 2026-10-31 14:08:41 +0000
+date: 2026-11-10 07:05:18 +0000
 cwd: /path/to/hybrid-search
 node: v22.22.0
 npm: 10.9.4
-command: bash ../code/extra/env-check.sh
+command: bash -c "cp ../code/extra/explain.ts . && node explain.ts 利用限度額 5営業日 "E1021 が出た" 届くのが遅い 返金はいつ？"
 exit: 0
-elapsed: 5 ms
+elapsed: 199 ms
 --- stdout+stderr ---
-HF_TOKEN unset
-HUGGING_FACE_HUB_TOKEN unset
+### 利用限度額 [ '利用', '限度', '額' ]
+   error-e1021 利用,限度,額 len 28
+### 5営業日 [ '5', '営業', '日' ]
+   returns 日 len 22
+   cancel 5,営業,日 len 19
+   delivery 営業,日 len 20
+### E1021 が出た [ 'e1021', 'が', '出', 'た' ]
+   payment が len 11
+   password た len 22
+   login が len 24
+   error-e1020 が,出,た len 25
+   error-e1021 e1021,た len 28
+   points が,た len 83
+### 届くのが遅い [ '届く', 'の', 'が', '遅い' ]
+   returns の len 22
+   cancel の len 19
+   payment が len 11
+   shipping-fee の len 18
+   delivery の len 20
+   password の len 22
+   login の,が len 24
+   error-e1020 の,が len 25
+   error-e1021 の len 28
+   points の,が len 83
+### 返金はいつ？ [ '返金', 'は', 'いつ' ]
+   returns は len 22
+   cancel は len 19
+   payment は len 11
+   shipping-fee は len 18
+   delivery は len 20
+   password は len 22
+   login は len 24
+   error-e1020 は len 25
+   error-e1021 は len 28
+   points は len 83

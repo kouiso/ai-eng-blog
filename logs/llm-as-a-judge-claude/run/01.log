@@ -1,0 +1,8 @@
+date: 2026-11-10T07:43:36Z
+cwd: <work>/work
+node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
+ANTHROPIC_API_KEY: unset
+command: node -v
+--- output (stdout+stderr) ---
+v22.22.0
+--- exit=0

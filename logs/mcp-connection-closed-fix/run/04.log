@@ -1,8 +1,8 @@
-date: 2026-11-02T15:38:17Z
+date: 2026-11-10T07:35:36Z
 cwd: /path/to/notes-mcp
 node: v22.22.0 / npm: 10.9.4 / os: Linux x86_64
 command:
-  NOTES_DIR="$PWD/notes" node check.ts
+  NOTES_DIR="$PWD/notes" node check.ts node server.ts
 --- output (stdout+stderr) ---
 failed: MCP error -32000: Connection closed
 --- server stderr ---

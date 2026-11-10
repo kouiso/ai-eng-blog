@@ -1,4 +1,4 @@
-date: 2026-11-02T15:56:12Z
+date: 2026-11-10T16:45:53+09:00 (JST)
 cwd: <work>/eval-dataset
 node: v22.22.0 / npm: 10.9.4
 command: unshare -rn bash -c 'node -e "fetch(\"https://example.com\").then(()=>console.log(\"fetch: ok\"),e=>console.log(\"fetch: failed\", e.cause?.code ?? e.message))"; node build-cases.ts; echo "終了コード: $?"; node check-cases.ts; echo "終了コード: $?"'
