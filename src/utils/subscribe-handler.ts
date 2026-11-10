@@ -41,7 +41,7 @@ export async function handleSubscribe(request: Request, deps: SubscribeDeps): Pr
 	// このプロジェクトの設定では Astro の checkOrigin がこのルートの別オリジン POST を止めなかった（2026-10-31 実測）
 	const origin = request.headers.get("origin");
 	if (origin !== null && origin !== new URL(request.url).origin) {
-		return Response.json({ ok: false, error: "forbidden" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+		return respond("forbidden");
 	}
 
 	// 問い合わせ先が無いあいだは、削除の依頼を受けられないので登録を受け付けない（フォームも閉じている）

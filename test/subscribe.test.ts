@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { handleSubscribe } from "../src/utils/subscribe-handler";
+import { parseSubscribeStatus, SUBSCRIBE_MESSAGES } from "../src/utils/subscribe-messages";
 import { countSubscribers, createSqliteD1, formRequest } from "./helpers";
 import { CONTACT, resetEnv } from "./stubs/cloudflare-workers";
 
@@ -64,6 +65,23 @@ describe("handleSubscribe: validation", () => {
 			{ db: createSqliteD1() },
 		);
 		expect(response.status).toBe(403);
+		expect(await response.json()).toMatchObject({ ok: false, error: "forbidden", message: SUBSCRIBE_MESSAGES.forbidden });
+	});
+
+	it("redirects a non-JS cross-origin form post back to the form with the forbidden status", async () => {
+		const db = createSqliteD1();
+		const response = await handleSubscribe(
+			formRequest(LOCAL, { email: "a@example.com", consent: "yes" }, { origin: "https://evil.example", accept: "text/html" }),
+			{ db },
+		);
+		expect(response.status).toBe(303);
+		expect(response.headers.get("location")).toBe("/?subscribe=forbidden#gift");
+		expect(db.statements).toEqual([]);
+	});
+
+	it("shows the forbidden message after the redirect", () => {
+		expect(parseSubscribeStatus("forbidden")).toBe("forbidden");
+		expect(SUBSCRIBE_MESSAGES.forbidden).not.toBe("");
 	});
 
 	it("rejects a bad email and a missing consent", async () => {

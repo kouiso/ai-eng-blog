@@ -1,4 +1,5 @@
 export type SubscribeErrorCode =
+	| "forbidden"
 	| "invalid_request"
 	| "too_large"
 	| "invalid_email"
@@ -12,6 +13,7 @@ export type SubscribeStatus = "ok" | SubscribeErrorCode;
 export const SUBSCRIBE_MESSAGES: Record<SubscribeStatus, string> = {
 	// 特典やメルマガを送る仕組みはまだ無い。送ると約束しない（配信は始めるときにダブルオプトインで確かめる）
 	ok: "登録を受け付けました。メールの配信はまだ始めていません。始めるときは、配信を続けてよいかを確かめるメールを最初に1通お送りします。",
+	forbidden: "このページ以外からの登録は受け付けていません。このサイトのフォームから、もう一度お試しください。",
 	invalid_request: "送信内容を読み取れませんでした。ページを再読み込みして、もう一度お試しください。",
 	too_large: "送信内容が大きすぎます。メールアドレスだけを入力して、もう一度お試しください。",
 	invalid_email: "メールアドレスの形式を確認してください。",
@@ -22,6 +24,7 @@ export const SUBSCRIBE_MESSAGES: Record<SubscribeStatus, string> = {
 };
 
 export const SUBSCRIBE_HTTP_STATUS: Record<SubscribeErrorCode, number> = {
+	forbidden: 403,
 	invalid_request: 400,
 	too_large: 413,
 	invalid_email: 400,
@@ -33,6 +36,7 @@ export const SUBSCRIBE_HTTP_STATUS: Record<SubscribeErrorCode, number> = {
 
 const STATUSES: readonly SubscribeStatus[] = [
 	"ok",
+	"forbidden",
 	"invalid_request",
 	"too_large",
 	"invalid_email",
