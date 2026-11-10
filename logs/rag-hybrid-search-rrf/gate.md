@@ -16,6 +16,10 @@
 
 実行ログは、空の作業フォルダから記事の手順を全部やり直して取り直した（`run/01.log`〜`23.log`、2026-11-10 07:04〜07:06 UTC）。
 
+## 2026-11-10 の2回目の直し（C02）
+
+C02 の NG の原因のうち原稿の側にあるもの（タイトルに講座のキーワード「RAG」が無い）を直した。2行目のタイトルを「BM25 とベクトル検索を RRF で合わせるハイブリッド検索【TypeScript】」から「RAG のハイブリッド検索を TypeScript で作る【BM25 とベクトル検索を RRF で合わせる】」に変え、`content/plan.md` #15 と `brief.md` のタイトルも同じ文に直した。本文は変えていないので、行番号は下の判定のまま。直したあとに `ai-smell-lint.py` と `writing-lint.py` を回し直し、出力は直す前と同じ（FATAL 0、DENSITY超過 0、SHOULD 0）。`prose-check.txt`、`endings3.txt` も取り直し、60字超 0、SAME3 0。判定の前に `guides/01-seo-for-dev-blogs.md`（§3 タイトルの作り方）と `guides/05-technical-writing.md`（§1 文の長さ）を読み直した。
+
 ## 判定の前に読んだもの
 
 2026-11-10 に、次を全文読んでから全項目を判定した。
@@ -33,7 +37,7 @@
 |---|---|---|---|---|
 | G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」「lint との関係」を読んで判定。549行の版で回し直した `lint/ai-smell.txt` は、2行目 `✅ クリーン`、3行目 `use 0件 / 📎mention 0件`、4行目 `✅ 致命なし`、末尾 `exit=0`。frontmatter（1〜62行目）の mention も0件。warn 0件（`lint/judgments.md`） |
 | G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。`lint/writing-lint.txt` 1行目 `549行/239文`、判定行 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、末尾 `exit=0`。DENSITY は10カウンタすべて0回で、上限は guides/08 の標準レジスターと一致。WATCH 節なし、SHOULD 0件、INFO 0件 |
-| G03 | 下の B の全項目を満たす | `gate.md` | NG | B の C02 が NG（キーワードが CSV 待ちで確定していない）。ほかの C01、C03〜C38 は OK、C39（任意）は「あり」 |
+| G03 | 下の B の全項目を満たす | `gate.md` | OK | B の C01〜C38 は全部 OK（C02 は 2026-11-10 にタイトルを直して OK）、C39（任意）は「あり」 |
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | `lint/check-code-and-outputs.txt`（ALL OK、2026-11-10）: 記事のコード8つ（`package.json`、`tokenize.ts`、`bm25.ts`、`docs.ts`、`embed.ts`、`vector-search.ts`、`rrf.ts`、`hybrid.ts`）が `code/` と1文字も違わず、記事の ts と json のコードブロックはすべて `code/` のどれかと一致。記事のコマンド12個（`npm install` と `node hybrid.ts` 11個）がログのコマンドと同じ。記事の実行結果8つが `run/` から機械的に取り出したものと一致し、下限 0.1 と 0.7 を比べた表の3行もログの上位3件と一致。実行は `run/01.log`〜`17.log`（2026-11-10 07:04:19〜07:05:09 UTC、node v22.22.0、npm 10.9.4、空の作業フォルダから記事の手順の順、すべて exit 0）。一致した語の確認は `run/18.log`、型は `run/19.log`（skipLibCheck なし、`node_modules` の型定義の12件で `tsc_exit=1`、記事のファイルは0件）と `run/20.log`（skipLibCheck あり、`tsc_exit=0`）、ネットワークの無い環境での再実行は `run/21.log`（11コマンドとも exit=0、外への fetch は `EAI_AGAIN`）。LLM の API は呼ばない（`needs_api_key: false`、58行目）。`ANTHROPIC_API_KEY` は `unset`（2026-11-10 に確認） |
 | G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている。料金の目安がある。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 528〜547行目に出典の表（14件、題名、URL、確認日 2026-10-31）。断定した文は（出典n）で表を引く（`sources.md` に文ごとの対応。実行ログと計算を根拠にした文は後半の表で、2026-11-10 の `run/` に合わせて書き直した）。料金は 509〜515行目で、記事の手順は無料（API を呼ばない、トークン無しでモデルをダウンロード `run/22.log` と `run/06.log`、ダウンロード後はネットワーク無しで動く `run/21.log`）、要るのはネットワークとディスク（745MB と 130MB、`run/04`、`07.log`）、検索結果を Claude に渡すと料金がかかり、Haiku 5.5 は 100万トークンあたり入力 $0.10、出力 $0.50（10万トークン以下、出典14）。Claude に渡す処理は実行していないので「無料」とは書いていない。frontmatter 9〜11行目: `cost_estimate`、`run_environment`（Node.js 22.22.0、npm 10.9.4 は `run/*.log` の見出し、@huggingface/transformers 4.3.2 は `code/package.json`、モデルと q8 は `code/embed.ts`、TypeScript 7.0.2 は `run/20.log`）、`verified_at: "2026-11-10"`（最後の実行 `run/23.log` の日付） |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | 2026-11-10 にやり直した。`content/articles/` の18ファイル（この記事を含む）の frontmatter を全件読み直し、17本を `selection.md` の表に列挙した（前回の8本の一覧は古かった）。`target_query` は18ファイルすべて null なので、title、main_keyword、description で比べた。本文を `grep -c -i 'rrf\|ハイブリッド\|Reciprocal'` にかけて当たったのは、この記事と `rag-retrieval-eval-recall-mrr` だけ。後者は検索器を Recall@k と MRR で採点する記事（main_keyword「LLM 評価」）で、ハイブリッド検索の作り方と RRF の説明はこの記事へのリンクに任せている（その記事の203行目）。RAG の `rag-bm25-search-typescript`（BM25 だけ）、`rag-local-embeddings-transformers-js`（ベクトル検索だけ、draft）、`rag-chunking-japanese-text`（チャンク分け）は、2つの検索の結果を合わせる方法に答えない |
@@ -47,7 +51,7 @@
 | # | 区分 | 項目 | 判定 | 根拠 |
 |---|---|---|---|---|
 | C01 | 設計（→ 01-seo-for-dev-blogs.md） | 「誰の、どんな検索に答える記事か」が1行で言える | OK | guides/01 冒頭の原則と §1。`brief.md` の C01 の1行（BM25 とベクトル検索をそれぞれ作り、結果の合わせ方で手が止まった TypeScript の開発者が、RRF でハイブリッド検索を作る方法を検索したときに答える）。検索語そのものは未確定で、それは C02 と G10 で NG にしている |
-| C02 | 設計（→ 01-seo-for-dev-blogs.md） | タイトルにキーワードが含まれ、具体的（「徹底解説」「完全ガイド」を使っていない） | NG | guides/01 §3「タイトルの作り方」（キーワードを左寄せで含める）と §2。照らし合わせるキーワードが確定していない。`target_query` は null（7行目）で、CSV が無い（G10）。講座のメインキーワード「RAG」（6行目 `main_keyword`）もタイトル（2行目「BM25 とベクトル検索を RRF で合わせるハイブリッド検索【TypeScript】」）に入っていない。同じ講座の `rag-bm25-search-typescript`、`rag-chunking-japanese-text`、`rag-retrieval-eval-recall-mrr` のタイトルは「RAG」から始まる。前回の「タイトルはワークフローの指示で与えられたもの」は guides/01 §3 の基準ではないので、根拠から外した。「徹底解説」「完全ガイド」は0件で、具体性（BM25、ベクトル検索、RRF、TypeScript）は満たす。CSV が届いて `target_query` を選んだら、その語を前に置いてタイトルを決め直し、判定し直す |
+| C02 | 設計（→ 01-seo-for-dev-blogs.md） | タイトルにキーワードが含まれ、具体的（「徹底解説」「完全ガイド」を使っていない） | OK | guides/01 §3「タイトルの作り方」（キーワードを左寄せで含める、具体的にする）を 2026-11-10 に読み直して判定。2行目のタイトルを「RAG のハイブリッド検索を TypeScript で作る【BM25 とベクトル検索を RRF で合わせる】」（54字）に直した。講座のメインキーワード「RAG」（6行目 `main_keyword`）を左端に置き、主題の「ハイブリッド検索」を続け、手段（BM25、ベクトル検索、RRF）と言語（TypeScript）で具体にした。同じ講座の `rag-bm25-search-typescript`、`rag-chunking-japanese-text` と同じく「RAG」から始まる。「徹底解説」「完全ガイド」は0件（`prose-check.txt` の PAT）。前回 NG にした理由は2つあった。(1) 講座のメインキーワードがタイトルに無い、(2) `target_query` が CSV 待ちで決まっていない。(1) は原稿の側の原因なので、タイトルを直して解消した。(2) は G10 が同じ原因を NG として数えており（`target_query` は null のまま、値は作っていない）、ほかの記事の gate（`ai-agent-vs-workflow`、`claude-agent-sdk-first-agent`、`promptfoo-llm-eval-intro` など）と同じく C02 では二重に数えない。CSV が届いて `target_query` を選んだら、その語がタイトルの左寄せに入っているかを C02 として判定し直す |
 | C03 | 設計（→ 01-seo-for-dev-blogs.md） | リード文の3行で「何が解決するか」が伝わる | OK | guides/01 §3「リード文が最重要」。64行目の3文で、答え（スコアを足さずに順位で合わせる）、方法（文書ごとに `1 / (60 + 順位)` を足す）、規模（15行のファイル1つ）を示し、66〜68行目で用語の定義と載せる結果（正しい文書が1位になる質問、上位3件から消える質問、消えた文書を BM25 の下限で1位に戻した結果）を示した |
 | C04 | 設計（→ 01-seo-for-dev-blogs.md） | 検索意図のタイプ（やり方/エラー/比較/概念）に構成が合っている | OK | guides/01 §1 の表でやり方に合うのはチュートリアルか解説。guides/02 タイプ1 を原本で読み、要素ごとに照合した（`brief.md` の表）。リード（64〜72行目）→ 結論と式（74行目）→ 前提（98行目）→ 手順（130、222、270、296行目、各コードと実行結果）→ ハマりどころと直し方（367、393、435、475行目）→ 料金（509行目）→ 確認と次の記事（517、526行目） |
 | C05 | 構成（→ 02-article-structures.md） | 結論先行になっている（答え → 理由 → 詳細） | OK | guides/02 共通の原則1。リード（64行目）の1文目が答え。最初の H2（74行目）は見出し自体が RRF のやること（順位の逆数を足して並べ直す）で、式、k=60 の理由、順位ごとの点数の表が続く。手順の詳細はその後 |
@@ -88,13 +92,13 @@
 
 ## 集計
 
-- A: OK 7（G01、G02、G04、G05、G06、G08、G09）/ NG 3（G03、G07、G10）（全10項目）
-- B: OK 37 / NG 1（C02）/ 任意・あり 1（全39項目）
-- 合計: OK 44 / NG 4（G03、G07、G10、C02）/ 任意・あり 1（全49項目）
+- A: OK 8（G01、G02、G03、G04、G05、G06、G08、G09）/ NG 2（G07、G10）（全10項目）
+- B: OK 38 / NG 0 / 任意・あり 1（全39項目）
+- 合計: OK 46 / NG 2（G07、G10）/ 任意・あり 1（全49項目）
 
 ## 結論
 
-G03（B の C02 が NG）、G07（前後リンクと関連リンクの先が未公開）、G10（CSV 待ち）に落ちたので、`status: draft` のまま止める。
+G07（前後リンクと関連リンクの先が未公開）、G10（CSV 待ち）に落ちたので、`status: draft` のまま止める。
 
-- C02 と G10 は、ラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば判定できる。そのときはタイトルの前のほうにその語を入れて決め直し、C02 を判定し直す。どちらも今の原稿を直しても解消しない。
+- G10 は、ラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば判定できる。そのときは選んだ語がタイトルの左寄せに入っているかを見て、C02 も判定し直す。今の原稿を直しても G10 は解消しない。
 - G07 は、リンク先の4本（`rag-answer-with-citations-claude`、`ai-agent-tool-use-loop-typescript`、`rag-bm25-search-typescript`、`rag-local-embeddings-transformers-js`）が公開か、この記事より前に予約されれば通る。前の記事 `rag-answer-with-citations-claude` は API キーが要る記事なので、キーが入るまで公開されない。#14 と #16 の原稿ができたら、72行目と526行目の説明が中身と合うかを読み直す。

@@ -66,13 +66,13 @@ for i, ((lang, body), (elang, kind, ref)) in enumerate(zip(blocks, expected), 1)
 
 # 本文で引いた値がログにあるか
 facts = [
-    ("04", "Total Tokens: 17,489"), ("04", "16,050 prompt"), ("04", "✓ 3 passed (50.00%)"),
+    ("04", "Total Tokens: 16,663"), ("04", "16,055 prompt"), ("04", "✓ 3 passed (50.00%)"),
     ("04", "Running 6 test cases"),
-    ("06", "Total Tokens: 17,201"), ("06", "✓ 3 passed (50.00%)"), ("06", "Writing output to results.jsonl\n100"),
+    ("06", "Total Tokens: 17,829"), ("06", "✓ 3 passed (50.00%)"), ("06", "Writing output to results.jsonl\n100"),
     ("04", "Writing output to results.jsonl\n100"),
     ("07", "合格 3 / 6"),
-    ("08", "Total Tokens: 31,477"), ("08", "29,913 prompt"), ("08", "✓ 3 passed (50.00%)"),
-    ("12", "total_cost_usd=0.00236732"), ("12", "costBasis=claude-haiku-5-5:list"),
+    ("08", "Total Tokens: 31,708"), ("08", "29,916 prompt"), ("08", "✓ 3 passed (50.00%)"),
+    ("12", "total_cost_usd=0.00268162"), ("12", "costBasis=claude-haiku-5-5:list"),
     ("13", "apiKeySource=none"), ("13", "model=claude-haiku-5-5"), ("13", "claude_code_version=2.1.322"),
     ("13", "\n0.125.1"), ("10", "tsc_exit=0"), ("10", "Version 7.0.2"),
 ]

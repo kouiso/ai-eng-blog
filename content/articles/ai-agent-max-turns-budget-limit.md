@@ -1,5 +1,5 @@
 ---
-title: "AI エージェントが止まらないのを防ぐ【Claude Agent SDK の maxTurns と maxBudgetUsd】"
+title: "AI エージェントを上限で止める【Claude Agent SDK の maxTurns と maxBudgetUsd】"
 slug: "ai-agent-max-turns-budget-limit"
 description: "Claude Agent SDK の maxTurns と maxBudgetUsd で、エージェントを止めます。止まったときに届く result と、そのあとの例外の受け止め方を、実行結果つきで示します。"
 tags: ["AIエージェント", "Claude Agent SDK", "TypeScript"]

@@ -1,5 +1,5 @@
 ---
-title: "BM25 とベクトル検索を RRF で合わせるハイブリッド検索【TypeScript】"
+title: "RAG のハイブリッド検索を TypeScript で作る【BM25 とベクトル検索を RRF で合わせる】"
 slug: "rag-hybrid-search-rrf"
 description: "BM25 とベクトル検索の結果を、順位の逆数を足す RRF で1つに合わせる方法を TypeScript で書きます。架空の FAQ 10件で実行した結果を載せます。合わせて正しい文書が1位になる質問と、片方の検索が当てた文書が上位から外れる質問の両方です。外れた文書は、BM25 の下限を上げると1位に戻りました。"
 tags: ["RAG", "ハイブリッド検索", "RRF", "TypeScript"]

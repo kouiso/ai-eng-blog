@@ -46,3 +46,7 @@ lint の検出ではなく、外部レビューの指摘3件。直したあと�
 1. 362行目（474 行の版も362行目）: 0.0005 と 0.0008 の2回をまとめて「2回とも、ファイルを読み終えた時点で止まり、回答は返っていません」と書いていた。0.0008 の回は回答の応答まで生成され、その料金も合計に入ったうえで `error_max_budget_usd` になっていた。指摘を `run/14.log` で確かめ（`code/extra/show-blocks.ts` で text のブロックも表示し、0.0008 で3回動かした。Glob と Read 3つの形になった2回は、どちらも回答の text が届いてから `error_max_budget_usd`、`result` の欄なし）、2回を分けて書き直した。根拠は出典1の「Budget headroom」と、`run/07.log`（0.00086785）が同じ形で回答まで返した `run/13.log`（0.00085736）より多いこと。
 2. 92行目: 禁止事項に、自分のアプリで claude.ai のログインを提供すること（Agent SDK で作ったエージェントを含む）を足した（出典5「Authentication and credential use」、出典4のクイックスタートの注記）。
 3. `selection.md` と `gate.md` の G06: 既存記事の数と重なりの確認を、今のリポジトリ（この記事のほか22本）で取り直した。原稿は変えていない。
+
+## 2026-11-10 の2回目の直し（タイトルの長さ）
+
+上の表の「prose-check C25 title 63字」を直した。メインエージェントの指示で、タイトルを「AI エージェントを上限で止める【Claude Agent SDK の maxTurns と maxBudgetUsd】」（60字）にし、`content/plan.md` #18 も同じ文にした。前に書いた案「暴走を止める」は使わなかった。検索する人の悩みは「止まらない」ことなので、それに答える動詞「止める」と、手段の「上限」を左に置いた。lint 2本を回し直し、出力は直す前と同じ（ai-smell は use 0件 / mention 0件、writing-lint は FATAL 0 / DENSITY超過 0 / SHOULD 0）。`prose-check.txt` は `C25 over60=0 max=60`。

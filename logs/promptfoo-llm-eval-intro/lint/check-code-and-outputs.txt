@@ -13,19 +13,19 @@ OK #11: ts code show-failures.ts
 OK #12: bash cmd 05
 OK #13: text out 05
 OK #14: text in 07
-OK run/04.log contains 'Total Tokens: 17,489'
-OK run/04.log contains '16,050 prompt'
+OK run/04.log contains 'Total Tokens: 16,663'
+OK run/04.log contains '16,055 prompt'
 OK run/04.log contains '✓ 3 passed (50.00%)'
 OK run/04.log contains 'Running 6 test cases'
-OK run/06.log contains 'Total Tokens: 17,201'
+OK run/06.log contains 'Total Tokens: 17,829'
 OK run/06.log contains '✓ 3 passed (50.00%)'
 OK run/06.log contains 'Writing output to results.jsonl\n100'
 OK run/04.log contains 'Writing output to results.jsonl\n100'
 OK run/07.log contains '合格 3 / 6'
-OK run/08.log contains 'Total Tokens: 31,477'
-OK run/08.log contains '29,913 prompt'
+OK run/08.log contains 'Total Tokens: 31,708'
+OK run/08.log contains '29,916 prompt'
 OK run/08.log contains '✓ 3 passed (50.00%)'
-OK run/12.log contains 'total_cost_usd=0.00236732'
+OK run/12.log contains 'total_cost_usd=0.00268162'
 OK run/12.log contains 'costBasis=claude-haiku-5-5:list'
 OK run/13.log contains 'apiKeySource=none'
 OK run/13.log contains 'model=claude-haiku-5-5'
@@ -60,3 +60,4 @@ OK run/12.log uuid=none
 OK run/13.log uuid=none
 OK run/08.log uuid=none
 ALL OK
+exit=0

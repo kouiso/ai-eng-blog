@@ -1,6 +1,6 @@
 sentences: 286 (prose+frontmatter 203, headings 13, table cells 70)
 not counted: code block lines 205, URL-only table cells 14 (lines [534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547])
-LONG>60: 0  (50<len<=60: 32)
+LONG>60: 0  (50<len<=60: 33)
 prose length min 13 / max 60 / short(<=20) 11 / long(41-60) 81
 SAME3: 0
 AND/OR candidates (や in prose, judge by eye):

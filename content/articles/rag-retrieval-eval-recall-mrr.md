@@ -1,5 +1,5 @@
 ---
-title: "RAG の検索の良し悪しを数字で測る【Recall@k と MRR を TypeScript で】"
+title: "LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】"
 slug: "rag-retrieval-eval-recall-mrr"
 description: "RAG の検索器を Recall@k と MRR の2つの指標で採点する TypeScript のプログラムを作ります。手で書いた15問で BM25、ベクトル検索、ハイブリッド検索を比べた実行結果と、差がついた3問の中身を載せます。"
 tags: ["LLM 評価", "RAG", "TypeScript"]
@@ -58,7 +58,7 @@ RAG の検索が良くなったかどうかは、Recall@k と MRR の2つの数�
 
 対象は、TypeScript で RAG の検索を組んでいて、設定を変えた効果を数字で確かめたい人です。記事のコマンドの実行時間は、`npm install` とモデルのダウンロードを含めて合計27秒でした。
 
-講座の1つ前の回は[前の記事](/posts/llm-as-a-judge-claude)です。この記事で採点するのは、モデルが回答を作る前の段階にある検索の結果です。
+講座の1つ前の回は[前の記事](/posts/llm-as-a-judge-claude)です。LLM 評価の回のうち、この記事で採点するのは、モデルが回答を作る前の段階にある検索の結果です。
 
 ## Recall@k は取りこぼしを、MRR は最初の正解の順位を見る
 
