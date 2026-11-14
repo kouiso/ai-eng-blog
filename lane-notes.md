@@ -110,6 +110,8 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 
 PAUSED 2026-11-14 (Mac lane) | in flight: none | resume first: nothing on the Mac; optional separate PR for #83 reviewer nits (other gate.md summaries vs tables, keywords/README.md 想定している列) | queued GitHub writes: none
 
+HANDED OFF: https://github.com/kouiso/ai-eng-blog/pull/89 (Mac lane)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
