@@ -23,12 +23,13 @@ npm を使います。
 
 ```sh
 npm ci
-npm run cf:types
 npm run typecheck
 npm run build
 npx wrangler deploy --dry-run
 npx wrangler dev --local
 ```
+
+`npm run typecheck` は先に `wrangler types` を流して `worker-configuration.d.ts`（Git に入らない生成ファイル）を作ってから `astro check` を流すので、クローン直後に `npm ci` のあとすぐ流せます。`npm run cf:types` を別に流す必要はありません。
 
 公開ページは `http://localhost:8787/`、管理画面は `http://localhost:8787/_emdash/admin` で開きます。初回は管理画面がセットアップ画面に移ります。ローカルのデータは `.wrangler/` に保存され、Git には入りません。
 
