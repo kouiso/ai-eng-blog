@@ -68,6 +68,17 @@ members: #53 fix, K1, #23, #39, #58, #66, #49 fix (sonnet); reviewers: #59, #65,
 DECIDED | AEB-I3 done: #21 closed (not planned, restated); the original "A" triage list (packet: P/issue-triage.tsv, on the owner's Mac) is not readable here, so instead every open issue got a manager decision in JUDGE bundles 1-4 (closes executed: #6 #12 #19 #20 #21 #31) | revert: if the A list names an issue still open that should be closed, close it with the manager's reason
 #70 | FIX | review FAIL must 1 (Closes #35 while #5 announcement pending) -> author fixing (Refs #35; lead posts #5 comment after merge)
 
+#73 | LAND | merged 03b8cfc (head 75581d8) | review PASS issuecomment-6877452735 | closes #39
+#72 | LAND | merged 78a7656 (head 8c9dff8) | review PASS issuecomment-6877454043 | closes #23; wants carried to #7 (comment)
+#53 ruling (manager): merge 62cb3f3 as partial fix if round-3 review passes; Closes #26, Refs #9; dates split at hyphen in mixed cells -> new SBI #75 under #9 (markup at render time, text unchanged; no word-joiners); identifier breaks after -// accepted
+#69 ruling (manager): one more round, last; ruling D amended (passing re-run updates verified_at + run_environment versions together); cap for every PR: 3 rounds; nit fixes must not widen scope; EmDash field route deferred to #46 (acceptance condition there)
+#65 | FIX | round 2 FAIL must 1 (docs/03-usage.md:9 stale key wording) -> last round fixing
+#70 | review round 2 running (head 79edf34)
+#69 | review round 3 running (head 7900db6)
+#71 | FIX | G11 review NG must 3 (gate summary, stale line refs, missing source for the new sentence) -> writer fixing; then full-article G11 review needed
+#74 (PR for #66 inventory, head 04cee2a): 1.4.0 has no table conversion; 1.5.0 changelog says GFM tables convert; options A (repo converter) / B (bump 1.5.0) / C; sent to manager
+members: #53 finish, #42, #71 fix, #65 fix, #38 (sonnet); reviewers: #69, #70 (opus)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
