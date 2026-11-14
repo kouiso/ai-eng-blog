@@ -30,7 +30,7 @@
 | `tsx` (dev, テスト実行用) | 4.23.15 |
 | `@types/node` (dev) | 22.20.5 |
 
-動作確認は Node.js 22.22.0 / npm 10.9.4 で行いました。`package-lock.json` を同梱しています。
+動作確認は Node.js 22.23.4 / npm 10.9.4 と、Node.js 24.22.3 / npm 11.19.1 の両方で行いました（2026-11-14）。`package.json` の `engines` は、動かして確かめた 22 系と 24 系だけにしてあります。`package-lock.json` を同梱しています。
 
 ## セットアップ
 
