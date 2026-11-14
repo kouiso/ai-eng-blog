@@ -87,6 +87,11 @@ members: #53 finish, #42, #71 fix, #65 fix, #38 (sonnet); reviewers: #69, #70 (o
 #74 (#66) review running; #71 full-article G11 review running
 members: #53, #42, #38, #67 (1.5.0 bump), #25 (engines), #37 (CI) (sonnet); reviewers: #74, #71-G11 (opus)
 
+#74 | LAND | merged 16d2096 (head b1dd1ba) | review PASS issuecomment-6877527504 | closes #66; wants passed to #67 (19 em spans, Logical_OR not affected)
+#77 (#42 check-article.py, head 887a9ac): 28/30 articles fail >=1 hard check on the new checker (C25 42, C17 22, OUTPUT 52); review running; findings sent to manager (C25 URL cells, inline code, how to handle 28 articles)
+#79 (#38 new-articles list, head 6f708fa): review running
+#76 waits for #53 (same files)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
