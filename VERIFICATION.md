@@ -75,3 +75,40 @@ later authorized deployment.
   - 同じ DB で管理画面のセットアップ（仮想認証器のパスキー）を済ませ、ローカル専用の PAT（30 日。DB ごと消した）で MCP から記事と固定ページを作った。空の h2 を含む記事で、目次の2つのリンクがそれぞれ同じ文字の見出しに飛ぶ。直す前の振り方では1つずつずれていた。「検索エンジンに表示しない」を付けた固定ページだけがある状態で、`/sitemap.xml` は `/sitemap-pages.xml`（404）を載せず、載せた子サイトマップはすべて 200。
   - Turnstile のテスト用キーを `--var` で渡したとき: ダミーのトークンの登録は 200、トークンなしは `captcha_failed`。
   - `/`、`/privacy`、`/posts`、`/posts/toc-test`、404 のページを幅 1280 と 375 で開き、横スクロールなし、ページのエラーなし（404 のページ自身の 404 応答を除く）、localhost 以外へのリクエストなし（Google Fonts を読み込んでいない）。
+
+## 2026-11-14 の追記（Node 24 で通した結果、#24）
+
+デプロイで走る Node 24 で、ルートと samples の一式を通した。
+
+- 環境: Node v24.22.3（nodejs.org の公式 linux-x64 tarball。SHASUMS256 で照合。作業環境の設定は変えず、このコマンド列の PATH だけに入れた）、npm 11.19.1。ベースは `develop` の `884cc613d824ae993b4e4fd32bd6599a43ef276a`。日付は 2026-11-14。
+- `npm ci` の出力に EBADENGINE は無い（ルート、samples 2本とも0行）。出たのは deprecated の警告（`@oslojs/*`、`arctic`、`node-domexception`）と install-scripts の案内、`14 vulnerabilities (6 moderate, 8 high)` の報告で、いずれも今回は対処していない。
+
+### ルート
+
+| コマンド | 結果 |
+|---|---|
+| `npm ci` | exit 0（685 packages） |
+| `npm run build` | exit 0 |
+| `npm run cf:types` | exit 0 |
+| `npm run typecheck` | exit 0、0 errors / 0 warnings / 0 hints（43 files） |
+| `npm test` | exit 0、9 ファイル 104 件が通った |
+| `npx wrangler deploy --dry-run` | exit 0、`Total Upload: 16067.24 KiB / gzip: 4257.26 KiB`、`env.EMDASH_SITE_URL ("https://ai-eng-blog.kouiso.workers.dev")` |
+
+### samples
+
+| 場所 | コマンド | 結果 |
+|---|---|---|
+| `samples/mcp-server` | `npm ci` | exit 0 |
+| | `npm run build` | exit 0 |
+| | `npm run typecheck` | exit 0 |
+| | `npm test` | exit 0、11 件中 11 件が通った |
+| | `npm run e2e` | exit 0、`E2E OK`（ログイン、API キーは不要。stdio で子プロセスを起動して叩く） |
+| `samples/rag-chat` | `npm ci` | exit 0 |
+| | `npm run typecheck` | exit 0 |
+| | `npm test` | exit 0、7 件中 7 件が通った（Anthropic のクライアントには偽の `fetch` を渡しており、キーは使わない） |
+
+### 実行しなかったもの
+
+- `samples/rag-chat` の `npm start`（`node src/cli.ts`）: Claude の呼び出しにログインか API キーが要るため。
+- `wrangler deploy`（dry-run ではない本番の deploy）、`wrangler dev --local` での動作確認: #24 の範囲外。
+- engines の変更: このPRでは `package.json` を変えていない（#25）。Node 22 での再実行もしていない。
