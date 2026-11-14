@@ -5,7 +5,8 @@ import {
 	decodeSlug,
 } from "emdash";
 import Base from "../../layouts/Base.astro";
-import { findCourseStep } from "../../utils/course";
+import { courseArticleSlugs, findCourseStep } from "../../utils/course";
+import { orderByCourse } from "../../utils/course-order";
 
 const slug = decodeSlug(Astro.params.slug);
 const termsResult = await getTaxonomyTermsWithCacheHint("tag", {
@@ -21,25 +22,27 @@ if (!term) {
 	return Astro.rewrite("/404");
 }
 
-const cursor = Astro.url.searchParams.get("cursor") || undefined;
-// 講座のタグは「上から順に読む」ので古い順、それ以外は新しい順
+// 講座のタグは1ステップ数本なので1回で全部取り、講座の順番（course.ts の articles）に並べる。
+// それ以外のタグは新しい順で、cursor でページを送る。
+const cursor = course ? undefined : Astro.url.searchParams.get("cursor") || undefined;
 const {
-	entries: posts,
+	entries: fetched,
 	cacheHint,
 	nextCursor,
 } = storedTerm
 	? await getEmDashCollection("posts", {
 			where: { tag: term.slug },
 			orderBy: { published_at: course ? "asc" : "desc" },
-			limit: 20,
+			limit: course ? 100 : 20,
 			cursor,
 		})
 	: { entries: [], cacheHint: null, nextCursor: undefined };
+const posts = course ? orderByCourse(fetched, courseArticleSlugs(course.step.slug)) : fetched;
 if (Astro.cache?.enabled) {
 	Astro.cache.set(termsResult.cacheHint);
 	if (cacheHint) Astro.cache.set(cacheHint);
 }
-const showNumbers = Boolean(course) && !cursor;
+const showNumbers = Boolean(course);
 ---
 
 <Base
