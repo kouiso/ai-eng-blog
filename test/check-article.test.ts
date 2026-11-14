@@ -92,7 +92,7 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 	it("C25 は、セル全体が URL 1つだけのセルを数えず、60字超のものを行つきで一覧に出す", () => {
 		const r = check("prose", "c25-url-cell");
 		expect(r.code, r.out).toBe(0);
-		expect(r.out).toContain("セル全体が URL 1つ）: 1件");
+		expect(r.out).toContain("全体が URL 1つ）: 1件");
 		expect(r.out).toMatch(/\[SKIP C25-URL\] c25-url-cell\.md:10 /);
 	});
 
@@ -100,6 +100,41 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		const r = check("prose", "c25-url-words");
 		expect(r.code, r.out).toBe(1);
 		expect(r.out).toContain("[FAIL C25]");
+	});
+
+	it.each([
+		["URL の後ろに全角の語が空白なしで続くセル", "c25-url-ja"],
+		["URL が2つ、読点でつながるセル", "c25-url-two"],
+	])("C25 は、%s を URL だけのセルとは見ず、全体を数える", (_label, slug) => {
+		const r = check("prose", slug);
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C25]");
+		expect(r.out).toContain("全体が URL 1つ）: 0件");
+		expect(r.out).not.toContain("[SKIP C25-URL]");
+	});
+
+	it.each([
+		["tags（インラインの一覧）の要素", "c25-fm-tags"],
+		["tags（行ごとの一覧）の要素", "c25-fm-tags-block"],
+		["target_query", "c25-fm-target"],
+	])("C25 は frontmatter の %s も数える", (_label, slug) => {
+		const r = check("prose", slug);
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C25]");
+		expect(r.out).toContain("70字 [fm]");
+	});
+
+	it("C25 は、値全体が URL 1つの frontmatter の値（sources の url）を数えず、[SKIP C25-URL] に出す", () => {
+		const r = check("prose", "c25-fm-url");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("全体が URL 1つ）: 1件");
+		expect(r.out).toMatch(/\[SKIP C25-URL\] c25-fm-url\.md:\d+ /);
+	});
+
+	it("C17 は「ました」の3連続で落ちる", () => {
+		const r = check("prose", "c17-mashita");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("語尾「ました」");
 	});
 
 	it("C32 は `： ` と `／` を別々に数える", () => {

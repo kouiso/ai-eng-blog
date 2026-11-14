@@ -14,10 +14,11 @@
 checklist とガイドに無い除外は入れない。数えないものは次のとおりで、どれも根拠を持ち、数を出力する。
   - フェンスで囲んだコードブロックの中身（全検査）。
   - C30 から C32 では、インラインコードの中の記号も数えない（guides/03-anti-ai.md 372行）。
-  - C25 では、セルの中身がちょうど URL 1つだけの表のセルは数えない（文ではなく、URL は句読点で切れない。
-    出典の表に URL を置く規約がある）。URL と語が混じるセル、地の文、箇条書き、見出し、表の中の文、
-    frontmatter の読者に見える文字列、sources の title、インラインコード（1字ずつ）はすべて数える。
-    数えなかったセルの件数と、60字を超えるものの行を [SKIP C25-URL] として出力する。
+  - C25 では、表のセルの中身、または frontmatter の値が、ちょうど URL 1つだけのものは数えない
+    （文ではなく、URL は句読点で切れない。出典の表と sources の url に URL を置く規約がある）。
+    URL と語が混じるセル、地の文、箇条書き、見出し、表の中の文、インラインコード（1字ずつ）、
+    frontmatter の文字列の値（tags などの一覧の要素、main_keyword、target_query、sources の title を含む）は
+    すべて数える。数えなかったものの件数と、60字を超えるものの行を [SKIP C25-URL] として出力する。
   - C17 の文の並びは、地の文と箇条書きの文。見出しと表のセルは並びに入れない。
 実行はしない。LLM も呼ばない。
 
@@ -27,7 +28,7 @@ checklist とガイドに無い除外は入れない。数えないものは次�
     C17  同じ語尾が3回以上連続していない        (guides/03-anti-ai.md「語尾の反復チェック」)
     C25  60字超の文がない                        (guides/05-technical-writing.md 1節: 60字超で分割)
     C30  `**` が残っていない（コードとインラインコードの外）  (guides/03-anti-ai.md 記号)
-    C31  em-dash `—` と罫線 `─` を使っていない    (同上)
+    C31  em-dash `—` と罫線 `─` を使っていない（`──` は `─` の連続） (同上。checklist C31 の記号に合わせ、`―` U+2015 は数えない)
     C32  `：`+半角スペース、`／` を使っていない    (同上)
     OUTPUT  記事の出力ブロック（```text）が、run ログの出力部分に1字も違わず載っている
   候補（一覧に出すだけ）
@@ -45,9 +46,10 @@ ARTICLES = "content/articles"
 LOGS = "logs"
 DEFAULT_EXCEPTIONS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "check-article-exceptions.json")
 
-# frontmatter のうち読者に見える文字列。sources の title も数える。
-FM_TEXT_KEYS = ("title:", "description:", "cost_estimate:", "run_environment:")
-FM_SOURCE_TITLE = re.compile(r"^\s+title:")
+# frontmatter の値。文字列の値はすべて数える（キーで選ばない）。数えないのは、引用符のない数値、日付、真偽、null だけ。
+FM_KEY_VALUE = re.compile(r"^\s*(?:- )?[A-Za-z_][\w-]*:(?:\s+(.*))?$")
+FM_LIST_ITEM = re.compile(r"^\s*- (.*)$")
+FM_BARE_SCALAR = re.compile(r"(?:-?\d+(?:\.\d+)?|\d{4}-\d{2}-\d{2}|true|false|null|~)")
 
 C25_LIMIT = 60          # checklist C25「60字超」
 C17_RUN = 3             # checklist C17「3回以上連続」
@@ -76,8 +78,10 @@ C26_PAIRS = [
 
 C28_PATTERN = re.compile(r"[^\s、。]{1,12}や[^\s、。]{1,12}")
 INLINE_CODE = re.compile(r"(`+)(?!`).+?(?<!`)\1(?!`)")
-C31_CHARS = "—―─"   # — ― ─（── は ─ の連続）
-URL_ONLY = re.compile(r"https?://\S+")
+C31_CHARS = "—─"   # U+2014 U+2500（── は ─ の連続）。checklist C31 の記号に合わせる
+# URL だけのセル、値: URL に使える文字（RFC 3986 の ASCII の範囲）だけの URL 1つで、全体に一致するもの。
+# 全角の文字、読点、空白が混じるものは URL だけとは見ない。
+URL_ONLY = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
 END_MARKER = re.compile(r"^-{3,5} (?:exit\b|command\b)")
 
@@ -100,6 +104,28 @@ def split_sentences(text):
     return [p.strip() for p in re.findall(r"[^。]+。?", text) if p.strip()]
 
 
+def fm_values(raw):
+    """frontmatter の1行から、文字列の値を取り出す。`[a, "b"]` の一覧は要素ごとに、`- 値` と `キー: 値` は値を返す。
+    引用符のない数値、日付、真偽、null は文字列ではないので返さない。"""
+    m = FM_KEY_VALUE.match(raw)
+    if m:
+        val = (m.group(1) or "").strip()
+    else:
+        m = FM_LIST_ITEM.match(raw)
+        val = m.group(1).strip() if m else ""
+    if val.startswith("[") and val.endswith("]"):
+        items = [x.strip() for x in re.findall(r'"[^"]*"|[^,\s][^,]*', val[1:-1])]
+    else:
+        items = [val]
+    out = []
+    for it in items:
+        quoted = len(it) >= 2 and it[0] == it[-1] and it[0] in "\"'"
+        it = it[1:-1] if quoted else it
+        if it and (quoted or not FM_BARE_SCALAR.fullmatch(it)):
+            out.append(it)
+    return out
+
+
 def parse_article(text):
     """本文を (行番号, 種類, 文字列) に分ける。種類は fm / heading / cell / prose。
     コードブロックの中身は数えず、行数だけ返す。非コード行は plain_lines に残す。"""
@@ -116,8 +142,9 @@ def parse_article(text):
             plain_lines.append((i, raw))
             if raw == "---":
                 in_fm = False
-            elif raw.startswith(FM_TEXT_KEYS) or FM_SOURCE_TITLE.match(raw):
-                segs.append((i, "fm", raw.split(":", 1)[1].strip().strip('"')))
+            else:
+                for v in fm_values(raw):
+                    segs.append((i, "url-cell" if URL_ONLY.fullmatch(v) else "fm", v))
             continue
         if raw.startswith("```"):
             in_code = not in_code
@@ -156,12 +183,12 @@ def check_prose(res, path):
     name = os.path.basename(path)
     res.info.append(f"prose: 文 {len(sents)}、数えなかったコードブロックの行 {code_lines}")
 
-    # C25 60字超（フェンス外の文。地の文、箇条書き、見出し、表の中の文、frontmatter の読者に見える文字列を数え、種類を付けて出す。
-    # 数えない URL だけのセルは、下の説明のとおり。）
-    # セルの中身がちょうど URL 1つだけのとき（URL と語が混じるセルは数える）は、文ではない（URL は句読点で切れない）
+    # C25 60字超（フェンス外の文。地の文、箇条書き、見出し、表の中の文、frontmatter の文字列の値を数え、種類を付けて出す。
+    # 数えない URL だけのものは、下の説明のとおり。）
+    # セルや値の中身がちょうど URL 1つだけのとき（URL と語が混じるものは数える）は、文ではない（URL は句読点で切れない）
     # ので数えず、件数を出す。60字を超えるものは行番号を [SKIP C25-URL] の名前で並べる。
     url_cells = [x for x in sents if x[1] == "url-cell"]
-    res.info.append(f"C25 で数えなかった URL だけの表のセル（セル全体が URL 1つ）: {len(url_cells)}件")
+    res.info.append(f"C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: {len(url_cells)}件")
     for i, _k, u in url_cells:
         if len(u) > C25_LIMIT:
             res.info.append(f"  [SKIP C25-URL] {name}:{i} {len(u)}字 {u}")
@@ -205,7 +232,7 @@ def check_prose(res, path):
         run = []
 
     # C26 用語の統一（候補）
-    alltext = [(i, s) for i, _k, s in sents]
+    alltext = [(i, s) for i, k, s in sents if k != "url-cell"]
     for a, b in C26_PAIRS:
         la = [i for i, s in alltext if re.search(a, s)]
         lb = [i for i, s in alltext if re.search(b, s)]
@@ -213,7 +240,9 @@ def check_prose(res, path):
             res.cand("C26", name, f"表記が混在: /{a}/ {len(la)}件（行 {la[:5]}）と /{b}/ {len(lb)}件（行 {lb[:5]}）")
 
     # C28 AND/OR（候補）
-    for i, _k, s in sents:
+    for i, k, s in sents:
+        if k == "url-cell":
+            continue
         for m in C28_PATTERN.finditer(s):
             res.cand("C28", f"{name}:{i}", f"「{m.group(0)}」")
 
