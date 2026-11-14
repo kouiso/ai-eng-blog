@@ -18,7 +18,7 @@
 EmDash 1.5.0 のセットアップは `site:staging` を true にし、全ページに `<meta name="robots" content="noindex, nofollow">` が出る（[../decisions/emdash-version.md](../decisions/emdash-version.md) の「新しいサイトは staging（noindex）で始まる」、#66 の `docs/decisions/markdown-conversion.md:153`）。本番の D1 は空なので、最初のセットアップのあとは staging になっている。
 
 - [ ] 管理画面の Settings > General > Site Status で **Go live** を押し、staging を外す。押すのは持ち主で、OWNER_TASKS.md の手順 5 の中に書いてある。MCP をつないだあとなら、`settings_update` の `staging: false` でも外せる（`node_modules/emdash/src/mcp/server.ts` の `settings_update` の入力 `staging`「false makes it live」）。最初のセットアップのあいだは MCP が使えないので、管理画面で押す。
-- [ ] `code=$(curl -sS -o page.html -w '%{http_code}' <URL>/) && [ "$code" = 200 ] && ! grep -qi 'noindex' page.html && echo OK` が `OK` を出す（HTTP 200 で、本文に `noindex` が無い。500 や接続失敗では `OK` が出ない）。`/robots.txt` の中身も見る。staging のあいだはキャッシュされず、外したあとは通常に戻る。
+- [ ] `f=$(mktemp); code=$(curl -sS -o "$f" -w '%{http_code}' <URL>/) && [ "$code" = 200 ] && ! grep -qi 'noindex' "$f" && echo OK; rm -f "$f"` が `OK` を出す（HTTP 200 で、本文に `noindex` が無い。500 や接続失敗では `OK` が出ない。リダイレクト（3xx）でも `OK` は出ないので、最終の URL で確かめる）。`/robots.txt` の中身も見る。staging のあいだはキャッシュされず、外したあとは通常に戻る。
 
 ## 2. CPU 時間（無料枠の 10 ms）
 

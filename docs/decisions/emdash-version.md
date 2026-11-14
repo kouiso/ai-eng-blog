@@ -176,7 +176,7 @@ write-article スキルで記事を作るときは、先に `taxonomy_list_terms
 1.4.0 の tarball（`npm pack emdash@1.4.0`）の `src/database/migrations/` は `091_redirect_artifacts.ts` で終わる。1.5.0 の `node_modules/emdash/src/database/migrations/runner.ts` は、その後ろに次の6つを読み込む（2026-11-14 に確認）。
 
 - `092_plugin_kv_options`: サンドボックス側の plugin の KV（`_plugin_storage` の `__kv`）を、プロセス内の `options` 表へ `plugin:<id>:<key>` として写す。`options` に同じ名前があれば上書きしない。元の行は残す。plugin を使わないこのサイトでは対象の行が無い。
-- `093_menu_item_orphans`: 親が同じメニューに無いメニュー項目の `parent_id` を `NULL` にして、最上位へ移す。`UPDATE` で既存の行を書き換えるのは、この移行だけ。空の DB には対象の行が無い。
+- `093_menu_item_orphans`: 親が同じメニューに無いメニュー項目の `parent_id` を `NULL` にして、最上位へ移す。既存のメニュー項目の行を書き換える。ほかの移行の書き換えは「既存の行を書き換えるのは…」の段落にまとめた。空の DB には対象の行が無い。
 - `094_media_usage_file_url_reindex`: リッチテキストの項目を持つコレクションで、メディア使用状況の索引を作り直す対象としてマークする（`_emdash_media_usage_index_status` を更新する）。必要な表と有効な記録が無ければ何もしない。
 - `095_plugin_storage_unique_scope`: plugin の storage の unique index を、宣言したコレクションの範囲に限った partial index に作り直す。changelog は、plugin storage の unique index があるサイトには、この移行のためのメンテナンスの時間が要ると書いている。このサイトは plugin storage を使わないので、対象の index が無い。
 - `096_revision_kind_and_editors`: `revisions` に `kind` と `edited_by` の列を足す。`columnExists` で確かめて、列が無いときだけ足す。既存の版には埋めない。
