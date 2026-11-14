@@ -1,6 +1,8 @@
 # gate: ai-agent-safe-file-tool
 
-> 2026-11-14 追記: ラッコキーワードの CSV（2026-11-14 に書き出し）を読み、`target_query` を決めて G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+> 2026-11-11 追記: サジェストの CSV を読んだが合う行が無く、`target_query` は null、G10 は NG のまま。G11（別の AI による点検）もまだ。
+>
+> 2026-11-14 追記: ラッコキーワードの CSV（2026-11-14 に書き出し）を読み、`target_query` を決めて G10 を OK に変えた。G07 も判定し直して OK（#31）。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る項目は、まだ点検を受けていない G11（別の AI による点検）だけ。
 
 
 判定日: 2026-11-10（最初の判定は 2026-10-31）。原稿: `content/articles/ai-agent-safe-file-tool.md`（588行。行番号はすべてこの版）。
@@ -78,14 +80,14 @@
 
 ## 集計
 
-- A: OK 9 / NG 1（G07）（全10項目）
+- A: OK 10 / NG 0（全10項目）
 - B: OK 38 / NG 0 / 任意・あり 1（全39項目）
 
 ## 結論
 
-G07 が NG なので、`status: draft` のまま止める。
+NG は無いが、G11（別の AI による点検）をまだ受けていないので、`status: draft` のまま止める。
 
 - G10: `target_query` が確定して OK（2026-11-14）。ラッコの CSV の行と一致する。
-- G07: 前後と関連のリンク先（`ai-agent-max-turns-budget-limit`、`ai-agent-vs-workflow`、`ai-agent-custom-tools-agent-sdk`、`zod-to-json-schema-tool-definition`、`mcp-server-typescript-stdio`）が、どれも公開も予約もされていない。前の3本は原稿も無いので、本文では中身を「予定」として書いた。3本を書いたら、55、57、569行目をその中身に合わせて直す。
+- G07: 2026-11-14 に #31 で判定し直して OK。本文の内部リンクはすべて自分より前の公開順で、後の順番・原稿の無い記事への本文リンクは0件（表の G07 の行）。
 
 EmDash への投稿と git のコミットはしていない（執筆するエージェントの担当外）。

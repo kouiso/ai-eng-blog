@@ -40,7 +40,7 @@ EmDash 自体の書き方（サーバーレンダリング必須、画像フィ�
 | `content/articles/<slug>.md` | 記事の原稿。公開中の状態は EmDash、原稿と経緯はこのリポジトリが持ちます |
 | `logs/<slug>/` | コードの実行ログ、lint の結果、キーワードを選んだ理由、checklist の各項目の根拠 |
 | `keywords/<講座のキーワード>.csv` | ラッコキーワードから書き出した CSV。ユーザーはログインするだけで、書き出しと選定は Claude が行う |
-| `keywords/google-suggest-*.csv` | Claude が集めた Google のサジェストの CSV。ラッコの CSV が無い間はこれで選ぶ。どちらもコミットしない |
+| `keywords/google-suggest-*.csv` | Claude が集めた Google のサジェストの CSV。ラッコの CSV に合うキーワードが無い記事はこれで選ぶ。どちらもコミットしない |
 | `samples/rag-chat/`、`samples/mcp-server/` | メルマガ特典の TypeScript サンプルアプリ |
 
 ## 記事を書くときのルール

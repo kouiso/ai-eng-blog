@@ -45,7 +45,8 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 
 ## 2026-11-14 追記: target_query を `llm json 出力` に決めた
 
-- 読んだ CSV は `keywords/google-suggest-structured-output.csv`（Google のサジェストを集めた CSV。2026-11-11）。ラッコの CSV に同じ語は無かった。ラッコキーワードの無料プランで書き出したので、検索数の列は null で、人気度は比べていない。
+- 読んだ CSV は `keywords/google-suggest-structured-output.csv`（Google のサジェストを集めた CSV。この行の `fetched_at` は 2026-11-12）。ラッコの CSV に同じ語は無かった。この CSV には検索数の列が無く、人気度は比べていない。
+- この語の行は 2026-11-12 に足された行で、2026-11-11 に読んだときには CSV に無かった。だから上の 2026-11-11 の追記では合う行が見つからなかった。
 - `target_query` は、CSV の「キーワード」（サジェストの CSV は `suggestion`）の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-14 にスクリプトで確かめた。
 - 選んだ理由: LLM が返した JSON を読み込むときの SyntaxError の原因と直し方を扱う記事なので、「json 出力」を含む語が読者の探し方に最も近い。講座2（構造化出力）に属する。
 - 公開後に Search Console の実測で見直す。CSV の行や件数は、ラッコの利用規約の都合でこのリポジトリには写していない（`keywords/README.md`）。
