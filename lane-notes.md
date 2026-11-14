@@ -108,6 +108,8 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 
 #83 | LAND | merged 86e1466 (head 1960ef3) | review PASS issuecomment-6878128341 | Mac lane: AEB-K1/K2 done (Rakko export 2026-11-14, SITE_MAIN 生成AI API, 4 target_query changed; Rakko CSVs exist only on the Mac, gitignored)
 
+PAUSED 2026-11-14 (Mac lane) | in flight: none | resume first: nothing on the Mac; optional separate PR for #83 reviewer nits (other gate.md summaries vs tables, keywords/README.md 想定している列) | queued GitHub writes: none
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
