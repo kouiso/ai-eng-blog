@@ -16,6 +16,9 @@ export interface AnswerResult {
   numTurns: number;
   /** SDK が出す定価換算の見積もり。請求額ではない。 */
   totalCostUsd: number;
+  /** 起動メッセージ（system init）の値。init が来なかったときは undefined。 */
+  claudeCodeVersion?: string;
+  apiKeySource?: string;
 }
 
 /** Claude Code にログインしていないときに投げる。cli.ts はこれを受けて検索結果だけ出して終わる。 */
@@ -33,6 +36,8 @@ interface LooseMessage {
   type?: string;
   subtype?: string;
   error?: string;
+  claude_code_version?: string;
+  apiKeySource?: string;
   is_error?: boolean;
   result?: string;
   num_turns?: number;
@@ -57,6 +62,7 @@ export async function answerWithClaude(
   });
 
   let loginFailed = false;
+  let init: LooseMessage | undefined;
   for await (const raw of stream) {
     const message = raw as LooseMessage;
     // ログインが無いと、assistant メッセージの error が "authentication_failed" になる。
@@ -64,15 +70,19 @@ export async function answerWithClaude(
       loginFailed = true;
       continue;
     }
+    if (message.type === "system" && message.subtype === "init") init = message;
     if (message.type !== "result") continue;
     if (loginFailed) throw new NotLoggedInError();
     if (message.subtype !== "success" || message.is_error) {
-      throw new Error(`回答を受け取れませんでした（subtype: ${message.subtype}）`);
+      const detail = message.result ? ` / ${message.result}` : "";
+      throw new Error(`回答を受け取れませんでした（subtype: ${message.subtype}${detail}）`);
     }
     return {
       text: message.result ?? "",
       numTurns: message.num_turns ?? 0,
       totalCostUsd: message.total_cost_usd ?? 0,
+      claudeCodeVersion: init?.claude_code_version,
+      apiKeySource: init?.apiKeySource,
     };
   }
   if (loginFailed) throw new NotLoggedInError();
@@ -80,5 +90,7 @@ export async function answerWithClaude(
 }
 
 /** 本番の経路。Claude Agent SDK の query() をそのまま使う。 */
+// QueryFn は query() の引数と戻り値を緩く型付けしたもの（テストで差し替えやすくするため）なので、
+// 本物の query() に渡すところだけ型を合わせるキャストが要る。
 export const runWithAgentSdk: QueryFn = (params) =>
   query(params as unknown as Parameters<typeof query>[0]);

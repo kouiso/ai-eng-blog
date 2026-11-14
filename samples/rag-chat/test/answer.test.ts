@@ -41,6 +41,7 @@ it("答えの段は Agent SDK のラッパー経由で呼ばれ、資料とモ�
 
 it("答えの段は ANTHROPIC_API_KEY を読まない（キーが空でも、入っていても同じに動く）", async () => {
   const saved = process.env.ANTHROPIC_API_KEY;
+  const originalEnv = process.env;
   const reads: string[] = [];
   process.env = new Proxy(process.env, {
     get(target, key, receiver) {
@@ -55,6 +56,7 @@ it("答えの段は ANTHROPIC_API_KEY を読まない（キーが空でも、入
     assert.equal(result.text, "ok");
     assert.deepEqual(reads, []);
   } finally {
+    process.env = originalEnv;
     if (saved !== undefined) process.env.ANTHROPIC_API_KEY = saved;
   }
 });
@@ -76,6 +78,21 @@ it("ログインが無い（authentication_failed）ときは NotLoggedInError �
     { type: "result", subtype: "success", is_error: true, result: "Not logged in" },
   ]);
   await assert.rejects(() => answerWithClaude(run, "claude-sonnet-5-5", "q", hits), NotLoggedInError);
+});
+
+it("is_error の result は、本文（message.result）をエラーに含める", async () => {
+  const run = fakeQuery([{ type: "result", subtype: "success", is_error: true, result: "rate limited" }]);
+  await assert.rejects(() => answerWithClaude(run, "claude-sonnet-5-5", "q", hits), /rate limited/);
+});
+
+it("起動メッセージの claude_code_version と apiKeySource を結果に載せる", async () => {
+  const run = fakeQuery([
+    { type: "system", subtype: "init", claude_code_version: "9.9.9", apiKeySource: "none" },
+    { type: "result", subtype: "success", is_error: false, result: "ok" },
+  ]);
+  const result = await answerWithClaude(run, "claude-sonnet-5-5", "q", hits);
+  assert.equal(result.claudeCodeVersion, "9.9.9");
+  assert.equal(result.apiKeySource, "none");
 });
 
 it("ログイン以外の失敗は NotLoggedInError にせず、そのままエラーにする", async () => {
