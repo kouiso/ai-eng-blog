@@ -11,15 +11,20 @@
 または記事ファイルが無い。「候補」は一覧に出すだけで、終了コードには影響しない。
 
 検査は2群。どの検査も docs/tech-writing-pack/checklist.md の1行に対応づけ、その行を表示に出す。
-checklist とガイドに無い除外は入れない（インラインコード、表のセル、frontmatter の文字列も数える。数えないのは
-フェンスで囲んだコードブロックの中身だけで、行数を出力する）。実行はしない。LLM も呼ばない。
+checklist とガイドに無い除外は入れない。数えないものは次のとおりで、どれも根拠を持ち、数を出力する。
+  - フェンスで囲んだコードブロックの中身（全検査）。
+  - C30 から C32 では、インラインコードの中の記号も数えない（guides/03-anti-ai.md 372行）。
+  - C25 では、URL だけの表のセルは文ではないので数えない（pack の writing-lint.py も表の行を文として取らない）。
+    地の文、箇条書き、表の中の文、frontmatter の読者に見える文字列、インラインコード（1字ずつ）は数える。
+  - C17 の文の並びは pack の writing-lint.py の取り方に合わせ、見出し、表、箇条書き、引用の行は入れない。
+実行はしない。LLM も呼ばない。
 
 行ID は .claude/skills/write-article/SKILL.md 付録 B の C01 から C39 に合わせる。
 
   確定（落ちたら exit 1）
     C17  同じ語尾が3回以上連続していない        (guides/03-anti-ai.md「語尾の反復チェック」)
     C25  60字超の文がない                        (guides/05-technical-writing.md 1節: 60字超で分割)
-    C30  `**` が残っていない（コードブロック外）  (guides/03-anti-ai.md 記号)
+    C30  `**` が残っていない（コードとインラインコードの外）  (guides/03-anti-ai.md 記号)
     C31  em-dash `—` と罫線 `─` を使っていない    (同上)
     C32  `：`+半角スペース、`／` を使っていない    (同上)
     OUTPUT  記事の出力ブロック（```text）が、run ログの出力部分に1字も違わず載っている
@@ -64,6 +69,7 @@ C26_PAIRS = [
 ]
 
 C28_PATTERN = re.compile(r"[^\s、。]{1,12}や[^\s、。]{1,12}")
+INLINE_CODE = re.compile(r"(`+)(?!`).+?(?<!`)\1(?!`)")
 C31_CHARS = "—―─"   # — ― ─（── は ─ の連続）
 URL_ONLY = re.compile(r"https?://\S+")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
@@ -132,6 +138,35 @@ def parse_article(text):
     return sents, plain_lines, code_lines
 
 
+# pack の writing-lint.py の BULLET_RE と同じ。箇条書き、引用、表の行、見出しの行は文の並びに入れない。
+BULLET_RE = re.compile(r"^\s*(?:[-*>•｜|]|\d+\.|#{1,6}\s)")
+
+
+def c17_sentences(text):
+    """(行番号, 文) の並び。docs/tech-writing-pack/scripts/writing-lint.py の sentences_with_lines と同じ取り方:
+    コードフェンスの中は除き、BULLET_RE に当たる行は飛ばし、句点・？！で切り、8字未満の断片は捨てる。
+    frontmatter は本文ではないので読まない。"""
+    out = []
+    in_fm = in_code = False
+    for i, raw in enumerate(text.split("\n"), 1):
+        if i == 1 and raw == "---":
+            in_fm = True
+            continue
+        if in_fm:
+            in_fm = raw != "---"
+            continue
+        if re.match(r"^\s*(?:```|~~~)", raw):
+            in_code = not in_code
+            continue
+        if in_code or BULLET_RE.match(raw):
+            continue
+        for part in re.split(r"(?<=[。！？])", raw.strip()):
+            part = part.strip().rstrip("。！？")
+            if len(part) >= 8:
+                out.append((i, "prose", part))
+    return out
+
+
 def ending3(s):
     s = s.rstrip("。")
     s = re.sub(r"（[^（）]*）$", "", s)
@@ -144,15 +179,17 @@ def check_prose(res, path):
     name = os.path.basename(path)
     res.info.append(f"prose: 文 {len(sents)}、数えなかったコードブロックの行 {code_lines}")
 
-    # C25 60字超（フェンス外のすべての文。見出し、表のセル、URL だけのセルも数え、種類を付けて出す）
+    # C25 60字超（フェンス外の文。地の文、箇条書き、見出し、表の中の文、frontmatter の読者に見える文字列を数え、種類を付けて出す。
+    # URL だけの表のセルは文ではないので数えず、件数を出す。判断待ちの点）
     url_cells = [x for x in sents if x[1] == "url-cell"]
     res.info.append(f"C25 で数えなかった URL だけの表のセル（文ではない）: {len(url_cells)}件")
     for i, kind, s in sents:
         if kind != "url-cell" and len(s) > C25_LIMIT:
             res.fail("C25", f"{name}:{i}", f"{len(s)}字 [{kind}] {s}")
 
-    # C17 同じ語尾が3回以上連続（地の文。語尾3字の一致、または丁寧語尾の種類の一致）
-    body = [x for x in sents if x[1] == "prose"]
+    # C17 同じ語尾が3回以上連続（語尾3字の一致、または丁寧語尾の種類の一致）。
+    # 文の取り方は pack の writing-lint.py（sentences_with_lines）に合わせる。
+    body = c17_sentences(text)
     flagged = []
     for k in range(len(body) - C17_RUN + 1):
         win = body[k:k + C17_RUN]
@@ -198,8 +235,10 @@ def check_prose(res, path):
         for m in C28_PATTERN.finditer(s):
             res.cand("C28", f"{name}:{i}", f"「{m.group(0)}」")
 
-    # C30 / C31 / C32（コードブロック外の全行。frontmatter もインラインコードも数える）
-    for i, raw in plain_lines:
+    # C30 / C31 / C32: コードブロックとインラインコードの中の記号は対象外
+    # （docs/tech-writing-pack/guides/03-anti-ai.md 372行「コードは原文のままが正しい」）。frontmatter は数える。
+    for i, raw0 in plain_lines:
+        raw = INLINE_CODE.sub("", raw0)
         if "**" in raw:
             res.fail("C30", f"{name}:{i}", f"`**` が残っている: {raw.strip()[:70]}")
         for ch in C31_CHARS:
@@ -249,8 +288,19 @@ def log_regions(text):
     if cur is not None:
         regions.append(cur)
     if not found:
-        return None
+        return legacy_regions(text)
     return [r[:-1] if r and r[-1] == "" else r for r in regions]
+
+
+def legacy_regions(text):
+    """古い書式のログ（promptfoo の記事のログ）: `$ コマンド` の行のあと、`----` だけの行が2本あり、
+    その間が出力、2本目のあとが `exit=N`。`----` がちょうど2本のログだけを読み、それ以外は書式違反のままにする。"""
+    lines = [x.rstrip("\r") for x in text.split("\n")]
+    seps = [k for k, x in enumerate(lines) if x == "----"]
+    if len(seps) != 2 or not any(x.startswith("$ ") for x in lines[:seps[0]]):
+        return None
+    region = lines[seps[0] + 1:seps[1]]
+    return [region[:-1] if region and region[-1] == "" else region]
 
 
 def contains_block(region, block):

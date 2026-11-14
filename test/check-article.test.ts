@@ -43,6 +43,45 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		expect(r.out).toContain(`[FAIL ${id}]`);
 	});
 
+	it("C17 は語尾3字が違っても、名指しの4語尾（です）の一致で落ちる", () => {
+		const r = check("prose", "c17-four");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("語尾「です」");
+	});
+
+	it("C25 は60字までは通り、61字から落ちる", () => {
+		expect(check("prose", "c25-60").code).toBe(0);
+		expect(check("prose", "c25-61").code).toBe(1);
+	});
+
+	it.each([
+		["frontmatter", "c25-fm"],
+		["表の中の文", "c25-cell"],
+		["見出し", "c25-heading"],
+	])("C25 は %s も数える", (_label, slug) => {
+		const r = check("prose", slug);
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C25]");
+	});
+
+	it("C17 は見出し、表、箇条書き、引用の行を文の並びに入れない（pack の writing-lint.py と同じ取り方）", () => {
+		const r = check("prose", "c17-nonprose");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).not.toContain("[FAIL C17]");
+	});
+
+	it("C30 から C32 は、コードブロックとインラインコードの中の記号を数えない", () => {
+		const r = check("prose", "c30-32-code");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("確定 0");
+	});
+
+	it("C25 は URL だけの表のセルを数えず、件数を出す", () => {
+		const r = check("prose", "c25-url-cell");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("URL だけの表のセル（文ではない）: 1件");
+	});
+
 	it("C32 は `： ` と `／` を別々に数える", () => {
 		expect(check("prose", "c32").out.match(/\[FAIL C32\]/g)).toHaveLength(2);
 	});
@@ -83,6 +122,17 @@ describe("出力ブロックと run ログの照合", () => {
 	it("連続した抜き出しは通り、離れた行を拾った抜き出しは落ちる", () => {
 		expect(check("outputs", "out-excerpt").code).toBe(0);
 		expect(check("outputs", "out-noncontiguous").code).toBe(1);
+	});
+
+	it("古い書式（`$ コマンド` と `----` で囲んだ出力）のログも読む", () => {
+		const r = check("outputs", "out-legacy");
+		expect(r.code, r.out).toBe(0);
+	});
+
+	it("古い書式でも `----` が2本でないログは書式違反のまま", () => {
+		const r = check("outputs", "out-legacy-bad");
+		expect(r.code).toBe(1);
+		expect(r.out).toContain("書式に沿っていない");
 	});
 
 	it("出力の途中の `--- server stderr ---` を含むブロックも通る", () => {
