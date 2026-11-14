@@ -15,8 +15,8 @@ export const COURSE_STEPS: readonly CourseStep[] = [
 		no: "01",
 		slug: "llm-api",
 		name: "LLM API",
-		desc: "API キーを取って、最初の1回を呼ぶ",
-		lead: "API キーを取るところから、自分のコードで LLM を1回呼んで返事を受け取るところまでの記事です。上から順に読むと、料金の確かめ方も含めて最初の1回を動かせます。",
+		desc: "Claude の月額プランで、最初の1回を呼ぶ",
+		lead: "自分の Claude の月額プランのログインで、API キーを使わずに claude -p と Agent SDK から LLM を呼ぶところから始めます。応答のストリーミング表示、OpenAI の料金の見積もり、429・529 のリトライ、従量課金になる原因の直し方まで読めます。",
 	},
 	{
 		no: "02",
