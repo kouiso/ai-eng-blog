@@ -1,0 +1,14 @@
+date: 2026-11-13T15:41:32Z
+cwd: <work>/work
+node: v24.22.2 / npm: 11.19.1
+ANTHROPIC_API_KEY: unset
+command: npm view @anthropic-ai/claude-agent-sdk@0.3.322 peerDependencies --json; npm view @anthropic-ai/claude-agent-sdk version
+note: モデルは呼んでいない。peerDependencies の zod は ^4.0.0（4.x のみ）。2行目は、この確認をした時点の最新版で、記事を書いた 2026-11-11 の時点（0.3.322）とは別の版が出ている。
+--- output (stdout+stderr) ---
+{
+  "zod": "^4.0.0",
+  "@anthropic-ai/sdk": ">=0.93.0",
+  "@modelcontextprotocol/sdk": "^1.29.0"
+}
+0.3.323
+--- exit=0

@@ -1,72 +1,85 @@
 blocks in article: 15 / expected: 15
-OK #1: bash cmd 02
-OK #2: text out 02
+OK #1: bash cmd 27
+OK #2: text out 27
 OK #3: bash literal literal (128 chars)
-OK #4: text out 04
-OK #5: bash cmd 05
-OK #6: text out 05
+OK #4: text out 29
+OK #5: bash cmd 30
+OK #6: text out 30
 OK #7: markdown code rubric.md
 OK #8: ts code judge.ts
 OK #9: ts code grade.ts
-OK #10: bash cmd 09
-OK #11: text out 09
-OK #12: text literal literal (243 chars)
+OK #10: bash cmd 34
+OK #11: text out 34
+OK #12: text literal literal (247 chars)
 OK #13: diff literal literal (120 chars)
 OK #14: markdown code rubric-vague.md
-OK #15: bash cmd 11
+OK #15: bash cmd 39
 table rows: 5
-OK table a: human=5 detailed=5, 5, 5, 5, 5 (logs 5, 5, 5, 5, 5) vague=5, 4, 5, 5, 5 (logs 5, 4, 5, 5, 5)
-OK table b: human=4 detailed=4, 4, 4, 4, 4 (logs 4, 4, 4, 4, 4) vague=3, 3, 3, 3, 3 (logs 3, 3, 3, 3, 3)
+OK table a: human=5 detailed=5, 5, 5, 5, 5 (logs 5, 5, 5, 5, 5) vague=5, 5, 5, 5, 5 (logs 5, 5, 5, 5, 5)
+OK table b: human=4 detailed=4, 4, 4, 4, 4 (logs 4, 4, 4, 4, 4) vague=3, 4, 3, 3, 3 (logs 3, 4, 3, 3, 3)
 OK table c: human=3 detailed=3, 3, 3, 3, 3 (logs 3, 3, 3, 3, 3) vague=2, 2, 2, 2, 2 (logs 2, 2, 2, 2, 2)
 OK table d: human=2 detailed=2, 2, 2, 2, 2 (logs 2, 2, 2, 2, 2) vague=3, 3, 3, 3, 3 (logs 3, 3, 3, 3, 3)
 OK table e: human=1 detailed=1, 1, 1, 1, 1 (logs 1, 1, 1, 1, 1) vague=1, 1, 1, 1, 1 (logs 1, 1, 1, 1, 1)
-OK quote run/09: total_cost_usd の合計（見積もり）: 0.0026
-OK quote run/11: 人の採点との一致: 2/5
-OK quote run/22: 人の採点との一致: 1/5
-OK quote run/23: 人の採点との一致: 2/5
-OK quote run/24: 人の採点との一致: 2/5
-OK quote run/25: 人の採点との一致: 2/5
-OK quote run/19: 人の採点との一致: 5/5
-OK quote run/20: 人の採点との一致: 5/5
-OK quote run/21: 人の採点との一致: 5/5
-OK quote run/11: 返品送料はお客様負担という情報も省略されています
-OK quote run/09:   reason: 該当した規則: 5点。
-OK quote run/10:   reason: 規則5に当てはまります。
-OK quote run/13: init model=claude-haiku-5-5
-OK run/09 と run/10 の点が5件とも同じ: True
-OK run/09 と run/19 の点が5件とも同じ: True
-OK run/09 と run/20 の点が5件とも同じ: True
-OK run/09 と run/21 の点が5件とも同じ: True
-OK run/06 c: human=3 judge=2
-OK run/07 c: human=3 judge=2
-OK run/08 c: human=3 judge=2
-OK run/16 c: human=3 judge=2
-OK run/17 c: human=3 judge=2
-OK run/18 c: human=3 judge=2
-OK run/01.log exit=0 (want 0)
-OK run/02.log exit=0 (want 0)
-OK run/03.log exit=0 (want 0)
-OK run/04.log exit=0 (want 0)
-OK run/05.log exit=0 (want 0)
-OK run/06.log exit=1 (want 1)
-OK run/07.log exit=1 (want 1)
-OK run/08.log exit=1 (want 1)
-OK run/09.log exit=0 (want 0)
-OK run/10.log exit=0 (want 0)
-OK run/11.log exit=1 (want 1)
-OK run/12.log exit=0 (want 0)
-OK run/13.log exit=0 (want 0)
-OK run/14.log exit=0 (want 0)
-OK run/15.log exit=0 (want 0)
-OK run/16.log exit=1 (want 1)
-OK run/17.log exit=1 (want 1)
-OK run/18.log exit=1 (want 1)
-OK run/19.log exit=0 (want 0)
-OK run/20.log exit=0 (want 0)
-OK run/21.log exit=0 (want 0)
-OK run/22.log exit=1 (want 1)
-OK run/23.log exit=1 (want 1)
-OK run/24.log exit=1 (want 1)
-OK run/25.log exit=1 (want 1)
+OK quote run/34: total_cost_usd の合計（見積もり）: 0.0018
+OK quote run/39: 人の採点との一致: 2/5
+OK quote run/40: 人の採点との一致: 3/5
+OK quote run/41: 人の採点との一致: 2/5
+OK quote run/42: 人の採点との一致: 2/5
+OK quote run/43: 人の採点との一致: 2/5
+OK quote run/34: 人の採点との一致: 5/5
+OK quote run/35: 人の採点との一致: 5/5
+OK quote run/36: 人の採点との一致: 5/5
+OK quote run/37: 人の採点との一致: 5/5
+OK quote run/38: 人の採点との一致: 5/5
+OK quote run/39: 返品送料がお客様負担であることも触れられていません
+OK quote run/34: a 人=5 判定=5 一致 apiKeySource=none
+  reason: 規則1（食い違い）
+OK quote run/35: a 人=5 判定=5 一致 apiKeySource=none
+  reason: 規則5に当てはまります。
+OK quote run/44: init model=claude-haiku-5-5 apiKeySource=none
+OK quote run/44: mcp_tools=0 mcp_servers=0
+OK run/34 と run/35 の点が5件とも同じ: True
+OK run/34 と run/36 の点が5件とも同じ: True
+OK run/34 と run/37 の点が5件とも同じ: True
+OK run/34 と run/38 の点が5件とも同じ: True
+OK run/31 c: human=3 judge=2
+OK run/32 c: human=3 judge=2
+OK run/33 c: human=3 judge=2
+OK run/31 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/32 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/33 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/34 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/35 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/36 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/37 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/38 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/39 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/40 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/41 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/42 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/43 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/44 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/45 apiKeySource=['none'] ANTHROPIC_API_KEY unset=True
+OK run/26.log exit=0 (want 0)
+OK run/27.log exit=0 (want 0)
+OK run/28.log exit=0 (want 0)
+OK run/29.log exit=0 (want 0)
+OK run/30.log exit=0 (want 0)
+OK run/31.log exit=1 (want 1)
+OK run/32.log exit=1 (want 1)
+OK run/33.log exit=1 (want 1)
+OK run/34.log exit=0 (want 0)
+OK run/35.log exit=0 (want 0)
+OK run/36.log exit=0 (want 0)
+OK run/37.log exit=0 (want 0)
+OK run/38.log exit=0 (want 0)
+OK run/39.log exit=1 (want 1)
+OK run/40.log exit=1 (want 1)
+OK run/41.log exit=1 (want 1)
+OK run/42.log exit=1 (want 1)
+OK run/43.log exit=1 (want 1)
+OK run/44.log exit=0 (want 0)
+OK run/45.log exit=0 (want 0)
+OK run/46.log exit=0 (want 0)
 ALL OK
 exit=0

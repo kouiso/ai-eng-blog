@@ -1,0 +1,9 @@
+date: 2026-11-12T01:02:38Z
+cwd: <work>/rag-citations
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node ask.ts "返金はいつ？"
+--- output (stdout+stderr) ---
+資料が見つからないので、モデルを呼ばずに「わかりません」と返します。
+--- exit=0

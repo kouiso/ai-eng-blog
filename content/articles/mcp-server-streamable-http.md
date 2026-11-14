@@ -4,7 +4,7 @@ slug: "mcp-server-streamable-http"
 description: "公式 SDK v1.32.2 で、文字数のツールを Streamable HTTP のサーバーとして動かします。SDK のクライアント、curl、Claude Code から呼んだ実際の出力と、つまずく2か所を載せています。"
 tags: ["MCPサーバー", "TypeScript", "Streamable HTTP"]
 main_keyword: "MCPサーバー"
-target_query: null
+target_query: "mcp streamable http typescript"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせる操作には、Claude Code を使える有料のアカウントが要ります。"
 run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322"
@@ -67,7 +67,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
@@ -611,8 +611,6 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 ## まとめ
 
 書き足したのは、作り直す `app.post`、Origin の検査、405 の受け口の3つです。どれも、手元のクライアントで成功しただけでは抜けに気づけない行です。
-
-講座の[次の記事](/posts/mcp-inspector-debug)は MCP Inspector の回です。サーバーのツールの一覧と呼び出しを、画面で確かめます。
 
 あなたのサーバーを公開するとき、Origin の許可リストにはどのページを入れますか。
 

@@ -21,6 +21,7 @@ export async function judge(rubric: string, input: string) {
       systemPrompt: rubric,
       tools: [],
       settingSources: [],
+      strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
       outputFormat: { type: "json_schema", schema },
     },
   })) {

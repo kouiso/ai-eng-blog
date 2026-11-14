@@ -4,12 +4,12 @@ slug: "zod-validate-llm-json-output"
 description: "zod 4.6.7 の safeParse で、LLM が返した JSON を検証します。失敗したときの issues は、path、code、message の順に読みます。手作りの見本5つで実際に出た issues と、再依頼の文の作り方を載せています。"
 tags: ["構造化出力", "zod", "TypeScript"]
 main_keyword: "構造化出力"
-target_query: null
+target_query: "zod schema llm"
 course_step: 2
 cost_estimate: "記事のコードは zod しか使わず API を呼ばないので無料です。再依頼の文をモデルに送ると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、zod 4.6.7"
 verified_at: "2026-11-10"
-prev: "claude-structured-outputs-json"
+prev: "claude-agent-sdk-structured-output"
 next: "zod-to-json-schema-tool-definition"
 sources:
   - url: "https://zod.dev/basics"
@@ -43,14 +43,14 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 LLM が返した JSON は、`JSON.parse` のあとに zod の `safeParse` で検証します。失敗したら、`error.issues` を `path`、`code`、`message` の順に読みます。手で作った5つの見本を検証し、実際に出た issues をそのまま載せて読み方を示します。
 
 対象は、TypeScript で何か作ったことがあり、LLM の出力をアプリで使い始めた人です。手順は15分ほどで終わります。
 
-講座の前の記事では、Claude に JSON を返させる方法を扱いました。[前の記事](/posts/claude-structured-outputs-json)から読むと流れがつながります。
+講座の前の記事では、Agent SDK の outputFormat で Claude に JSON を返させる方法を扱いました。[前の記事](/posts/claude-agent-sdk-structured-output)から読むと流れがつながります。
 
 ## safeParse の失敗は path、code、message の順に読む
 
@@ -460,8 +460,6 @@ LLM の出力を受け取る処理では、次の4つをすべて確かめます
 - 余分なキーを `z.strictObject` で見つけるか、`z.object` で消すか決めたか
 
 再依頼を何回まで続け、それでも合わない出力はどう扱いますか。
-
-講座の次の記事では、zod のスキーマから JSON Schema を作り、ツール定義に使います。[次の記事](/posts/zod-to-json-schema-tool-definition)に進んでください。
 
 ## 出典
 

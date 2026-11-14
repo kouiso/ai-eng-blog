@@ -1,19 +1,19 @@
 blocks in article=15 expected=15
- 1 OK  run/02 command
- 2 OK  run/02 output
- 3 OK  mkdir+cd + run/03 command + run/04 command
- 4 OK  run/04 output
- 5 OK  run/05 command
- 6 OK  run/05 output
- 7 OK  code/setup-tickets.sh (= run/06 command)
- 8 OK  run/06 output
+ 1 OK  run/23 command
+ 2 OK  run/23 output
+ 3 OK  mkdir+cd + run/24 command + run/25 command
+ 4 OK  run/25 output
+ 5 OK  run/26 command
+ 6 OK  run/26 output
+ 7 OK  code/setup-tickets.sh (= run/27 command)
+ 8 OK  run/27 output
  9 OK  code/workflow.ts
-10 OK  run/07 command
-11 OK  run/07 output
-12 OK  run/10 output
+10 OK  run/28 command
+11 OK  run/28 output
+12 OK  run/29 output
 13 OK  code/agent.ts
-14 OK  run/21 command
-15 OK  run/21 output
+14 OK  run/31 command
+15 OK  run/31 output
 run/01.log exit=0
 run/02.log exit=0
 run/03.log exit=0
@@ -36,5 +36,19 @@ run/19.log exit=0
 run/20.log exit=0
 run/21.log exit=0
 run/22.log exit=0
+run/23.log exit=0
+run/24.log exit=0
+run/25.log exit=0
+run/26.log exit=0
+run/27.log exit=0
+run/28.log exit=0
+run/29.log exit=0
+run/30.log exit=0
+run/31.log exit=0
+run/32.log exit=0
+run/33.log exit=0
+run/34.log exit=0
+run/35.log exit=0
 ALL OK
-round2 setup commands == round1: OK
+round1/round2 setup commands == round3: OK
+exit=0

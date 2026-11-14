@@ -1,0 +1,42 @@
+date: 2026-11-11T11:10:35Z
+cwd: <work>/structured-compare
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node compare.ts
+--- output (stdout+stderr) ---
+a-prompt #1 OK turns=1 {"name":"山田","date":"2026-11-20","people":4,"course":"dinner"}
+a-prompt #2 OK turns=1 {"name":"佐藤","date":"2026-12-03","people":2,"course":"lunch"}
+a-prompt #3 OK turns=1 {"name":"鈴木","date":"2026-12-05","people":3,"course":"dinner"}
+a-prompt #4 OK turns=1 {"name":"高橋","date":"2026-11-28","people":5,"course":"lunch"}
+a-prompt #5 OK turns=1 {"name":"田中","date":"2026-12-10","people":6,"course":"dinner"}
+a-prompt #6 OK turns=1 {"name":"伊藤","date":"2026-12-01","people":1,"course":"dinner"}
+a-prompt #7 OK turns=1 {"name":"渡辺","date":"2026-12-24","people":8,"course":"lunch"}
+a-prompt #8 OK turns=1 {"name":"中村","date":"2026-11-22","people":3,"course":"dinner"}
+a-prompt #9 OK turns=1 {"name":"小林","date":"2026-12-15","people":4,"course":"lunch"}
+a-prompt #10 OK turns=1 {"name":"加藤","date":"2026-12-08","people":2,"course":"dinner"}
+== a-prompt: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 10、入力 1306、キャッシュ書き込み 0、キャッシュ読み込み 7410、出力 1103、total_cost_usd 0.00076、平均 1435 ms
+b-tool #1 OK turns=2 {"name":"山田","date":"2026-11-20","people":4,"course":"dinner"}
+b-tool #2 OK turns=2 {"name":"佐藤","date":"2026-12-03","people":2,"course":"lunch"}
+b-tool #3 OK turns=2 {"name":"鈴木","date":"2026-12-05","people":3,"course":"dinner"}
+b-tool #4 OK turns=2 {"name":"高橋","date":"2026-11-28","people":5,"course":"lunch"}
+b-tool #5 OK turns=2 {"name":"田中","date":"2026-12-10","people":6,"course":"dinner"}
+b-tool #6 OK turns=2 {"name":"伊藤","date":"2026-12-01","people":1,"course":"dinner"}
+b-tool #7 OK turns=2 {"name":"渡辺","date":"2026-12-24","people":8,"course":"lunch"}
+b-tool #8 OK turns=2 {"name":"中村","date":"2026-11-22","people":3,"course":"dinner"}
+b-tool #9 OK turns=2 {"name":"小林","date":"2026-12-15","people":4,"course":"lunch"}
+b-tool #10 OK turns=2 {"name":"加藤","date":"2026-12-08","people":2,"course":"dinner"}
+== b-tool: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 10938、キャッシュ書き込み 1519、キャッシュ読み込み 27464、出力 3764、total_cost_usd 0.00355、平均 2559 ms
+c-output-format #1 OK turns=2 {"name":"山田","date":"2026-11-20","people":4,"course":"dinner"}
+c-output-format #2 OK turns=2 {"name":"佐藤","date":"2026-12-03","people":2,"course":"lunch"}
+c-output-format #3 OK turns=2 {"name":"鈴木","date":"2026-12-05","people":3,"course":"dinner"}
+c-output-format #4 OK turns=2 {"name":"高橋","date":"2026-11-28","people":5,"course":"lunch"}
+c-output-format #5 OK turns=2 {"name":"田中","date":"2026-12-10","people":6,"course":"dinner"}
+c-output-format #6 OK turns=2 {"name":"伊藤","date":"2026-12-01","people":1,"course":"dinner"}
+c-output-format #7 OK turns=2 {"name":"渡辺","date":"2026-12-24","people":8,"course":"lunch"}
+c-output-format #8 OK turns=2 {"name":"中村","date":"2026-11-22","people":3,"course":"dinner"}
+c-output-format #9 OK turns=2 {"name":"小林","date":"2026-12-15","people":4,"course":"lunch"}
+c-output-format #10 OK turns=2 {"name":"加藤","date":"2026-12-08","people":2,"course":"dinner"}
+== c-output-format: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 5991、キャッシュ書き込み 0、キャッシュ読み込み 13590、出力 1815、total_cost_usd 0.00164、平均 1487 ms
+apiKeySource: none
+--- exit=0

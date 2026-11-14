@@ -1,0 +1,59 @@
+blocks in article: 18 / expected: 18
+OK #1: bash cmd 02
+OK #2: text out 02
+OK #3: bash literal mkdir/cd + run/21 + run/22 command
+OK #4: text out 22
+OK #5: ts code tokenize.ts
+OK #6: ts code bm25.ts
+OK #7: ts code docs.ts
+OK #8: ts code verify.ts
+OK #9: ts code check-sample.ts
+OK #10: bash cmd 06
+OK #11: text out 06
+OK #12: ts code ask.ts
+OK #13: bash cmd 24
+OK #14: text out 24
+OK #15: bash cmd 25
+OK #16: text out 25
+OK #17: bash cmd 26
+OK #18: text out 26
+OK tokenize.ts == logs/rag-bm25-search-typescript/code/tokenize.ts
+OK bm25.ts == logs/rag-bm25-search-typescript/code/bm25.ts
+OK docs.ts == logs/rag-bm25-search-typescript/code/docs.ts
+OK run/01.log exit=0
+OK run/02.log exit=0
+OK run/03.log exit=0
+OK run/04.log exit=0
+OK run/05.log exit=0
+OK run/06.log exit=0
+OK run/07.log exit=0
+OK run/08.log exit=0
+OK run/09.log exit=0
+OK run/10.log exit=0
+OK run/11.log exit=0
+OK run/12.log exit=0
+OK run/13.log exit=0
+OK run/14.log exit=0
+OK run/15.log exit=0
+OK run/16.log exit=0
+OK run/17.log exit=0
+OK run/18.log exit=0
+OK run/19.log exit=0
+OK run/20.log exit=0
+OK run/21.log exit=0
+OK run/22.log exit=0
+OK run/23.log exit=0
+OK run/24.log exit=0
+OK run/25.log exit=0
+OK run/26.log exit=0
+OK run/27.log exit=0
+OK run/28.log exit=0
+OK run/29.log exit=0
+OK run/30.log exit=0
+OK run/31.log exit=0
+OK run/32.log exit=0
+OK run/33.log exit=0
+OK run/34.log exit=0
+OK run/35.log exit=0
+ALL OK
+exit=0

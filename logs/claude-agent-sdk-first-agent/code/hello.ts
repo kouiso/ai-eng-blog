@@ -7,6 +7,7 @@ for await (const message of query({
     tools: [],
     maxTurns: 1,
     settingSources: [],
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
   },
 })) {
   if (message.type === "system" && message.subtype === "init") {

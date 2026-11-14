@@ -28,3 +28,11 @@
 ## 2026-11-10 の再確認
 
 原稿を直したときに、`content/articles/` の frontmatter（`title`、`main_keyword`、`target_query`）を全件読み直した（この記事のほか21本）。2026-11-02 のあとに増えた記事のうち、main_keyword が「LLM 評価」なのは `llm-as-a-judge-claude`（LLM に回答を採点させる）で、検索の結果を Recall@k と MRR で測る方法に答える記事は、ほかに無い。`keywords/` には CSV が無く（README.md だけ）、`target_query` は null のまま。`ANTHROPIC_API_KEY` は 2026-11-10 に確かめて unset（この記事は API を呼ばない）。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-llm-eval.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: Recall@k と MRR で RAG の検索を採点する記事で、評価指標の検索に答えます。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

@@ -4,7 +4,7 @@ slug: "mcp-connection-closed-fix"
 description: "MCP の Connection closed は、サーバーのプロセスが応答の前に終了したことを表します。終了の理由はサーバーの stderr に出ます。SDK 1.32.2 のクライアントで stderr を表示し、手元で再現した3つの原因を直します。"
 tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
-target_query: null
+target_query: "mcp connection closed"
 course_step: 5
 prev: "mcp-server-resources-prompts"
 next: "llm-eval-harness-fixtures"
@@ -52,7 +52,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 MCP サーバーに `Connection closed` でつながらないとき、サーバーのプロセスはもう終了しています。SDK のクライアントは、プロセスが終わると待っていた要求をこのエラーで打ち切ります（出典4）。終了した理由を知る手がかりは、サーバーが stderr に書いた行です。
@@ -477,8 +477,6 @@ stdout にログを書いた場合は、SDK 1.32.2 のクライアントでは�
 4. エラーの行が無ければ、`initialize` の1行を `echo` で送り、応答が返るかを見ます。
 
 どの原因でも、手がかりはサーバーの stderr にありました。あなたのサーバーは、起動に必要な環境変数をいくつ読んでいますか。
-
-講座の次の記事からは、LLM の評価に入ります。回答を自動で採点するコードを TypeScript で書きます。[次の記事](/posts/llm-eval-harness-fixtures)に進んでください。
 
 ## 出典
 

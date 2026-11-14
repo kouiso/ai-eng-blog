@@ -1,0 +1,11 @@
+date: 2026-11-11T11:12:05Z
+cwd: <work>/structured-compare
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node extra/b-tool-no-strict.ts
+--- output (stdout+stderr) ---
+no-strict init.mcp_servers=25 turns=2 cacheCreationInputTokens=164969 total_cost_usd=0.16560
+no-strict init.mcp_servers=1 turns=2 cacheCreationInputTokens=250098 total_cost_usd=0.25069
+no-strict init.mcp_servers=1 turns=2 cacheCreationInputTokens=221432 total_cost_usd=0.22252
+--- exit=0

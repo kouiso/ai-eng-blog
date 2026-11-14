@@ -1,0 +1,16 @@
+date: 2026-11-11T11:04:53Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/07-read-fields.sh
+--- command ---
+jq '{type, subtype, is_error, num_turns, total_cost_usd}' answer.json
+--- output (stdout+stderr) ---
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "num_turns": 1,
+  "total_cost_usd": 0.0006710900000000001
+}
+--- exit=0

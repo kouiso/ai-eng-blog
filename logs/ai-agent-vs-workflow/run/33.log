@@ -1,0 +1,16 @@
+date: 2026-11-12T01:11:00Z
+cwd: <work>/vs-workflow
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node tools-vs-systemprompt.ts
+--- output (stdout+stderr) ---
+A tools: [] と systemPrompt を指定（workflow.ts と同じ）: apiKeySource=none、tools の数=0
+  答え=返金、入力の合計=677（input=2、cache_creation=0、cache_read=675）、total_cost_usd（見積もり）=0.000139
+B tools だけ指定なし: apiKeySource=none、tools の数=25
+  答え=返金、入力の合計=15252（input=2、cache_creation=0、cache_read=15250）、total_cost_usd（見積もり）=0.000329
+C systemPrompt だけ指定なし: apiKeySource=none、tools の数=0
+  答え=返金、入力の合計=680（input=2、cache_creation=0、cache_read=678）、total_cost_usd（見積もり）=0.000009
+D どちらも指定なし: apiKeySource=none、tools の数=25
+  答え=返金、入力の合計=15254（input=2、cache_creation=0、cache_read=15252）、total_cost_usd（見積もり）=0.000189
+--- exit=0

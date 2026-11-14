@@ -1,0 +1,51 @@
+blocks in article: 30 / expected: 30
+OK #1: bash block 01
+OK #2: text out 01
+OK #3: bash block 02
+OK #4: text out 02
+OK #5: bash block 03
+OK #6: text out 03
+OK #7: bash block 04
+OK #8: text out 04
+OK #9: bash block 05
+OK #10: bash block 06
+OK #11: text out 06
+OK #12: bash block 07
+OK #13: text out 07
+OK #14: bash block 08
+OK #15: text out 08
+OK #16: bash block 09
+OK #17: text out 09
+OK #18: bash block 10
+OK #19: text out 10
+OK #20: bash block 11
+OK #21: text out 11
+OK #22: bash block 12
+OK #23: bash block 13
+OK #24: text out 13
+OK #25: ts code exec-file.ts
+OK #26: bash block 14
+OK #27: text out 14
+OK #28: ts code ask.ts
+OK #29: bash block 15
+OK #30: text out 15
+OK run/01.log exit=0
+OK run/02.log exit=0
+OK run/03.log exit=0
+OK run/04.log exit=0
+OK run/05.log exit=0
+OK run/06.log exit=0
+OK run/07.log exit=0
+OK run/08.log exit=0
+OK run/09.log exit=0
+OK run/10.log exit=0
+OK run/11.log exit=0
+OK run/12.log exit=0
+OK run/13.log exit=0
+OK run/14.log exit=0
+OK run/15.log exit=0
+OK table row no isolation flags: 94,062 0.01681166 (log 94062 0.016811660000000003)
+OK table row --setting-sources "" only: 18,173 0.00147332 (log 18173 0.0014733200000000002)
+OK table row all three flags: 3,776 0.00063319 (log 3776 0.0006331900000000002)
+ALL OK
+exit=0

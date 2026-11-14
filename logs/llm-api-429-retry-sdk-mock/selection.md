@@ -22,3 +22,11 @@
 
 - course_step 1 の #1、#2、#5（`plan.md`）: 応答を受け取るところまで動かすには有効なキーが要る。`ANTHROPIC_API_KEY` が unset なので外した。
 - テーマはワークフローの指示で決まっており、CSV が届いたら `target_query` を CSV の行から選び直し、合う行が無ければ差し替える（`plan.md` の前提）。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-llm-api.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: 429 と 529 のエラーの意味と、SDK の自動リトライの確かめ方を扱う記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

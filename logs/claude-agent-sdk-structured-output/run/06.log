@@ -1,0 +1,17 @@
+date: 2026-11-11T11:07:25Z
+cwd: <work>/structured-output
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node classify.ts
+--- output (stdout+stderr) ---
+[system/init] apiKeySource=none tools=["StructuredOutput"]
+[assistant/tool_use] StructuredOutput
+[result/success] is_error=false num_turns=2
+{
+  category: 'billing',
+  priority: 1,
+  summary: '先月の請求が2回引き落とされたとの報告。二重請求の返金を2026年11月20日の締め日までに求めている。',
+  due_date: '2026-11-20'
+}
+--- exit=0

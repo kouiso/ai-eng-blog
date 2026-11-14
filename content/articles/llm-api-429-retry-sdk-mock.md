@@ -4,13 +4,13 @@ slug: "llm-api-429-retry-sdk-mock"
 description: "Claude API の 429 は組織のレート制限、529 は API 全体の混雑です。公式 SDK はどちらも既定で2回まで自動でリトライします。その動きを手元のモックサーバーで確かめ、自前のリトライとの重複を外す直し方を書いています。"
 tags: ["LLM API", "TypeScript", "Claude API"]
 main_keyword: "LLM API"
-target_query: null
+target_query: "llm api 429"
 course_step: 1
 cost_estimate: "記事の手順は外部に通信しないので無料です。本物の API に送ると、トークン数に応じた料金がかかります。"
 run_environment: "Node.js 22.22.0、@anthropic-ai/sdk 1.3.0"
 verified_at: "2026-11-10"
 prev: "llm-api-cost-estimate-js-tiktoken"
-next: "claude-api-authentication-error"
+next: "claude-code-api-key-billing-auth"
 sources:
   - url: "https://platform.claude.com/docs/en/api/errors"
     title: "Claude API errors"
@@ -40,7 +40,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 Claude API の 429 は組織のレート制限、529 は API 全体の混雑を表すエラーです（出典1）。公式の TypeScript SDK は、どちらも既定で2回まで自動でリトライします（出典3）。自分でリトライのループを書く必要はなく、SDK が諦めたあとのエラーだけを受け取れば足ります。
@@ -61,7 +61,7 @@ Claude API の 429 は組織のレート制限、529 は API 全体の混雑を�
 import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic({
-  apiKey: "dummy-key-not-sent-anywhere",
+  apiKey: "dummy-key",
   baseURL: "http://127.0.0.1:4010/my-loop",
 });
 
@@ -111,7 +111,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const scenario = process.argv[2] ?? "rate-limit";
 const client = new Anthropic({
-  apiKey: "dummy-key-not-sent-anywhere",
+  apiKey: "dummy-key",
   baseURL: `http://127.0.0.1:4010/${scenario}`,
   maxRetries: 2,
 });
@@ -379,8 +379,6 @@ API の応答には、毎回 `request-id` ヘッダーが付きます（出典1�
 - 待てる時間を `signal` で区切ったか
 
 自分のアプリでは、ユーザーを何秒まで待たせますか。
-
-講座の次の記事では、認証エラーの直し方を扱います。[次の記事](/posts/claude-api-authentication-error)に進んでください。
 
 ## 出典
 

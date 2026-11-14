@@ -9,7 +9,7 @@
 
 ### frontmatter の扱い（手順7）
 
-- frontmatter は1行目から68行目（`---` から `---` まで）。
+- frontmatter は1行目から65行目（`---` から `---` まで。2026-11-10 の版は68行目まで）。
 - `ai-smell.txt` に出た `📎mention` は0件なので、frontmatter の行に出た検出は無い。use として扱い直すものも無い。
 - 念のため、frontmatter の `title`、`description`、`sources` の `title` を、スキル手順5の FATAL になりやすい語（「仕様書」「設計書」「地図」「レシピ」「スパイス」「ここから」「まとめます」「整理します」「ということです。」「見ていきます」、ダッシュ類、否定対比「ではな」「ではあり」）で `grep -n` した。0件。
 
@@ -41,3 +41,10 @@
 | 392 | prose-check C25 72字「2回目の `show-failures.ts` では、1回目は `bug` で始まっていた2件目の出力にも、太字の記号と「分類:」が付きました。」 | use（地の文） | 直した。「1回目の2件目の出力は、`bug` で始まっていました。」（28字）と「2回目の `show-failures.ts` では、その2件目にも太字の記号と「分類:」が付きました。」の2文に分けた |
 
 最後の実行の結果: ai-smell は use 0件 / mention 0件、`exit=0`。writing-lint は FATAL 0 / DENSITY超過 0 / SHOULD 0、`exit=0`（文の数が186から187に変わっただけで、ほかの出力は前の版と同じ）。warn、SHOULD、WATCH、INFO は0件で、判断する項目は増えていない。
+
+## 2026-11-11 の修正
+
+利用条件の注意書きを消し、設定に `strict_mcp_config: true` を足して全部動かし直した（`run/14.log`〜`23.log`、`gate.md` の「2026-11-11 の修正」）。直したあとに lint 2本、`prose-check.py`、`check-code-and-outputs.py` を回し直した。
+
+最後の実行の結果: ai-smell は「--- 集計: use 0件 / 📎mention 0件」「--- 判定: ✅ 致命なし（warnは目視で要否判断）」、`exit=0`。writing-lint は「### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0」、`exit=0`（451行/181文）。warn、mention、SHOULD、WATCH、INFO は0件で、判断する項目は増えていない。`prose-check.txt` は issues=0。
+

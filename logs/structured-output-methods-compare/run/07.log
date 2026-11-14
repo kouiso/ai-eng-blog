@@ -1,0 +1,12 @@
+date: 2026-11-11T11:12:05Z
+cwd: <work>/structured-compare
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: wc -l a-prompt.ts b-tool.ts c-output-format.ts
+--- output (stdout+stderr) ---
+      15 a-prompt.ts
+      25 b-tool.ts
+      14 c-output-format.ts
+      54 total
+--- exit=0

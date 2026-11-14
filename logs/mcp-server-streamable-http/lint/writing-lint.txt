@@ -1,4 +1,4 @@
-## writing-lint v2: mcp-server-streamable-http.md (type=article, register=standard, 643行/247文)
+## writing-lint v2: mcp-server-streamable-http.md (type=article, register=standard, 641行/245文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

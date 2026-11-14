@@ -1,0 +1,23 @@
+date: 2026-11-11T17:27:14-08:00
+cwd: <work>
+node: v22.23.4  npm: 10.9.9
+ANTHROPIC_API_KEY: unset
+uname: Darwin arm64
+$ npm pkg get type dependencies; npm ls promptfoo @anthropic-ai/claude-agent-sdk; npm pkg get version --prefix node_modules/@anthropic-ai/claude-agent-sdk; npx promptfoo --version
+----
+{
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.322",
+    "promptfoo": "0.125.1"
+  }
+}
+promptfoo-intro@1.0.0 <work>
+├── @anthropic-ai/claude-agent-sdk@0.3.322
+└─┬ promptfoo@0.125.1
+  └── @anthropic-ai/claude-agent-sdk@0.3.322 deduped
+
+"0.3.322"
+0.125.1
+----
+exit=0

@@ -1,0 +1,13 @@
+date: 2026-11-11T11:05:28Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/15-ask.sh
+--- command ---
+node ask.ts
+--- output (stdout+stderr) ---
+answer: TypeScriptの型注釈とは、変数・関数の引数や戻り値などに「この値はこの型である」と明示的に書き添える構文で、コンパイル時に型の整合性を検査するために使われます。
+subtype=success num_turns=1 total_cost_usd=0.00007506
+cause: `src/list.ts` の 12 行目で、`undefined` の値に対して `.map` を呼び出そうとしたため、配列であることを前提としたデータが実際には `undefined` になっていたことが原因です。
+elapsed_seconds=7.9
+--- exit=0

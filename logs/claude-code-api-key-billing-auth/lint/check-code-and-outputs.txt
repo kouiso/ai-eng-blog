@@ -1,0 +1,52 @@
+blocks in article: 20 / expected: 20
+OK #1: bash cmd 14
+OK #2: text out 14
+OK #3: bash cmd 15
+OK #4: text out 15
+OK #5: bash cmd 16
+OK #6: text out 16
+OK #7: bash cmd 17
+OK #8: text out 17
+OK #9: ts code check-auth.ts
+OK #10: bash cmd 18
+OK #11: text out 18
+OK #12: bash cmd 19
+OK #13: text out 19
+OK #14: bash cmd 20
+OK #15: text out 20
+OK #16: bash cmd 21
+OK #17: text out 21
+OK #18: ts code plan-only.ts
+OK #19: bash cmd 22
+OK #20: text out 22
+OK run/14.log command == code/check-env.sh
+OK run/15.log command == code/auth-status.sh
+OK run/16.log command == code/repro-cli.sh
+OK run/17.log command == code/setup.sh
+OK run/20.log command == code/make-env.sh
+OK run/14.log exit=0
+OK run/15.log exit=0
+OK run/16.log exit=0
+OK run/17.log exit=0
+OK run/18.log exit=0
+OK run/19.log exit=0
+OK run/20.log exit=0
+OK run/21.log exit=0
+OK run/22.log exit=0
+OK run/23.log exit=0
+OK run/24.log exit=0
+OK run/25.log exit=0
+OK run/26.log exit=0
+OK run/15.log contains '"authMethod": "claude.ai"'
+OK run/16.log contains '"apiKeySource": "ANTHROPIC_API_KEY"'
+OK run/16.log contains 'exit=1'
+OK run/18.log contains 'apiKeySource: none'
+OK run/19.log contains 'apiKeySource: ANTHROPIC_API_KEY'
+OK run/21.log contains 'apiKeySource: ANTHROPIC_API_KEY'
+OK run/22.log contains 'apiKeySource: none'
+OK run/23.log contains '"total_cost_usd":0,"input_tokens":0,"output_tokens":0'
+OK run/24.log contains 'Invalid API key · Fix external API key'
+OK run/25.log contains 'apiKeySource: none'
+OK run/26.log contains 'tsc_exit=0'
+ALL OK
+exit=0

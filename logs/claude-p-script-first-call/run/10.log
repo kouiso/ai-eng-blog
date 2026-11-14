@@ -1,0 +1,17 @@
+date: 2026-11-12T01:01:14Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.7.1-apple
+ANTHROPIC_API_KEY: unset
+block: code/blocks/10-bare.sh
+--- command ---
+claude -p "こんにちは" --bare --strict-mcp-config --output-format json > bare.json
+echo "exit=$?"
+jq '{subtype, is_error, result}' bare.json
+--- output (stdout+stderr) ---
+exit=1
+{
+  "subtype": "success",
+  "is_error": true,
+  "result": "Not logged in · Please run /login"
+}
+--- exit=0

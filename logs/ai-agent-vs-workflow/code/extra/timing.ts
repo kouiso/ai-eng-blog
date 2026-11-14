@@ -7,7 +7,7 @@ const body = await readFile("tickets/001.txt", "utf8");
 const started = Date.now();
 for await (const msg of query({
   prompt: body,
-  options: { model: "haiku", tools: [], maxTurns: 1, systemPrompt: "問い合わせを「返金」「不具合」「その他」のどれか1語だけで答えてください。" },
+  options: { model: "haiku", tools: [], maxTurns: 1, systemPrompt: "問い合わせを「返金」「不具合」「その他」のどれか1語だけで答えてください。", settingSources: [], strictMcpConfig: true }, // 手元の設定ファイルと CLAUDE.md、claude.ai のコネクタのツールを読み込まない
 })) {
   if (msg.type === "result" && msg.subtype === "success") {
     console.log(`答え: ${msg.result.trim()}`);

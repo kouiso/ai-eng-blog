@@ -1,0 +1,10 @@
+date: 2026-11-12T01:01:48Z
+cwd: <work>/stream-demo
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node stream.ts
+--- output (stdout+stderr) ---
+HTTPストリーミングとは、データを一括でまとめて送るのではなく、準備ができた部分から順次少しずつ送受信する仕組みです。通常のHTTPでは、サーバーが応答全体を生成してから一度に返しますが、ストリーミングでは「Transfer-Encoding: chunked」などを使い、データを小さな塊（チャンク）に分けて送ります。受信側はレスポンス全体の完了を待たずに、届いた部分から処理や表示を始められます。動画配信、大きなファイルのダウンロード、ChatGPTのようなAIの逐次的な文字出力、Server-Sent Events（SSE）などで利用されており、応答の体感速度を高めたり、メモリ使用量を抑えたりする効果があります。
+[result/success] num_turns=1
+--- exit=0

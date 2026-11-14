@@ -1,0 +1,30 @@
+date: 2026-11-12T01:02:13Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: npm init -y > /dev/null && npm pkg set type=module && npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322 && cat package.json
+--- output (stdout+stderr) ---
+
+added 105 packages, and audited 106 packages in 12s
+
+36 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+{
+  "name": "agent-limits",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.322"
+  }
+}
+--- exit=0

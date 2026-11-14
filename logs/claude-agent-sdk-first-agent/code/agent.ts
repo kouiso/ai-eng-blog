@@ -12,6 +12,7 @@ for await (const message of query({
     permissionMode: "dontAsk",
     maxTurns: 10,
     settingSources: [],
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
   },
 })) {
   if (message.type === "assistant") {

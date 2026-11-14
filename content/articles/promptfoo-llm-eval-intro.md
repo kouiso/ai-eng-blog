@@ -4,11 +4,11 @@ slug: "promptfoo-llm-eval-intro"
 description: "promptfoo の設定ファイル1つに、プロンプト、モデル、テストケースと採点の条件を書いて評価を実行します。問い合わせを分類する2つのプロンプトを、自分の Claude プランで比べます。不合格の理由の読み方と終了コードを、実行結果つきで示します。"
 tags: ["LLM 評価", "promptfoo", "Claude Agent SDK", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: null
+target_query: "promptfoo とは"
 course_step: 6
 cost_estimate: "promptfoo は MIT ライセンスで無料です。評価でモデルを呼ぶ分は、読者自身の Claude プランの利用枠から引かれます（Pro は月払いで月20ドル）。結果に出る cost は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-10"
+run_environment: "Node.js 22.23.4、npm 10.9.9、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"
+verified_at: "2026-11-11"
 prev: "rag-retrieval-eval-recall-mrr"
 next: "llm-eval-dataset-from-logs"
 sources:
@@ -45,9 +45,6 @@ sources:
   - url: "https://code.claude.com/docs/en/authentication"
     title: "Authentication (Claude Code)"
     accessed: 2026-11-10
-  - url: "https://code.claude.com/docs/en/legal-and-compliance"
-    title: "Legal and compliance (Claude Code)"
-    accessed: 2026-11-10
   - url: "https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan"
     title: "Use the Claude Agent SDK with your Claude plan"
     accessed: 2026-11-10
@@ -64,7 +61,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-13
 ---
 
 promptfoo は、LLM を使うアプリを評価するための CLI です（出典1）。プロンプト、モデル、テストケースを YAML の設定ファイル1つに書くと、出力を自動で採点します。
@@ -77,11 +74,11 @@ promptfoo は、LLM を使うアプリを評価するための CLI です（出�
 
 ## 用意するのは Node.js 22.22.0 以上と、Claude Code が使えるプラン
 
-promptfoo 0.125.1 は、Node.js 22.22.0 以上を要求します（出典2）。検証も 22.22.0 で行いました。
+promptfoo 0.125.1 は、Node.js 22.22.0 以上を要求します（出典2）。検証は 22.23.4 で行いました。
 
 モデルを呼ぶ部分は、promptfoo の Claude Agent SDK のプロバイダーに任せます（出典3）。プランで動かすために要るものは次の2つです。
 
-- プランは Claude の Pro、Max、Ultra のどれかです。Free には Claude Code が含まれません（出典14）。Pro は月払いで月20ドルです（出典14）。
+- プランは Claude の Pro、Max、Ultra のどれかです。Free には Claude Code が含まれません（出典13）。Pro は月払いで月20ドルです（出典13）。
 - Claude Code には、そのプランのアカウントでログインしておきます（出典11）。
 
 SDK 単体の動かし方は[別の記事](/posts/claude-agent-sdk-first-agent)です。ログインの操作は、この記事の検証では実行していません。
@@ -97,14 +94,6 @@ unset
 ```
 
 `set` と出たら、`unset ANTHROPIC_API_KEY` で外してください（出典11）。
-
-### プランで動かしてよいのは、自分で試す範囲です
-
-プランでログインして Agent SDK を使うと、プランの利用枠から引かれます（出典13）。利用枠は、Claude Code と Agent SDK を個人がふつうに使う前提で決まっています（出典12）。
-
-ほかの人に使わせる製品かサービスで動かすなら、Claude Console の API キーで認証します（出典12）。利用者に代わって、プランの認証情報で通信を中継することは禁止です（出典12）。
-
-この記事の設定は、自分のマシンで自分のプロンプトを試すためのものとして読んでください。
 
 ## npm install で promptfoo と Agent SDK を入れる
 
@@ -122,7 +111,7 @@ npm install --save-exact promptfoo@0.125.1 @anthropic-ai/claude-agent-sdk@0.3.32
 npm warn deprecated @modelcontextprotocol/server-filesystem@2026.8.31: Date-based versions are no longer published. This package has resumed semantic versioning at 1.0.0: install the latest version.
 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 
-added 576 packages, and audited 577 packages in 35s
+added 576 packages, and audited 577 packages in 44s
 
 111 packages are looking for funding
   run `npm fund` for details
@@ -135,7 +124,7 @@ To address all issues (including breaking changes), run:
 Run `npm audit` for details.
 ```
 
-0.125.1 は、2026-11-10 の時点で npm の最新版です（出典2）。`type` を `module` にすると、`.ts` のファイルで `import` を書けます（出典16）。
+0.125.1 は、2026-11-10 の時点で npm の最新版です（出典2）。`type` を `module` にすると、`.ts` のファイルで `import` を書けます（出典15）。
 
 ```bash
 npm pkg get type dependencies
@@ -188,6 +177,7 @@ providers:
       apiKeyRequired: false
       model: haiku
       max_turns: 1
+      strict_mcp_config: true # claude.ai のコネクタのツールを読み込まない
       custom_system_prompt: あなたは問い合わせの窓口で、届いた文を分類します。
 
 defaultTest:
@@ -238,7 +228,9 @@ tests:
 
 `apiKeyRequired: false` は、この確認を飛ばす指定です（出典3）。認証は、SDK が自分で行います（出典3）。プランのログインで動かすときは、この1行が要ります。
 
-ほかの3行の意味は次のとおりです。
+このプロバイダーは、`ANTHROPIC_API_KEY` か設定の `apiKey` でキーを受け取ります（出典3）。キーで動かす場合は、`apiKeyRequired: false` の行は要りません。
+
+ほかの行の意味は次のとおりです。
 
 - `model: haiku` は、モデルの別名です。実行すると `claude-haiku-5-5` が使われました。
 - `max_turns: 1` は、ターン数の上限です（出典3）。分類は1往復で終わるので、1にしました。
@@ -268,7 +260,7 @@ echo $?
 ```
 
 ```text
-Starting evaluation eval-HDz-2026-11-10T08:38:50
+Starting evaluation eval-GIb-2026-11-12T01:05:19
 Running 6 test cases (up to 4 at a time)...
 
 ┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
@@ -279,26 +271,28 @@ Running 6 test cases (up to 4 at a time)...
 │                              │                              │ 理由:                        │                              │
 │                              │                              │ 請求額が2回引き落とされたと… │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
-│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] bug                   │ [PASS] bug                   │
-│                              │                              │ この問い合わせは、保存操作…  │                              │
+│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] **bug**               │ [PASS] bug                   │
+│                              │                              │ 「保存ボタンを押すと画面が…  │                              │
+│                              │                              │ billing                      │                              │
+│                              │                              │ ではなく、具体的な問い合わ…  │                              │
+│                              │                              │ other でもありません。       │                              │
 ├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
 │ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
-│                              │                              │ この問い合わせは、御社ロゴ…  │                              │
-│                              │                              │ other に分類します。         │                              │
+│                              │                              │ この問い合わせは、ロゴの使…  │                              │
 └──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
-✓ Eval complete (ID: eval-HDz-2026-11-10T08:38:50)
+✓ Eval complete (ID: eval-GIb-2026-11-12T01:05:19)
 
 » View results: promptfoo view
 » Feedback: https://promptfoo.dev/feedback
 
-Total Tokens: 16,663
-  Provider: 16,663 (16,055 prompt, 608 completion, 250 reasoning)
+Total Tokens: 8,185
+  Provider: 8,185 (7,841 prompt, 344 completion, 48 reasoning)
 
 Results:
   ✓ 3 passed (50.00%)
   ✗ 3 failed (50.00%)
   0 errors (0%)
-Duration: 8s (concurrency: 4)
+Duration: 6s (concurrency: 4)
 
 Writing output to results.jsonl
 100
@@ -308,7 +302,7 @@ Writing output to results.jsonl
 
 `sessionId` の列には、呼び出しごとの Agent SDK のセッションの ID が出ます（出典9）。記事では `<session-id>` に置き換えています。
 
-「形の指定あり」は3件とも合格し、「形の指定なし」は3件とも不合格でした。左の列の出力も、正しいラベルは3件とも含んでいます。落ちたのは、ラベルの前後に記号や説明の文が付いたからです。
+「形の指定あり」は3件とも合格し、「形の指定なし」は3件とも不合格でした。「形の指定なし」の列の出力も、正しいラベルは3件とも含んでいます。落ちたのは、ラベルの前後に記号や説明の文が付いたからです。
 
 ### 不合格が1件でもあれば、終了コードは 100
 
@@ -360,7 +354,7 @@ console.log(`合格 ${passed} / ${rows.length}`);
 
 `show-failures.ts` として保存します。`response.output` は、出典8の JSONL の例に出てきます。`prompt.label` と `vars` の2つは、出典8の説明にありません。0.125.1 が書き出した `results.jsonl` を開いて、名前を確かめました。
 
-Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典16）。
+Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典15）。
 
 ```bash
 node show-failures.ts
@@ -369,19 +363,19 @@ node show-failures.ts
 ```text
 --- 形の指定なし / 先月の請求額が2回引き落とされています。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "**分類: billing**\n\n理由: 請求額が2回引き落とされたという内容で、料金の請求・決済に関する問題です。"
+出力: "**分類: billing**\n\n理由: 請求額が2回引き落とされたという内容で、支払い・請求に関する問題だからです。"
 --- 形の指定なし / 保存ボタンを押すと画面が真っ白になります。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "bug\n\nこの問い合わせは、保存操作をきっかけに画面が真っ白になる(表示がクラッシュする)という不具合の報告なので、「bug」に分類します。課金に関する内容はなく、機能の不具合に当たるため「other」ではありません。"
+出力: "**bug**\n\n「保存ボタンを押すと画面が真っ白になる」は、操作に対してアプリケーションが異常な動作（クラッシュや表示崩れ）を起こしている状態なので、バグの報告にあたります。請求や料金に関する内容は含まれていないため billing ではなく、具体的な問い合わせや要望ではないため other でもありません。"
 --- 形の指定なし / 御社のロゴを講演のスライドに使ってもよいですか。
 不合格の metric: ラベル1語 (Expected output to match regex "^(billing|bug|other)$")
-出力: "**分類: other**\n\nこの問い合わせは、御社ロゴの利用許可を求めるもので、請求(billing)にもバグ(bug)にも当たりません。ブランドロゴの使用可否に関する相談として other に分類します。"
+出力: "**分類: other**\n\nこの問い合わせは、ロゴの使用許諾についての質問です。請求(billing)やバグ(bug)には当たりません。"
 合格 3 / 6
 ```
 
 落ちた条件は、3件とも「ラベル1語」です。「分類が合う」は3件とも通っていて、モデルの分類は正しいとわかります。
 
-1件目と3件目は、Markdown の太字の記号と「分類:」まで付きました。この出力をそのまま受け取ると、アプリのコードはラベルの1語を取り出せません。
+3件とも Markdown の太字の記号が付き、1件目と3件目は「分類:」まで付きました。この出力をそのまま受け取ると、アプリのコードはラベルの1語を取り出せません。
 
 採点を緩めない理由は[採点の記事](/posts/llm-eval-harness-fixtures)にあります。promptfoo の側で役に立ったのは、metric を分けておいたことです。「分類が合う」が通って「ラベル1語」だけが落ちたので、直す先はプロンプトの形の指定に絞れます。この設定では「形の指定あり」がその直し方です。
 
@@ -389,54 +383,52 @@ node show-failures.ts
 
 同じ設定のまま、もう1回 `eval` を動かしました。合格は同じ3件で、終了コードも 100 でした。
 
-違ったのは「形の指定なし」の出力の文面です。1回目の2件目の出力は、`bug` で始まっていました。2回目の `show-failures.ts` では、その2件目にも太字の記号と「分類:」が付きました。
+違ったのは「形の指定なし」の出力の文面です。1回目の2件目の出力には、「分類:」が付いていませんでした。2回目の `show-failures.ts` では、その2件目にも「分類:」が付きました。
 
 ```text
-出力: "**分類: bug**\n\n「保存ボタンを押すと画面が真っ白になります」は、操作に対してアプリが正しく動作しない不具合の報告です。請求や料金の内容ではなく、要望や質問でもないため、bug に分類します。"
+出力: "**分類: bug**\n\n理由: 「保存ボタンを押すと画面が真っ白になる」は、機能が想定どおり動かない不具合の報告であり、請求(billing)やその他の問い合わせではないためです。"
 ```
 
 2回で同じ合否になっても、出力の文字列そのものは毎回変わります。文面の揺れまで比べたいときは、`show-failures.ts` の出力を実行ごとに残しておきます。
 
 ## 1回の評価で、プランの利用枠から6回分が引かれる
 
-モデルを呼ぶ6回分は、プランの利用枠から引かれます（出典13）。promptfoo 自体は MIT ライセンスで、無料で使えます（出典1）。
+モデルを呼ぶ6回分は、プランの利用枠から引かれます（出典12）。promptfoo 自体は MIT ライセンスで、無料で使えます（出典1）。
 
 このプロバイダーは、ふつうは応答をキャッシュします（出典3）。ただし `apiKeyRequired: false` のときは、キャッシュを読まず、書きもしません（出典9）。
 
-2回の実行のトークン数は 16,663 と 17,829 で、2回目もモデルを6回呼んでいました。設定を変えずに `eval` を繰り返すと、そのたびに利用枠が減ります。
+2回の実行のトークン数は 8,185 と 8,129 で、2回目もモデルを6回呼んでいました。設定を変えずに `eval` を繰り返すと、そのたびに利用枠が減ります。
 
-### システムプロンプトを差し替えると、トークン数はほぼ半分になった
+### システムプロンプトを差し替えると、prompt は 7,841 から 27,745 に増えた
 
 `custom_system_prompt` の1行を消した設定でも、同じ6件を動かしました。トークン数は次のとおりです。
 
 | 設定 | Total Tokens | うち prompt |
 |---|---|---|
-| `custom_system_prompt` あり（1回目） | 16,663 | 16,055 |
-| `custom_system_prompt` なし | 31,708 | 29,916 |
+| `custom_system_prompt` あり（1回目） | 8,185 | 7,841 |
+| `custom_system_prompt` なし | 28,013 | 27,745 |
 
-1行を消すと、prompt のトークン数は 16,055 から 29,916 に増えました。増えた分は、既定で付く Claude Code のシステムプロンプトです（出典9）。
+1行を消すと、prompt のトークン数は 7,841 から 27,745 に増えました。2つの設定の違いは、この1行だけです。消すと、既定の `claude_code` プリセットが使われます（出典9）。
+
+増えた分はこの差です。プリセットの文章そのものの大きさは、測っていません。これはこの環境の1組の値です。2026-11-10 に Linux で動かしたときの prompt は、16,055 と 29,916 でした。差は 13,861 です。今回の差は 19,904 です。この違いの理由は、確かめていません。
 
 合否は、どちらの設定でも同じ3件でした。評価したいのが自分のアプリのプロンプトなら、システムプロンプトもアプリと同じものに差し替えておくのが筋です。
 
 ### results.jsonl の cost は定価で換算した見積もり
 
-2回目の `results.jsonl` の `cost` を6件分足すと、0.00268162 ドルでした。モデルごとの内訳には、`costBasis` が `list` と入っています。
+2回目の `results.jsonl` の `cost` を6件分足すと、0.00133430 ドルでした。モデルごとの内訳には、`costBasis` が `list` と入っています。
 
-この数字は SDK の `total_cost_usd` と同じ見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典15）。プランで動かしたときの請求額としては読まず、使った量の目安にします。
+この数字は SDK の `total_cost_usd` と同じ見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典14）。プランで動かしたときの請求額としては読まず、使った量の目安にします。
 
-同じ環境で `query()` を1回動かすと、init の `apiKeySource` は `none` でした。`none` は API キーを使っていないという意味です（出典15）。動かし方は[別の記事](/posts/claude-agent-sdk-first-agent)です。
+同じ環境で `query()` を1回動かすと、init の `apiKeySource` は `none` でした。`none` は API キーを使っていないという意味です（出典14）。動かし方は[別の記事](/posts/claude-agent-sdk-first-agent)です。
 
 promptfoo は、コマンドを実行した記録を既定で送ります（出典10）。プロンプト、モデルの出力、テストケースは含まれません（出典10）。止めるときは `PROMPTFOO_DISABLE_TELEMETRY=1` を設定します（出典10）。
 
-## ほかの人に使わせるなら API キーで動かす
+この記事で比べたのは、形の指定を1文足すかどうかの1点です。
 
-評価を製品の開発に組み込むなら、Claude Console の API キーで認証します（出典12）。チームの CI で動かす評価も、この記事では製品の開発の側に数えます。
+## まとめ
 
-プランの利用枠は、個人がふつうに使う前提で決まっています（出典12）。製品かサービスを作る開発者は API キーで認証する、とも書かれています（出典12）。
-
-このプロバイダーは、`ANTHROPIC_API_KEY` か設定の `apiKey` でキーを受け取ります（出典3）。キーで動かす場合は、`apiKeyRequired: false` の行は要りません。
-
-この記事で比べたのは、形の指定を1文足すかどうかの1点です。あなたのプロンプトでは、どんな形の崩れを不合格にしますか。
+設定ファイル1つで、形の指定がないプロンプトと、形の指定があるプロンプトを、同じ3件のテストケースで比べられました。不合格の理由は `results.jsonl` から読め、不合格が1件でもあれば終了コードは 100 になります。次は `tests` に自分のアプリの入力を足し、形の検査と中身の検査を別の metric で書いてみてください。あなたのプロンプトでは、どんな形の崩れを不合格にしますか。
 
 ## 出典
 
@@ -455,12 +447,9 @@ promptfoo は、コマンドを実行した記録を既定で送ります（出�
 | 9 | promptfoo 0.125.1 の src/providers/claude-agent-sdk.ts | https://github.com/promptfoo/promptfoo/blob/0.125.1/src/providers/claude-agent-sdk.ts | 2026-11-10 |
 | 10 | Telemetry (promptfoo) | https://www.promptfoo.dev/docs/configuration/telemetry/ | 2026-11-10 |
 | 11 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | 2026-11-10 |
-| 12 | Legal and compliance (Claude Code) | https://code.claude.com/docs/en/legal-and-compliance | 2026-11-10 |
-| 13 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
-| 14 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
-| 15 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-10 |
-| 16 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
+| 12 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
+| 13 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
+| 14 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-10 |
+| 15 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
 
-テストケースを手で3件書くのは、最初の1回で済ませたいところです。[次の記事](/posts/llm-eval-dataset-from-logs)は、ログから選ぶ回です。選んだテストケースを JSONL に書き出すところまで扱います。
-
-AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-11 に実際に実行して確認しています。

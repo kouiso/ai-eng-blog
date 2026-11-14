@@ -1,0 +1,63 @@
+date: 2026-11-12T01:04:25Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: node show-blocks.ts 0.0007; node show-blocks.ts 0.0007; node show-blocks.ts 0.0007; node show-blocks.ts 0.00066; node show-blocks.ts 0.00066; node show-blocks.ts 0.00066
+--- output (stdout+stderr) ---
+maxBudgetUsd: 0.0007
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: thinking
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+応答3: text "- cancel.md: # 予約の取り消し\n- payment.md: # 支払い方法\n- parking.md: # 駐車場"
+RESULT error_max_budget_usd / num_turns 5 / total_cost_usd 0.00085041 / result の欄なし
+catch: Claude Code returned an error result: Reached maximum budget ($0.0007)
+maxBudgetUsd: 0.0007
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: thinking
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+応答3: text "cancel.md: # 予約の取り消し\npayment.md: # 支払い方法\nparking.md: # 駐車場"
+RESULT success / num_turns 5 / total_cost_usd 0.00068286 / result "cancel.md: # 予約の取り消し\npayment.md: # 支払い方法\nparking.md: # 駐車場"
+maxBudgetUsd: 0.0007
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: thinking
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+応答3: text "cancel.md: # 予約の取り消し\npayment.md: # 支払い方法\nparking.md: # 駐車場"
+RESULT success / num_turns 5 / total_cost_usd 0.0006874200000000001 / result "cancel.md: # 予約の取り消し\npayment.md: # 支払い方法\nparking.md: # 駐車場"
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+RESULT error_max_budget_usd / num_turns 5 / total_cost_usd 0.0006696 / result の欄なし
+catch: Claude Code returned an error result: Reached maximum budget ($0.00066)
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: thinking
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+応答3: text "- cancel.md: # 予約の取り消し\n- payment.md: # 支払い方法\n- parking.md: # 駐車場"
+RESULT error_max_budget_usd / num_turns 5 / total_cost_usd 0.00079582 / result の欄なし
+catch: Claude Code returned an error result: Reached maximum budget ($0.00066)
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: thinking
+応答1: tool_use Glob
+応答2: tool_use Read
+応答2: tool_use Read
+応答2: tool_use Read
+応答3: text "- cancel.md: # 予約の取り消し\n- payment.md: # 支払い方法\n- parking.md: # 駐車場"
+RESULT error_max_budget_usd / num_turns 5 / total_cost_usd 0.0007884200000000001 / result の欄なし
+catch: Claude Code returned an error result: Reached maximum budget ($0.00066)
+--- exit=0

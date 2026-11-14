@@ -4,7 +4,7 @@ slug: "llm-eval-harness-fixtures"
 description: "LLM の回答を、完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムを作ります。採点するのは手で書いた見本の回答なので、API キーは要りません。合格率が基準を下回ると、終了コード 1 で終わります。"
 tags: ["LLM 評価", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: null
+target_query: "llm 自動評価"
 course_step: 6
 prev: "mcp-connection-closed-fix"
 next: "llm-as-a-judge-claude"
@@ -46,7 +46,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 プロンプトを1行直すたびに LLM の回答を目で読み直していると、テストケースの件数だけ読む量が増えます。この記事で作るのは、回答を完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムです。合格率が基準を下回ると終了コード 1 で終わるので、変更で回答が悪くなったことに実行1回で気づけます。
@@ -321,8 +321,6 @@ regex:    { pass: false, reason: '/(?<!\\d)3件/ に合わない' }
 回答を JSON で返させるアプリなら、文字列で比べる前に形を検証する方法も使えます。検証のコードは[zod の記事](/posts/zod-validate-llm-json-output)にあります。
 
 基準の80%は、この記事のために決めた値です。あなたのアプリでは、何件に1件の不合格までなら許せますか。
-
-講座の次の記事では、完全一致でも正規表現でも決められない観点を、Claude に採点させます。[次の記事](/posts/llm-as-a-judge-claude)に進んでください。
 
 ## 出典
 

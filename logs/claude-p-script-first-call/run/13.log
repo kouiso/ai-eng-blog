@@ -1,0 +1,13 @@
+date: 2026-11-11T11:05:15Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/13-stdin.sh
+--- command ---
+cat error.log | claude -p "標準入力で渡したエラーログの原因を、日本語の1文で説明してください。" \
+  --model haiku --output-format json \
+  --setting-sources "" --strict-mcp-config --tools "" \
+  | jq -r '.result'
+--- output (stdout+stderr) ---
+`src/list.ts` の12行目で、`undefined` の値に対して `.map()` を呼び出そうとしたため、配列であるはずの変数やプロパティが未定義のまま渡されていることが原因です。
+--- exit=0

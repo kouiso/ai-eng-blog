@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic({
-  apiKey: "dummy-key-not-sent-anywhere",
+  apiKey: "dummy-key",
   baseURL: "http://127.0.0.1:4010/my-loop",
 });
 

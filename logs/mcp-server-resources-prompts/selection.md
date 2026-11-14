@@ -48,3 +48,11 @@ CSV が無く、検索ボリュームの列も無い。Google トレンドも、
 `test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果: unset（2026-11-02、2026-11-10 も同じ）。
 
 この記事のコードは LLM の API を呼ばない（`needs_api_key: false`）。`prompts/get` はメッセージの並びを返すだけで、モデルには送らない。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-mcp-server.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: ツール以外の Resources と Prompts を公開する方法を扱う記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

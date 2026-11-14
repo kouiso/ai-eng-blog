@@ -1,0 +1,26 @@
+date: 2026-11-11T11:02:41Z
+cwd: <work>/stream-demo
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node timing.ts
+--- output (stdout+stderr) ---
+  247 system/init apiKeySource=none
+ 1244 stream_event message_start
+ 1245 stream_event content_block_start thinking
+ 1245 stream_event thinking_delta
+ 2384 stream_event thinking_delta
+ 2987 stream_event thinking_delta
+ 2987 stream_event signature_delta
+ 2993 assistant thinking id=...UbRF
+ 2993 stream_event content_block_stop
+ 2994 stream_event content_block_start text
+ 2994 最初の text_delta
+ 4024 最後の text_delta（51個、計311字）
+ 4041 assistant text 311字 id=...UbRF
+ 4055 stream_event content_block_stop
+ 4055 stream_event message_delta
+ 4056 stream_event message_stop
+ 4081 result/success
+text_delta をつないだ文字列と result は同じか: true
+--- exit=0

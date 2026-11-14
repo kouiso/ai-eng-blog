@@ -1,4 +1,4 @@
-## writing-lint v2: rag-hybrid-search-rrf.md (type=article, register=standard, 549行/239文)
+## writing-lint v2: rag-hybrid-search-rrf.md (type=article, register=standard, 547行/237文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

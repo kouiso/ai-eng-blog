@@ -1,0 +1,14 @@
+date: 2026-11-11T11:04:55Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/09-api-key-source.sh
+--- command ---
+claude -p "1+1 の答えを数字だけで答えてください。" \
+  --model haiku \
+  --output-format stream-json --verbose \
+  --setting-sources "" --strict-mcp-config --tools "" \
+  | jq -c 'select(.type == "system" and .subtype == "init") | {apiKeySource, model}'
+--- output (stdout+stderr) ---
+{"apiKeySource":"none","model":"claude-haiku-5-5"}
+--- exit=0

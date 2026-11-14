@@ -1,0 +1,8 @@
+date: 2026-11-11T11:07:10Z
+cwd: <work>/work
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: test -n "$ANTHROPIC_API_KEY" && echo set || echo unset
+--- output (stdout+stderr) ---
+unset
+--- exit=0

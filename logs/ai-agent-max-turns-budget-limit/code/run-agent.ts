@@ -7,6 +7,7 @@ export const baseOptions: Options = {
   allowedTools: ["Glob", "Read"],
   systemPrompt: "あなたは作業フォルダのファイルを調べて質問に答えるアシスタントです。",
   settingSources: [],
+  strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
 };
 
 export const task =

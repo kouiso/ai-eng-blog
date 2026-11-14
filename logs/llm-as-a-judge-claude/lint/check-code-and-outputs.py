@@ -2,10 +2,11 @@
 """記事のコードブロックが code/ のファイルと1文字も違わないこと、記事の実行結果が run/ のログの出力と
 1文字も違わないこと（ログの末尾の改行1つだけを除く。コードブロックの閉じフェンスの前の改行に当たる）を確かめる（gate.md の G04、C08 の根拠）。
 logs/claude-agent-sdk-first-agent/lint/check-code-and-outputs.py を写し、expected をこの記事に合わせた。
-抜き出し（excerpt）は run/06.log の出力の行のうち、c の判定の行とその次の reason の行の2行だけ。
+抜き出し（excerpt）は run/31.log の出力の行のうち、c の判定の行とその次の reason の行の2行だけ。
 diff は extra/grade-first.ts と grade.ts で違う1行ずつ。
-表の点は、規則を書いた基準が run/09、10、19、20、21、2行の基準が run/11、22、23、24、25 の判定の行から
-実行した順に並べた値と一致するかを見る（2026-11-10 の再実行 run-recheck.sh で run/15〜25 を足した）。
+表の点は、規則を書いた基準が run/34〜38、2行の基準が run/39〜43 の判定の行から
+実行した順に並べた値と一致するかを見る。2026-11-11 に judge.ts へ strictMcpConfig: true を足して run-fix.sh で
+run/26〜46 を取り直し、記事の出力と数字はすべてこの回のログに合わせた（run/01〜25 は直す前のコードのログとして残す）。
 使い方: python3 check-code-and-outputs.py <原稿.md> <logs/<slug>>
 """
 import re
@@ -41,19 +42,19 @@ def diff_c():
     assert len(old) == 1 and len(new) == 1
     return f"-{old[0]}\n+{new[0]}"
 
-install = "mkdir llm-judge\ncd llm-judge\n" + cmd("03") + "\n" + cmd("04")
+install = "mkdir llm-judge\ncd llm-judge\n" + cmd("28") + "\n" + cmd("29")
 expected = [
-    ("bash", "cmd", "02"), ("text", "out", "02"),
-    ("bash", "literal", install), ("text", "out", "04"),
-    ("bash", "cmd", "05"), ("text", "out", "05"),
+    ("bash", "cmd", "27"), ("text", "out", "27"),
+    ("bash", "literal", install), ("text", "out", "29"),
+    ("bash", "cmd", "30"), ("text", "out", "30"),
     ("markdown", "code", "rubric.md"),
     ("ts", "code", "judge.ts"),
     ("ts", "code", "grade.ts"),
-    ("bash", "cmd", "09"), ("text", "out", "09"),
-    ("text", "literal", excerpt("06", "c")),
+    ("bash", "cmd", "34"), ("text", "out", "34"),
+    ("text", "literal", excerpt("31", "c")),
     ("diff", "literal", diff_c()),
     ("markdown", "code", "rubric-vague.md"),
-    ("bash", "cmd", "11"),
+    ("bash", "cmd", "39"),
 ]
 ok = True
 print(f"blocks in article: {len(blocks)} / expected: {len(expected)}")
@@ -68,11 +69,11 @@ for i, ((lang, body), (elang, kind, ref)) in enumerate(zip(blocks, expected), 1)
     print(f"{'OK' if same else 'NG'} #{i}: {lang} {kind} {label}")
     ok &= same
 
-# 表の点が、規則を書いた基準の5回（09、10、19、20、21）と2行の基準の5回（11、22〜25）の判定と、実行した順に一致するか
+# 表の点が、規則を書いた基準の5回（34〜38）と2行の基準の5回（39〜43）の判定と、実行した順に一致するか
 def scores(n):
     return {m.group(1): (m.group(2), m.group(3)) for m in re.finditer(r"^(\w) 人=(\d) 判定=(\d)", out(n), flags=re.M)}
-detailed_runs = ("09", "10", "19", "20", "21")
-vague_runs = ("11", "22", "23", "24", "25")
+detailed_runs = ("34", "35", "36", "37", "38")
+vague_runs = ("39", "40", "41", "42", "43")
 sd = {n: scores(n) for n in detailed_runs}
 sv = {n: scores(n) for n in vague_runs}
 rows = re.findall(r"^\| ([a-e]) \| (\d) \| ([\d, ]+) \| ([\d, ]+) \|$", text, flags=re.M)
@@ -88,37 +89,45 @@ ok &= len(rows) == 5
 
 # 本文に引いた出力の文字列がログにあるか
 quotes = [
-    ("09", "total_cost_usd の合計（見積もり）: 0.0026"),
-    ("11", "人の採点との一致: 2/5"),
-    ("22", "人の採点との一致: 1/5"),
-    ("23", "人の採点との一致: 2/5"),
-    ("24", "人の採点との一致: 2/5"),
-    ("25", "人の採点との一致: 2/5"),
-    ("19", "人の採点との一致: 5/5"),
-    ("20", "人の採点との一致: 5/5"),
-    ("21", "人の採点との一致: 5/5"),
-    ("11", "返品送料はお客様負担という情報も省略されています"),
-    ("09", "  reason: 該当した規則: 5点。"),
-    ("10", "  reason: 規則5に当てはまります。"),
-    ("13", "init model=claude-haiku-5-5"),
+    ("34", "total_cost_usd の合計（見積もり）: 0.0018"),
+    ("39", "人の採点との一致: 2/5"),
+    ("40", "人の採点との一致: 3/5"),
+    ("41", "人の採点との一致: 2/5"),
+    ("42", "人の採点との一致: 2/5"),
+    ("43", "人の採点との一致: 2/5"),
+    ("34", "人の採点との一致: 5/5"),
+    ("35", "人の採点との一致: 5/5"),
+    ("36", "人の採点との一致: 5/5"),
+    ("37", "人の採点との一致: 5/5"),
+    ("38", "人の採点との一致: 5/5"),
+    ("39", "返品送料がお客様負担であることも触れられていません"),
+    ("34", "a 人=5 判定=5 一致 apiKeySource=none\n  reason: 規則1（食い違い）"),
+    ("35", "a 人=5 判定=5 一致 apiKeySource=none\n  reason: 規則5に当てはまります。"),
+    ("44", "init model=claude-haiku-5-5 apiKeySource=none"),
+    ("44", "mcp_tools=0 mcp_servers=0"),
 ]
 for n, q in quotes:
     found = q in out(n)
     print(f"{'OK' if found else 'NG'} quote run/{n}: {q}")
     ok &= found
-# 規則を書いた基準の5回で点が5件とも同じか、変更前の c（run/06〜08、16〜18）がすべて 2 か
+# 規則を書いた基準の5回で点が5件とも同じか、変更前の c（run/31〜33）がすべて 2 か
 for n in detailed_runs[1:]:
-    same = sd[n] == sd["09"]
-    print(f"{'OK' if same else 'NG'} run/09 と run/{n} の点が5件とも同じ: {same}")
+    same = sd[n] == sd["34"]
+    print(f"{'OK' if same else 'NG'} run/34 と run/{n} の点が5件とも同じ: {same}")
     ok &= same
-for n in ("06", "07", "08", "16", "17", "18"):
+for n in ("31", "32", "33"):
     c = scores(n)["c"]
     print(f"{'OK' if c == ('3', '2') else 'NG'} run/{n} c: human={c[0]} judge={c[1]}")
     ok &= c == ("3", "2")
 
-# 終了コード（06〜08 と 11 は不一致があるので 1 になるのが記事の記述どおり）
-want_exit = {n: "0" for n in ("01", "02", "03", "04", "05", "09", "10", "12", "13", "14", "15", "19", "20", "21")}
-want_exit.update({n: "1" for n in ("06", "07", "08", "11", "16", "17", "18", "22", "23", "24", "25")})
+# 終了コード（31〜33 と 39〜43 は不一致があるので 1 になるのが記事の記述どおり）
+want_exit = {n: "0" for n in ("26", "27", "28", "29", "30", "34", "35", "36", "37", "38", "44", "45", "46")}
+want_exit.update({n: "1" for n in ("31", "32", "33", "39", "40", "41", "42", "43")})
+# 2026-11-11 の取り直しのモデルを呼んだログが、すべてプランのログイン（apiKeySource=none）で動いたか
+for n in [str(k) for k in range(31, 46)]:
+    keys = set(re.findall(r"apiKeySource=(\S+)", out(n)))
+    print(f"{'OK' if keys == {'none'} else 'NG'} run/{n} apiKeySource={sorted(keys)} ANTHROPIC_API_KEY unset={'ANTHROPIC_API_KEY: unset' in log(n)}")
+    ok &= keys == {"none"} and "ANTHROPIC_API_KEY: unset" in log(n)
 for n, w in sorted(want_exit.items()):
     code_ = log(n).rsplit("--- exit=", 1)[1].strip()
     print(f"{'OK' if code_ == w else 'NG'} run/{n}.log exit={code_} (want {w})")

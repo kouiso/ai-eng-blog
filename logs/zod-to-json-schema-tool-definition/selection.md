@@ -50,3 +50,11 @@
 | `zod-validate-llm-json-output` | 構造化出力 | LLM の出力 JSON を zod の safeParse で検証し、issues を読む | 無し。講座で前の記事（`next` がこの記事）。答えるのは返ってきた JSON の検証で、変換は扱わない |
 
 `grep -n toJSONSchema content/articles/*.md` は、この記事の行だけが出る（2026-11-10）。zod のスキーマを JSON Schema に変換してツール定義に使う記事は、この記事のほかに無い。どれも `target_query` は null なので、検索語そのものでの比較は CSV が届いてからになる（G10）。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-structured-output.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: zod のスキーマから JSON Schema を作ってツール定義に使う記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

@@ -1,0 +1,8 @@
+date: 2026-11-11T11:07:26Z
+cwd: <work>/work2
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code)
+ANTHROPIC_API_KEY (shell): unset
+command: claude auth status | grep -E '"(authMethod|apiKeySource)"'
+--- output (stdout+stderr) ---
+  "authMethod": "claude.ai",
+--- exit=0

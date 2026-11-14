@@ -8,7 +8,14 @@ for await (const msg of query({
   prompt:
     "tickets フォルダの問い合わせをすべて読み、1件ごとに「ファイル名: 返金」「ファイル名: 不具合」「ファイル名: その他」の形で1行ずつ答えてください。" +
     "返金の問い合わせには、次の行に返信の書き出しを1文だけ添えてください。",
-  options: { model: "haiku", tools: ["Glob", "Read"], allowedTools: ["Glob", "Read"], maxTurns: 10 },
+  options: {
+    model: "haiku",
+    tools: ["Glob", "Read"],
+    allowedTools: ["Glob", "Read"],
+    maxTurns: 10,
+    settingSources: [], // 手元の設定ファイルと CLAUDE.md を読み込まない
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
+  },
 })) {
   if (msg.type === "system" && msg.subtype === "init") console.log(`apiKeySource: ${msg.apiKeySource}`);
   if (msg.type === "assistant") {

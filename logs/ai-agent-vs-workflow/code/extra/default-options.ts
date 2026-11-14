@@ -5,7 +5,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 const body = await readFile("tickets/001.txt", "utf8");
 for await (const msg of query({
   prompt: `次の問い合わせを「返金」「不具合」「その他」のどれか1語だけで答えてください。\n${body}`,
-  options: { model: "haiku", maxTurns: 1 },
+  options: { model: "haiku", maxTurns: 1, settingSources: [], strictMcpConfig: true }, // 手元の設定ファイルと CLAUDE.md、claude.ai のコネクタのツールを読み込まない
 })) {
   if (msg.type === "system" && msg.subtype === "init") console.log(`apiKeySource: ${msg.apiKeySource}、tools の数: ${msg.tools.length}`);
   if (msg.type === "result" && msg.subtype === "success") {

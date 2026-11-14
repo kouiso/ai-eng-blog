@@ -1,0 +1,39 @@
+blocks in article: 16 / expected: 16
+OK #1: bash cmd 02
+OK #2: text out 02
+OK #3: bash literal mkdir/cd + run/03 + run/04 command
+OK #4: text out 04
+OK #5: bash cmd 05
+OK #6: text out 05
+OK #7: ts code cases.ts
+OK #8: ts code common.ts
+OK #9: ts code a-prompt.ts
+OK #10: ts code b-tool.ts
+OK #11: ts code c-output-format.ts
+OK #12: ts code compare.ts
+OK #13: bash cmd 06
+OK #14: text out 06
+OK #15: bash cmd 07
+OK #16: text out 07
+OK run/01.log exit=0
+OK run/02.log exit=0
+OK run/03.log exit=0
+OK run/04.log exit=0
+OK run/05.log exit=0
+OK run/06.log exit=0
+OK run/07.log exit=0
+OK run/08.log exit=0
+OK run/09.log exit=0
+OK run/10.log exit=0
+OK run/11.log exit=0
+OK run/06.log contains 'apiKeySource: none'
+OK run/11.log contains 'apiKeySource: none'
+OK run/10.log contains 'tsc_exit=0'
+OK run/09.log contains 'draft-7: http://json-schema.org/draft-07/schema#'
+OK run/09.log contains 'error: Claude Code process exited with code 1'
+OK run/08.log contains 'no-strict init.mcp_servers=25 turns=2 cacheCreationInputToke'
+OK run/11.log contains '== a-prompt: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10'
+OK run/11.log contains '== b-tool: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10'
+OK run/11.log contains '== c-output-format: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10'
+ALL OK
+exit=0

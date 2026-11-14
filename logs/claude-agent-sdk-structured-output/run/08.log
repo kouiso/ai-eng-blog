@@ -1,0 +1,12 @@
+date: 2026-11-11T11:07:48Z
+cwd: <work>/structured-output
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: MAX_STRUCTURED_OUTPUT_RETRIES=1 node impossible.ts
+--- output (stdout+stderr) ---
+[user/tool_result] "Output does not match required schema: /priority: must be >= 5"
+[result/error_max_structured_output_retries] is_error=true num_turns=2
+errors: ["Failed to provide valid structured output after 1 attempts — last StructuredOutput error: Output does not match required schema: /priority: must be >= 5"]
+caught: Error: Claude Code returned an error result: Failed to provide valid structured output after 1 attempts — last StructuredOutput error: Output does not match required schema: /priority: must be >= 5
+--- exit=0

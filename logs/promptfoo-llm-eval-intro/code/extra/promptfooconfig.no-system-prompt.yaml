@@ -19,6 +19,7 @@ providers:
       apiKeyRequired: false
       model: haiku
       max_turns: 1
+      strict_mcp_config: true # claude.ai のコネクタのツールを読み込まない
 
 defaultTest:
   assert:

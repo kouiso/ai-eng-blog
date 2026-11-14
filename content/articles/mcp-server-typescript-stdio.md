@@ -4,7 +4,7 @@ slug: "mcp-server-typescript-stdio"
 description: "公式 SDK v1.32.2 で、文字数を数えるツールを1つ持つ MCP サーバーを TypeScript で作ります。SDK のクライアントで結果を確かめ、Claude Code に登録して接続するまでを実際の出力付きで書いています。"
 tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
-target_query: null
+target_query: "mcpサーバー 作り方 typescript"
 course_step: 5
 prev: null
 next: null
@@ -61,7 +61,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-10-31
+updated: 2026-11-11
 ---
 
 自分のアプリの関数を Claude Code に使わせるには、関数を MCP サーバーのツールにします。この記事では、文章の文字数を数えるツールを1つ持つサーバーを TypeScript で作ります。完成したサーバーを公式 SDK のクライアントから呼ぶと、結果は次の1行で返ります。

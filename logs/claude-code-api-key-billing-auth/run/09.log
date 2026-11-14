@@ -1,0 +1,11 @@
+date: 2026-11-11T11:08:19Z
+cwd: <work>/key-check
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code)
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY (shell): unset
+command: node --env-file=.env plan-only.ts
+--- output (stdout+stderr) ---
+apiKeySource: none
+result: success is_error=false
+2
+--- exit=0

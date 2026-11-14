@@ -1,0 +1,14 @@
+date: 2026-11-12T01:01:45Z
+cwd: <work>/work
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code)
+ANTHROPIC_API_KEY (shell): unset
+command: ANTHROPIC_API_KEY=sk-ant-invalid-demo claude auth status | grep -E '"(authMethod|apiKeySource)"'
+ANTHROPIC_API_KEY=sk-ant-invalid-demo claude -p "1+1は？数字だけで答えてください。" --model haiku --tools "" --strict-mcp-config # claude.ai のコネクタのツールを読み込まない
+echo "exit=$?"
+--- output (stdout+stderr) ---
+  "authMethod": "api_key",
+  "apiKeySource": "ANTHROPIC_API_KEY"
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+Invalid API key · Fix external API key
+exit=1
+--- exit=0

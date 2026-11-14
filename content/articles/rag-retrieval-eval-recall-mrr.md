@@ -4,7 +4,7 @@ slug: "rag-retrieval-eval-recall-mrr"
 description: "RAG の検索器を Recall@k と MRR の2つの指標で採点する TypeScript のプログラムを作ります。手で書いた15問で BM25、ベクトル検索、ハイブリッド検索を比べた実行結果と、差がついた3問の中身を載せます。"
 tags: ["LLM 評価", "RAG", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: null
+target_query: "rag 評価指標"
 course_step: 6
 cost_estimate: "記事のコードは手元で動き、API を呼ばないので無料です。埋め込みモデルは Hugging Face からログインせずにダウンロードできます。検索結果を Claude に渡して回答させると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、Linux x86_64。@huggingface/transformers 4.3.2。埋め込みモデルは Xenova/multilingual-e5-small（q8）。型の確認は TypeScript 7.0.2。"
@@ -49,7 +49,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 RAG の検索が良くなったかどうかは、Recall@k と MRR の2つの数字で判定できます。用意するのは、質問と正解の文書の組です。Recall@k は、上位 k 件に正解の文書が入った割合を表します。MRR は、最初の正解の順位の逆数を、質問ごとに求めて平均した値です。
@@ -557,8 +557,6 @@ hybrid  Recall@3 0.933  MRR 0.867
 差がつく質問を足すなら、あなたのアプリの質問ログからどんな質問を選びますか。
 
 回答の採点は[自動採点の記事](/posts/llm-eval-harness-fixtures)で扱いました。
-
-講座の続きは[次の記事](/posts/promptfoo-llm-eval-intro)です。
 
 ## 出典
 

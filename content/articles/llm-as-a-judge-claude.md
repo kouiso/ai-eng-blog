@@ -4,11 +4,11 @@ slug: "llm-as-a-judge-claude"
 description: "採点基準を規則として書き、Claude Agent SDK に JSON スキーマと一緒に渡します。返ってきた点と理由を、人の点と比べます。5件の見本の回答では、規則を書いた基準で人の点と5件とも一致しました。"
 tags: ["LLM 評価", "Claude Agent SDK", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: null
+target_query: "llm as a judge やり方"
 course_step: 6
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-10"
+run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2"
+verified_at: "2026-11-11"
 prev: "llm-eval-harness-fixtures"
 next: "rag-retrieval-eval-recall-mrr"
 sources:
@@ -26,9 +26,6 @@ sources:
     accessed: 2026-11-10
   - url: "https://code.claude.com/docs/en/authentication"
     title: "Authentication (Claude Code)"
-    accessed: 2026-11-10
-  - url: "https://code.claude.com/docs/en/legal-and-compliance"
-    title: "Legal and compliance (Claude Code)"
     accessed: 2026-11-10
   - url: "https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan"
     title: "Use the Claude Agent SDK with your Claude plan"
@@ -52,12 +49,12 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-13
 ---
 
 LLM-as-a-Judge は、採点基準を書いたプロンプトをモデルに渡して、別の回答に点を付けさせるやり方です。この記事では、Claude Agent SDK の `query()` に採点基準と JSON スキーマを渡します。受け取るのは、点と理由の2つです。
 
-5件の見本の回答で試すと、規則を書いた採点基準では、5回動かして5回とも人の点と5件が一致しました。「1〜5で採点して」と書いただけの基準では、一致は回によって1〜3件でした。
+5件の見本の回答で試すと、規則を書いた採点基準では、5回動かして5回とも人の点と5件が一致しました。「1〜5で採点して」と書いただけの基準では、一致は回によって2〜3件でした。
 
 コードは TypeScript で、自分の Claude プランでログインした Claude Code の上で動きます。API キーは要りません。
 
@@ -75,20 +72,12 @@ LLM-as-a-Judge は、採点基準を書いたプロンプトをモデルに渡�
 
 モデルに任せるのは、こうした観点だけにします。
 
-## プランで動かすのは、自分で試す範囲に限る
-
-Agent SDK を Claude プランのログインで使うと、プランの利用枠から引かれます（出典7）。プランの利用枠は、Claude Code と Agent SDK を個人がふつうに使う前提で決まっています（出典6）。
-
-ほかの人に使わせるアプリかサービスに採点を組み込む場合は、話が変わります。そのときは、Claude Console で発行した API キーで認証します（出典6）。利用者に代わって、プランの認証情報で通信を中継することは禁止されています（出典6）。
-
-この記事のコードは、自分のマシンで自分の評価を動かすためのものとして読んでください。
-
 ## 用意するのは Node.js、Claude のプラン、ログイン済みの Claude Code
 
 動かすには、次の環境が要ります。
 
-- Node.js 22.18.0 以上。この記事では `.ts` のファイルをそのまま `node` で動かすためです（出典10）。検証は 22.22.0 で行いました。
-- Claude の Pro、Max、Ultra のどれか。Free のプランには Claude Code が含まれません（出典8）。
+- Node.js 22.18.0 以上。この記事では `.ts` のファイルをそのまま `node` で動かすためです（出典9）。検証は 22.23.4 で行いました。
+- Claude の Pro、Max、Ultra のどれか。Free のプランには Claude Code が含まれません（出典7）。
 - そのプランのアカウントでログインした Claude Code（出典5）
 
 環境変数 `ANTHROPIC_API_KEY` があると、プランのログインより先に使われます（出典5）。プランで試す前に、外れていることを確かめます。
@@ -115,7 +104,7 @@ npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322
 
 ```text
 
-added 105 packages, and audited 106 packages in 6s
+added 105 packages, and audited 106 packages in 18s
 
 36 packages are looking for funding
   run `npm fund` for details
@@ -123,7 +112,7 @@ added 105 packages, and audited 106 packages in 6s
 found 0 vulnerabilities
 ```
 
-0.3.322 は、2026-11-10 の時点の npm の最新版です（出典11）。SDK は Claude Code の本体を同梱しているので、別に入れる必要はありません（出典4）。`type` を `module` にしたのは、トップレベルで `await` を書くためです（出典4）。
+0.3.322 は、2026-11-10 の時点の npm の最新版です（出典10）。SDK は Claude Code の本体を同梱しているので、別に入れる必要はありません（出典4）。`type` を `module` にしたのは、トップレベルで `await` を書くためです（出典4）。
 
 ```bash
 npm pkg get type dependencies
@@ -194,6 +183,7 @@ export async function judge(rubric: string, input: string) {
       systemPrompt: rubric,
       tools: [],
       settingSources: [],
+      strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
       outputFormat: { type: "json_schema", schema },
     },
   })) {
@@ -214,17 +204,17 @@ export async function judge(rubric: string, input: string) {
 
 `query()` に渡したオプションの役割は、次のとおりです。
 
-- `model: "haiku"` はモデルの別名です。実行すると、init のメッセージに `claude-haiku-5-5` と出ました。
+- `model: "haiku"` はモデルの別名です。別の確認用のコードで init の `model` を表示すると、`claude-haiku-5-5` でした。
 - `systemPrompt` に文字列を渡すと、SDK はその文字列だけをシステムプロンプトとして送ります（出典3）。
 - `tools: []` は、組み込みのツールをすべて外す指定です（出典2）。
 - `settingSources: []` では、手元の設定と CLAUDE.md を読みません（出典2、出典3）。
-- `outputFormat` は、返す値の形を決める JSON スキーマです（出典9）。結果の `structured_output` に、その形の値が入ります（出典9）。
+- `outputFormat` は、返す値の形を決める JSON スキーマです（出典8）。結果の `structured_output` に、その形の値が入ります（出典8）。
 
-スキーマでは、`score` を `enum` で1〜5の整数に限りました。採点基準に無い点を、一致の数え方に混ぜないためです。JSON スキーマで返す値の形を決める仕組みは、この記事では説明しません。[構造化出力の記事](/posts/claude-structured-outputs-json)で扱います。
+スキーマでは、`score` を `enum` で1〜5の整数に限りました。採点基準に無い点を、一致の数え方に混ぜないためです。JSON スキーマで返す値の形を決める仕組みは、この記事では説明しません。[構造化出力の記事](/posts/claude-agent-sdk-structured-output)で扱います。
 
 `judge()` が点を返すのは、2つの条件がそろったときだけです。`result` が成功であることと、`structured_output` に値が入っていることです。それ以外は例外にして、点の無い採点を人の点との比較に入れないようにしました。
 
-`structured_output` の型は `unknown` です（出典2）。値は SDK がスキーマで検証しているので（出典9）、`as Verdict` で型を付けました。アプリの中で型をもう一度確かめたいときは、zod で読み直せます。[zod の記事](/posts/zod-validate-llm-json-output)に手順があります。
+`structured_output` の型は `unknown` です（出典2）。値は SDK がスキーマで検証しているので（出典8）、`as Verdict` で型を付けました。アプリの中で型をもう一度確かめたいときは、zod で読み直せます。[zod の記事](/posts/zod-validate-llm-json-output)に手順があります。
 
 ## grade.ts で5件を採点し、人の点と比べる
 
@@ -272,7 +262,7 @@ process.exitCode = agreed === cases.length ? 0 : 1;
 
 `expected` は、`rubric.md` の規則で人が付けた点です。a から e まで、5点から1点を1件ずつ用意しました。判定が人の点と1件でも違えば、終了コード 1 で終わります。
 
-`import` のパスの `.ts` は省けません（出典10）。`.ts` のファイルをそのまま `node` で動かせるのは、Node.js 22.18.0 以降です（出典10）。
+`import` のパスの `.ts` は省けません（出典9）。`.ts` のファイルをそのまま `node` で動かせるのは、Node.js 22.18.0 以降です（出典9）。
 
 ```bash
 node grade.ts rubric.md
@@ -280,17 +270,17 @@ node grade.ts rubric.md
 
 ```text
 a 人=5 判定=5 一致 apiKeySource=none
-  reason: 該当した規則: 5点。回答の「商品の到着から30日以内で、未開封のものに限り返品できます」は、参考情報の「商品の到着から30日以内に受け付けます。未開封の商品に限ります。」と一致しています。期限(30日)と未開封の条件の両方を正しく書いており、参考情報にない内容は含まれていません。送料の負担は書かれていませんが、採点規則では求められていないため減点の対象になりません。
+  reason: 規則1（食い違い）、規則2（参考情報に無い事実の記載）、規則3（期限の未記載）、規則4（未開封の条件の抜け）はいずれも当てはまりません。回答の「商品の到着から30日以内で、未開封のものに限り返品できます。」は、参考情報の「返品は商品の到着から30日以内に受け付けます。未開封の商品に限ります。」と一致しています。期限と未開封の条件の両方が正しく書かれ、参考情報にない内容も含まれていないため、規則5に当てはまります。送料についての記載がないことは、採点規則上の減点対象ではありません。
 b 人=4 判定=4 一致 apiKeySource=none
-  reason: 当てはまる規則は4点です。回答の「商品の到着から30日以内なら返品できます。」は、参考情報の「商品の到着から30日以内に受け付けます」と期限が一致しており、1点（食い違い）にも、3点（期限の記載なし）にも当てはまりません。また、参考情報に無い事実も書いていないため2点にも当たりません。一方で、参考情報にある「未開封の商品に限ります」という条件が回答には含まれていないため、5点の条件（期限と未開封の条件の両方）を満たしません。よって4点です。
+  reason: 規則1（参考情報と食い違う記述）には当たりません。回答の「商品の到着から30日以内なら返品できます」は参考情報の「商品の到着から30日以内に受け付けます」と一致しています。規則2（参考情報にない事実の記述）にも当たりません。規則3（返品期限の未記載）にも当たりません。期限は書かれています。規則4に当たります。期限は正しいものの、参考情報にある「未開封の商品に限ります」という条件が回答に含まれていません。回答全体が「30日以内なら返品できます」と条件なしで述べているため、この条件の欠落が判定の根拠です。
 c 人=3 判定=3 一致 apiKeySource=none
-  reason: 規則3が当てはまります。回答「未開封の商品なら返品できます。」は、参考情報にある「商品の到着から30日以内」という返品の期限を書いていません。規則1(食い違い)と規則2(参考情報に無い事実の記載)には当てはまらず、未開封の条件は正しく書かれているものの、期限が抜けているため規則4・5にも該当しません。規則は1から順に当てはめるので、点数は3です。
+  reason: 規則1（参考情報との食い違い）には当たりません。回答の「未開封の商品なら返品できます。」は参考情報の「未開封の商品に限ります」と矛盾しません。規則2（参考情報にない事実の記述）にも当たりません。規則3に当たります。参考情報には「商品の到着から30日以内」という返品期限がありますが、回答はこの期限を書いていません。質問の「いつまでできますか」にも答えていないため、3点としました。
 d 人=2 判定=2 一致 apiKeySource=none
-  reason: 規則1（参考情報と食い違う記述）には当たりません。期限「到着から30日以内」と「未開封品」の条件はどちらも参考情報と一致しています。しかし規則2に当たります。回答の「返金は5営業日以内に振り込みます。」は、参考情報のどこにも書かれていない返金期間を事実として述べています。規則は上から順に当てはめるため、規則1に当たらない時点で、規則2に当たる本回答の点は2点になります。
+  reason: 規則1は当てはまりません。回答の「到着から30日以内」「未開封品」は参考情報と食い違っていません。しかし規則2に当てはまります。回答の「返金は5営業日以内に振り込みます。」は参考情報に書かれていないのに、事実として断定しています。規則は上から順に当てはめるため、規則2の2点とします。
 e 人=1 判定=1 一致 apiKeySource=none
-  reason: 規則1に該当します。参考情報では返品は「商品の到着から30日以内」ですが、回答は「購入から2週間以内なら返品できます」と書いており、期限の起算点と日数が参考情報と食い違っています。根拠となる文は「購入から2週間以内なら返品できます。」です。このため、規則2以降は確認せず1点としました。
+  reason: 規則1に該当します。参考情報では返品は「商品の到着から30日以内」ですが、回答は「購入から2週間以内なら返品できます」と書いており、起算日と期限の日数の両方が参考情報と食い違っています。
 人の採点との一致: 5/5
-total_cost_usd の合計（見積もり）: 0.0026
+total_cost_usd の合計（見積もり）: 0.0018
 ```
 
 5件とも、人の点と同じでした。どの `reason` も、当てはまった規則と根拠の文を挙げています。
@@ -299,17 +289,17 @@ total_cost_usd の合計（見積もり）: 0.0026
 
 ### 5回動かすと、点は同じで文面が変わる
 
-同じコマンドをさらに4回動かしました。5回とも、5件の点は1回目と同じでした。違ったのは `reason` の文面です。a の理由の書き出しは、1回目が「該当した規則: 5点」、2回目が「規則5に当てはまります」でした。
+同じコマンドをさらに4回動かしました。5回とも、5件の点は1回目と同じでした。違ったのは `reason` の文面です。a の理由の書き出しは、1回目が「規則1（食い違い）」、2回目が「規則5に当てはまります」でした。
 
 判定を比べるなら、点の数字で比べます。`reason` の文字列は、人が読んで確かめるために残しておくものです。
 
 ## 人の点と食い違ったら、先に reason を読む
 
-最初に書いた c の回答は、ログを残した6回のどれでも、人の点と食い違いました。ログを残していない通しの実行では、人の点と同じ3点の回も1回ありました。次の2行は、ログを残した1回目の出力にある c の行です。
+最初に書いた c の回答は、3回動かして3回とも、人の点と食い違いました。次の2行は、1回目の出力にある c の行です。
 
 ```text
 c 人=3 判定=2 不一致 apiKeySource=none
-  reason: 規則1は当てはまりません。回答は参考情報と食い違うことを書いていません。規則2に当てはまります。回答の「返品はお問い合わせフォームから受け付けています」は、参考情報に書かれていないことを事実として述べています。規則は上から順に適用するため、規則2で2点としました。なお、返品の期限（到着から30日以内）も未開封の条件も書かれていないため、規則3の要素もありますが、先に当てはまる規則2が優先されます。
+  reason: 規則2が当てはまります。回答の「返品はお問い合わせフォームから受け付けています。」は、参考情報に書かれていない受付方法を事実として述べています。参考情報には受付方法の記載がありません。規則1は、参考情報と食い違う記述がないため当てはまりません。規則は上から順に当てはめるため、規則3（期限を書いていない）よりも先に規則2が適用され、2点になります。回答は返品期限（30日以内）も未開封の条件も述べていません。
 ```
 
 人は「期限を書いていないので3点」と付けていました。判定は2点で、理由は「お問い合わせフォーム」が参考情報に無いことです。
@@ -344,29 +334,29 @@ node grade.ts rubric-vague.md
 
 | 回答 | 人の点 | 規則を書いた基準（5回） | 2行の基準（5回） |
 |---|---|---|---|
-| a | 5 | 5, 5, 5, 5, 5 | 5, 4, 5, 5, 5 |
-| b | 4 | 4, 4, 4, 4, 4 | 3, 3, 3, 3, 3 |
+| a | 5 | 5, 5, 5, 5, 5 | 5, 5, 5, 5, 5 |
+| b | 4 | 4, 4, 4, 4, 4 | 3, 4, 3, 3, 3 |
 | c | 3 | 3, 3, 3, 3, 3 | 2, 2, 2, 2, 2 |
 | d | 2 | 2, 2, 2, 2, 2 | 3, 3, 3, 3, 3 |
 | e | 1 | 1, 1, 1, 1, 1 | 1, 1, 1, 1, 1 |
 
-2行の基準の出力の最後は、4回が「人の採点との一致: 2/5」、1回が「人の採点との一致: 1/5」でした。終了コードは5回とも 1 です。
+2行の基準の出力の最後は、4回が「人の採点との一致: 2/5」、1回が「人の採点との一致: 3/5」でした。終了コードは5回とも 1 です。
 
-一致の件数は、動かすたびに変わります。ログを残していない別の3回（同じ日、同じ SDK の版）では、2行の基準の一致は3回とも3件でした。この5件の見本で一致が4件以上になった回は、2行の基準では1回もありません。
+一致の件数は、動かすたびに変わります。この5件の見本で一致が4件以上になった回は、2行の基準では1回もありません。
 
-`reason` を読むと、2行の基準のモデルは自分で観点を足しています。b の理由には「返品送料はお客様負担という情報も省略されています」とあり、送料が無いことも減点しました。質問は期限を聞いているだけなので、人の規則では送料を見ません。
+`reason` を読むと、2行の基準のモデルは自分で観点を足しています。ある回の b の理由には「返品送料がお客様負担であることも触れられていません」とあります。送料が無いことも不足として挙げていました。質問は期限を聞いているだけなので、人の規則では送料を見ません。
 
-d は、参考情報に無い返金の日数を書き足した回答です。ログを残した5回では、d はどれも3点で、期限が抜けただけの c の2点より上でした。ログを残していない3回で d が c より上になったのは、1回です。合わせて8回のうち6回で、根拠の無いことを書いた回答を、書かなかった回答より高く採点しました。
+d は、参考情報に無い返金の日数を書き足した回答です。5回とも d は3点で、期限が抜けただけの c の2点より上でした。根拠の無いことを書いた回答を、書かなかった回答より高く採点したことになります。
 
-サポートの回答としては、この順番は逆です。採点基準を書かずに渡すと、この5件では、モデルが自分の考える良い回答に向けて点を付けました。何を見たいかは、規則に書いて渡すしかありません。
+本文の規則では、d は c より下になります。2行の基準では、この順番が逆になりました。Haiku 5.5 に5件を5回ずつ採点させた結果では、規則を書いて渡した基準だけが人の点と合いました。見本を添えるなどほかの渡し方は、試していません。
 
 ## 料金はプランの利用枠から引かれる
 
-この記事のコードの実行は、読者自身の Claude プランの利用枠から引かれます（出典7）。Pro は月払いで月20ドルです（出典8）。
+この記事のコードの実行は、読者自身の Claude プランの利用枠から引かれます（出典6）。Pro は月払いで月20ドルです（出典7）。
 
-出力の `total_cost_usd の合計（見積もり）: 0.0026` は、SDK が定価で換算した見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典2）。プランで動かした分の請求額とは別の数字です。
+出力の `total_cost_usd の合計（見積もり）: 0.0018` は、SDK が定価で換算した見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典2）。プランで動かした分の請求額とは別の数字です。
 
-API キーで使う場合、Haiku 5.5 は100万トークンあたり入力0.10ドル、出力0.50ドルです（出典12）。これはプロンプトが10万トークン以下のときの単価です（出典12）。
+API キーで使う場合、Haiku 5.5 は100万トークンあたり入力0.10ドル、出力0.50ドルです（出典11）。これはプロンプトが10万トークン以下のときの単価です（出典11）。
 
 ## 採点を任せる前に決めておくこと
 
@@ -387,14 +377,11 @@ Anthropic の例のコードには、回答を作ったモデルとは別のモ�
 | 3 | Modifying system prompts | https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts | 2026-11-10 |
 | 4 | Quickstart (Agent SDK) | https://code.claude.com/docs/en/agent-sdk/quickstart | 2026-11-10 |
 | 5 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | 2026-11-10 |
-| 6 | Legal and compliance (Claude Code) | https://code.claude.com/docs/en/legal-and-compliance | 2026-11-10 |
-| 7 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
-| 8 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
-| 9 | Get structured output from agents | https://code.claude.com/docs/en/agent-sdk/structured-outputs | 2026-11-10 |
-| 10 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
-| 11 | @anthropic-ai/claude-agent-sdk（npm registry） | https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk | 2026-11-10 |
-| 12 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-10 |
+| 6 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
+| 7 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
+| 8 | Get structured output from agents | https://code.claude.com/docs/en/agent-sdk/structured-outputs | 2026-11-10 |
+| 9 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
+| 10 | @anthropic-ai/claude-agent-sdk（npm registry） | https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk | 2026-11-10 |
+| 11 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-10 |
 
-講座の次の記事では、回答を作る前の段階にある検索の結果を、Recall@k と MRR で測ります。[次の記事](/posts/rag-retrieval-eval-recall-mrr)に進んでください。
-
-AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-11 に実際に実行して確認しています。

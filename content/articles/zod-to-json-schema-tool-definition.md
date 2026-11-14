@@ -4,7 +4,7 @@ slug: "zod-to-json-schema-tool-definition"
 description: "zod 4.6.7 の z.toJSONSchema で、zod のスキーマを JSON Schema に変換します。変換した結果は、Claude API のツール定義の input_schema に入れます。io の指定で必須の項目が変わる点と、変換できない型の扱いを、API キーを使わずに動かした出力付きで書いています。"
 tags: ["構造化出力", "zod", "TypeScript"]
 main_keyword: "構造化出力"
-target_query: null
+target_query: "zod json schema"
 course_step: 2
 cost_estimate: "記事のコードは API を呼ばないので無料です。作ったツール定義を Claude API に送ると、ツールの名前、説明、スキーマが入力トークンとして料金に数えられます。"
 run_environment: "Node.js 22.22.0、zod 4.6.7、Anthropic SDK 1.3.0、tsc 7.0.2"
@@ -55,7 +55,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 Claude API のツール定義に書く `input_schema` は、zod のスキーマから作れます。使うのは zod v4 の `z.toJSONSchema()` です。変換のときに `{ io: "input" }` を渡すと、`.default()` の項目は必須の一覧から外れます。モデルにとっては、省略してよい項目として伝わります。
@@ -420,8 +420,6 @@ fixed: string date
 zod のスキーマ1つから、ツール定義の `input_schema` と、返ってきた入力の検証の両方ができました。`io: "input"` を付けると、`.default()` の項目は省略できる項目としてモデルに伝わります。
 
 迷うのは、strict を使うかどうかです。strict を付けると入力の形は保証されますが、`limit` の上限のような数の制約はスキーマに書けません。上限は zod の検証に任せて strict を付けるか、strict を付けずに上限もモデルに見せるか。あなたのツールなら、どちらにしますか。
-
-次に読む記事は[JSON.parse のエラー](/posts/llm-json-parse-error-fix)です。
 
 ## 出典
 

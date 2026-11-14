@@ -11,7 +11,7 @@ const cases = [
   { name: "D どちらも指定なし", tools: false, system: false },
 ];
 for (const c of cases) {
-  const options: Options = { model: "haiku", maxTurns: 1 };
+  const options: Options = { model: "haiku", maxTurns: 1, settingSources: [], strictMcpConfig: true }; // 手元の設定ファイルと CLAUDE.md、claude.ai のコネクタのツールを読み込まない
   if (c.tools) options.tools = [];
   if (c.system) options.systemPrompt = INSTRUCTION;
   const prompt = c.system ? body : `次の${INSTRUCTION}\n${body}`;

@@ -1,0 +1,14 @@
+date: 2026-11-12T01:02:45Z
+cwd: <work>/llm-judge
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322
+--- output (stdout+stderr) ---
+
+added 105 packages, and audited 106 packages in 18s
+
+36 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+--- exit=0

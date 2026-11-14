@@ -1,0 +1,11 @@
+date: 2026-11-12T01:03:01Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: npm ls @anthropic-ai/claude-agent-sdk && wc -c stderr.txt
+--- output (stdout+stderr) ---
+agent-limits@1.0.0 <work>/agent-limits
+└── @anthropic-ai/claude-agent-sdk@0.3.322
+
+  129301 stderr.txt
+--- exit=0

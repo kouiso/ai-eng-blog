@@ -33,3 +33,11 @@
 - main_keyword「RAG」は、`rag-bm25-search-typescript`（BM25 の検索器を作る）、`rag-hybrid-search-rrf`（BM25 とベクトル検索を RRF で合わせる）、`rag-local-embeddings-transformers-js`（FAQ 8件を手元の埋め込みモデルでベクトルにして検索する）の3本。`rag-retrieval-eval-recall-mrr` は main_keyword「LLM 評価」で、検索の結果を Recall@k と MRR で測る記事。
 - 「チャンク」の語は、17本のうち `rag-local-embeddings-transformers-js` の1件（73行目、この記事へ戻るリンクの文）だけで、ほかの16本は0件。`rag-hybrid-search-rrf`（132〜134行目）と `rag-retrieval-eval-recall-mrr`（205行目）の「分け」は、文を `Intl.Segmenter` で語に分ける話で、文書をチャンクに分ける話ではない。
 - 日本語の文書をチャンクに分ける方法（やり方）に答える記事は、この記事のほかに無い。表記ゆれの範囲でも重ならない。17本の `target_query` はすべて null。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-rag.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: 日本語の文書を見出し、文、文字数でチャンクに分ける記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

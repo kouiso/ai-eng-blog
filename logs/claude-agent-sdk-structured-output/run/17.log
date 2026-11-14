@@ -1,0 +1,15 @@
+date: 2026-11-11T10:57:15Z (file mtime of the captured output; exploratory run made before extra/run-all.sh)
+cwd: <scratch>/exp
+node: v22.23.4 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node e1b.ts   (= code/extra/explore-without-settings.ts: no `settings` line, maxTurns: 1)
+note: connector tool names are replaced by counts / <connector> so that the account's connectors are not published
+--- output (stdout+stderr, redacted) ---
+[init] apiKeySource=none tools=<801 names: StructuredOutput + 800 mcp__ tools from 17 claude.ai connectors>
+[tool_use] mcp__<connector>__<tool> {}
+[tool_result] is_error=true "Claude requested permissions to use mcp__<connector>__<tool>, but you haven't granted it yet."
+[result/error_max_turns] is_error=true num_turns=2 cost=0.5761141000000001
+errors: ["Reached maximum number of turns (1)"] terminal_reason: max_turns
+(followed by the SDK's thrown error "Claude Code returned an error result"; stack trace omitted)
+--- exit=not captured (output was piped through grep, whose status was recorded). Node.js printed its uncaught-exception trace ending with 'Node.js v22.23.4'.

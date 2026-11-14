@@ -1,0 +1,28 @@
+date: 2026-11-11T11:08:02Z
+cwd: <work>/structured-output
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node classify-zod-no-target.ts
+--- output (stdout+stderr) ---
+file://<work>/structured-output/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:155
+<line 9: one line of minified SDK source (127580 chars) printed by Node.js as error context, omitted from this log>
+<line 10: Node.js caret marker line under line 9 (1020 chars, spaces and ^), omitted from this log>
+
+Error: Claude Code process exited with code 1. stderr: Error: --json-schema is not a valid JSON Schema: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"
+    at vk.getProcessExitError (file://<work>/structured-output/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:155:106454)
+    at ChildProcess.n (file://<work>/structured-output/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:155:110694)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at _ (file://<work>/structured-output/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:155:99829)
+    at ChildProcess.<anonymous> (file://<work>/structured-output/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:155:100033)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12) {
+  telemetryMessage: 'Claude Code process exited with code 1',
+  errorClass: 'process_exited_nonzero',
+  exitCode: 1
+}
+
+Node.js v22.23.4
+--- exit=1

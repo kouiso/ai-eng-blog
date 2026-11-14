@@ -4,7 +4,7 @@ slug: "llm-eval-dataset-from-logs"
 description: "ログから LLM 評価用のテストケースを選び、JSONL に書き出すスクリプトを TypeScript で作ります。重複した質問をまとめ、カテゴリの割合に合わせて件数を決めます。スクリプトはモデルを呼ばないので、API キーは要りません。"
 tags: ["LLM 評価", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: null
+target_query: "llm テストケース作成"
 course_step: 6
 prev: "promptfoo-llm-eval-intro"
 next: null
@@ -49,7 +49,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 評価用のテストケースをログから手で写すと、同じ質問が何度も入り、問い合わせの多いカテゴリばかりが並びます。作るのは、ログの JSONL から重複した質問を除いてテストケースを選ぶ TypeScript のスクリプトです。件数はカテゴリの割合に合わせて決め、結果は `cases.jsonl` に書き出します。同じログからは何度実行しても同じテストケースが選ばれるので、Git で差分を見られます。

@@ -1,0 +1,27 @@
+blocks in article: 10 / expected: 10
+OK #1: bash cmd 10
+OK #2: text out 10
+OK #3: bash literal mkdir/cd + run/11 + run/12 command
+OK #4: text out 12
+OK #5: ts code stream.ts
+OK #6: bash cmd 13
+OK #7: text out 13
+OK #8: ts code timing.ts
+OK #9: bash cmd 14
+OK #10: text out 14
+OK run/09.log exit=0
+OK run/10.log exit=0
+OK run/11.log exit=0
+OK run/12.log exit=0
+OK run/13.log exit=0
+OK run/14.log exit=0
+OK run/15.log exit=0
+OK run/16.log exit=0
+OK run/17.log exit=0
+OK run/14.log contains 'apiKeySource=none'
+OK run/15.log contains 'apiKeySource=none'
+OK run/16.log contains 'tsc_exit=0'
+OK query() 2 / strictMcpConfig 2
+OK run/17.log strictMcpConfig=true runs=3 all mcp_servers=0 and apiKeySource=none
+ALL OK
+exit=0

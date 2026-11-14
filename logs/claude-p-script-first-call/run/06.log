@@ -1,0 +1,10 @@
+date: 2026-11-11T11:04:52Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/06-read-result.sh
+--- command ---
+jq -r '.result' answer.json
+--- output (stdout+stderr) ---
+TypeScriptの型注釈とは、変数・関数の引数や戻り値などに「この値はどの型である」と明示的に書き添える構文で、コンパイル時に型の整合性を検査するために使われます。
+--- exit=0

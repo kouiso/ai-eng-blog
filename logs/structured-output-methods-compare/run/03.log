@@ -1,0 +1,25 @@
+date: 2026-11-11T11:10:32Z
+cwd: <work>/structured-compare
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: npm init -y
+npm pkg set type=module
+--- output (stdout+stderr) ---
+Wrote to <work>/structured-compare/package.json:
+
+{
+  "name": "structured-compare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
+
+--- exit=0

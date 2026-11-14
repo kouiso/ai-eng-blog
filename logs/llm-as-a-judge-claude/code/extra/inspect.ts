@@ -23,11 +23,14 @@ for await (const message of query({
     systemPrompt: rubric,
     tools: [],
     settingSources: [],
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
     outputFormat: { type: "json_schema", schema },
   },
 })) {
   if (message.type === "system" && message.subtype === "init") {
-    console.log(`init model=${message.model} apiKeySource=${message.apiKeySource} tools=${JSON.stringify(message.tools)}`);
+    // MCP のツール名はアカウントのコネクタ名を含むので、名前は出さず数だけ出す
+    const builtin = message.tools.filter((t) => !t.startsWith("mcp__"));
+    console.log(`init model=${message.model} apiKeySource=${message.apiKeySource} tools=${JSON.stringify(builtin)} mcp_tools=${message.tools.length - builtin.length} mcp_servers=${message.mcp_servers.length}`);
   } else if (message.type === "assistant") {
     for (const block of message.message.content) {
       if (block.type === "tool_use") console.log(`assistant tool_use name=${block.name}`);

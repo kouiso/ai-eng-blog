@@ -19,6 +19,7 @@ providers:
       apiKeyRequired: false
       model: haiku
       max_turns: 1
+      strict_mcp_config: true # claude.ai のコネクタのツールを読み込まない
       custom_system_prompt: あなたは問い合わせの窓口で、届いた文を分類します。
 
 defaultTest:

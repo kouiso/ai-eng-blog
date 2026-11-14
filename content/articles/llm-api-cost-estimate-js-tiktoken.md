@@ -4,12 +4,12 @@ slug: "llm-api-cost-estimate-js-tiktoken"
 description: "js-tiktoken 1.0.21 で入力のトークン数を手元で数えます。gpt-5.6-terra の単価と出力の上限から、1回あたりの料金の上限を出します。API キーを使わずに動かした出力付きです。"
 tags: ["LLM API", "OpenAI", "TypeScript"]
 main_keyword: "LLM API"
-target_query: null
+target_query: "openai api トークン 料金"
 course_step: 1
 cost_estimate: "記事のコードは API を呼ばないので無料です。gpt-5.6-terra の単価は、100万トークンあたり入力 2.00 ドル、出力 12.00 ドルです。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、js-tiktoken 1.0.21"
 verified_at: "2026-11-10"
-prev: "llm-api-streaming-typescript"
+prev: "claude-agent-sdk-streaming"
 next: "llm-api-429-retry-sdk-mock"
 sources:
   - url: "https://developers.openai.com/api/docs/pricing"
@@ -52,7 +52,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 OpenAI API の1回の料金は、入力と出力のトークン数に、それぞれの単価を掛けた合計です。入力のトークン数は、js-tiktoken を使うと API キーなしで手元で数えられます。出力の数は送る前にはわからないので、自分で決めた上限で見積もります。この記事のコードで gpt-5.6-terra の上限を出すと、1行目は次のとおりでした。
@@ -65,7 +65,7 @@ OpenAI API の1回の料金は、入力と出力のトークン数に、それ�
 
 対象は、JS か TypeScript で何か作ったことがあり、LLM の API を呼ぶ前に料金を知りたい人です。書き写すコードは4ファイルで、合わせて73行になります。
 
-講座の前の記事は[ストリーミング表示](/posts/llm-api-streaming-typescript)です。
+講座の前の記事は[ストリーミング表示](/posts/claude-agent-sdk-streaming)です。
 
 ## 料金は入力と出力のトークン数で決まる
 
@@ -299,8 +299,6 @@ Claude のトークン数を事前に知る方法は、Anthropic のトークン
 ## まとめ
 
 手元に、入力のトークン数を数えて料金の上限を出す `estimate.ts` ができました。単価の2つの数字を書き換えれば、ほかのモデルの見積もりにも使えます。あなたのアプリでは、1回のリクエストの出力に何トークンまで払えますか。
-
-講座の次の記事は[429 エラーとリトライ](/posts/llm-api-429-retry-sdk-mock)です。
 
 ## 出典
 

@@ -4,7 +4,7 @@ slug: "rag-local-embeddings-transformers-js"
 description: "Transformers.js で、埋め込みモデル multilingual-e5-small を手元で動かします。FAQ 8件を384次元のベクトルにして検索します。API キーも有料のサービスも使いません。実際に出たスコアと、関係のない質問でもスコアが0.78前後になる例を載せています。"
 tags: ["RAG", "埋め込み", "Transformers.js", "TypeScript"]
 main_keyword: "RAG"
-target_query: null
+target_query: "rag ベクトル検索"
 course_step: 3
 cost_estimate: "記事の手順は API キーも有料のサービスも使わないので無料です。モデルは Hugging Face のアカウントなしでダウンロードできました。埋め込みを有料の API で作ると、トークン数に応じた料金がかかります。"
 run_environment: "Node.js 22.22.0、@huggingface/transformers 4.3.2、Linux x64"
@@ -67,7 +67,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 RAG の検索に使う埋め込みは、Transformers.js を使えば手元の Node.js で作れます。モデルは多言語に対応した multilingual-e5-small で、API キーは要りません。この記事では、FAQ 8件と質問をベクトルにして、近い順に並べるところまで TypeScript で書きます。
@@ -422,8 +422,6 @@ Voyage AI の voyage-4-lite は、100万トークンあたり $0.02 です（出
 - `count-tokens.ts` と同じ方法で数え、文書が512トークンに収まっているか
 
 関係のない質問を見分けるには、自分のデータでスコアの下限を測りますか。それとも、回答を作るモデルに「わかりません」と答えさせますか。
-
-講座の次の記事では、検索した文書を Claude に渡し、出典つきで回答させます。[次の記事](/posts/rag-answer-with-citations-claude)に進んでください。
 
 ## 出典
 

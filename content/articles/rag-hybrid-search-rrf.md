@@ -4,13 +4,13 @@ slug: "rag-hybrid-search-rrf"
 description: "BM25 とベクトル検索の結果を、順位の逆数を足す RRF で1つに合わせる方法を TypeScript で書きます。架空の FAQ 10件で実行した結果を載せます。合わせて正しい文書が1位になる質問と、片方の検索が当てた文書が上位から外れる質問の両方です。外れた文書は、BM25 の下限を上げると1位に戻りました。"
 tags: ["RAG", "ハイブリッド検索", "RRF", "TypeScript"]
 main_keyword: "RAG"
-target_query: null
+target_query: "rag ハイブリッド検索"
 course_step: 3
 cost_estimate: "記事のコードは手元で動き、API を呼ばないので無料です。埋め込みモデルは Hugging Face からログインせずにダウンロードできます。検索結果を Claude に渡して回答させると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4。@huggingface/transformers 4.3.2。埋め込みモデルは Xenova/multilingual-e5-small（q8）。型の確認は TypeScript 7.0.2。"
 verified_at: "2026-11-10"
 prev: "rag-answer-with-citations-claude"
-next: "ai-agent-tool-use-loop-typescript"
+next: "ai-agent-custom-tools-agent-sdk"
 sources:
   - url: "https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf"
     title: "Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods"
@@ -58,7 +58,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 BM25 とベクトル検索の結果は、スコアを足さずに順位で合わせます。RRF は、文書ごとに `1 / (60 + 順位)` を足して並べ直す計算です。TypeScript では、型の定義を含めて15行のファイル1つで書けます。
@@ -522,8 +522,6 @@ BM25 のスコアの絶対値は、RRF に渡した時点で消えます。弱�
 - 助詞だけで一致した文書の BM25 のスコアを出し、下限をその最高値より上に置いたか
 - 片方の検索だけが1位にした文書が、合わせた結果で何位になったかを確かめたか
 - 同点のとき、どちらの検索の順を優先するかを決めてあるか
-
-講座では、次の回から AI エージェントを扱います。続きは[次の記事](/posts/ai-agent-tool-use-loop-typescript)です。
 
 ## 出典
 

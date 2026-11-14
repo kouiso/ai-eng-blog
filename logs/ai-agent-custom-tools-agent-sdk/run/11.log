@@ -1,0 +1,44 @@
+date: 2026-11-11（時刻は記録していない。run/01〜10 より前の試作の実行）
+cwd: <work>/custom-tools（試作用の別フォルダ。依存は run/04 と同じ 0.3.322 と zod 4.6.7）
+node: v22.23.4 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node shop-agent.ts（試作の版。記事の版との違いは2点。strictMcpConfig の行が無い。prompt の末尾が「表や太字を使わずに3文以内で」の無い「…税込みの合計金額を答えてください。」で、result の行で result の文字列も表示していた）
+note: 実行時の出力を code/extra/redact-mcp-tools.py に通してから保存した。claude.ai のコネクタのツール名はアカウントの情報なので、件数（other_mcp_tools_hidden）だけを残している。終了コードは 0 だった。
+--- output (stdout+stderr, redacted) ---
+[system/init] apiKeySource=none tools_total=758 other_mcp_tools_hidden=756 tools=mcp__shop__calculate_total,mcp__shop__get_product
+[assistant/tool_use] mcp__shop__get_product {"name":"ノート"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ノート\",\"price\":180,\"stock\":12}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"ボールペン"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ボールペン\",\"price\":120,\"stock\":2}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"消しゴム"}
+[user/tool_result] is_error=true "「消しゴム」は取り扱っていません。扱っている商品: ノート、ボールペン"
+[assistant/tool_use] mcp__shop__calculate_total {"lines":[{"unitPrice":180,"quantity":2},{"unitPrice":120,"quantity":2}]}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"subtotal\":600,\"total\":660}"}]
+[assistant/text] 買える分の税込み合計は **660円** です。
+
+| 商品 | 希望数 | 在庫 | 購入数 | 税抜き単価 | 小計(税抜き) |
+|---|---|---|---|---|---|
+| ノート | 2冊 | 12 | 2冊 | 180円 | 360円 |
+| ボールペン | 3本 | 2 | **2本** | 120円 | 240円 |
+| 消しゴム | 1個 | – | **0個** | – | – |
+
+- **ボールペン**は在庫が2本のため、3本のうち2本だけ購入できます。
+- **消しゴム**は取り扱いがないため、購入できません。
+
+税抜き合計600円に消費税10%を加えた**660円**が、買える分の合計金額です。
+[result/success] num_turns=5
+result: 買える分の税込み合計は **660円** です。
+
+| 商品 | 希望数 | 在庫 | 購入数 | 税抜き単価 | 小計(税抜き) |
+|---|---|---|---|---|---|
+| ノート | 2冊 | 12 | 2冊 | 180円 | 360円 |
+| ボールペン | 3本 | 2 | **2本** | 120円 | 240円 |
+| 消しゴム | 1個 | – | **0個** | – | – |
+
+- **ボールペン**は在庫が2本のため、3本のうち2本だけ購入できます。
+- **消しゴム**は取り扱いがないため、購入できません。
+
+税抜き合計600円に消費税10%を加えた**660円**が、買える分の合計金額です。
+exit=0
+--- exit=0

@@ -4,7 +4,7 @@ slug: "mcp-inspector-debug"
 description: "MCP Inspector 2.13.0 の CLI と画面で、自作の MCP サーバーのツールを調べます。数字だけの引数が数値で送られる落とし穴と、終了コードの読み方も実行結果付きで書いています。"
 tags: ["MCPサーバー", "MCP Inspector", "TypeScript"]
 main_keyword: "MCPサーバー"
-target_query: null
+target_query: "mcp inspector 使い方"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには Claude Code が要ります。Claude Code は、Pro、Max などのプランか Console のアカウント、または Amazon Bedrock、Microsoft Foundry などの API の提供元を通して使えます。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、MCP Inspector 2.13.0、SDK 1.32.2、zod 4.6.7、Linux x86_64（型の確認は TypeScript 7.0.2）"
@@ -52,7 +52,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 MCP Inspector は、MCP サーバーのテストとデバッグに使う公式の開発ツールです（出典1）。CLI モードなら、ツールの一覧も呼び出しの結果も、1行のコマンドで JSON として返ります。成否を表すのは終了コードです（出典3）。手元では、API キーを使わず、LLM も通さずに、自作のサーバーのツールを呼べました。この記事では、2.13.0 の CLI と、ブラウザで開く画面の両方で、文字数を数えるツールを持つサーバーを調べます。
@@ -379,7 +379,7 @@ Node.js v22.22.0
 1
 ```
 
-最後の JSON にあるのは `Connection closed` の一言で、終了コードは1です。原因は、その上にある Node.js のエラー `Cannot find module` のほうに書かれています。終了コードが1で終わったら、JSON の行より上を読んでください。ほかの原因は[つながらないときの記事](/posts/mcp-connection-closed-fix)で扱います。
+最後の JSON にあるのは `Connection closed` の一言で、終了コードは1です。原因は、その上にある Node.js のエラー `Cannot find module` のほうに書かれています。終了コードが1で終わったら、JSON の行より上を読んでください。
 
 ## 5. 画面で調べるときは --cli を外して起動する
 
@@ -439,7 +439,7 @@ URL には、起動のたびに作られるトークンが付いています（�
 
 直したサーバーは、Claude Code に登録し直す前に CLI で1回呼んでください。終了コードが0で、結果の JSON が思ったとおりなら、サーバーの側の確認は済みです。あなたのサーバーのツールに、数字だけの文字列を受け取る引数はいくつありますか。
 
-講座の次の記事では、ツール以外の機能である Resources と Prompts を公開します。`resources/list` と `prompts/list` も、CLI で呼べます（出典3）。[次の記事](/posts/mcp-server-resources-prompts)でも、この手順を使ってください。
+`resources/list` と `prompts/list` も、CLI で呼べます（出典3）。
 
 ## 出典
 

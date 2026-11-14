@@ -29,3 +29,11 @@
 ## ANTHROPIC_API_KEY
 
 `unset`（2026-11-10、`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset`。`run/01.log`）。モデルを呼ぶコードはオーナー自身の Claude プランで動かした（スキル「Claude プランで動かす記事（Agent SDK、claude -p）」）。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-llm-eval.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: promptfoo を設定ファイル1つで動かす入門記事で、この検索の導入にあたります。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

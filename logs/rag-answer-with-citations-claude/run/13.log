@@ -1,0 +1,22 @@
+date: 2026-11-11T11:06:04Z
+cwd: <work>/rag-citations
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node ask.ts "返品できる期間は？"
+--- output (stdout+stderr) ---
+apiKeySource: none tools: StructuredOutput
+渡した資料: 1=returns 2=points
+{
+  "answerable": true,
+  "answer": "返品は、商品の到着から30日以内に受け付けます。",
+  "citations": [
+    {
+      "chunk": 1,
+      "quote": "返品は、商品の到着から30日以内に受け付けます。"
+    }
+  ]
+}
+検証: OK
+num_turns=2 total_cost_usd=0.00009293
+--- exit=0

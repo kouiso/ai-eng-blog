@@ -1,0 +1,10 @@
+date: 2026-11-11T11:04:46Z
+cwd: <work>
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/02-claude-version.sh
+--- command ---
+claude --version
+--- output (stdout+stderr) ---
+2.1.322 (Claude Code)
+--- exit=0

@@ -1,0 +1,13 @@
+date: 2026-11-12T01:02:13Z
+cwd: <work>/key-check
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code)
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY (shell): unset
+command: node --env-file=.env check-auth.ts
+--- output (stdout+stderr) ---
+apiKeySource: ANTHROPIC_API_KEY
+assistant error: authentication_failed
+result: success is_error=true
+Invalid API key · Fix external API key
+thrown: Claude Code returned an error result: Invalid API key · Fix external API key
+--- exit=0

@@ -18,7 +18,7 @@ const server = createServer((req, res) => {
   res.end(JSON.stringify({ id: "msg_mock", type: "message", role: "assistant", model: "claude-opus-5-5", content: [{ type: "text", text: "mock: ok" }], stop_reason: "end_turn", stop_sequence: null, usage: { input_tokens: 1, output_tokens: 1 } }));
 }).listen(4011, "127.0.0.1");
 
-const client = new Anthropic({ apiKey: "dummy-key-not-sent-anywhere", baseURL: "http://127.0.0.1:4011", maxRetries: 2 });
+const client = new Anthropic({ apiKey: "dummy-key", baseURL: "http://127.0.0.1:4011", maxRetries: 2 });
 const startedAt = Date.now();
 const message = await client.messages.create(
   { model: "claude-opus-5-5", max_tokens: 64, messages: [{ role: "user", content: "こんにちは" }] },

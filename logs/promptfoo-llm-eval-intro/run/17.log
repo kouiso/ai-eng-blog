@@ -1,0 +1,45 @@
+date: 2026-11-11T17:05:16-08:00
+cwd: <work>
+node: v22.23.4  npm: 10.9.9
+ANTHROPIC_API_KEY: unset
+$ npx promptfoo eval --no-share -o results.jsonl
+echo $?
+----
+Starting evaluation eval-GIb-2026-11-12T01:05:19
+Running 6 test cases (up to 4 at a time)...
+
+┌──────────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────────────────────┐
+│ inquiry                      │ sessionId                    │ [anthropic:claude-agent-sdk] │ [anthropic:claude-agent-sdk] │
+│                              │                              │ 形の指定なし                 │ 形の指定あり                 │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 先月の請求額が2回引き落とさ… │ <session-id>                 │ [FAIL] **分類: billing**     │ [PASS] billing               │
+│                              │                              │ 理由:                        │                              │
+│                              │                              │ 請求額が2回引き落とされたと… │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 保存ボタンを押すと画面が真…  │ <session-id>                 │ [FAIL] **bug**               │ [PASS] bug                   │
+│                              │                              │ 「保存ボタンを押すと画面が…  │                              │
+│                              │                              │ billing                      │                              │
+│                              │                              │ ではなく、具体的な問い合わ…  │                              │
+│                              │                              │ other でもありません。       │                              │
+├──────────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────────────────────┤
+│ 御社のロゴを講演のスライド…  │ <session-id>                 │ [FAIL] **分類: other**       │ [PASS] other                 │
+│                              │                              │ この問い合わせは、ロゴの使…  │                              │
+└──────────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────────────────────┘
+✓ Eval complete (ID: eval-GIb-2026-11-12T01:05:19)
+
+» View results: promptfoo view
+» Feedback: https://promptfoo.dev/feedback
+
+Total Tokens: 8,185
+  Provider: 8,185 (7,841 prompt, 344 completion, 48 reasoning)
+
+Results:
+  ✓ 3 passed (50.00%)
+  ✗ 3 failed (50.00%)
+  0 errors (0%)
+Duration: 6s (concurrency: 4)
+
+Writing output to results.jsonl
+100
+----
+exit=0

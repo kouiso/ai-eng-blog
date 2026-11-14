@@ -1,4 +1,4 @@
-## writing-lint v2: zod-to-json-schema-tool-definition.md (type=article, register=standard, 446行/192文)
+## writing-lint v2: zod-to-json-schema-tool-definition.md (type=article, register=standard, 444行/191文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

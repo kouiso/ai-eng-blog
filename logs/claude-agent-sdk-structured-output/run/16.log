@@ -1,0 +1,11 @@
+date: 2026-11-11T11:08:48Z
+cwd: <work>/structured-output
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node connectors-check.ts
+--- output (stdout+stderr) ---
+[system/init] apiKeySource=none tools=1 mcp_tools=0 mcp_servers=0 has_StructuredOutput=true
+[assistant/tool_use] StructuredOutput
+[result/success] is_error=false num_turns=2 total_cost_usd=0.00009844000000000001
+--- exit=0

@@ -64,3 +64,4 @@ run 21 exit=0
 run 22 exit=0
 run 23 exit=0
 ALL OK
+exit=0

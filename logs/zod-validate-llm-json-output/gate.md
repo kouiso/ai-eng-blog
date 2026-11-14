@@ -1,5 +1,8 @@
 # gate: zod-validate-llm-json-output
 
+> 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+
+
 判定日: 2026-11-10。原稿: `content/articles/zod-validate-llm-json-output.md`（482行。行番号はすべてこの版）。2026-10-31 の 437行の版に対するレビューの指摘2件（enum の大文字小文字の勧めを引いたまま放置していた点、Structured Outputs の節が SDK の検証を無視して自前の検証が要ると言い過ぎていた点）を直し、コードを実行し直し、lint をかけ直して全項目を判定し直した。
 
 ## 判定の前に読んだもの
@@ -23,10 +26,10 @@
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | `lint/check-code-and-outputs.txt`（ALL OK）: 記事のコード8つ（`package.json`、`schema.ts`、`samples.ts`、`check.ts`、`lowercase-enum.ts`、`retry-message.ts`、`pretty-ja.ts`、`strip.ts`）が `code/` と1文字も違わず、記事のコマンド11個が記事にあり、記事の実行結果10個が `run/` から機械的に取り出したものと一致。実行は `code/extra/run-all.sh` で `run/01.log`〜`13.log`（2026-11-10 06:45 UTC、node v22.22.0 / npm 10.9.4、記事の手順の順、すべて exit=0）。型は `run/14.log`（tsc 7.0.2、`tsc_exit=0`、`lowercase-enum.ts` を含む）。外へ出ないことは `run/15.log`（`unshare -rn` の中で9つの `node` コマンドが exit=0、外への fetch は `EAI_AGAIN`）。API は呼ばない（`needs_api_key: false`、43行目） |
 | G05 | 断定した事実すべてに一次情報の出典があり、本文に出ている。料金の目安がある。`cost_estimate`、`run_environment`、`verified_at` が埋まり、ログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 466〜480行目に出典の表（9件、題名、URL、確認日。3と7は 2026-11-10 に読み直し、468行目に明記）。断定した文は（出典n）で表を引く。新しく足した断定は、86行目（`zodOutputFormat()` と `parse()` が外した制約を確かめる、`jsonSchemaOutputFormat()` は検証しない、出典7）、88行目3文目（出典7）、335行目（`toLowerCase`、`.pipe()`、出典3）、337行目（`.extend()` の上書き、出典3）、339行目（大文字小文字だけが違う候補を避ける、出典7）。どれも 2026-11-10 に取得した原文で確かめた（`sources.md` の「2026-11-10 の読み直し」と表）。実行結果を根拠にした文は `sources.md` 後半の表。料金は 447〜451行目で、記事の手順は無料（zod は MIT、出典6）、再依頼の文をモデルに送ると料金がかかり、Claude Haiku 5.5 は 100万トークンあたり入力 $0.10、出力 $0.50（10万トークン以下のプロンプト、出典9）。frontmatter 9〜11行目の `cost_estimate`、`run_environment: "Node.js 22.22.0、npm 10.9.4、zod 4.6.7"`（`run/*.log` の見出し `node: v22.22.0 / npm: 10.9.4` と `code/package.json` の `4.6.7` に一致）、`verified_at: "2026-11-10"`（最後の実行 `run/15.log` の日付） |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | 2026-11-10 に `content/articles/*.md` の frontmatter を読み直した（18本）。main_keyword「構造化出力」の記事は、この記事のほかに `zod-to-json-schema-tool-definition`（zod のスキーマから JSON Schema を作ってツール定義に使う）と `llm-json-parse-error-fix`（`JSON.parse` の失敗を直す）。どちらも講座の後ろの記事で、`safeParse` の issues の読み方には答えていない。選んだときの判定は `selection.md` |
-| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | リンクは本文にある。前: 53行目 `/posts/claude-structured-outputs-json`（frontmatter 12行目 `prev`）。次: 464行目 `/posts/zod-to-json-schema-tool-definition`（13行目 `next`）。前の記事は 2026-11-10 時点でも `content/articles/` に原稿が無い。次の記事の原稿は `status: draft` で、公開も予約もされていない。今この記事を公開すると2本ともリンク切れになる。公開済みか予約済みの記事は0本（`content/articles/` の18本はどれも `status: draft`）なので、関連記事への内部リンク（3本以上のとき）は対象外。リンク先の slug: `claude-structured-outputs-json`、`zod-to-json-schema-tool-definition` |
+| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | 2026-11-14 に #31 で判定し直した。公開の順（`content/plan.md` の「公開の順番」）で7番。本文の内部リンクは1件で、リンク先はすべて自分より前の順番: 53行目 `/posts/claude-agent-sdk-structured-output`（6番）。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。frontmatter は `prev: claude-agent-sdk-structured-output`、`next: zod-to-json-schema-tool-definition` のまま。次の記事への本文リンクは外した。公開時に既存記事が3本以上あるのに関連記事のリンクが無い。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 482行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。日付は最後の実行（`run/15.log`）と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 原稿と `logs/zod-validate-llm-json-output/` 全体（この gate.md と `run/` を除く）に `ANTHROPIC`、`sk-ant`、`token`、`password`、`secret`、`api_key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を `grep -rniI` でかけた。該当は、frontmatter の `needs_api_key`、本文の `max_tokens`、`selection.md` の環境変数の名前と `unset` の記録と slug `llm-api-cost-estimate-js-tiktoken`、`sources.md` の出典の引用（`max_tokens`、「100,000 tokens」）、`code/README.md` の作業場所の説明（scratchpad の語だけ、パスは無い）。`run/` は同じ語で `grep -rliI` をかけて該当ファイル0件（ログのコマンドは作業場所を `<work>`、コードの場所を `(code)` に置き換えて書いている、`code/extra/run-all.sh`）。値としての API キーやトークンは0件（コードはキーを使わない）。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分、名前の各語とメールのローカル部と数字の ID）、ユーザーの GitHub アカウント名、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）の12語を1語ずつ `grep -rliI` で原稿とログ全体にかけ、すべて0件 |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | 2026-11-10 時点でも `keywords/` に CSV が無い（README.md だけ）。`target_query` は null（7行目）。値は作っていない。CSV が届くまで下書きのまま止める |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-structured-output.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
 
 ## B. checklist.md の全項目（原文のまま）
 
@@ -84,7 +87,7 @@ G07 と G10 が NG なので、`status: draft` のまま止める。EmDash へ�
 ブロッカー（解消するまで下書き）:
 
 1. G10: `keywords/` に CSV が無い。`target_query` は null のまま、値は作らない（`selection.md`）。
-2. G07: 講座の前後の記事（`claude-structured-outputs-json`、`zod-to-json-schema-tool-definition`）が、公開も予約もされていない（前は原稿も無く、次は下書きの原稿だけがある）。前の記事 #6 は API キーが要る記事なので、`ANTHROPIC_API_KEY` が入るまで書けない。この記事より前に2本が公開か予約されるか、公開の時点で無いほうのリンクを外して frontmatter を null に戻すまで、公開に進めない。
+2. G07: 講座の前後の記事（`claude-agent-sdk-structured-output`、`zod-to-json-schema-tool-definition`）が、公開も予約もされていない（前も次も下書きの原稿だけがある）。この記事より前に2本が公開か予約されるか、公開の時点で無いほうのリンクを外して frontmatter を null に戻すまで、公開に進めない。
 
 ゲート外の制約:
 

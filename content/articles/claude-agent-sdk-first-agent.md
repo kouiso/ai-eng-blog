@@ -4,12 +4,12 @@ slug: "claude-agent-sdk-first-agent"
 description: "Claude Agent SDK の query() を、自分の Claude プランで API キーなしに動かします。init、assistant、user、result のメッセージの読み分け方を、実行結果つきで示します。"
 tags: ["AIエージェント", "Claude Agent SDK", "TypeScript"]
 main_keyword: "AIエージェント"
-target_query: null
+target_query: "claude agent sdk 使い方"
 course_step: 4
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、Linux x86_64（型の確認は TypeScript 7.0.2）"
-verified_at: "2026-11-10"
-prev: "ai-agent-tool-use-loop-typescript"
+run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"
+verified_at: "2026-11-11"
+prev: "ai-agent-custom-tools-agent-sdk"
 next: "ai-agent-max-turns-budget-limit"
 sources:
   - url: "https://code.claude.com/docs/en/agent-sdk/overview"
@@ -23,9 +23,6 @@ sources:
     accessed: 2026-11-10
   - url: "https://code.claude.com/docs/en/authentication"
     title: "Authentication (Claude Code)"
-    accessed: 2026-11-10
-  - url: "https://code.claude.com/docs/en/legal-and-compliance"
-    title: "Legal and compliance (Claude Code)"
     accessed: 2026-11-10
   - url: "https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan"
     title: "Use the Claude Agent SDK with your Claude plan"
@@ -49,28 +46,28 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-13
 ---
 
 Agent SDK は、Claude Code のツールとループを自分のコードで動かす SDK です（出典1）。`query()` に指示を渡せば、エージェントが動きます。
 
 自分の Claude プランでログインしていれば、API キーは要りません。実際に動かすと、最初に届く init メッセージの `apiKeySource` が `"none"` でした。
 
-この記事では、プランのログインで2本のエージェントを動かし、流れてくるメッセージの種類を読み分けます。コードは TypeScript で、2本で65行です。
+この記事では、プランのログインで2本のエージェントを動かし、流れてくるメッセージの種類を読み分けます。コードは TypeScript で、2本で67行です。
 
-ループの自作は[前の記事](/posts/ai-agent-tool-use-loop-typescript)です。講座では、この記事の1つ前に当たります。Agent SDK は、そのループとツールの実行をまるごと引き受けます。自分で書くのは、どのツールを渡すかの指定と、届いたメッセージの読み方です。
+自作のツールの渡し方は[前の記事](/posts/ai-agent-custom-tools-agent-sdk)です。この記事では、組み込みのツールで `query()` を動かします。ループとツールの実行は SDK が引き受けます。自分で書くのは、どのツールを渡すかの指定と、届いたメッセージの読み方です。
 
 ## 動かすのに要る Node.js、プラン、ログイン
 
 用意するのは Node.js、Claude のプラン、そのプランでログインした Claude Code です。
 
-- Node.js 22.18.0 以上（出典10）。`.ts` のファイルを `node` で直接動かすためです。検証は 22.22.0 で行いました。
-- Claude の Pro、Max、Ultra のどれか。Free には Claude Code が含まれません（出典7）。Pro は月払いで月20ドルです（出典7）。
+- Node.js 22.18.0 以上（出典9）。`.ts` のファイルを `node` で直接動かすためです。検証は 22.23.4 で行いました。
+- Claude の Pro、Max、Ultra のどれか。Free には Claude Code が含まれません（出典6）。Pro は月払いで月20ドルです（出典6）。
 - `claude auth login` でプランのアカウントにログインした Claude Code（出典4）
 
 SDK は Claude Code の本体を npm の依存として同梱しています（出典2）。ログインの手順は Claude Code の公式の手順に従ってください（出典4）。
 
-検証に使った環境は、Claude プランでログイン済みの Claude Code が入った Linux でした。ログインの操作そのものは、この記事の検証では実行していません。
+検証には、Claude プランでログイン済みの Claude Code が入った Mac を使いました。ログインの操作そのものは、この記事の検証では実行していません。
 
 環境変数 `ANTHROPIC_API_KEY` は、プランのログインより先に使われます（出典4）。プランで試すなら、先に外れていることを確かめます。
 
@@ -83,14 +80,6 @@ unset
 ```
 
 `set` と出たら、`unset ANTHROPIC_API_KEY` で外してから進めてください（出典4）。
-
-### プランで動かしてよいのは、自分で試す範囲です
-
-プランのログインで Agent SDK を使うと、プランの利用枠から引かれます（出典6）。プランの利用枠は、Claude Code と Agent SDK を個人がふつうに使う前提で決まっています（出典5）。
-
-ほかの人に使わせるアプリかサービスに組み込むなら、話が変わります。そのときは Claude Console で発行した API キーで認証します（出典5）。
-
-自分のアプリで claude.ai のログインを提供することは、許可なしには認められていません（出典1）。利用者に代わってプランの認証情報で通信を中継することも禁止です（出典5）。この記事のコードは、自分のマシンで自分が試すためのものとして読んでください。
 
 ## npm install 1回で、Claude Code の本体も一緒に入る
 
@@ -106,7 +95,7 @@ npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322
 
 ```text
 
-added 105 packages, and audited 106 packages in 6s
+added 105 packages, and audited 106 packages in 15s
 
 36 packages are looking for funding
   run `npm fund` for details
@@ -114,7 +103,7 @@ added 105 packages, and audited 106 packages in 6s
 found 0 vulnerabilities
 ```
 
-0.3.322 は、2026-11-10 の時点で npm の最新版です（出典11）。`type` を `module` にすると、トップレベルで `await` を書けます（出典2）。
+0.3.322 は、2026-11-10 の時点で npm の最新版です（出典10）。`type` を `module` にすると、トップレベルで `await` を書けます（出典2）。
 
 ```bash
 npm pkg get type dependencies
@@ -129,7 +118,7 @@ npm pkg get type dependencies
 }
 ```
 
-Linux x64 では、SDK の隣に `claude-agent-sdk-linux-x64` が入ります。
+Apple シリコンの Mac では、`claude-agent-sdk-darwin-arm64` も入ります。
 
 ```bash
 ls node_modules/@anthropic-ai
@@ -137,11 +126,11 @@ ls node_modules/@anthropic-ai
 
 ```text
 claude-agent-sdk
-claude-agent-sdk-linux-x64
+claude-agent-sdk-darwin-arm64
 sdk
 ```
 
-この `linux-x64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。名前の末尾は OS と CPU ごとに違います（出典11）。Apple シリコンの Mac では `darwin-arm64` になります。x64 の Windows では `win32-x64` です。
+この `darwin-arm64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。名前の末尾は OS と CPU ごとに違います（出典10）。x64 の Linux では `linux-x64` になります。x64 の Windows では `win32-x64` です。
 
 `npm ci --omit=optional` のように optional を飛ばすと、本体が入りません（出典2）。CI で動かないときは、`claude-agent-sdk-` で始まるフォルダがあるかを先に見てください。
 
@@ -159,6 +148,7 @@ for await (const message of query({
     tools: [],
     maxTurns: 1,
     settingSources: [],
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
   },
 })) {
   if (message.type === "system" && message.subtype === "init") {
@@ -183,30 +173,27 @@ for await (const message of query({
 `hello.ts` として保存します。オプションの意味は次のとおりです。
 
 - `model: "haiku"` は、モデルの別名です。実行すると `claude-haiku-5-5` が使われました。
-- `tools: []` は、組み込みのツールをすべて外す指定です（出典8）。
+- `tools: []` は、組み込みのツールをすべて外す指定です（出典7）。
 - `maxTurns: 1` は、ターン数の上限です（出典3）。
-- `settingSources: []` は、手元の設定と CLAUDE.md を読まない指定です（出典8）。
+- `settingSources: []` は、手元の設定と CLAUDE.md を読まない指定です（出典7）。
 
-省いた場合は、`~/.claude/settings.json` などの設定がすべて読まれます（出典8）。手元の設定で結果が変わらないよう、この記事では空にしています。
+省いた場合は、ユーザーやプロジェクトの設定がすべて読まれます（出典7）。手元の設定で結果が変わらないよう、この記事では空にしています。
 
-Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典10）。Node.js 20.20.0 でも試しました。`ERR_UNKNOWN_FILE_EXTENSION` のエラーが出て、`hello.ts` は動きません。
+Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典9）。Node.js 20.20.0 でも試しました。`ERR_UNKNOWN_FILE_EXTENSION` のエラーが出て、`hello.ts` は動きません。
 
 ```bash
 node hello.ts
 ```
 
 ```text
-[active_goal]
-[autocompact_state]
 [system/init] model=claude-haiku-5-5 apiKeySource=none claude_code_version=2.1.322
 [rate_limit_event]
-[assistant/text] TypeScriptの型注釈とは、変数・関数の引数・戻り値などに「この値はどの型か」を明示的に書き加える構文（例：`let name: string = "太郎";`）であり、コンパイラがその型に基づいて値の使い方を検査できるようにするものです。
-[system/post_turn_summary]
-[result/success] num_turns=1 total_cost_usd=0.00036766
-result: TypeScriptの型注釈とは、変数・関数の引数・戻り値などに「この値はどの型か」を明示的に書き加える構文（例：`let name: string = "太郎";`）であり、コンパイラがその型に基づいて値の使い方を検査できるようにするものです。
+[assistant/text] TypeScriptの型注釈とは、変数・関数の引数・戻り値などに「この値はこの型である」と明示的に書き加える記述のことで、コンパイラがその型に基づいて型チェックを行えるようにするものです。
+[result/success] num_turns=1 total_cost_usd=0.0002985
+result: TypeScriptの型注釈とは、変数・関数の引数・戻り値などに「この値はこの型である」と明示的に書き加える記述のことで、コンパイラがその型に基づいて型チェックを行えるようにするものです。
 ```
 
-1問の質問に、7つのメッセージが届きました。このうち読むのは、次の表の種類です。
+1問の質問に、4つのメッセージが届きました。このうち読むのは、次の表の種類です。
 
 | メッセージ | 中に入っているもの |
 |---|---|
@@ -214,25 +201,25 @@ result: TypeScriptの型注釈とは、変数・関数の引数・戻り値な�
 | `assistant` | モデルの応答。文章かツールの呼び出し |
 | `result` | 最終の答え、ターン数、費用の見積もり |
 
-公式のページは、この3つを含む5種類を中心の種類として挙げています（出典3）。レート制限の状態のように、ループを動かすのに要らないイベントも届きます（出典3）。`[active_goal]` などの残り4つは、中心の5種類に入っていないので、読み飛ばしてかまいません。
+公式のページは、この3つを含む5種類を中心の種類として挙げています（出典3）。レート制限の状態のように、ループを動かすのに要らないイベントも届きます（出典3）。`[rate_limit_event]` は中心の5種類に入っていないので、読み飛ばしてかまいません。
 
 `assistant` の本文は `message.message.content` にあります（出典3）。`result` の文字列は、`subtype` が `success` のときにしかありません（出典3）。読む前に `subtype` を確かめます。
 
 ### apiKeySource が none なら、API キーは使われていない
 
-`apiKeySource` は、通信に使った認証の出どころです（出典8）。`ANTHROPIC_API_KEY` から読んだなら、その名前がそのまま入ります（出典8）。
+`apiKeySource` は、通信に使った認証の出どころです（出典7）。`ANTHROPIC_API_KEY` から読んだなら、その名前がそのまま入ります（出典7）。
 
-`"none"` は、API キーを使っていないという意味です（出典8）。claude.ai のログインでも Bearer トークンでも、`"none"` になります（出典8）。クラウドのプロバイダーで認証したときも同じです（出典8）。
+`"none"` は、API キーを使っていないという意味です（出典7）。claude.ai のログインでも Bearer トークンでも、`"none"` になります（出典7）。クラウドのプロバイダーで認証したときも同じです（出典7）。
 
 プランで動いているかを確かめるなら、Claude Code で `/status` を開きます（出典4）。今どの認証が使われているかが表示されます。
 
 ### total_cost_usd は請求額の見積もり
 
-`total_cost_usd=0.00036766` は、定価で換算した見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典8）。
+`total_cost_usd=0.0002985` は、定価で換算した見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典7）。
 
-プランのログインで動かした分は、プランの利用枠から引かれます（出典6）。SDK の数字は、使った量の目安として読んでください。
+2026-11-11 の時点で、プランのログインで動かした分は、プランの利用枠から引かれます（出典5）。SDK の数字は、使った量の目安として読んでください。
 
-API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典9）。これは10万トークン以下のプロンプトの単価で、出力は100万トークンあたり0.50ドルです（出典9）。
+API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典8）。これは10万トークン以下のプロンプトの単価で、出力は100万トークンあたり0.50ドルです（出典8）。
 
 ## ツールを渡すと、tool_use と tool_result が交互に届く
 
@@ -262,6 +249,7 @@ for await (const message of query({
     permissionMode: "dontAsk",
     maxTurns: 10,
     settingSources: [],
+    strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
   },
 })) {
   if (message.type === "assistant") {
@@ -289,30 +277,28 @@ for await (const message of query({
 
 `tools`、`allowedTools`、`permissionMode` は、それぞれ役割が違います。
 
-- `tools` は、モデルに見せるツールそのものを決めます（出典8）。ここに無いツールは呼べません。
+- `tools` は、モデルに見せるツールそのものを決めます（出典7）。ここに無いツールは呼べません。
 - `allowedTools` は、確認なしで実行してよいツールの一覧です（出典3）。
 - `permissionMode: "dontAsk"` にすると、確認が要る呼び出しはすべて断られます（出典3）。
 
 公式のページは、`dontAsk` の使いどころを、承認する人がいないエージェントとしています（出典3）。読み取りのツールしか見せず、それ以外は聞かずに断る組み合わせが、手元で試すには安全です。
-
-自作のツール関数の守り方は[別の記事](/posts/ai-agent-safe-file-tool)にあります。
 
 ```bash
 node agent.ts
 ```
 
 ```text
-[assistant/tool_use] Glob {"pattern":"**/tasks/**/*.md","path":"<work>/first-agent"}
-[user/tool_result] "tasks/blog.md\ntasks/review.md\ntasks/invoice.md"
+[assistant/tool_use] Glob {"pattern":"tasks/*.md"}
+[user/tool_result] "tasks/invoice.md\ntasks/blog.md\ntasks/review.md"
+[assistant/tool_use] Read {"file_path":"<work>/first-agent/tasks/invoice.md"}
+[user/tool_result] "1\t# 請求書を送る\n2\t締め切り: 2026-11-14\n3\t"
 [assistant/tool_use] Read {"file_path":"<work>/first-agent/tasks/blog.md"}
 [user/tool_result] "1\t# ブログ記事の下書き\n2\t締め切り: 2026-11-20\n3\t"
 [assistant/tool_use] Read {"file_path":"<work>/first-agent/tasks/review.md"}
 [user/tool_result] "1\t# PR をレビューする\n2\t締め切り: 2026-11-17\n3\t"
-[assistant/tool_use] Read {"file_path":"<work>/first-agent/tasks/invoice.md"}
-[user/tool_result] "1\t# 請求書を送る\n2\t締め切り: 2026-11-14\n3\t"
-[assistant/text] 締め切りが最も早いのは「請求書を送る」で、締め切りは2026-11-14です。
-[result/success] num_turns=5 total_cost_usd=0.00083577
-result: 締め切りが最も早いのは「請求書を送る」で、締め切りは2026-11-14です。
+[assistant/text] 請求書を送る（締め切り: 2026-11-14）
+[result/success] num_turns=5 total_cost_usd=0.00073444
+result: 請求書を送る（締め切り: 2026-11-14）
 ```
 
 `<work>` は作業フォルダの絶対パスで、ログを残すときに置き換えました。答えの「請求書を送る」と 2026-11-14 は、3つのファイルの中で最も早い締め切りと合っています。
@@ -323,17 +309,17 @@ result: 締め切りが最も早いのは「請求書を送る」で、締め切
 
 Messages API の SDK で自作するループでは、このやり取りを自分で書きます（出典1）。Agent SDK では、届いた `user` を読めば済みます。
 
-`result` の `num_turns=5` は、この実行で数えたターンの数です。ターンの数え方は、上限の話と一緒に次の記事で扱います。
+`result` の `num_turns=5` は、この実行で数えたターンの数です。ターンの数え方は、この記事では扱いません。
 
-`maxTurns: 10` は、ループが止まらなくなったときの上限として入れました。上限に達したあとに届く結果と例外も、同じ記事に回しています。
+`maxTurns: 10` は、ループが止まらなくなったときの上限として入れました。上限に達したあとに届く結果と例外も、この記事では扱いません。
 
-### 同じコードでも、ツールの引数と答えの文面は変わる
+### 同じコードでも、ツールの引数は変わる
 
-同じ `agent.ts` をもう一度動かすと、ツールを呼ぶ順番と回数は1回目と同じでした。違ったのは Glob の引数です。2回目は `{"pattern":"**/tasks/**/*.md"}` で、`path` がありません。最後の文の言い回しも少し変わりました。
+同じ `agent.ts` をもう一度動かすと、ツールを呼ぶ順番と回数は1回目と同じでした。違ったのは Glob の引数です。1回目は `{"pattern":"tasks/*.md"}` でした。2回目は `{"pattern":"tasks/**/*.md"}` です。
 
-どのツールをどの引数で呼ぶかは、毎回モデルが決めます。出力の文字列をそのまま比べるテストは、このコードには向きません。答えの中身を確かめたいなら、`result` から締め切りの日付を取り出して比べるほうが確実です。
+どのツールをどの引数で呼ぶかは、モデルが決めます。引数は実行ごとに変わりえます。出力の文字列をそのまま比べるテストは、このコードには向きません。答えの中身を確かめたいなら、`result` から締め切りの日付を取り出して比べるほうが確実です。
 
-見積もりは `0.00083577` のような桁の多い小数です。画面に出すときは `toFixed(4)` などで桁をそろえると読みやすくなります。
+見積もりも、2回で `0.00073444` と `0.00060191` に変わりました。どちらも桁の多い小数です。画面に出すときは `toFixed(4)` などで桁をそろえると読みやすくなります。
 
 ## SDK に任せたあとに残る判断
 
@@ -353,14 +339,11 @@ Messages API の SDK で自作するループでは、このやり取りを自�
 | 2 | Quickstart (Agent SDK) | https://code.claude.com/docs/en/agent-sdk/quickstart | 2026-11-10 |
 | 3 | How the agent loop works | https://code.claude.com/docs/en/agent-sdk/agent-loop | 2026-11-10 |
 | 4 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | 2026-11-10 |
-| 5 | Legal and compliance (Claude Code) | https://code.claude.com/docs/en/legal-and-compliance | 2026-11-10 |
-| 6 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
-| 7 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
-| 8 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-10 |
-| 9 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-10 |
-| 10 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
-| 11 | @anthropic-ai/claude-agent-sdk（npm） | https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk | 2026-11-10 |
+| 5 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-10 |
+| 6 | Claude の料金プラン | https://claude.com/pricing | 2026-11-10 |
+| 7 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-10 |
+| 8 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-10 |
+| 9 | Node.js v22.22.0 Modules: TypeScript | https://nodejs.org/docs/v22.22.0/api/typescript.html | 2026-11-10 |
+| 10 | @anthropic-ai/claude-agent-sdk（npm） | https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk | 2026-11-10 |
 
-[次の記事](/posts/ai-agent-max-turns-budget-limit)は、上限で止める回です。`maxTurns` と `maxBudgetUsd` で止めたときの結果と例外を扱います。
-
-AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-11 に実際に実行して確認しています。

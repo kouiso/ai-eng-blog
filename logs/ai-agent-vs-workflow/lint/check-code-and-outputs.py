@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """記事のコードブロックを順に取り出し、code/ のファイルと run/ のログ（command と出力）に1文字も違わず一致するかを確かめる。
 出力はログの末尾の改行1つだけを除いて比べる。
-エージェント版は書き直した版（code/agent.ts）で、出力は2回目の実行の run/21.log と比べる。"""
+エージェント版は書き直した版（code/agent.ts）で、出力は2回目の実行の run/31.log と比べる。
+2026-11-11 に settingSources: [] と strictMcpConfig: true を足して動かし直した3回目の実行（run/23〜35）と比べる。"""
 import re, sys, pathlib
 base = pathlib.Path(__file__).resolve().parent.parent
 art = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
@@ -14,33 +15,33 @@ def log(n):
     return cmd, out, code
 def f(name): return (base / "code" / name).read_text(encoding="utf-8")
 exp = [
-    ("run/02 command", log(2)[0] + "\n"),
-    ("run/02 output", log(2)[1]),
-    ("mkdir+cd + run/03 command + run/04 command", "mkdir vs-workflow\ncd vs-workflow\n" + log(3)[0] + "\n" + log(4)[0] + "\n"),
-    ("run/04 output", log(4)[1]),
-    ("run/05 command", log(5)[0] + "\n"),
-    ("run/05 output", log(5)[1]),
-    ("code/setup-tickets.sh (= run/06 command)", f("setup-tickets.sh")),
-    ("run/06 output", log(6)[1]),
+    ("run/23 command", log(23)[0] + "\n"),
+    ("run/23 output", log(23)[1]),
+    ("mkdir+cd + run/24 command + run/25 command", "mkdir vs-workflow\ncd vs-workflow\n" + log(24)[0] + "\n" + log(25)[0] + "\n"),
+    ("run/25 output", log(25)[1]),
+    ("run/26 command", log(26)[0] + "\n"),
+    ("run/26 output", log(26)[1]),
+    ("code/setup-tickets.sh (= run/27 command)", f("setup-tickets.sh")),
+    ("run/27 output", log(27)[1]),
     ("code/workflow.ts", f("workflow.ts")),
-    ("run/07 command", log(7)[0] + "\n"),
-    ("run/07 output", log(7)[1]),
-    ("run/10 output", log(10)[1]),
+    ("run/28 command", log(28)[0] + "\n"),
+    ("run/28 output", log(28)[1]),
+    ("run/29 output", log(29)[1]),
     ("code/agent.ts", f("agent.ts")),
-    ("run/21 command", log(21)[0] + "\n"),
-    ("run/21 output", log(21)[1]),
+    ("run/31 command", log(31)[0] + "\n"),
+    ("run/31 output", log(31)[1]),
 ]
 ok = True
-assert f("setup-tickets.sh").rstrip("\n") == log(6)[0], "setup-tickets.sh != run/06 command"
+assert f("setup-tickets.sh").rstrip("\n") == log(27)[0], "setup-tickets.sh != run/27 command"
 print(f"blocks in article={len(blocks)} expected={len(exp)}")
 if len(blocks) != len(exp): ok = False
 for i, (b, (name, e)) in enumerate(zip(blocks, exp), 1):
     same = b == e
     ok &= same
     print(f"{i:2d} {'OK ' if same else 'NG '} {name}")
-for n in range(1, 23):
+for n in range(1, 36):
     print(f"run/{n:02d}.log exit={log(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")
-# 2回目の実行（run/14〜18）の準備のコマンドが、記事のコマンド（1回目の run/02〜06）と同じか
-same2 = all(log(a)[0] == log(b)[0] for a, b in [(14, 2), (15, 3), (16, 4), (17, 5), (18, 6)])
-print("round2 setup commands == round1:", "OK" if same2 else "NG")
+# 2回目（run/14〜18）と1回目（run/02〜06）の準備のコマンドが、記事に載せた3回目（run/23〜27）と同じか
+same2 = all(log(a)[0] == log(b)[0] for a, b in [(14, 23), (15, 24), (16, 25), (17, 26), (18, 27), (2, 23), (3, 24), (4, 25), (5, 26), (6, 27)])
+print("round1/round2 setup commands == round3:", "OK" if same2 else "NG")

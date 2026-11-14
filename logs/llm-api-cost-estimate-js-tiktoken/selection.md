@@ -21,9 +21,17 @@
 
 外した候補と理由:
 
-- course_step 1 の `claude-api-typescript-first-call`、`llm-api-streaming-typescript`、`claude-api-authentication-error`: `ANTHROPIC_API_KEY` が unset で、API を呼ぶコードを動かせない（C38 を満たせない）。
+- course_step 1 の `claude-api-typescript-first-call`、`claude-agent-sdk-streaming`、`claude-code-api-key-billing-auth`: API キーで動く版は `ANTHROPIC_API_KEY` が unset で動かせず（C38 を満たせない）、外した。2026-11-11 に Agent SDK 版（プランのログインで動かす）へ置き換わっている。
 - course_step 1 の `llm-api-429-retry-sdk-mock`: キー不要で書けるが、今回はワークフローの指示で #3 を選んだ。CSV が届けば検索ボリュームで順を見直す候補。
 
 ## Claude を対象にしない理由
 
 Claude のトークン数は、オフラインで正確に数える方法が無い。`@anthropic-ai/tokenizer` の README は「Claude 3 以降では正確ではなく、大まかな近似」と書いている（https://github.com/anthropics/anthropic-tokenizer-typescript 、2026-10-31 確認。中身は raw.githubusercontent.com から取得）。Claude の正確な数は count_tokens API で得られるが、API キーが要る。そのため記事は OpenAI のトークナイザー（js-tiktoken）で数える内容にし、Claude が対象外であることを本文に書いた。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-llm-api.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: リクエスト前にトークン数を数えて料金を見積もる方法を扱う記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

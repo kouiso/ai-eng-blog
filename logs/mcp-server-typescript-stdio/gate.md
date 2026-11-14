@@ -1,5 +1,8 @@
 # gate: mcp-server-typescript-stdio
 
+> 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+
+
 判定日: 2026-10-31（敵対レビュー `review-pilot-0d648ef` を受けた全項目の再判定）。原稿: `content/articles/mcp-server-typescript-stdio.md`（426行。行番号はすべてこの版）。
 
 ## 判定の前に読んだもの
@@ -23,7 +26,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク | `gate.md` | OK | course_step 5 の前後の記事は無いので `prev: null`、`next: null`（9〜10行目）。既存記事が0本なので関連記事のリンクは入れられない。リンク先の slug: なし |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 426行目「AI 支援で執筆しました。コードは 2026-10-31 に実際に実行して確認しています。」。日付は最後の実行（`run/21.log`）と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 原稿と `logs/mcp-server-typescript-stdio/` 全体（この gate.md を除く。gate.md は調べた語そのものを書いている）に `ANTHROPIC`、`sk-ant`、`token`、`password`、`secret`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を `grep -rniI` でかけた。該当は、`ANTHROPIC` が `selection.md` 18・25行目（環境変数の名前と `unset` の記録で、値ではない）、`token` が原稿375行目と `run/05.log`・`run/10.log`・`run/17.log` の28行目（どれも JSON のパースエラー文 `Unexpected token 'c'`）だけ。ほかは0件。最初の版の G09 は `token` の該当を「run/05、run/10 と原稿」だけと書いていたが、`sources.md` にも同じエラー文があり、`ANTHROPIC` も `selection.md` に出ていたので、一覧が誤っていた。個人名: ユーザーの GitHub アカウント名、git のコミット作者名（英字の連結表記、姓、名、漢字の姓、名）、ユーザーのメールアドレスのローカル部、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓）を1語ずつ `grep -rniI` でかけ、すべて0件 |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | `keywords/` に CSV が無い（README.md だけ）。持ち主の CSV の書き出しは、ラッコキーワードのログイン時の CAPTCHA で止まっている。`target_query` は null（7行目）。最初の版は CSV に無い値を作って入れていたので取り消した。CSV が届くまで、この記事は下書きのまま止める |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-mcp-server.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
 
 ## B. checklist.md の全項目（原文のまま）
 

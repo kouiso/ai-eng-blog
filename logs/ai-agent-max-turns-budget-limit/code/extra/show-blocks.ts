@@ -9,7 +9,7 @@ console.log(`maxBudgetUsd: ${maxBudgetUsd}`);
 let response = 0;
 let lastId = "";
 try {
-  for await (const message of query({ prompt: task, options: { ...baseOptions, maxBudgetUsd } })) {
+  for await (const message of query({ prompt: task, options: { ...baseOptions, maxBudgetUsd, strictMcpConfig: true } })) {
     if (message.type === "system" && message.subtype === "init") {
       console.log(`init: ${message.model} / apiKeySource ${message.apiKeySource} / Claude Code ${message.claude_code_version}`);
     }

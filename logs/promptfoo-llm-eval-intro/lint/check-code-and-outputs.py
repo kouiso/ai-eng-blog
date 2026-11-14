@@ -38,15 +38,15 @@ def code(name):
 
 
 expected = [
-    ("bash", "cmd", "01"), ("text", "out", "01"),
-    ("bash", "cmd", "02"), ("text", "out", "02"),
-    ("bash", "cmd", "03"), ("text", "out", "03"),
-    ("text", "in", "09"),
+    ("bash", "cmd", "14"), ("text", "out", "14"),
+    ("bash", "cmd", "15"), ("text", "out", "15"),
+    ("bash", "cmd", "16"), ("text", "out", "16"),
+    ("text", "in", "25"),
     ("yaml", "code", "promptfooconfig.yaml"),
-    ("bash", "cmd", "04"), ("text", "out", "04"),
+    ("bash", "cmd", "17"), ("text", "out", "17"),
     ("ts", "code", "show-failures.ts"),
-    ("bash", "cmd", "05"), ("text", "out", "05"),
-    ("text", "in", "07"),
+    ("bash", "cmd", "18"), ("text", "out", "18"),
+    ("text", "in", "20"),
 ]
 ok = True
 print(f"blocks in article: {len(blocks)} / expected: {len(expected)}")
@@ -66,24 +66,27 @@ for i, ((lang, body), (elang, kind, ref)) in enumerate(zip(blocks, expected), 1)
 
 # 本文で引いた値がログにあるか
 facts = [
-    ("04", "Total Tokens: 16,663"), ("04", "16,055 prompt"), ("04", "✓ 3 passed (50.00%)"),
-    ("04", "Running 6 test cases"),
-    ("06", "Total Tokens: 17,829"), ("06", "✓ 3 passed (50.00%)"), ("06", "Writing output to results.jsonl\n100"),
-    ("04", "Writing output to results.jsonl\n100"),
-    ("07", "合格 3 / 6"),
-    ("08", "Total Tokens: 31,708"), ("08", "29,916 prompt"), ("08", "✓ 3 passed (50.00%)"),
-    ("12", "total_cost_usd=0.00268162"), ("12", "costBasis=claude-haiku-5-5:list"),
-    ("13", "apiKeySource=none"), ("13", "model=claude-haiku-5-5"), ("13", "claude_code_version=2.1.322"),
-    ("13", "\n0.125.1"), ("10", "tsc_exit=0"), ("10", "Version 7.0.2"),
+    ("17", "Total Tokens: 8,185"), ("17", "7,841 prompt"), ("17", "✓ 3 passed (50.00%)"),
+    ("17", "Running 6 test cases"),
+    ("19", "Total Tokens: 8,129"), ("19", "✓ 3 passed (50.00%)"), ("19", "Writing output to results.jsonl\n100"),
+    ("17", "Writing output to results.jsonl\n100"),
+    ("20", "合格 3 / 6"),
+    ("22", "Total Tokens: 28,013"), ("22", "27,745 prompt"), ("22", "✓ 3 passed (50.00%)"),
+    ("21", "total_cost_usd=0.00133430"), ("21", "costBasis=claude-haiku-5-5:list"),
+    ("23", "apiKeySource=none"), ("23", "model=claude-haiku-5-5"), ("23", "claude_code_version=2.1.322"),
+    ("23", "tools=0 mcp_servers=0"), ("23", "\n0.125.1"), ("26", "tsc_exit=0"), ("26", "Version 7.0.2"),
 ]
 for n, needle in facts:
     hit = needle in out(n)
     print(f"{'OK' if hit else 'NG'} run/{n}.log contains {needle!r}")
     ok &= hit
 
-# 終了コード（08 は不合格ありの eval なので 100 が正しい）
-want_exit = {n: "0" for n in ["01", "02", "03", "04", "05", "06", "07", "09", "10", "11", "12", "13"]}
+# 終了コード（08 と 22 は不合格ありの eval なので 100 が正しい）
+want_exit = {n: "0" for n in ["01", "02", "03", "04", "05", "06", "07", "09", "10", "11", "12", "13",
+                               "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "25", "26", "27"]}
 want_exit["08"] = "100"
+want_exit["25"] = "1"  # npm audit は脆弱性があると 1 を返す
+want_exit["22"] = "100"
 for n, w in want_exit.items():
     got = parts(n)[2]
     print(f"{'OK' if got == 'exit=' + w else 'NG'} run/{n}.log {got} (want exit={w})")

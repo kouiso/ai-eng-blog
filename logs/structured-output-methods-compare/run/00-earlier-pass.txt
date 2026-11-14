@@ -1,0 +1,49 @@
+# 記事の最終版より前の通し実行（2026-11-11、run-all.sh の1回目。時刻はこのファイルからは確かめられない）
+# このときの compare.ts は、トークンを result.usage（最後の API 呼び出しの分だけ）から足していた。
+# 型定義のコメントが modelUsage を勧めていたため、その4行を modelUsage の合計に直してから通し直したのが run/01.log〜11.log。
+# 正解・スキーマ・取り出せた数の判定の行（safeParse と expected の比較）は、最終版と1文字も違わない。
+# 下は、そのとき run-all.sh の出力を grep で絞った結果をそのまま写したもの（作業フォルダの絶対パスは出ていない）。
+# トークンと total_cost_usd 以外の数（取り出せた、スキーマに合う、正解）だけを記事で使う。
+exit=0
+===== run/01.log
+--- exit=0
+===== run/02.log
+--- exit=0
+===== run/03.log
+--- exit=0
+===== run/04.log
+--- exit=0
+===== run/05.log
+--- exit=0
+===== run/06.log
+== a-prompt: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 10、入力 20、キャッシュ書き込み 7410、キャッシュ読み込み 0、出力 840、total_cost_usd 0.00235、平均 1445 ms
+== b-tool: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 40、キャッシュ書き込み 8391、キャッシュ読み込み 20643、出力 2618、total_cost_usd 0.00513、平均 2727 ms
+== c-output-format: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 20、キャッシュ書き込み 6427、キャッシュ読み込み 7163、出力 1443、total_cost_usd 0.00293、平均 1546 ms
+apiKeySource: none
+--- exit=0
+===== run/07.log
+--- exit=0
+===== run/08.log
+command: node extra/b-tool-no-strict.ts
+no-strict init.mcp_servers=25 turns=2 cache_creation_input_tokens=71778 total_cost_usd=0.01462
+no-strict init.mcp_servers=1 turns=2 cache_creation_input_tokens=205932 total_cost_usd=0.20685
+no-strict init.mcp_servers=25 turns=2 cache_creation_input_tokens=52229 total_cost_usd=0.01105
+--- exit=0
+===== run/09.log
+$schema: https://json-schema.org/draft/2020-12/schema
+error: Claude Code process exited with code 1. stderr: Error: --json-schema is not a valid JSON Schema: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"
+draft-7: http://json-schema.org/draft-07/schema#
+--- exit=0
+===== run/10.log
+command: <tc>/node_modules/.bin/tsc -v && <tc>/node_modules/.bin/tsc -p tsconfig.typecheck.json --typeRoots <tc>/node_modules/@types; echo tsc_exit=$?
+tsc_exit=0
+--- exit=0
+===== run/11.log
+a-prompt #7 WRONG turns=1 {"name":"ランチ会（幹事：渡辺）","date":"2026-12-24","people":8,"course":"lunch"}
+== a-prompt: 取り出せた 10/10、スキーマに合う 10/10、正解 9/10、ターン 10、入力 20、キャッシュ書き込み 0、キャッシュ読み込み 7410、出力 860、total_cost_usd 0.00119、平均 1451 ms
+== b-tool: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 40、キャッシュ書き込み 2048、キャッシュ読み込み 27100、出力 2755、total_cost_usd 0.00398、平均 2908 ms
+== c-output-format: 取り出せた 10/10、スキーマに合う 10/10、正解 10/10、ターン 20、入力 20、キャッシュ書き込み 0、キャッシュ読み込み 13590、出力 1418、total_cost_usd 0.00163、平均 1430 ms
+apiKeySource: none
+--- exit=0
+
+[exited with code 0]

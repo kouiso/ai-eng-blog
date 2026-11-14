@@ -26,17 +26,18 @@ def cmd(n):
 def code(name):
     return strip1(open(f"{logdir}/code/{name}", encoding="utf-8").read())
 
-install = "mkdir first-agent\ncd first-agent\n" + cmd("03") + "\n" + cmd("04")
+# 2026-11-11 に strictMcpConfig を足して実行し直したので、記事の実行結果は run/15〜26（rerun-strict-mcp.sh）と比べる
+install = "mkdir first-agent\ncd first-agent\n" + cmd("17") + "\n" + cmd("18")
 expected = [
-    ("bash", "cmd", "02"), ("text", "out", "02"),
-    ("bash", "literal", install), ("text", "out", "04"),
-    ("bash", "cmd", "05"), ("text", "out", "05"),
-    ("bash", "cmd", "06"), ("text", "out", "06"),
+    ("bash", "cmd", "16"), ("text", "out", "16"),
+    ("bash", "literal", install), ("text", "out", "18"),
+    ("bash", "cmd", "19"), ("text", "out", "19"),
+    ("bash", "cmd", "20"), ("text", "out", "20"),
     ("ts", "code", "hello.ts"),
-    ("bash", "cmd", "07"), ("text", "out", "07"),
+    ("bash", "cmd", "21"), ("text", "out", "21"),
     ("bash", "code", "setup-tasks.sh"),
     ("ts", "code", "agent.ts"),
-    ("bash", "cmd", "09"), ("text", "out", "09"),
+    ("bash", "cmd", "23"), ("text", "out", "23"),
 ]
 ok = True
 print(f"blocks in article: {len(blocks)} / expected: {len(expected)}")
@@ -47,16 +48,17 @@ for i, ((lang, body), (elang, kind, ref)) in enumerate(zip(blocks, expected), 1)
         print(f"NG #{i}: lang {lang} != {elang}"); ok = False; continue
     want = {"code": code, "out": out, "cmd": cmd}.get(kind, lambda r: r)(ref)
     same = body == want
-    label = ref if kind != "literal" else "mkdir/cd + run/03 + run/04 command"
+    label = ref if kind != "literal" else "mkdir/cd + run/17 + run/18 command"
     print(f"{'OK' if same else 'NG'} #{i}: {lang} {kind} {label}")
     ok &= same
 # 実行ログの終了コードがすべて 0 か
-for n in ("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"):
+for n in ("15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"):
     code_ = log(n).rsplit("--- exit=", 1)[1].strip()
     print(f"{'OK' if code_ == '0' else 'NG'} run/{n}.log exit={code_}")
     ok &= code_ == "0"
 # 前提の Node.js の版の確認（run-node-versions.sh）。12 は Node.js 20 で失敗するのが期待どおり
-for n, want_code, want_text in (("12", "1", "ERR_UNKNOWN_FILE_EXTENSION"), ("13", "0", "[result/success]"), ("14", "0", "claude-agent-sdk-darwin-arm64")):
+# 26 は strictMcpConfig を足した hello.ts を Node.js 20 で動かしたもの。14 はレジストリの本体のパッケージ名（コードに依らない）
+for n, want_code, want_text in (("26", "1", "ERR_UNKNOWN_FILE_EXTENSION"), ("21", "0", "apiKeySource=none"), ("14", "0", "claude-agent-sdk-linux-x64")):
     body = log(n)
     code_ = body.rsplit("--- exit=", 1)[1].strip()
     hit = want_text in out(n)

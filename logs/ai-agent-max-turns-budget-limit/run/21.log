@@ -1,0 +1,17 @@
+date: 2026-11-12T01:02:38Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: node budget-limit.ts 0.0005
+--- output (stdout+stderr) ---
+maxBudgetUsd: 0.0005
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+subtype: error_max_budget_usd
+num_turns: 3
+terminal_reason: budget_exhausted
+total_cost_usd: 0.0006517000000000001
+errors: Reached maximum budget ($0.0005)
+catch: Claude Code returned an error result: Reached maximum budget ($0.0005)
+--- exit=0

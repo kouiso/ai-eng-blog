@@ -4,7 +4,7 @@ slug: "mcp-server-resources-prompts"
 description: "MCP サーバーに、ツール以外の Resources と Prompts を登録します。使うのは公式 SDK v1.32.2 と TypeScript です。SDK のクライアントで一覧と取得を確かめ、ツールと違うエラーの返り方も実行結果付きで書いています。"
 tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
-target_query: null
+target_query: "mcp server resources and prompts"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude Code の会話で Resources と Prompts を使うには、Claude Code を使える有料のプランか Console のアカウントが要ります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、zod 4.6.7、Linux x86_64（Inspector の確認は 2.13.0、型の確認は TypeScript 7.0.2）"
@@ -70,7 +70,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 MCP サーバーが公開できる機能は、ツールのほかに Resources と Prompts の2つがあります（出典1）。Resources は、クライアントが URI を指定して読み取るデータです（出典2）。Prompts は、ユーザーが選んで使うメッセージのひな形を指します（出典3）。この記事で作るのは、文章のルールを返す Resource と、見直しを頼む Prompt です。
@@ -423,8 +423,6 @@ Claude Code は引数を空白で分けるので、1つの引数に空白は入�
 ## 機能を足す前に誰が使うかを決める
 
 サーバーに機能を足すときは、最初に使う人を決めてください。モデルに選ばせるならツール、アプリが添える資料なら Resource、ユーザーが選ぶ依頼文なら Prompt です。あなたのサーバーのツールの中に、本当はユーザーが選ぶべきものはありますか。
-
-[次の記事](/posts/mcp-connection-closed-fix)では、つながらない原因を切り分けます。
 
 ## 出典
 

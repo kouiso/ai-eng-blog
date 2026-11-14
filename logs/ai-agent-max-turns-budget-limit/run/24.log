@@ -1,0 +1,13 @@
+date: 2026-11-12T01:02:57Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: node no-catch.ts 2> stderr.txt; echo "exit=$?"
+--- output (stdout+stderr) ---
+subtype: error_max_turns
+num_turns: 2
+terminal_reason: max_turns
+total_cost_usd: 0.00018256
+errors: Reached maximum number of turns (1)
+exit=1
+--- exit=0

@@ -1,0 +1,9 @@
+date: 2026-11-11T17:04:30-08:00
+cwd: <base>
+node: v22.23.4  npm: 10.9.9
+ANTHROPIC_API_KEY: unset
+$ test -n "$ANTHROPIC_API_KEY" && echo set || echo unset
+----
+unset
+----
+exit=0

@@ -4,7 +4,7 @@ slug: "rag-bm25-search-typescript"
 description: "RAG の検索部分を、依存パッケージなしの TypeScript で BM25 として書きます。日本語は Intl.Segmenter で語に分けます。架空の FAQ 8件に質問を投げ、実際に出たスコアと、答えの文書が出てこない質問の例を載せています。"
 tags: ["RAG", "BM25", "TypeScript"]
 main_keyword: "RAG"
-target_query: null
+target_query: "rag bm25"
 course_step: 3
 cost_estimate: "記事のコードは Node.js の組み込み機能だけで動き、API を呼ばないので無料です。検索結果を Claude に渡して回答させると、トークン数に応じた API の料金がかかります。"
 run_environment: "Node.js 22.22.0（ICU 77.1）、依存パッケージなし"
@@ -43,7 +43,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 RAG の検索部分は、BM25 なら API キーも依存パッケージも使わずに TypeScript で書けます。日本語は Node.js に組み込みの `Intl.Segmenter` で語に分け、BM25 の式でスコアを付けます。架空のネットショップの FAQ 8件に質問を投げ、実際に出たスコアと、答えの文書が出てこない質問の例まで載せます。
@@ -406,8 +406,6 @@ node context.ts "返金はいつ？"
 - 助詞だけが一致した結果をプロンプトに入れない下限を、自分のデータで決めたか
 
 「返金」と「払い戻し」のずれを、同義語の表を作って埋めますか。それとも埋め込みの検索を足しますか。
-
-講座の次の記事では、長い日本語の文書を検索しやすい大きさに分けます。[次の記事](/posts/rag-chunking-japanese-text)に進んでください。
 
 ## 出典
 

@@ -1,1 +1,1 @@
-sentences=236 long(>60)=0 max=60 plain=0 url_only_cells_excluded=16 issues=0
+sentences=231 long(>60)=0 max=60 plain=0 url_only_cells_excluded=15 issues=0

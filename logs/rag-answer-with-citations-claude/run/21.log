@@ -1,0 +1,25 @@
+date: 2026-11-12T01:02:15Z
+cwd: <work>/rag-citations
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: npm init -y
+npm pkg set type=module
+--- output (stdout+stderr) ---
+Wrote to <work>/rag-citations/package.json:
+
+{
+  "name": "rag-citations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
+
+--- exit=0

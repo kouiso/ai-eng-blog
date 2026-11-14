@@ -1,0 +1,17 @@
+date: 2026-11-11T11:06:13Z
+cwd: <work>/rag-citations
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node ask.ts "返品した商品の送料は？"
+--- output (stdout+stderr) ---
+apiKeySource: none tools: StructuredOutput
+渡した資料: 1=returns 2=points 3=shipping-fee
+{
+  "answerable": false,
+  "answer": "資料には、返品時の送料（返送料）についての記載がありません。資料にあるのは通常の送料（全国一律550円、5,000円以上の注文は送料無料）だけで、これは注文時の配送料であり、返品した商品の送料には当てはまるかどうか資料からは判断できません。返品時の送料については、ショップへ直接お問い合わせください。",
+  "citations": []
+}
+検証: OK
+num_turns=2 total_cost_usd=0.00043289
+--- exit=0

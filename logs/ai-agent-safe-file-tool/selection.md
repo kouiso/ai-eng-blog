@@ -14,7 +14,7 @@
 
 `test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` の結果は `unset`（2026-10-31。2026-11-10 にもう一度確かめても `unset`）。値は表示もしていないし、どこにも残していない。
 
-この記事のコードは API を呼ばない。ツールの関数に危ない入力を直接渡して確かめ、モデルが返す `tool_use` は手で作った見本で置き換えた。モデルにつなぐループのコードは講座 #16（`ai-agent-tool-use-loop-typescript`）に任せ、この記事には置いていない（`content/plan.md` #19 の判定理由と同じ）。`needs_api_key: false`。
+この記事のコードは API を呼ばない。ツールの関数に危ない入力を直接渡して確かめ、モデルが返す `tool_use` は手で作った見本で置き換えた。モデルにツールを渡すコードは講座 #16（`ai-agent-custom-tools-agent-sdk`）に任せ、この記事には置いていない（`content/plan.md` #19 の判定理由と同じ）。`needs_api_key: false`。
 
 ## 既存記事との重なり（G06）
 
@@ -45,3 +45,8 @@
 ## 外した候補
 
 CSV が無いので、候補の一覧そのものが無い。講座の順番（course_step 4）とキー不要（○）は `content/plan.md` の #19 の判定をそのまま使った。course_step 4 の5本のうち、キー不要は #19 だけ（plan.md の「本数のまとめ」）。
+
+## 2026-11-11 追記: target_query は null のまま
+
+- Google のサジェストを集めた CSV（`keywords/google-suggest-*.csv`）を 2026-11-11 に読んだ。この記事が答える検索に合う行は無かった。近い行はあったが、記事の中身より広い検索だったので当てはめていない。
+- `target_query` は null のまま、G10 は NG のままにする。合う行が見つかるまで下書きで止める。

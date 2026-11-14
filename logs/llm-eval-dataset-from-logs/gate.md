@@ -1,5 +1,8 @@
 # gate: llm-eval-dataset-from-logs
 
+> 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+
+
 判定日: 2026-11-10。原稿: `content/articles/llm-eval-dataset-from-logs.md`（396行。行番号はすべてこの版）。
 
 日付の書き方: 原稿の `verified_at`、`updated`、末尾の「AI 支援で執筆」の日付と、`run/*.log` の `date:` は、どれも日本時間（JST、Asia/Tokyo）で書く。サイトが日本語の読者向けなので、読者が読む暦に合わせた。`code/extra/run-all.sh` は `TZ=Asia/Tokyo date '+%Y-%m-%dT%H:%M:%S%:z'` で `+09:00` 付きの日時を書く。前の版の `run/` は UTC（`2026-11-02T15:56:08Z`、JST では 2026-11-03 00:56）で書いていて、原稿の 2026-11-02 と1日ずれていた。2026-11-10 にコードを全部実行し直し、`run/01.log`〜`12.log` を JST の日時で書き直した。
@@ -40,7 +43,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | リンクは本文にある。前: 61行目 `/posts/promptfoo-llm-eval-intro`（frontmatter 9行目 `prev`）。次: 講座の最後の記事（`content/plan.md` の #30）なので `next: null`（10行目）で、376行目に講座の終わりを書いた。関連: 225行目 `/posts/zod-validate-llm-json-output`、354行目 `/posts/llm-eval-harness-fixtures`、356行目 `/posts/rag-retrieval-eval-recall-mrr`。前の記事は `content/plan.md` の #29 による計画上の slug で、原稿が無い（2026-11-10 に `content/articles/` を ls で確認、21ファイルに無い）。#29 は plan.md の「キー不要」の列が「プラン」の記事（Claude プランで動かす記事）で、前の版の gate.md が書いた「API を呼ぶ記事、キー不要 ×」は誤りだったので直した。61行目は前の記事の中身を書かない文にした（指摘4）。前の記事の原稿ができたら、61行目の文とリンク先を見直す。関連の3本は `content/articles/` に原稿があるが、どれも公開も予約もされていない（`status: draft`、`publish_at: null`）。今この記事を公開すると4本ともリンク切れになる。公開済みか予約済みの記事は0本（`content/articles/*.md` に `status: scheduled` か `published` が無い）なので、関連記事への内部リンク（3本以上のとき）の条件は満たす対象が無い。リンク先の slug: `promptfoo-llm-eval-intro`、`zod-validate-llm-json-output`、`llm-eval-harness-fixtures`、`rag-retrieval-eval-recall-mrr` |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 396行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。スキルの決まった表記のとおりで、日付は `run/` のログの JST の日付（2026-11-10）と `verified_at` と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 2026-11-10 の最後の版で、原稿と `logs/llm-eval-dataset-from-logs/` 全体（この gate.md と `judgments.md` は検索語と項目文が入るので除く）に `/tmp`、`/home/`、`/root`、`scratchpad`、`sk-ant`、`password`、`secret` を `grep -rniIE` でかけて0件。値としての API キーやトークンは0件（コードはキーを使わない）。ログのパスは `<work>`、`<code>` に置き換えて保存した。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分。名前の各語、メールのローカル部）、`git config` の名前とメールのローカル部、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）、ユーザーの GitHub アカウント名を1語ずつ `grep -rniI -F` で原稿と `logs/llm-eval-dataset-from-logs/` にかけた（12語、名前そのものは記録しない）。当たったのは `git config` の名前に入る「Claude」（製品名）だけで、出典の URL（`platform.claude.com`）と料金の文の製品名。人名の11語は0件。見本のログの `taro@example.com`（原稿118行目、`logs.jsonl` の11行目）は、例示用に予約されたドメイン（出典8）のありふれた名前の架空のアドレスで、実在の人を指さない |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | `keywords/` に CSV が無い（2026-11-10 に `ls keywords` で確認、README.md だけ）。`target_query` は null（7行目）。値は作っていない。CSV が届くまで下書きのまま止める（CSV 待ち） |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-llm-eval.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
 
 ## B. checklist.md の全項目（原文のまま）
 

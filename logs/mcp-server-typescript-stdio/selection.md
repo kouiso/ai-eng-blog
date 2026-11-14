@@ -23,3 +23,11 @@
 
 - course_step 2「構造化出力」の zod 検証のみの記事、course_step 3「RAG」の検索部分の記事: キー不要で書けるが、今回はワークフローの指示に従い MCPサーバーを優先した。CSV が届けば講座順（小さい番号優先）で選び直す候補。
 - course_step 1, 4, 6: API 呼び出しが必須で `ANTHROPIC_API_KEY` が unset のため外した。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-mcp-server.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: TypeScript で MCP サーバーを自作して Claude Code につなぐ手順を示す記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

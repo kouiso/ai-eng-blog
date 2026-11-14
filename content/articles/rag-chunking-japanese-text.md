@@ -4,7 +4,7 @@ slug: "rag-chunking-japanese-text"
 description: "RAG に入れる日本語の Markdown を、見出しでセクションに分け、文の境目で上限の文字数まで詰めます。詰めたチャンクの末尾の文は、次のチャンクに重ねます。依存パッケージなしの TypeScript で、架空のネットショップのご利用ガイドを分けた実際の出力を載せています。"
 tags: ["RAG", "TypeScript", "チャンク分割"]
 main_keyword: "RAG"
-target_query: null
+target_query: "rag チャンク分割"
 course_step: 3
 cost_estimate: "記事のコードは Node.js の組み込み機能だけで動き、API を呼ばないので無料です。分けたチャンクを有料の埋め込み API でベクトルにすると、トークン数に応じた料金がかかります。"
 run_environment: "Node.js 22.22.0（ICU 77.1）、依存パッケージなし、型の確認は TypeScript 7.0.2"
@@ -40,7 +40,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-11
 ---
 
 日本語の文書を RAG 用に分けるときは、見出しでセクションに分け、文の境目で上限の文字数まで詰めます。詰めたチャンクの末尾の文は、次のチャンクの頭にも入れて重ねます。この3つを依存パッケージなしの TypeScript で書きました。題材は架空のネットショップのご利用ガイドです。
@@ -466,8 +466,6 @@ Voyage AI の voyage-4-lite は、100万トークンあたり $0.02 です（出
 - 重なりを入れたあとの合計の文字数が、埋め込みの料金の見積もりに入っているか
 
 表とコードブロックは、この記事の `splitSentences` だと1行が1つの文になります。表の行が別々のチャンクに入ると、列の名前の行が無いチャンクは、何の値かわからなくなります。表の1行ごとに列の名前の行を足しますか。それとも表はまるごと1つのチャンクにしますか。
-
-講座の次の記事では、FAQ 8件の文書を手元で動く埋め込みモデルでベクトルにし、質問に近い順に並べます。[次の記事](/posts/rag-local-embeddings-transformers-js)に進んでください。
 
 ## 出典
 

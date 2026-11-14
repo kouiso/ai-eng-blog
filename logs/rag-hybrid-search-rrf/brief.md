@@ -60,5 +60,5 @@ RRF の式は15行で書けるほど単純で、難しいのは合わせる前�
 ## 講座の前後（`content/plan.md`）
 
 - step 3（RAG）の並びは #11 `rag-bm25-search-typescript`、#12 `rag-chunking-japanese-text`、#13 `rag-local-embeddings-transformers-js`、#14 `rag-answer-with-citations-claude`、#15 この記事。
-- `prev`: `rag-answer-with-citations-claude`（#14）。`next`: step 4 の最初 `ai-agent-tool-use-loop-typescript`（#16）。
+- `prev`: `rag-answer-with-citations-claude`（#14）。`next`: step 4 の最初 `ai-agent-custom-tools-agent-sdk`（#16）。
 - 関連記事への内部リンク: plan の「主な内部リンク先」は 11、13、28。本文で 11（`rag-bm25-search-typescript`）と 13（`rag-local-embeddings-transformers-js`）にリンクした。28（`rag-retrieval-eval-recall-mrr`）は講座でこの記事より後なので入れていない。

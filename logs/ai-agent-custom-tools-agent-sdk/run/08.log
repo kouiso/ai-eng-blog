@@ -1,0 +1,23 @@
+date: 2026-11-11T11:02:18Z
+cwd: <work>/custom-tools
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: diff shop-agent.ts shop-agent-builtins.ts; node shop-agent-builtins.ts
+--- output (stdout+stderr) ---
+58d57
+<     tools: [],
+[system/init] apiKeySource=none tools=Task,Bash,CronCreate,CronDelete,CronList,DesignSync,Edit,EnterWorktree,ExitWorktree,ListAgents,Monitor,NotebookEdit,PushNotification,Read,RemoteTrigger,ReportFindings,ScheduleWakeup,SendMessage,Skill,TaskStop,ToolSearch,WebFetch,WebSearch,Workflow,Write,mcp__shop__calculate_total,mcp__shop__get_product
+[assistant/tool_use] ToolSearch {"query":"select:mcp__shop__get_product,mcp__shop__calculate_total","max_results":2}
+[user/tool_result] is_error=false [{"type":"tool_reference","tool_name":"mcp__shop__get_product"},{"type":"tool_reference","tool_name":"mcp__shop__calculate_total"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"ノート"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ノート\",\"price\":180,\"stock\":12}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"ボールペン"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ボールペン\",\"price\":120,\"stock\":2}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"消しゴム"}
+[user/tool_result] is_error=true "「消しゴム」は取り扱っていません。扱っている商品: ノート、ボールペン"
+[assistant/tool_use] mcp__shop__calculate_total {"lines":[{"unitPrice":180,"quantity":2},{"unitPrice":120,"quantity":2}]}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"subtotal\":600,\"total\":660}"}]
+[assistant/text] ノートは2冊とも在庫があり、ボールペンは在庫が2本しかないため3本のうち2本だけ買え、消しゴムは取り扱いがないので買えません。買える分（ノート2冊とボールペン2本）の税込み合計は660円です（税抜600円に10%の消費税）。
+[result/success] num_turns=6
+--- exit=0

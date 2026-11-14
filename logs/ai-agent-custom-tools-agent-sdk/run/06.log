@@ -1,0 +1,19 @@
+date: 2026-11-11T11:02:01Z
+cwd: <work>/custom-tools
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node shop-agent.ts
+--- output (stdout+stderr) ---
+[system/init] apiKeySource=none tools=mcp__shop__calculate_total,mcp__shop__get_product
+[assistant/tool_use] mcp__shop__get_product {"name":"ノート"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ノート\",\"price\":180,\"stock\":12}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"ボールペン"}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"name\":\"ボールペン\",\"price\":120,\"stock\":2}"}]
+[assistant/tool_use] mcp__shop__get_product {"name":"消しゴム"}
+[user/tool_result] is_error=true "「消しゴム」は取り扱っていません。扱っている商品: ノート、ボールペン"
+[assistant/tool_use] mcp__shop__calculate_total {"lines":[{"unitPrice":180,"quantity":2},{"unitPrice":120,"quantity":2}]}
+[user/tool_result] is_error=false [{"type":"text","text":"{\"subtotal\":600,\"total\":660}"}]
+[assistant/text] ノートは2冊とも在庫があり、ボールペンは在庫が2本のため3本のうち2本だけ買えます。消しゴムは取り扱いがないため買えません。買える分(ノート2冊とボールペン2本)の税込み合計は660円です。
+[result/success] num_turns=5
+--- exit=0

@@ -6,7 +6,7 @@ const started = Date.now();
 // ツールを渡した query() を1回だけ呼ぶ。何をどの順に読むかはモデルが決める
 for await (const msg of query({
   prompt: "tickets フォルダの問い合わせをすべて読み、返金を求めているものをファイル名つきで挙げてください。",
-  options: { model: "haiku", tools: ["Glob", "Read"], allowedTools: ["Glob", "Read"], maxTurns: 10 },
+  options: { model: "haiku", tools: ["Glob", "Read"], allowedTools: ["Glob", "Read"], maxTurns: 10, settingSources: [], strictMcpConfig: true }, // 手元の設定ファイルと CLAUDE.md、claude.ai のコネクタのツールを読み込まない
 })) {
   if (msg.type === "system" && msg.subtype === "init") {
     console.log(`apiKeySource: ${msg.apiKeySource}`);

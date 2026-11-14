@@ -1,30 +1,30 @@
-blocks in article: 25 / expected: 25
-OK #1: bash cmd 01
-OK #2: text out 01
+blocks in article: 24 / expected: 24
+OK #1: bash cmd 15
+OK #2: text out 15
 OK #3: bash lit (インストールの手順)
-OK #4: text out 02
+OK #4: text out 16
 OK #5: ts code setup.ts
-OK #6: bash cmd 03
-OK #7: text out 03
+OK #6: bash cmd 18
+OK #7: text out 18
 OK #8: ts code run-agent.ts
 OK #9: ts code turns-limit.ts
-OK #10: bash cmd 04
-OK #11: text out 04
-OK #12: bash cmd 05
-OK #13: text out 05
+OK #10: bash cmd 19
+OK #11: text out 19
+OK #12: bash cmd 20
+OK #13: text out 20
 OK #14: ts code budget-limit.ts
-OK #15: bash cmd 06
-OK #16: text out 06
-OK #17: bash cmd 07
-OK #18: text out 07
-OK #19: bash cmd 13
-OK #20: text out 13
-OK #21: ts code no-catch.ts
-OK #22: bash cmd 08
-OK #23: text out 08
-OK #24: bash cmd 09
-OK #25: text out 09
-run/02.log command: npm init -y > /dev/null && npm pkg set type=module && npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322 && cat package.json
-OK install steps in run/02.log match the article (mkdir/cd は run-all.sh が行う)
+OK #15: bash cmd 21
+OK #16: text out 21
+OK #17: bash cmd 23
+OK #18: text out 23
+OK #19: bash cmd_first 33
+OK #20: ts code no-catch.ts
+OK #21: bash cmd 24
+OK #22: text out 24
+OK #23: bash cmd 25
+OK #24: text out 25
+run/16.log command: npm init -y > /dev/null && npm pkg set type=module && npm install --save-exact @anthropic-ai/claude-agent-sdk@0.3.322 && cat package.json
+OK install steps in run/16.log match the article (mkdir/cd は run-strict.sh が行う)
+OK 0.00066 table: 6 rows in article / 6 runs in run/31.log + run/33.log
 ALL OK
 exit=0

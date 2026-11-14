@@ -1,0 +1,12 @@
+date: 2026-11-11T11:05:19Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/14-exec-file.sh
+--- command ---
+node exec-file.ts
+--- output (stdout+stderr) ---
+result: 2
+stderr: Warning: no stdin data received in 3s, proceeding without it. If piping from a slow command, redirect stdin explicitly: < /dev/null to skip, or wait longer.
+elapsed_seconds=7.9
+--- exit=0

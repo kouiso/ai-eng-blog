@@ -1,0 +1,29 @@
+blocks in article: 10 / expected: 10
+OK #1: text literal diagram (no run; compared with itself)
+OK #2: bash cmd 02
+OK #3: text out 02
+OK #4: bash literal mkdir/cd + run/03 + run/04 command
+OK #5: text out 04
+OK #6: bash cmd 05
+OK #7: text out 05
+OK #8: ts code shop-agent.ts
+OK #9: bash cmd 06
+OK #10: text out 06
+OK run/01.log exit=0
+OK run/02.log exit=0
+OK run/03.log exit=0
+OK run/04.log exit=0
+OK run/05.log exit=0
+OK run/06.log exit=0
+OK run/07.log exit=0
+OK run/08.log exit=0
+OK run/09.log exit=0
+OK run/10.log exit=0
+OK run/11.log exit=0
+OK run/12.log exit=0
+run/08 builtins=25 (article says 25) firstcall_ToolSearch=True num_turns6=True
+run/11 hidden756=True
+run/12 three runs hidden=0: 3
+run/06 vs run/07 tool lines identical=True 660 in both=True
+ALL OK
+exit=0

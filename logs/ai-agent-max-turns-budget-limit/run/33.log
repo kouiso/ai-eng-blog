@@ -1,0 +1,44 @@
+date: 2026-11-12T01:05:38Z
+cwd: <work>/agent-limits
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+ANTHROPIC_API_KEY: unset
+command: node budget-limit.ts 0.00066; node budget-limit.ts 0.00066; node budget-limit.ts 0.00066
+--- output (stdout+stderr) ---
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+subtype: error_max_budget_usd
+num_turns: 5
+terminal_reason: budget_exhausted
+total_cost_usd: 0.00079436
+errors: Reached maximum budget ($0.00066)
+catch: Claude Code returned an error result: Reached maximum budget ($0.00066)
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+subtype: success
+num_turns: 5
+terminal_reason: completed
+total_cost_usd: 0.00064186
+result: cancel.md: # 予約の取り消し
+payment.md: # 支払い方法
+parking.md: # 駐車場
+maxBudgetUsd: 0.00066
+init: claude-haiku-5-5 / apiKeySource none / Claude Code 2.1.322
+応答1: Glob を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+応答2: Read を呼ぶ
+subtype: error_max_budget_usd
+num_turns: 5
+terminal_reason: budget_exhausted
+total_cost_usd: 0.00068975
+errors: Reached maximum budget ($0.00066)
+catch: Claude Code returned an error result: Reached maximum budget ($0.00066)
+--- exit=0

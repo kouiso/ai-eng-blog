@@ -20,6 +20,14 @@
 
 外した候補と理由:
 
-- course_step 2 の #6（`claude-structured-outputs-json`）と #10（`structured-output-methods-compare`）: API を呼んで返った JSON を見せる記事で、有効なキーが要る。`ANTHROPIC_API_KEY` が unset なので外した。
+- course_step 2 の #6（`claude-agent-sdk-structured-output`）と #10（`structured-output-methods-compare`）: モデルが返した JSON を見せる記事で、動かすには Claude のログインが要る。この記事は LLM を呼ばないので前提から外した。
 - テーマはワークフローの指示で決まっている。CSV が届いたら `target_query` を CSV の行から選び直し、合う行が無ければ差し替える（`plan.md` の前提）。
 - 計画上の重なりの決め事（`plan.md`「重なりを避けるために決めたこと」）: この記事（#7）は「形が合っているか」、#9 `llm-json-parse-error-fix` は「JSON として読めるか」に答える。この記事は JSON として読めない文字列を扱わない（本文183行目）。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-structured-output.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: LLM が返した JSON を zod の safeParse で検証する記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

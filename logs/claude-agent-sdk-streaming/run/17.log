@@ -1,0 +1,14 @@
+date: 2026-11-12T01:02:31Z
+cwd: <work>/stream-demo
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node compare-strict.ts
+--- output (stdout+stderr) ---
+strictMcpConfig=true apiKeySource=none mcp_servers=0 tools=0 thinking=false first_text_ms=1924
+strictMcpConfig=false apiKeySource=none mcp_servers=24 tools=0 thinking=false first_text_ms=2435
+strictMcpConfig=true apiKeySource=none mcp_servers=0 tools=0 thinking=false first_text_ms=2445
+strictMcpConfig=false apiKeySource=none mcp_servers=24 tools=0 thinking=false first_text_ms=2358
+strictMcpConfig=true apiKeySource=none mcp_servers=0 tools=0 thinking=false first_text_ms=2068
+strictMcpConfig=false apiKeySource=none mcp_servers=24 tools=0 thinking=false first_text_ms=3242
+--- exit=0

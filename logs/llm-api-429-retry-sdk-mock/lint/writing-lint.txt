@@ -1,4 +1,4 @@
-## writing-lint v2: llm-api-429-retry-sdk-mock.md (type=article, register=standard, 400行/157文)
+## writing-lint v2: llm-api-429-retry-sdk-mock.md (type=article, register=standard, 398行/155文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

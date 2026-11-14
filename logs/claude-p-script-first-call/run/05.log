@@ -1,0 +1,15 @@
+date: 2026-11-11T11:04:49Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/05-first-call.sh
+--- command ---
+claude -p "TypeScript の型注釈とは何かを、日本語の1文で答えてください。" \
+  --model haiku \
+  --output-format json \
+  --setting-sources "" \
+  --strict-mcp-config \
+  --tools "" \
+  > answer.json
+--- output (stdout+stderr) ---
+--- exit=0

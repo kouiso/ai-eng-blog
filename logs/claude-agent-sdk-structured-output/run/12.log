@@ -1,0 +1,13 @@
+date: 2026-11-11T11:08:06Z
+cwd: <work>/structured-output
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node impossible.ts
+--- output (stdout+stderr) ---
+[user/tool_result] "Output does not match required schema: /priority: must be <= 3"
+[user/tool_result] "Output does not match required schema: /priority: must be >= 5"
+[user/tool_result] "Output does not match required schema: /priority: must be <= 3, /priority: must be >= 5"
+[result/success] is_error=false num_turns=5
+structured_output がありません
+--- exit=0

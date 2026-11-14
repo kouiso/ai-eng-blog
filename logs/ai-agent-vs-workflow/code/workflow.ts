@@ -11,7 +11,14 @@ async function ask(systemPrompt: string, prompt: string) {
   let cost = 0;
   for await (const msg of query({
     prompt,
-    options: { model: "haiku", tools: [], maxTurns: 1, systemPrompt },
+    options: {
+      model: "haiku",
+      tools: [],
+      maxTurns: 1,
+      systemPrompt,
+      settingSources: [], // 手元の設定ファイルと CLAUDE.md を読み込まない
+      strictMcpConfig: true, // claude.ai のコネクタのツールを読み込まない
+    },
   })) {
     if (msg.type === "system" && msg.subtype === "init") apiKeySource = msg.apiKeySource;
     if (msg.type === "result" && msg.subtype === "success") {

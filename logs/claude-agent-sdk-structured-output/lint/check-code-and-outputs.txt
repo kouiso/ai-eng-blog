@@ -1,0 +1,43 @@
+blocks in article: 18 / expected: 18
+OK #1: bash cmd 19
+OK #2: text out 19
+OK #3: bash literal mkdir/cd + run/20 + run/21 command
+OK #4: text out 21
+OK #5: bash cmd 22
+OK #6: text out 22
+OK #7: ts code classify.ts
+OK #8: bash cmd 23
+OK #9: text out 23
+OK #10: ts code impossible.ts
+OK #11: bash cmd 24
+OK #12: text out 24
+OK #13: bash cmd 25
+OK #14: text out 25
+OK #15: ts code classify-zod.ts
+OK #16: bash cmd 26
+OK #17: text out 26
+OK #18: text excerpt (1 line of run/27.log output)
+OK run/18.log exit=0
+OK run/19.log exit=0
+OK run/20.log exit=0
+OK run/21.log exit=0
+OK run/22.log exit=0
+OK run/23.log exit=0
+OK run/24.log exit=0
+OK run/25.log exit=0
+OK run/26.log exit=0
+OK run/28.log exit=0
+OK run/29.log exit=0
+OK run/30.log exit=0
+OK run/31.log exit=0
+OK run/32.log exit=0
+OK run/33.log exit=0
+OK run/27.log exit=1 (want 1) contains 'not a valid JSON Schema'=True
+OK run/28.log exit=0 (want 0) contains 'tsc_exit=0'=True
+OK run/23.log exit=0 (want 0) contains 'apiKeySource=none'=True
+OK run/25.log exit=0 (want 0) contains 'error_max_structured_output_retries'=True
+OK run/31.log exit=0 (want 0) contains 'mcp_tools=0'=True
+OK run/32.log exit=0 (want 0) contains 'mcp_tools=0'=True
+OK run/33.log exit=0 (want 0) contains 'mcp_tools=0'=True
+ALL OK
+exit=0

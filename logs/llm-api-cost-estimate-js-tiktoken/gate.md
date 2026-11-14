@@ -1,5 +1,8 @@
 # gate: llm-api-cost-estimate-js-tiktoken
 
+> 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+
+
 判定日: 2026-11-10（初回 2026-10-31）。原稿: `content/articles/llm-api-cost-estimate-js-tiktoken.md`（324行。行番号はすべてこの版）。
 
 2026-11-10 に、レビューで指摘された4件（C17 の語尾3連続、まだ紹介していないものへの参照、入力の料金の割合の誤り、25,000トークンの「少なくとも」の脱落）を直し、コードを実行し直し、lint を2本とも回し直してから全行を判定し直した。直した内容は `lint/judgments.md` の「2026-11-10 の修正」。
@@ -25,10 +28,10 @@
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | 2026-11-10 に記事の手順どおり実行し直した（`run/10`〜`17`、node v22.22.0、npm 10.9.4）。`lint/check-code-and-outputs.txt` は `ALL OK`: 記事のコード4つ（package.json、count.ts、estimate.ts、unknown-model.ts）が `code/` と1文字も違わず、`run/10`〜`14` のコマンドは記事のコマンドと同じで終了コードは 0、記事の出力4つ（npm install、count、estimate、unknown-model）と冒頭の1行が `run/11`〜`14` の出力と一致。記事の `cd token-cost-estimate` は、実行用スクリプトが各コマンドをそのフォルダで動かす形で再現した（各ログの `cwd:` の行）。補足の確認も同じスクリプトで照合した: `run/15`（`time`、real 0m9.242s が本文245行目の「9.2秒」と一致）、`run/16`（`"type"` 無しで `MODULE_TYPELESS_PACKAGE_JSON`、数えた結果は同じ。本文175行目）、`run/17`（ネットワーク無しで 12〜14 と同じ出力。本文295行目）。型チェックは 2026-10-31 の `run/07`（tsc 5.9.3、コードはその後変えていない）。コードは LLM の API を呼ばない（`needs_api_key: false`、52行目） |
 | G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、本文に出ている。料金の目安がある。`cost_estimate`、`run_environment`、`verified_at` が埋まり、ログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 305〜322行目に出典の表（12件、題名、URL、確認日 2026-10-31）。断定した文は（出典n）で表を引く（`sources.md` に文ごとの対応）。出典の無い数字は実行ログとそこからの計算だけで、`sources.md` の後半に計算式ごと記録した（283行目の「1行目と2行目は2%未満」「3行目は98%以上」も 1.5%、0.06%、98.4% の計算を記録）。2026-11-10 に、出典の無かった gpt-6 系の段落を消し、227行目に出典3の「at least」に当たる「少なくとも」を足した。料金は 74〜80行目の単価の表、82行目の割り増し、239〜241行目の金額、295〜297行目で、無料なのは記事の手順（API を呼ばない）、料金が要るのは OpenAI API を呼ぶ操作（gpt-5.6-terra の単価、出典1、2）と書いた。トークン数の API の料金は確かめていないと明記した（297行目）。frontmatter 9〜11行目の `cost_estimate`、`run_environment`（Node.js 22.22.0、npm 10.9.4 は `run/10`〜`17` の `node:` `npm:` の行、js-tiktoken 1.0.21 は `code/package.json`）、`verified_at: "2026-11-10"`（最後の実行 `run/17.log` の日付） |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` | OK | 2026-11-10 に `content/articles/*.md` の18本（この記事を含む）の `title` と `main_keyword` を読み直した。料金の見積もり、トークン数の数え方に答える記事はこの記事だけ。同じ course_step 1 の `llm-api-429-retry-sdk-mock` は 429・529 エラーとリトライで、検索意図が違う（`selection.md` の絞り込み1は 2026-10-31 時点の記録） |
-| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | NG | 前: 68行目 `/posts/llm-api-streaming-typescript`（`content/plan.md` の計画 #2）。2026-11-10 の時点で `content/articles/` に原稿が無く、公開も予約もされていない。次: 303行目 `/posts/llm-api-429-retry-sdk-mock`。原稿はあるが `status: draft`、`publish_at: null` で、公開も予約もされていない。frontmatter の `prev`、`next` も同じ slug（12〜13行目）。今公開するとリンク切れになるので、スキルの「リンク先は公開済みか、この記事より前の日時で予約済みの記事に限る」を満たさない。関連記事の内部リンク: `content/articles/` の原稿は18本あるが、すべて `status: draft`、`publish_at: null` で、公開済みか予約済みの記事は0本（3本未満）なので入れていない。リンク先の slug: `llm-api-streaming-typescript`、`llm-api-429-retry-sdk-mock` |
+| G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | OK | 2026-11-14 に #31 で判定し直した。公開の順（`content/plan.md` の「公開の順番」）で3番。本文の内部リンクは1件で、リンク先はすべて自分より前の順番: 68行目 `/posts/claude-agent-sdk-streaming`（2番）。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。frontmatter は `prev: claude-agent-sdk-streaming`、`next: llm-api-429-retry-sdk-mock` のまま。次の記事への本文リンクは外した。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 324行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。日付は最後の実行（`run/17.log`）と `verified_at` と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 2026-11-10 に調べ直した。秘密情報: 原稿と `logs/llm-api-cost-estimate-js-tiktoken/` 全体（この gate.md を除く。gate.md は調べた語そのものを書いている。`run/*.log` も含む）に `ANTHROPIC`、`OPENAI_API`、`sk-`、`password`、`secret`、`Bearer`、`x-api-key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を `grep -rniIE` でかけた。該当は、原稿45・46・289・291・321行目（Anthropic の社名とリポジトリ名）、`selection.md` 18・24・29行目（環境変数の名前と `unset` の記録で値ではない、と社名）、`sources.md` 19・20行目（社名）、`code/README.md` 21行目（実行した場所の説明の語）だけ。32文字以上の英数字の連続も `grep -E` で探し、該当は slug だけ。ログの実行パスは `/path/to` に置き換えた（`run/01`〜`17` のすべてに `/path/to` があり、scratchpad のパスは0件）。API キーは環境に無く、どのログにも値は出ていない。個人名: ユーザーの GitHub アカウント名、git のコミット作者名（英字の連結表記、姓、名）、ユーザーのメールアドレスのローカル部、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓）、関係者の漢字の姓・名を1語ずつ `grep -rniI` で原稿とログにかけ、すべて0件 |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | 2026-11-10 に `ls keywords/` で確かめても CSV が無い（README.md だけ）。`target_query` は null（7行目）。CSV に無い値は作っていない。CSV が届くまで、この記事は下書きのまま止める（CSV 待ち） |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-llm-api.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
 
 ## B. checklist.md の全項目（原文のまま）
 
@@ -79,4 +82,4 @@
 - 合格: G01〜G06、G08、G09。B は C01〜C38 すべて OK、C39 あり。
 - 不合格: G07（前後リンクの先が未公開・未予約）、G10（CSV 待ち、`target_query: null`）。
 - 合計: OK 46（G 8、C 38）、NG 2（G07、G10）、任意 1（C39 あり）。
-- そのため `status: draft` のまま止める（53行目）。G07 は、前後の記事 `llm-api-streaming-typescript` と `llm-api-429-retry-sdk-mock` が公開か、この記事より前に予約されれば OK になる。予約より前に片方が無い場合は、その側のリンクを外して frontmatter を null に戻す。
+- そのため `status: draft` のまま止める（53行目）。G07 は、前後の記事 `claude-agent-sdk-streaming` と `llm-api-429-retry-sdk-mock` が公開か、この記事より前に予約されれば OK になる。予約より前に片方が無い場合は、その側のリンクを外して frontmatter を null に戻す。

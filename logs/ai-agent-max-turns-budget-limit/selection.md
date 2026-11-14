@@ -33,8 +33,18 @@
 | `llm-api-cost-estimate-js-tiktoken` | LLM API | リクエスト前の料金の見積もり | なし。トークンを数える見積もりで、実行中に金額で止める話は無い（grep で0行） |
 | ほかの15本（`zod-*` 2本、`llm-json-parse-error-fix`、`rag-*` 5本、`mcp-*` 5本、`llm-eval-*` 2本） | 構造化出力、RAG、LLM 評価、MCPサーバー | それぞれ別の主題 | なし（grep で0行） |
 
-`ai-agent-tool-use-loop-typescript`（plan #16、自作ループ。上限の数を自作ループに足す回）は、2回目の確認の時点でも原稿が無い（`ls content/articles/` に無い）。plan の決めごとどおり、この記事は自作ループに上限を足す書き方を扱わず、リンクだけにした。
+`ai-agent-tool-use-loop-typescript`（当時の plan #16、自作ループ。上限の数を自作ループに足す回）は、2回目の確認の時点でも原稿が無い（`ls content/articles/` に無い）。plan の決めごとどおり、この記事は自作ループに上限を足す書き方を扱わず、リンクだけにした。
+
+3版目（2026-11-11）の追記: `ai-agent-tool-use-loop-typescript` は計画から外れ、今の plan #16 は `ai-agent-custom-tools-agent-sdk`（Agent SDK の `tool()` で自作のツールを渡し、ツール呼び出しの流れを見る記事。Messages API でループを自作する記事ではない）。原稿の53行目のリンクをこの記事に向け直し、「Messages API でループを自作する場合の上限の足し方は別の記事で扱う」という文は消した。上限そのものは `ai-agent-custom-tools-agent-sdk` の主題ではないので、重なりの判定は変わらない。
 
 ## 外した候補
 
 CSV が無いので、候補の一覧そのものが無い。講座の順番（course_step 4）とキー不要の判定（プラン）は `content/plan.md` の #18 をそのまま使った。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-ai-agent.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: maxTurns と maxBudgetUsd でエージェントを上限で止める方法が、この検索の答えそのものです。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

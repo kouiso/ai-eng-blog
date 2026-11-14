@@ -1,0 +1,9 @@
+date: 2026-11-11T11:05:36Z
+cwd: <work>/rag-citations
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322
+ANTHROPIC_API_KEY: unset
+command: node check-sample.ts
+--- output (stdout+stderr) ---
+[ '資料1に「返品は、商品の到着から14日以内に受け付けます。」はありません', '資料3は渡していません' ]
+--- exit=0

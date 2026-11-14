@@ -1,0 +1,12 @@
+date: 2026-11-11T11:05:14Z
+cwd: <work>/claude-script
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64 / claude: 2.1.322 (Claude Code) / jq: jq-1.8.1
+ANTHROPIC_API_KEY: unset
+block: code/blocks/12-error-log.sh
+--- command ---
+cat > error.log <<'EOF'
+TypeError: Cannot read properties of undefined (reading 'map')
+    at renderList (src/list.ts:12:18)
+EOF
+--- output (stdout+stderr) ---
+--- exit=0

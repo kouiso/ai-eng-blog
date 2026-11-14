@@ -1,0 +1,11 @@
+date: 2026-11-11T11:12:20Z
+cwd: <work>/structured-compare
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: node extra/c-no-target.ts
+--- output (stdout+stderr) ---
+$schema: https://json-schema.org/draft/2020-12/schema
+error: Claude Code process exited with code 1. stderr: Error: --json-schema is not a valid JSON Schema: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"
+draft-7: http://json-schema.org/draft-07/schema#
+--- exit=0

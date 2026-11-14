@@ -1,0 +1,11 @@
+date: 2026-11-11T11:03:57Z
+cwd: <work>/custom-tools
+node: v22.23.4 / npm: 10.9.9 / os: Darwin arm64
+claude-agent-sdk: 0.3.322 / bundled Claude Code: 2.1.322 / zod: 4.6.7
+ANTHROPIC_API_KEY: unset
+command: set -o pipefail; for i in 1 2 3; do node shop-agent-no-strict.ts 2>&1 | python3 <code>/extra/redact-mcp-tools.py | head -1; done
+--- output (stdout+stderr) ---
+[system/init] apiKeySource=none tools_total=2 other_mcp_tools_hidden=0 tools=mcp__shop__calculate_total,mcp__shop__get_product
+[system/init] apiKeySource=none tools_total=2 other_mcp_tools_hidden=0 tools=mcp__shop__calculate_total,mcp__shop__get_product
+[system/init] apiKeySource=none tools_total=2 other_mcp_tools_hidden=0 tools=mcp__shop__calculate_total,mcp__shop__get_product
+--- exit=0

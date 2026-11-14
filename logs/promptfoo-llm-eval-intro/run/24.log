@@ -1,0 +1,27 @@
+date: 2026-11-11T17:27:43-08:00
+cwd: <base>
+node: v22.23.4  npm: 10.9.9
+ANTHROPIC_API_KEY: unset
+uname: Darwin arm64
+$ mkdir promptfoo-intro
+cd promptfoo-intro
+npm init -y > /dev/null
+npm pkg set type=module
+npm install --save-exact promptfoo@0.125.1 @anthropic-ai/claude-agent-sdk@0.3.322
+----
+npm warn deprecated @modelcontextprotocol/server-filesystem@2026.8.31: Date-based versions are no longer published. This package has resumed semantic versioning at 1.0.0: install the latest version.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 599 packages, and audited 600 packages in 32s
+
+108 packages are looking for funding
+  run `npm fund` for details
+
+8 vulnerabilities (3 moderate, 5 high)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+----
+exit=0

@@ -49,8 +49,16 @@
 | `llm-as-a-judge-claude` | LLM 評価 | LLM-as-a-Judge で回答を採点する | なし。Agent SDK は採点の道具として使うだけで、`apiKeySource` は 312行目の1文で触れる程度。メッセージの種類の読み分けを扱う見出しは無い |
 | `promptfoo-llm-eval-intro` | LLM 評価 | promptfoo でプロンプトを評価する | なし。Agent SDK は 87行目と 427行目でこの記事にリンクするだけ |
 
-計画上の隣の記事とは、`content/plan.md` の「重なりを避けるために決めたこと」（94行目）のとおり分けた。#16（`ai-agent-tool-use-loop-typescript`、自作ループ）は再判定の時点でも原稿が無い（`ls` で確認）。#18（`ai-agent-max-turns-budget-limit`）は 07:32 に原稿ができていた。この記事は導入と `query()` のメッセージの読み方だけを扱う。`maxTurns` はオプションの紹介（187行目）と安全のための上限（328行目）で使うだけにし、ターンの数え方、止まったときの結果と例外は #18 に任せた（326、328、364行目）。
+計画上の隣の記事とは、`content/plan.md` の「重なりを避けるために決めたこと」（94行目）のとおり分けた。#16 は、2026-11-11 の時点で `ai-agent-custom-tools-agent-sdk`（`tool()` で作った自作のツールを Agent SDK に渡す記事。`status: draft`）に替わっている（旧 slug `ai-agent-tool-use-loop-typescript` の記事は無い）。この記事は自作のツールを扱わず、組み込みのツールだけで `query()` を動かす。#18（`ai-agent-max-turns-budget-limit`）は 07:32 に原稿ができていた。この記事は導入と `query()` のメッセージの読み方だけを扱う。`maxTurns` はオプションの紹介（187行目）と安全のための上限（328行目）で使うだけにし、ターンの数え方、止まったときの結果と例外は #18 に任せた（326、328、364行目）。
 
 ## 外した候補
 
 CSV が無いので、候補の一覧そのものが無い。講座の順番（course_step 4）とキー不要の判定は `content/plan.md` の #17 をそのまま使った。
+
+## 2026-11-11 追記: target_query を決めた
+
+- 読んだ CSV は `keywords/google-suggest-ai-agent.csv`（Google のサジェストを集めた CSV。列は `suggestion,seed_query,rank,fetched_at`）。ラッコキーワードの CSV は届いていない。最初の回はサジェストの CSV で選ぶ、というオーナーの裁定（2026-11-11）に従った。
+- `target_query` は、この CSV の `suggestion` の列にある行と1文字も違わない値にした。一致する行が1つあることを 2026-11-11 にスクリプトで確かめた。
+- 選んだ理由: Claude Agent SDK で最初のエージェントを動かす手順そのものを扱う記事です。
+- この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
+- ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。

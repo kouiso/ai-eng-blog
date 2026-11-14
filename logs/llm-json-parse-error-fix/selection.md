@@ -37,3 +37,8 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 - `keywords/` は今も `README.md` だけで、CSV は無い（`ls keywords/`）。`target_query` は null のまま、G10 は NG（CSV 待ち）。
 - `ANTHROPIC_API_KEY` は `unset`（同じコマンド）。直した版のコードも API を呼ばない。
 - `content/articles/*.md` は18本に増えていた。全件の title と main_keyword を読み直し、`main_keyword: "構造化出力"` はこの記事のほかに `zod-to-json-schema-tool-definition` と `zod-validate-llm-json-output` の2本だけで、上の表の判断のまま重ならない。ほかの15本は MCP サーバー、RAG、LLM API の料金と 429、評価、エージェントのファイル操作ツールで、`JSON.parse` の `SyntaxError` に答える記事は無い。
+
+## 2026-11-11 追記: target_query は null のまま
+
+- Google のサジェストを集めた CSV（`keywords/google-suggest-*.csv`）を 2026-11-11 に読んだ。この記事が答える検索に合う行は無かった。近い行はあったが、記事の中身より広い検索だったので当てはめていない。
+- `target_query` は null のまま、G10 は NG のままにする。合う行が見つかるまで下書きで止める。
