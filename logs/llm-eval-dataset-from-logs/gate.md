@@ -2,6 +2,8 @@
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
 
+> 2026-11-14 追記: `target_query` を、ラッコキーワードの CSV の行に合わせて変えた（`selection.md` の「2026-11-14 追記」）。G10 は引き続き OK。下の G10 の欄は変更後の値で書き直した。
+
 
 判定日: 2026-11-10。原稿: `content/articles/llm-eval-dataset-from-logs.md`（396行。行番号はすべてこの版）。
 
@@ -43,7 +45,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | OK | 2026-11-14 に #13 と #31 の裁定で判定し直した。公開の順で30番。本文リンク: 61行目 `/posts/promptfoo-llm-eval-intro`（29番）, 225行目 `/posts/zod-validate-llm-json-output`（7番）, 354行目 `/posts/llm-eval-harness-fixtures`（26番）, 356行目 `/posts/rag-retrieval-eval-recall-mrr`（28番）。すべて自分より前の順番で、公開の順番の中でリンク先が先に出る。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。前の記事 `promptfoo-llm-eval-intro`（29番）の原稿は今は `content/articles/` にあり、61行目の文とリンク先は有効。講座の最後なので `next: null`。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 396行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。スキルの決まった表記のとおりで、日付は `run/` のログの JST の日付（2026-11-10）と `verified_at` と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 2026-11-10 の最後の版で、原稿と `logs/llm-eval-dataset-from-logs/` 全体（この gate.md と `judgments.md` は検索語と項目文が入るので除く）に `/tmp`、`/home/`、`/root`、`scratchpad`、`sk-ant`、`password`、`secret` を `grep -rniIE` でかけて0件。値としての API キーやトークンは0件（コードはキーを使わない）。ログのパスは `<work>`、`<code>` に置き換えて保存した。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分。名前の各語、メールのローカル部）、`git config` の名前とメールのローカル部、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）、ユーザーの GitHub アカウント名を1語ずつ `grep -rniI -F` で原稿と `logs/llm-eval-dataset-from-logs/` にかけた（12語、名前そのものは記録しない）。当たったのは `git config` の名前に入る「Claude」（製品名）だけで、出典の URL（`platform.claude.com`）と料金の文の製品名。人名の11語は0件。見本のログの `taro@example.com`（原稿118行目、`logs.jsonl` の11行目）は、例示用に予約されたドメイン（出典8）のありふれた名前の架空のアドレスで、実在の人を指さない |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-llm-eval.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-14 追記」。`target_query` は `keywords/LLM 評価.csv` の「キーワード」の列に一致する行が1つある（2026-11-14 にスクリプトで確認）。検索数は無料プランで取れていない |
 
 ## B. checklist.md の全項目（原文のまま）
 

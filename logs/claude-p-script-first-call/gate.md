@@ -2,6 +2,8 @@
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
 
+> 2026-11-14 追記: `target_query` を、ラッコキーワードの CSV の行に合わせて変えた（`selection.md` の「2026-11-14 追記」）。G10 は引き続き OK。下の G10 の欄は変更後の値で書き直した。
+
 
 判定日: 2026-11-11。原稿: `content/articles/claude-p-script-first-call.md`（443行。行番号はすべてこの版。出典5の削除に伴う修正の後の版）。
 
@@ -29,7 +31,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | OK | 2026-11-14 に #31 で判定し直した。公開の順（`content/plan.md` の「公開の順番」）で1番。本文の内部リンクは0件で、リンク先はすべて自分より前の順番: なし。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。frontmatter は `prev: null`、`next: claude-agent-sdk-streaming` のまま。次の記事への本文リンクは外した。公開の順で1番のため、公開時の既存記事は0本で、前後・関連のリンク先が無い。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 443行目「AI 支援で執筆しました。コードは 2026-11-11 に実際に実行して確認しています。」。日付は記事に写した最後の実行（`run/15.log`）と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 原稿と `logs/claude-p-script-first-call/` 全体に `grep -rIl` をかけて0件: `sk-ant`、オーナーの GitHub アカウント名、オーナーの姓（ローマ字と漢字）、git の author 名、Claude Code の設定フォルダの名前、会社のドメイン、`@gmail`、`session_01`、`/Users/`、スクラッチの領域のパス、UUID の形の文字列。API キーはどこにも書いていない（`ANTHROPIC_API_KEY` は unset で、値を表示する操作もしていない）。`session_id` を含む `answer.json` と `bare.json` はスクラッチの領域に置いて消し、ログには `jq` で取り出したフィールドだけを残した |
-| G10 | `target_query` が `keywords/*.csv` のどれかの行と1文字も違わない | `selection.md` | OK | `selection.md` の「2026-11-11 追記」。`target_query` は `keywords/google-suggest-llm-api.csv` の `suggestion` の列に一致する行が1つある（2026-11-11 にスクリプトで確認）。ラッコの CSV は無く、サジェストの CSV で選んだ |
+| G10 | `target_query` が `keywords/*.csv` のどれかの行と1文字も違わない | `selection.md` | OK | `selection.md` の「2026-11-14 追記」。`target_query` は `keywords/LLM API.csv` の「キーワード」の列に一致する行が1つある（2026-11-14 にスクリプトで確認）。検索数は無料プランで取れていない |
 
 ## B. checklist.md の全項目
 

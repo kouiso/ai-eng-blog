@@ -4,7 +4,7 @@ slug: "ai-agent-safe-file-tool"
 description: "AI エージェントのファイル操作ツールが、作業フォルダの外を読まないようにする TypeScript の関数を作ります。パスは path.relative と realpath で確かめ、拡張子とツール名は許可リストで絞ります。危ない入力を関数に直接渡した実行結果つきです。"
 tags: ["AIエージェント", "TypeScript", "tool use"]
 main_keyword: "AIエージェント"
-target_query: null
+target_query: "aiエージェント ファイル操作"
 course_step: 4
 cost_estimate: "記事のコードは API を呼ばないので無料です。モデルにつないで動かすと、ツールの定義と結果の文字列も入力トークンとして料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）、Linux x86_64"

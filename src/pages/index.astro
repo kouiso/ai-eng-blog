@@ -1,7 +1,8 @@
 ---
-import { getSiteSettings } from "emdash";
+import { getEmDashCollection, getSiteSettings, getTermsForEntries } from "emdash";
 import Base from "../layouts/Base.astro";
-import { COURSE_STEPS } from "../utils/course";
+import { COURSE_STEPS, courseStepForTags, formatDateJa } from "../utils/course";
+import { LATEST_POSTS_LIMIT, selectLatestPosts } from "../utils/latest-posts";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import { SUBSCRIBE_MESSAGES, parseSubscribeStatus } from "../utils/subscribe-messages";
 import { getSubscribeAvailability, SUBSCRIBE_CLOSED_MESSAGES } from "../utils/subscribe-availability";
@@ -16,6 +17,20 @@ const turnstileSiteKey = availability.open ? availability.turnstileSiteKey : und
 // 診断の2つ目の答えが指す「LLM 評価」は、講座データの末尾の1語
 const evalStep = COURSE_STEPS.find((s) => s.slug === "llm-eval");
 const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[availability.reason];
+// 新着の記事。公開済みだけが返り、0本の間は節ごと出さない
+const { entries: published, cacheHint } = await getEmDashCollection("posts", {
+	orderBy: { published_at: "desc" },
+	limit: LATEST_POSTS_LIMIT * 2,
+});
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const latestEntries = selectLatestPosts(published);
+const latestTags = latestEntries.length
+	? await getTermsForEntries("posts", latestEntries.map((p) => p.data.id), "tag")
+	: new Map();
+const latestPosts = latestEntries.map((post) => ({
+	post,
+	course: courseStepForTags(latestTags.get(post.data.id) ?? []),
+}));
 ---
 
 <Base title={siteTitle} description={siteTagline}>
@@ -33,6 +48,36 @@ const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[avail
 			<a class="btn btn--outline" href="#course">講座を最初から読む</a>
 		</div>
 	</section>
+
+	{
+		latestPosts.length > 0 && (
+			<section id="latest" class="container section latest" aria-labelledby="latest-title">
+				<h2 id="latest-title" class="section__title">新着の記事</h2>
+				<ul class="latest__list">
+					{latestPosts.map(({ post, course }) => (
+						<li class="card latest__item">
+							{course && (
+								<span class="latest__step mono">
+									講座 {course.step.no} / {course.step.name}
+								</span>
+							)}
+							<a class="latest__title" href={`/posts/${post.id}`}>
+								{post.data.title}
+							</a>
+							{post.data.publishedAt && (
+								<time class="latest__date" datetime={post.data.publishedAt.toISOString()}>
+									{formatDateJa(post.data.publishedAt)}
+								</time>
+							)}
+						</li>
+					))}
+				</ul>
+				<p class="latest__more">
+					<a href="/posts">記事一覧を見る</a>
+				</p>
+			</section>
+		)
+	}
 
 	<section id="check" class="band" aria-labelledby="check-title">
 		<div class="container section">
@@ -405,6 +450,42 @@ const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[avail
 		margin: 0;
 		font-size: 13px;
 		color: var(--muted);
+	}
+	.latest__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+	.latest__item {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+	.latest__step {
+		font-size: 13px;
+		color: var(--accent);
+	}
+	.latest__title {
+		font-weight: 700;
+		font-size: 18px;
+		line-height: 1.5;
+		color: var(--text);
+		text-decoration: none;
+	}
+	.latest__title:hover {
+		color: var(--accent);
+		text-decoration: underline;
+	}
+	.latest__date {
+		font-size: 13px;
+		color: var(--muted);
+	}
+	.latest__more {
+		margin: 0;
 	}
 	.steps {
 		margin: 0;

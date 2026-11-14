@@ -1,0 +1,8 @@
+date: x
+command:
+  node a.ts
+--- output (stdout+stderr) ---
+failed
+--- server stderr ---
+boom
+--- exit=1
