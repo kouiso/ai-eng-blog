@@ -407,12 +407,20 @@ const articleMeta = {
 		overflow-x: auto;
 		border-collapse: collapse;
 		font-size: 14px;
+		overflow-wrap: normal;
+	}
+	/* 表の中で途中で折れてよいのは URL（リンク）だけ */
+	.prose :global(td a),
+	.prose :global(th a) {
+		overflow-wrap: anywhere;
 	}
 	.prose :global(th),
 	.prose :global(td) {
 		border: 1px solid var(--line);
 		padding: 8px 12px;
 		text-align: left;
+		/* 日付 2026-10-31 のハイフンで折れないよう、列が細くなりすぎない下限を置く */
+		min-width: 14ch;
 	}
 	.prose :global(img) {
 		border-radius: 8px;
