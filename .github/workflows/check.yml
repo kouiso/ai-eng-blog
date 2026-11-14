@@ -40,16 +40,45 @@ jobs:
         run: npm run check:samples
 
       # develop への push では origin/develop が HEAD と同じで、npm run check の secret-scan は
-      # 0 ファイルで通ってしまう。push は直前の commit、PR は base ブランチと比べ直し、0 ファイルなら落とす
+      # 0 ファイルで通ってしまう。push は直前の commit、PR は base ブランチと比べ直し、0 ファイルなら落とす。
+      # push の before は、新しい ref の最初の push ですべて 0 になり、force-push では履歴に無いこともある。
+      # その場合は origin/develop との merge-base、それも HEAD と同じなら親 commit と比べる（0 を基準に渡さない）
       - name: secret-scan（0 ファイルで通さない）
         env:
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BEFORE: ${{ github.event.before }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          if [ "$EVENT_NAME" = "push" ]; then base="$PUSH_BEFORE"; else base="$PR_BASE_SHA"; fi
-          out="$(node scripts/secret-scan.mjs "$base")"
+          usable() { [ -n "$1" ] && git rev-parse --verify --quiet "$1^{commit}" >/dev/null && git merge-base "$1" HEAD >/dev/null 2>&1; }
+          if [ "$EVENT_NAME" = "push" ]; then
+            base="$PUSH_BEFORE"
+            if ! echo "$base" | grep -Eq '^0+$' && usable "$base"; then
+              :
+            else
+              echo "push の before（${PUSH_BEFORE:-なし}）を基準にできないので、merge-base か親 commit と比べます" >&2
+              head="$(git rev-parse HEAD)"
+              mb="$(git merge-base origin/develop HEAD 2>/dev/null || true)"
+              if [ -n "$mb" ] && [ "$mb" != "$head" ]; then
+                base="$mb"
+              elif git rev-parse --verify --quiet "HEAD^" >/dev/null; then
+                base="$(git rev-parse HEAD^)"
+              else
+                echo "比べる基準（before、merge-base、親 commit）が無いので落とします" >&2
+                exit 1
+              fi
+            fi
+          else
+            base="$PR_BASE_SHA"
+          fi
+          echo "secret-scan の基準: $base"
+          rc=0
+          out="$(node scripts/secret-scan.mjs "$base")" || rc=$?
+          # 見つかって落ちるときも、ファイル名・行番号・種類の一覧（値は出ない）をログに残す
           echo "$out"
+          if [ "$rc" -ne 0 ]; then
+            echo "secret-scan が終了コード $rc で終わりました。上の一覧を確認してください" >&2
+            exit "$rc"
+          fi
           if echo "$out" | grep -Eq ', 0 file\(s\) scanned'; then
             echo "secret-scan が 0 ファイルを調べただけなので落とします" >&2
             exit 1
