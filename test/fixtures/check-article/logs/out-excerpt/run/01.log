@@ -1,0 +1,9 @@
+date: 2026-01-01T00:00:00Z
+command: echo test
+exit: 0
+--- stdout+stderr ---
+line1
+line2
+line3
+line4
+--- exit=0 ---

@@ -113,3 +113,10 @@ later authorized deployment.
 - `samples/rag-chat` の `npm start` のうち、Claude に答えさせる部分: この sha では `ANTHROPIC_API_KEY` が要る（`samples/rag-chat/src/cli.ts`）。CLAUDE.md の方針でキーは使わないので動かしていない。Agent SDK へ移すのは #63。
 - `wrangler deploy`（dry-run ではない本番の deploy）、`wrangler dev --local` での動作確認: #24 の範囲外。
 - engines の変更: このPRでは `package.json` を変えていない（#25）。Node 22 での再実行もしていない。
+
+## 2026-11-14 の追記（engines の整理、#25）
+
+- ベース: `develop` の `aecb256072518a20960494d44930feed56567fa5`（#65 まで）に、このPRの変更を重ねたツリー。
+- ルートの `engines` は `24.x` のまま（`.nvmrc` と Workers Builds に合わせる）。samples は読者が自分の環境で動かすので、動かして確かめた版（22.23.4 と 24.22.3）だけを共通の範囲 `^22.23.4 || ^24.22.3` にした。`samples/mcp-server` の `>=20` は動かしていないので外した。22.18.0 は `rag-chat` が `node src/cli.ts` で型を取り除いて実行するのに要る技術的な下限だが、動かしていないので `engines` には入れていない。23 系と 25 系以降も同じ理由で入れていない。
+- Node v22.23.4（npm 10.9.9）と Node v24.22.3（npm 11.19.1、公式 tarball。PATH だけに入れた）の両方で `npm run check:samples` が exit 0。`samples/mcp-server` は `npm test` が 11 件中 11 件、`npm run e2e` が `E2E OK`。`samples/rag-chat` は `npm test` が 14 件中 14 件。どちらも samples の `npm ci` の EBADENGINE は0行。
+- ルートの `npm ci`: Node 24 は exit 0 で EBADENGINE 0行。Node 22 は exit 0 で EBADENGINE 5行（1件の警告。`ai-eng-blog@0.1.0` が `24.x` を要求）。ルートは 24 系で使う前提なので想定どおり。

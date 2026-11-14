@@ -115,7 +115,7 @@ PoC の目的は、自動化した執筆と公開が役に立つかを判断す�
 - 旧名の Worker `emdash-trial-20261021` は、ダッシュボードに中身の無い Worker として存在します。一度も deploy されておらず、バインディングは無く、workers.dev とプレビューの URL は無効で、外から届きません（2026-10-31 に持ち主がダッシュボードで確かめた内容。Claude は確かめていません）。以前は「作られていない」と書いていましたが、誤りでした。残しておいても公開されないので、消すかどうかは持ち主が決めます。
 - Workers Builds では、ダッシュボードの Worker 名と `wrangler.jsonc` の `name` が一致しないとビルドが失敗します（https://developers.cloudflare.com/workers/ci-cd/builds/troubleshoot/ 、2026-10-31 確認）。Worker をつなぐときは `ai-eng-blog` という名前にします。
 - リポジトリ名は旧名（`emdash`）のままです。`package.json` と `package-lock.json` の `name` は `ai-eng-blog` です。
-- Access、LOADER、AI、メール、独自 DNS、有料 CI は追加していません。フォントは OS 標準で、外部の Web フォントは読み込みません（2026-10-31 に Google Fonts の読み込みを外しました）。画像変換は無効です。
+- Access、LOADER、AI、メール、独自 DNS は追加していません。CI は `.github/workflows/check.yml` の GitHub Actions だけで、有料の CI は使いません（public リポジトリの標準の GitHub-hosted runner は無料で使えます。https://docs.github.com/en/billing/concepts/product-billing/github-actions 、2026-11-14 確認）。フォントは OS 標準で、外部の Web フォントは読み込みません（2026-10-31 に Google Fonts の読み込みを外しました）。画像変換は無効です。
 - ローカルでのビルド、型チェック、テスト（`npm test`）、`wrangler deploy --dry-run`、`wrangler dev --local` と Playwright での画面の確認は、2026-10-31 に通っています（VERIFICATION.md の「2026-10-31 の追記」）。
 
 [OWNER_TASKS.md](./OWNER_TASKS.md) の「ユーザーにしかできないこと」の1が済めば、deploy は GitHub への push から行われる見込みです。今回の `Unauthorized` がその経路でも起きるかは、まだ確かめていません。

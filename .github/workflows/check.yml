@@ -1,0 +1,56 @@
+# pull request と develop への push で、ログインも API キーも要らない check を流す。
+# 助言のための CI で、ブランチ保護は変えない。secrets は使わず、deploy もしない。
+name: check
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # secret-scan が origin/develop との差分を取れるように、履歴を全部取る
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: npm run check
+        run: npm run check
+
+      - name: npm run check:samples
+        run: npm run check:samples
+
+      # develop への push では origin/develop が HEAD と同じで、npm run check の secret-scan は
+      # 0 ファイルで通ってしまう。push は直前の commit、PR は base ブランチと比べ直し、0 ファイルなら落とす
+      - name: secret-scan（0 ファイルで通さない）
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then base="$PUSH_BEFORE"; else base="$PR_BASE_SHA"; fi
+          out="$(node scripts/secret-scan.mjs "$base")"
+          echo "$out"
+          if echo "$out" | grep -Eq ', 0 file\(s\) scanned'; then
+            echo "secret-scan が 0 ファイルを調べただけなので落とします" >&2
+            exit 1
+          fi
