@@ -23,9 +23,16 @@ PASS LINE (articles/docs): write-article skill; checklist.md all rows + G1-G11 i
 M1 ruling: yes, lane creates main from the post-I2 develop sha (Q1 delegated it; creating a ref deploys nothing; revert = delete the branch). "main on hold like Q3" applies to production deploy/pilot only -> superseded for the branch. No default-branch change or protection. main may be fast-forwarded to newer develop until the owner connects Cloudflare; after OWNER_TASKS step 2 every push to main is production and needs the owner
 order: #53 and #56 in parallel, merge #53 first -> AEB-I3 -> AEB-M1 -> AEB-DP -> one owner message -> non-claude-cloud issues (deploy-breaking, reader-facing defects, doc drift, rest) -> claude-cloud issues -> PI2 and 29 articles after the owner's pilot reply
 
-CYCLE 1 T=2026-11-14T12:19Z | PRs 2 (+ NOTES #57 excluded) | issues 41 (claude-cloud 11, -ux 0) | ledger rows 17 not done
+CYCLE 1 T=2026-11-14T12:17Z | PRs 2 (+ NOTES #57 excluded) | issues 41 (claude-cloud 11, -ux 0) | ledger rows 17 not done
+
+#56 | FIX | review FAIL must 2 on a5a0c9c (issuecomment-6877184261) -> fixed a7dd09b, LOCAL-CHECK posted, re-review running
+JUDGE bundles 1-4 (manager, 2026-11-14T12:27Z): close now #20 #12 #19 (done), #21 (superseded: plan item 1 is claude-p-script-first-call, no API key), #31 (done: ordering fixed, not "gate passed"; file new SBI under #13 for the missing related link in mcp-server-streamable-http, must). owner ask: #3 (public-content check: wanted now, and how to hand over rules without putting them in the public repo; non-urgent, post-DP message). Waits: #6 #15 #39 on PR56; #9 #10 #27 on PR53; #28 on #27; #11 on #28; #29 #1 on Q3; #5 on AEB-END; #25 on #24; #37 on #35; #35 on #34; #33 on #32; #32 #23 on #22; #38 on #39; #43 #44 on #42; #45 on PI2; #46 on #45. Work now: #24 #13 #14 #8 #18 #49 #17 #7 #22 #34 #42.
+rulings: A prev/next = data in course.ts (#22) + template renders published-only prev/next with test (#32); new G07 text (#33); step 10-6 deleted; existing 30 manuscripts not edited; last article of a step links to next step's first published article. B CI yes: pull_request to develop/main + push develop, Node from .nvmrc, npm ci + root check, contents: read, no secrets, no deploy; README "no paid CI" updated. C Node: engines list only versions actually run; root 24.x; samples one shared lower bound (22 and 24). D re-runs: 動作確認日 = last date run and worked (update verified_at only on pass); no committed package-lock; monthly by hand; cost inside plan only.
+order: closes+SBI+comments -> #24 (Node 24) -> M1 -> DP on Node 24 -> owner message (ready, Q3, Q2, #3 ask, G07 FYI) -> #34 #35 #37 -> #25 -> #22 #32 #33 + streamable SBI -> #49 -> #23 -> #27 #28 (one [slug].astro PR at a time) -> #39 #38 -> #42 #43 #44 -> after pilot #45 #46. Check samples/rag-chat @anthropic-ai/sdk API-key need.
 
 ## needs owner
+- #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
+
 
 ## for main session
 - advisor tool not present in this lane
