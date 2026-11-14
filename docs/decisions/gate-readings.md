@@ -2,7 +2,7 @@
 
 結論: 公開前ゲート（`.claude/skills/write-article/SKILL.md` の G01〜G11）と `docs/tech-writing-pack/checklist.md` の項目について、統括が出した8件の裁定と、ゲートではない3件の決まりを1か所に集めた。ここに書いたものは規則で、書く AI はこれに従う。点検する AI は点検の入力として読む。
 
-正本は GitHub のコメントにある。https://github.com/kouiso/ai-eng-blog/issues/81#issuecomment-6878197474 （2026-11-14 に投稿）。各項目は、このコメントを出典にして、根拠のファイルと行を添える。
+正本は GitHub のコメントにある。https://github.com/kouiso/ai-eng-blog/issues/81#issuecomment-6878197474。各項目は、このコメントを出典にして、根拠のファイルと行を添える。
 
 SKILL.md のゲートの行の文言と、pack の checklist と guides は変えない。この文書は、行の読み方が割れた箇所の読み方と、PR の運用だけを書く。項目1〜8はすべて統括の裁定である。checklist とガイドに無い除外は、項目3の C25 の URL だけの値の1か所だけで、数えなかった値は件数を付けて一覧に出す。項目5の除外はガイドにある（`guides/03-anti-ai.md:372`）。
 
