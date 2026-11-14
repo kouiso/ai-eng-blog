@@ -13,6 +13,8 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 const subscribeStatus = parseSubscribeStatus(Astro.url.searchParams.get("subscribe"));
 const availability = getSubscribeAvailability(Astro.url);
 const turnstileSiteKey = availability.open ? availability.turnstileSiteKey : undefined;
+// 診断の2つ目の答えが指す「LLM 評価」は、講座データの末尾の1語
+const evalStep = COURSE_STEPS.find((s) => s.slug === "llm-eval");
 const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[availability.reason];
 ---
 
@@ -50,7 +52,9 @@ const closedMessage = availability.open ? null : SUBSCRIBE_CLOSED_MESSAGES[avail
 					おすすめ: 入門ステップ講座の 1「LLM API」から順に読む。 <a href="#course">講座へ</a>
 				</p>
 				<p id="rec-pro" class="rec rec--pro" data-rec="pro" hidden>
-					おすすめ: 6「LLM 評価」と応用記事、特典のサンプルアプリ。 <a href="#gift">特典へ</a>
+					おすすめ: 6「LLM 評価」と応用記事、特典のサンプルアプリ。{" "}
+					{evalStep && <a href={`/tag/${evalStep.slug}`}>講座 6 へ</a>}{" "}
+					<a href="#gift">特典へ</a>
 				</p>
 			</div>
 		</div>
