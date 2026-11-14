@@ -1,0 +1,12 @@
+---
+title: "試験用の記事"
+description: "検査スクリプトの試験用です。"
+---
+
+# 見出し
+
+```text
+failed
+--- server stderr ---
+boom
+```

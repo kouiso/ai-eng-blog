@@ -1,0 +1,7 @@
+date: x
+cwd: <base>
+$ test -n "$K" && echo set || echo unset
+----
+unset
+----
+exit=0

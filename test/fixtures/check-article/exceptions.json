@@ -1,0 +1,20 @@
+{
+ "out-exc-ok": [
+  {
+   "first_line": "tree/",
+   "reason": "ファイル構成の図で、コマンドの出力ではない"
+  }
+ ],
+ "out-exc-noreason": [
+  {
+   "first_line": "tree/",
+   "reason": ""
+  }
+ ],
+ "out-exc-stale": [
+  {
+   "first_line": "no such block",
+   "reason": "当たらない例外"
+  }
+ ]
+}
