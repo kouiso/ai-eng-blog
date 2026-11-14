@@ -65,12 +65,16 @@ members: #53 fix, K1, #23, #39, #58, #66, #49 fix (sonnet); reviewers: #59, #65,
 #72 (#23 tag course order, 8c9dff8) and #73 (#39 diagnosis link, 75581d8): LOCAL-CHECK posted, reviews running
 #42: manager rulings delivered (checklist-defined baseline, conventions, Python + npm test, 60 copies untouched); member implementing
 
+DECIDED | AEB-I3 done: #21 closed (not planned, restated); the original "A" triage list (packet: P/issue-triage.tsv, on the owner's Mac) is not readable here, so instead every open issue got a manager decision in JUDGE bundles 1-4 (closes executed: #6 #12 #19 #20 #21 #31) | revert: if the A list names an issue still open that should be closed, close it with the manager's reason
+#70 | FIX | review FAIL must 1 (Closes #35 while #5 announcement pending) -> author fixing (Refs #35; lead posts #5 comment after merge)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
 
 ## for main session
+- AEB-I3 was closed using the manager's per-issue decisions instead of the original triage list P/issue-triage.tsv (not readable from the cloud); if that list differs, please paste it into NOTES
 - design artifact KK25c9pSMdvLqJ71qWaf5t is not readable from this cloud session (not found / not shared with this account); please share it to this account or paste its content
 - advisor tool not present in this lane
 - Cloudflare connector is authorized for an account that does not hold this project's Worker; production checks (AEB-D1) will need the owner's account connected
