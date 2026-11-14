@@ -10,6 +10,7 @@ import Base from "../../layouts/Base.astro";
 import { courseStepForTags, formatDateJa } from "../../utils/course";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import { getSiteOrigin } from "../../utils/site-origin";
+import { markNumericTableCells } from "../../utils/table-cell";
 import { buildToc } from "../../utils/toc";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -141,7 +142,7 @@ const articleMeta = {
 			}
 
 			<div class="prose" data-prose>
-				<PortableText value={post.data.content} />
+				<PortableText value={markNumericTableCells(post.data.content)} />
 			</div>
 
 			{
@@ -400,12 +401,34 @@ const articleMeta = {
 		overflow-x: auto;
 		border-collapse: collapse;
 		font-size: 14px;
+		overflow-wrap: normal;
+	}
+	/* 表の中で途中で折れてよいのは URL だけ（リンクと、markNumericTableCells が textAlign: "justify" を付けた URL のセル） */
+	.prose :global(td a),
+	.prose :global(th a),
+	.prose :global(td[style*="text-align: justify"]) {
+		overflow-wrap: anywhere;
 	}
 	.prose :global(th),
 	.prose :global(td) {
 		border: 1px solid var(--line);
 		padding: 8px 12px;
 		text-align: left;
+	}
+	/* 見出しの行は折らない。本文のセルは英単語・識別子の途中では折らず（日本語は文字の間で折れる）、
+	   表が枠に収まらないときは .emdash-table-wrapper の中で横にスクロールする */
+	.prose :global(th) {
+		white-space: nowrap;
+	}
+	.prose :global(td) {
+		min-width: 8ch;
+		overflow-wrap: normal;
+	}
+	/* 番号・日付・バージョンのセル（markNumericTableCells が textAlign: "left" を付けたもの）は
+	   2026-10-31 のハイフンで折らず、下限も付けない。表が枠より広いときは表が横にスクロールする */
+	.prose :global(td[style*="text-align: left"]) {
+		white-space: nowrap;
+		min-width: 0;
 	}
 	.prose :global(img) {
 		border-radius: 8px;
