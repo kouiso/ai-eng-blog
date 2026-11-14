@@ -49,7 +49,7 @@ publish_at: null
 updated: 2026-11-14
 ---
 
-LLM API の呼び出しは、最初の1回から API キーなしで済みます。Claude Code の `claude -p` なら、スクリプトから質問を送り、答えを受け取れる仕組みです。料金は、自分の Claude プランの利用枠から引かれます（出典5）。
+LLM API の呼び出しは、`claude -p` なら最初の1回から API キーなしで済みます。`claude -p` は、スクリプトから質問を送って答えを受け取る Claude Code のコマンドです。料金は、自分の Claude プランの利用枠から引かれます（出典5）。
 
 `--output-format json` を付けたときに答えが入る場所は、`result` です（出典1）。この記事では、シェルと Node.js から1問ずつ投げて、返った JSON を読むところまで動かしました。
 

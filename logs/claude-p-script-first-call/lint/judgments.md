@@ -6,7 +6,7 @@
 
 - 判定行は `✅ 致命なし`、集計は `use 0件 / 📎mention 0件`、`exit=0`。
 - `⚠️warn` は0件。判断の要る行は無い。
-- frontmatter の扱い（スキル手順7）。frontmatter は1〜48行目。`ai-smell.txt` に `📎mention` は1件も無いので、frontmatter の行で use として数え直すものは0件。
+- frontmatter の扱い（スキル手順7）。frontmatter は1〜50行目。`ai-smell.txt` に `📎mention` は1件も無いので、frontmatter の行で use として数え直すものは0件。
 
 ## writing-lint.py
 
