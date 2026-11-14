@@ -14,9 +14,11 @@
 checklist とガイドに無い除外は入れない。数えないものは次のとおりで、どれも根拠を持ち、数を出力する。
   - フェンスで囲んだコードブロックの中身（全検査）。
   - C30 から C32 では、インラインコードの中の記号も数えない（guides/03-anti-ai.md 372行）。
-  - C25 では、URL だけの表のセルは文ではないので数えない（pack の writing-lint.py も表の行を文として取らない）。
-    地の文、箇条書き、表の中の文、frontmatter の読者に見える文字列、インラインコード（1字ずつ）は数える。
-  - C17 の文の並びは pack の writing-lint.py の取り方に合わせ、見出し、表、箇条書き、引用の行は入れない。
+  - C25 では、セルの中身がちょうど URL 1つだけの表のセルは数えない（文ではなく、URL は句読点で切れない。
+    出典の表に URL を置く規約がある）。URL と語が混じるセル、地の文、箇条書き、見出し、表の中の文、
+    frontmatter の読者に見える文字列、sources の title、インラインコード（1字ずつ）はすべて数える。
+    数えなかったセルの件数と、60字を超えるものの行を [SKIP C25-URL] として出力する。
+  - C17 の文の並びは、地の文と箇条書きの文。見出しと表のセルは並びに入れない。
 実行はしない。LLM も呼ばない。
 
 行ID は .claude/skills/write-article/SKILL.md 付録 B の C01 から C39 に合わせる。
@@ -52,9 +54,13 @@ C17_RUN = 3             # checklist C17「3回以上連続」
 C16_RUN = 5             # guides/03 4節「30〜50字の文がずっと続く」。5文以上を候補にする
 C16_RANGE = (30, 50)
 
-# C17 の語尾は2通りで見て、どちらかに当たれば数える。語尾3字の一致と、guides/03 が名指しする4語尾
-# （〜ましょう / 〜でしょう / 〜です / 〜ません）の一致。「ます」「ました」は名指しが無いので種類には入れない。
-ENDING_CLASS = re.compile(r"(でしょう|ましょう|ません|です)$")
+# C17 の語尾は2通りで見て、どちらかに当たれば数える。
+#  (1) 末尾3字の一致
+#  (2) 文末の形の一致。形ごとに別の語尾で、「です」「ます」「ました」が混ざる並びは同じ語尾とは数えない。
+#      形はデータ。guides/03-anti-ai.md 409行（〜ましょう、〜でしょう、〜です、〜ません）と、
+#      193行（〜です。〜です。〜です。の3連続）に加え、丁寧体の基本形のます、ました、でした。長い形を先に書く。
+ENDING_FORMS = ("でしょう", "ましょう", "ません", "ました", "でした", "です", "ます")
+ENDING_CLASS = re.compile("(" + "|".join(ENDING_FORMS) + ")$")
 
 # C26 の表記ゆれ候補（guides/05「一概念一用語」「技術用語の表記」）。データ。
 C26_PAIRS = [
@@ -138,35 +144,6 @@ def parse_article(text):
     return sents, plain_lines, code_lines
 
 
-# pack の writing-lint.py の BULLET_RE と同じ。箇条書き、引用、表の行、見出しの行は文の並びに入れない。
-BULLET_RE = re.compile(r"^\s*(?:[-*>•｜|]|\d+\.|#{1,6}\s)")
-
-
-def c17_sentences(text):
-    """(行番号, 文) の並び。docs/tech-writing-pack/scripts/writing-lint.py の sentences_with_lines と同じ取り方:
-    コードフェンスの中は除き、BULLET_RE に当たる行は飛ばし、句点・？！で切り、8字未満の断片は捨てる。
-    frontmatter は本文ではないので読まない。"""
-    out = []
-    in_fm = in_code = False
-    for i, raw in enumerate(text.split("\n"), 1):
-        if i == 1 and raw == "---":
-            in_fm = True
-            continue
-        if in_fm:
-            in_fm = raw != "---"
-            continue
-        if re.match(r"^\s*(?:```|~~~)", raw):
-            in_code = not in_code
-            continue
-        if in_code or BULLET_RE.match(raw):
-            continue
-        for part in re.split(r"(?<=[。！？])", raw.strip()):
-            part = part.strip().rstrip("。！？")
-            if len(part) >= 8:
-                out.append((i, "prose", part))
-    return out
-
-
 def ending3(s):
     s = s.rstrip("。")
     s = re.sub(r"（[^（）]*）$", "", s)
@@ -180,16 +157,21 @@ def check_prose(res, path):
     res.info.append(f"prose: 文 {len(sents)}、数えなかったコードブロックの行 {code_lines}")
 
     # C25 60字超（フェンス外の文。地の文、箇条書き、見出し、表の中の文、frontmatter の読者に見える文字列を数え、種類を付けて出す。
-    # URL だけの表のセルは文ではないので数えず、件数を出す。判断待ちの点）
+    # 数えない URL だけのセルは、下の説明のとおり。）
+    # セルの中身がちょうど URL 1つだけのとき（URL と語が混じるセルは数える）は、文ではない（URL は句読点で切れない）
+    # ので数えず、件数を出す。60字を超えるものは行番号を [SKIP C25-URL] の名前で並べる。
     url_cells = [x for x in sents if x[1] == "url-cell"]
-    res.info.append(f"C25 で数えなかった URL だけの表のセル（文ではない）: {len(url_cells)}件")
+    res.info.append(f"C25 で数えなかった URL だけの表のセル（セル全体が URL 1つ）: {len(url_cells)}件")
+    for i, _k, u in url_cells:
+        if len(u) > C25_LIMIT:
+            res.info.append(f"  [SKIP C25-URL] {name}:{i} {len(u)}字 {u}")
     for i, kind, s in sents:
         if kind != "url-cell" and len(s) > C25_LIMIT:
             res.fail("C25", f"{name}:{i}", f"{len(s)}字 [{kind}] {s}")
 
     # C17 同じ語尾が3回以上連続（語尾3字の一致、または丁寧語尾の種類の一致）。
     # 文の取り方は pack の writing-lint.py（sentences_with_lines）に合わせる。
-    body = c17_sentences(text)
+    body = [x for x in sents if x[1] == "prose"]   # 地の文と箇条書き。見出しと表のセルは並びに入れない
     flagged = []
     for k in range(len(body) - C17_RUN + 1):
         win = body[k:k + C17_RUN]

@@ -64,8 +64,21 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		expect(r.out).toContain("[FAIL C25]");
 	});
 
-	it("C17 は見出し、表、箇条書き、引用の行を文の並びに入れない（pack の writing-lint.py と同じ取り方）", () => {
+	it("C17 は見出しと表のセルを並びに入れない", () => {
 		const r = check("prose", "c17-nonprose");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).not.toContain("[FAIL C17]");
+	});
+
+	it("C17 は箇条書きの文を並びに入れる", () => {
+		const r = check("prose", "c17-list");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C17]");
+	});
+
+	it("C17 は「ます」の3連続も数え、です、ます、でした が混ざる並びは数えない", () => {
+		expect(check("prose", "c17-masu").out).toContain("語尾「ます」");
+		const r = check("prose", "c17-mixed");
 		expect(r.code, r.out).toBe(0);
 		expect(r.out).not.toContain("[FAIL C17]");
 	});
@@ -76,10 +89,17 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		expect(r.out).toContain("確定 0");
 	});
 
-	it("C25 は URL だけの表のセルを数えず、件数を出す", () => {
+	it("C25 は、セル全体が URL 1つだけのセルを数えず、60字超のものを行つきで一覧に出す", () => {
 		const r = check("prose", "c25-url-cell");
 		expect(r.code, r.out).toBe(0);
-		expect(r.out).toContain("URL だけの表のセル（文ではない）: 1件");
+		expect(r.out).toContain("セル全体が URL 1つ）: 1件");
+		expect(r.out).toMatch(/\[SKIP C25-URL\] c25-url-cell\.md:10 /);
+	});
+
+	it("C25 は、URL と語が混じるセルを全体で数える", () => {
+		const r = check("prose", "c25-url-words");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C25]");
 	});
 
 	it("C32 は `： ` と `／` を別々に数える", () => {
