@@ -117,7 +117,7 @@ write-article スキルで記事を作るときは、先に `taxonomy_list_terms
 
 `npm install --save-exact emdash@1.5.0 @emdash-cms/cloudflare@1.5.0` は、環境に拒否されたのではなく、npm の依存の解決が `ERESOLVE`（peer の衝突）で止まった。1.4.0 のまま固定された `package-lock.json` が、`@emdash-cms/cloudflare@1.5.0` の peer（`emdash@1.5.0`）と食い違うため。`package.json` の2行を 1.5.0 に直しても同じだった。ロックファイルを使わずに `package.json` だけで解決すると（スクラッチパッドで確認）通るので、依存の宣言そのものに問題は無い。
 
-`--force` や `--legacy-peer-deps` は使わず、`package-lock.json` から `emdash` と `@emdash-cms/*` の11エントリだけを消してから `npm install` した。結果は、`emdash` と `@emdash-cms/{admin,auth,blocks,cloudflare,gutenberg-to-portable-text}` が 1.5.0 に、`@emdash-cms/{plugin-types,registry-client,registry-lexicons,registry-verification}` がパッチ版に、`@cloudflare/kumo` が 2.6.0 から 2.15.0（emdash の依存）に、`@tiptap/y-tiptap` が 3.0.12 から 3.2.0 になった。`@tiptap/*` の 3.32.0 は emdash と `@emdash-cms/admin` の下に入れ子で入り（88パッケージの追加、45パッケージの削除）、`package-lock.json` の差分が大きいのはこのため。`package.json` の dependencies は `emdash` と `@emdash-cms/cloudflare` の2行だけが変わった。
+`--force` や `--legacy-peer-deps` は使わず、`package-lock.json` から `emdash` と `@emdash-cms/*` の11エントリだけを消してから `npm install` した。結果は、`emdash` と `@emdash-cms/{admin,auth,blocks,cloudflare,gutenberg-to-portable-text}` が 1.5.0 に、`@emdash-cms/{plugin-types,registry-client,registry-lexicons,registry-verification}` がパッチ版に、`@cloudflare/kumo` が 2.6.0 から 2.15.0（emdash の依存）に、`@tiptap/y-tiptap` が 3.0.12 から 3.2.0 になった。`@tiptap/*` は、emdash と `@emdash-cms/admin` が 3.32.0 ちょうどに固定しているため、その下に 3.32.0 が入れ子で入り（88パッケージの追加、45パッケージの削除）、最上位にあった 3.32.2 は消えた。最上位の `node_modules/@tiptap/core` が 3.32.2、`node_modules/emdash/node_modules/@tiptap/core` が 3.32.0 で、パッチ版が1つ下がる（`package-lock.json` で確認、2026-11-14）。、`package-lock.json` の差分が大きいのはこのため。`package.json` の dependencies は `emdash` と `@emdash-cms/cloudflare` の2行だけが変わった。
 
 ## 確かめた結果（2026-11-14、Node.js 24.22.3、npm 11.19.1、wrangler 4.152.0）
 
@@ -155,11 +155,28 @@ write-article スキルで記事を作るときは、先に `taxonomy_list_terms
 | コードを含むリンク2か所 | 記号が残る | `<a href="/posts/claude-code-api-key-billing-auth"><code>ANTHROPIC_API_KEY</code></a>` と `<a href="/posts/claude-p-script-first-call"><code>claude -p</code></a>` |
 | 「1つの改行はソフトな改行になる」変更 | — | 段落、リスト項目、見出し、セル、コードブロックの文字列（空白を1つに畳んだもの）が、原稿と全ブロックで一致。`<br>` は0。行がつながったり崩れたりした箇所は0 |
 
-`1.4.0 で em になった 19 span` は、1.4.0 の `markdownToPortableText` に原稿30本を通して数えたもの（10本の記事にまたがる。どれも本文の段落の中）。1.5.0 では同じ原稿で `em` の span が0になる。なお、原稿に裸の URL がある表のセルを `marked` は自動でリンクにするが、EmDash は 1.4.0 と同じくリンクにしない（`a` は 78 個と 412 個）。表示の仕様の違いで、今回の合格条件には入っていない。
+`1.4.0 で em になった 19 span` は、1.4.0 の `markdownToPortableText` に原稿30本を通して数えたもの（10本の記事にまたがる。どれも本文の段落の中）。#66 の「10本で17か所」（`docs/decisions/markdown-conversion.md` の12行目、60行目、173行目）と数える単位が違う。#66 は文章の中で `_` が壊れる場所を数え、ここは変換結果で `em` になった span を数えた。記事は同じ10本で、差の2は、1か所が2つの span に割れた分と考えられる（どの2か所かまでは特定していない）。合格条件の「17か所とも壊れない」は、19 span が0になり、本文の `_` が原稿85個・描画85個で一致したことで満たす。1.5.0 では同じ原稿で `em` の span が0になる。なお、原稿に裸の URL がある表のセルを `marked` は自動でリンクにするが、EmDash は 1.4.0 と同じくリンクにしない（`a` は 78 個と 412 個）。表示の仕様の違いで、今回の合格条件には入っていない。
 
 ### 画面（Playwright、Chromium、DSF 2、390 と 1440）
 
 トップ、`/posts/rag-retrieval-eval-recall-mrr`（表3つ）、`/tag/rag` を撮った。ページ全体の横幅は 390 でも 1440 でもはみ出さない（`scrollWidth` と `clientWidth` が一致）。390 では、表を囲む要素が `overflow-x: auto` で、広い表だけが要素の中で横にスクロールする。PR #53 の表の見た目は 1.5.0 でも効いている。
+
+## 1.5.0 で変わること（このサイトに関係するもの）
+
+出典は emdash 1.5.0 の changelog（`@emdash-cms/*` の changelog に載る emdash の 1.5.0 の節。2026-11-14 に読んだ）と、`node_modules/emdash` のソース。
+
+### 新しいサイトは staging（noindex）で始まる
+
+1.5.0 のセットアップは `site:staging` を true にする（`node_modules/emdash/src/astro/routes/api/setup/index.ts:140` の `options.setIfAbsent("site:staging", true)`）。staging のあいだ、`EmDashHead` は `<meta name="robots" content="noindex, nofollow">` を出す（`node_modules/emdash/src/components/EmDashHead.astro:128`）。このサイトは `src/layouts/Base.astro:99` で `EmDashHead` を使っているので、全ページが対象になる。ローカルの新しい DB でも出た。`/robots.txt` の中身は変わらず、ページを開くことはできる。検索に載らないだけ。
+
+本番の D1 は空で（README）、deploy のあとにセットアップを通すので、本番のサイトは staging で始まる。検索から読者を集めるブログなので、外し忘れると記事が検索に出ない。外すのは管理画面の Settings > General > Site Status の **Go live**（MCP の `settings_update` でもよい）。既存のサイトは影響を受けない（設定が無いサイトは公開のまま）。この点は #66 の `docs/decisions/markdown-conversion.md:153` でも挙げていたもので、deploy の後の手順は [docs/verification/post-deploy.md](../verification/post-deploy.md) の「1b. 初回のセットアップのあと」にある。
+
+### マイグレーション 096 と 097
+
+- `096_revision_kind_and_editors`: `revisions` に `kind` と `edited_by` の列を足す。`columnExists` で確かめて、列が無いときだけ足す。既存の版には埋めない。
+- `097_room_storage`: 共同編集用の `_emdash_rooms` と `_emdash_room_updates` を `ifNotExists` で作る。
+
+どちらも追加だけで、既存の列や表は変えない。`seed/seed.json` にも、空の本番 D1 にも影響しない。新しい DB では、ほかのマイグレーションと一緒に流れるだけ。ただし changelog には「いったんマイグレーションを流したサイトは、1.4.0 以前の EmDash ではサイト移行（書き出しと取り込み）ができない」とある。このサイトは移行を使わないが、1.5.0 を deploy したあとで 1.4.0 に戻しても、書き出しと取り込みは戻らない。
 
 ## 戻すとき
 
