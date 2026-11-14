@@ -5,10 +5,15 @@
 //
 // 使い方: node scripts/secret-scan.mjs [比較の基準]
 //   基準を省略すると、追跡しているリモートのブランチ（@{upstream}）と比べる。
+//   追跡先の無いブランチでは origin/develop、origin/main の順に基準を探す。基準に使えるのは
+//   HEAD と共通の祖先（merge-base）を持つものだけ。どれも使えなければ、追跡している全ファイルと
+//   未追跡のファイルを調べる（その旨を1行で出す）。引数で渡した基準が使えなければ1行で示して終了コード 2。
+//   どのフォルダから呼んでも、リポジトリのルートを基準に読む。
 //   「基準から HEAD までにコミットした変更」と「まだコミットしていない変更」の両方を調べる。
 // 見つかれば終了コード 1。値そのものは出さず、ファイル名、行番号、種類だけを出す。
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const PATTERNS = [
 	["private key", /-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY( BLOCK)?-----/],
@@ -38,25 +43,68 @@ const ALLOWED = [
 
 const SKIP = [/^package-lock\.json$/, /^docs\/tech-writing-pack\//, /(^|\/)node_modules\//, /\.(png|jpe?g|gif|webp|ico|zip|pdf|woff2?)$/i];
 
-function git(...args) {
-	return execFileSync("git", args, { encoding: "utf8" });
+// 失敗の理由が分かるよう、git の標準エラー出力はそのまま流す。基準の候補を探る間だけ黙らせる
+function gitIn(cwd, args, { quiet = false } = {}) {
+	return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", quiet ? "ignore" : "inherit"] });
 }
 
-const base = process.argv[2] ?? "@{upstream}";
-const files = new Set(
-	[
-		...git("diff", "--name-only", "--diff-filter=ACMR", `${base}...HEAD`).split("\n"),
-		...git("diff", "--name-only", "--diff-filter=ACMR", "HEAD").split("\n"),
-		...git("ls-files", "--others", "--exclude-standard").split("\n"),
-	].filter(Boolean),
-);
+// ルートより下のフォルダから呼ばれても、git の出力（ルートからの相対パス）を読み違えない
+let root;
+try {
+	root = gitIn(process.cwd(), ["rev-parse", "--show-toplevel"], { quiet: true }).trim();
+} catch {
+	console.error("secret-scan: git のリポジトリの中で実行してください。");
+	process.exit(2);
+}
+
+function git(...args) {
+	return gitIn(root, args);
+}
+
+// 基準に使えるのは、コミットとして存在し、かつ HEAD と共通の祖先を持つものだけ。
+// `基準...HEAD` の比べ方は共通の祖先が無いと失敗するため、存在の確認だけでは足りない
+function usableAsBase(candidate) {
+	try {
+		gitIn(root, ["rev-parse", "--verify", "--quiet", `${candidate}^{commit}`], { quiet: true });
+		gitIn(root, ["merge-base", candidate, "HEAD"], { quiet: true });
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+const requested = process.argv[2];
+const base = (requested ? [requested] : ["@{upstream}", "origin/develop", "origin/main"]).find(usableAsBase) ?? null;
+if (base === null && requested) {
+	console.error(`secret-scan: 基準 ${requested} が無いか、HEAD と共通の祖先がありません。別の基準を渡すか、引数なしで流すと全ファイルを調べます。`);
+	process.exit(2);
+}
+if (base === null) {
+	console.error("secret-scan: HEAD と共通の祖先を持つ基準が見つからないので、追跡している全ファイルを調べます。");
+}
+let changed;
+try {
+	changed =
+		base === null
+			? [...git("ls-files").split("\n"), ...git("ls-files", "--others", "--exclude-standard").split("\n")]
+			: [
+					...git("diff", "--name-only", "--diff-filter=ACMR", `${base}...HEAD`).split("\n"),
+					...git("diff", "--name-only", "--diff-filter=ACMR", "HEAD").split("\n"),
+					...git("ls-files", "--others", "--exclude-standard").split("\n"),
+				];
+} catch {
+	console.error("secret-scan: 変更したファイルの一覧を git から取れませんでした（上の git のメッセージを見てください）。");
+	process.exit(2);
+}
+const files = new Set(changed.filter(Boolean));
 
 const findings = [];
 let scanned = 0;
 for (const file of files) {
-	if (SKIP.some((re) => re.test(file)) || !existsSync(file)) continue;
+	const path = join(root, file);
+	if (SKIP.some((re) => re.test(file)) || !existsSync(path)) continue;
 	scanned++;
-	const lines = readFileSync(file, "utf8").split("\n");
+	const lines = readFileSync(path, "utf8").split("\n");
 	lines.forEach((raw, index) => {
 		const line = ALLOWED.reduce((text, allowed) => text.replaceAll(allowed, ""), raw);
 		for (const [kind, pattern] of PATTERNS) {
@@ -65,6 +113,6 @@ for (const file of files) {
 	});
 }
 
-console.log(`secret-scan: base ${base}, ${scanned} changed file(s) scanned, ${findings.length} finding(s)`);
+console.log(`secret-scan: base ${base ?? "(none, all files)"}, ${scanned} file(s) scanned, ${findings.length} finding(s)`);
 for (const finding of findings) console.log(`  ${finding}`);
 process.exit(findings.length > 0 ? 1 : 0);
