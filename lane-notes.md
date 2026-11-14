@@ -41,10 +41,16 @@ PR #61 (#22 course slug data, head c273fd5) LOCAL-CHECK posted, review running
 manager ruling: rag-chat sample must not need an API key (not exempt) -> filed PBI #62 + SBI #63; #63 before #25; deadlines: before the newsletter form opens or article 14 is scheduled; FYI to owner with G07 FYI
 member: #63 rag-chat to Agent SDK (sonnet)
 
+#60 | LAND | merged 8a22340 (head cd1a52f) | review PASS issuecomment-6877319745 | closes #34
+#61 | LAND | merged 8a30275 (head c273fd5) | review PASS issuecomment-6877318731 | closes #22
+#59 | FIX | review FAIL must 1 (VERIFICATION rag-chat skip wording) issuecomment-6877316758 -> member fixing + base merge + Node 24 rerun
+DESIGN reference (owner via manager): https://claude.ai/artifact/KK25c9pSMdvLqJ71qWaf5t — cannot open from this container: Artifact read -> "artifact not found — it may have been deleted, or it has not been shared with you" (2026-11-14T12:37Z); screen work continues without it, no guessing
+
 ## needs owner
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
 
 ## for main session
+- design artifact KK25c9pSMdvLqJ71qWaf5t is not readable from this cloud session (not found / not shared with this account); please share it to this account or paste its content
 - advisor tool not present in this lane
 - Cloudflare connector is authorized for an account that does not hold this project's Worker; production checks (AEB-D1) will need the owner's account connected
