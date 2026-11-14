@@ -11,7 +11,7 @@
     "build": "astro build && node scripts/minify-worker.mjs",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
-    "typecheck": "astro check",
+    "typecheck": "wrangler types && astro check",
     "cf:types": "wrangler types",
     "test": "vitest run",
     "secret-scan": "node scripts/secret-scan.mjs"
