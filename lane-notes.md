@@ -100,6 +100,10 @@ GitHub secondary rate limit on comments (2026-11-14T12:55Z, retry ~13:55Z): pend
 #79 review PASS (pending post), #53 round-3 review running (writes to file), #78 #80 reviews running (write to file)
 manager reconcile on #77: C25 skip only whole-cell URL (listed), reason = not a sentence; C17 includes ます/ました, each ending its own class; run definition unchanged
 
+#67 (EmDash 1.5.0, head f219f78, PR not yet opened — create_pull_request hit the secondary rate limit): all 14 pass-line items PASS on Node 24 (69/69 tables, 151/151 code cells, 19/19 underscore spans literal, 2 backtick links OK, no soft-wrap breakage, MCP create/schedule/cron-publish OK, bundle 16.59 MiB ~26%); transitive lock changes recorded; member adding SKILL.md:234/local-mcp.md/free-tier.md updates; lead opens PR after ~13:57Z
+#71: full G11 review NG (3 musts: stale refs, B rows not re-judged for new text, line 526 unsupported claim) -> writer fixing; G11 login-record and G10 CSV questions sent to manager
+reviews PASS pending post: #53 (r3), #78, #79, #80 (r2); #77 r2 review running
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
