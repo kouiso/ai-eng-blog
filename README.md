@@ -59,7 +59,7 @@ npx wrangler dev --local --var EMDASH_SITE_URL:http://localhost:8787
 
 動作確認日を `datetime` にしていないのは、EmDash の `datetime` が時刻付きの瞬間を UTC で保存する型で、暦の日付には `string` を使うようドキュメントに書かれているためです（https://docs.emdashcms.com/reference/field-types/ 、2026-10-31 確認）。
 
-動作確認日は、記事のコードを最後に動かして、動いた日です。公開した日でも、本文を直した日でもありません。公開後にコードを動かし直して通ったときは、`verified_at`（原稿の frontmatter、EmDash のこの欄、`logs/<slug>/publish.md`）だけを新しい日付にします。本文は変えないので、lint と別の AI による点検はやり直しません。動かして落ちたときは日付を変えず、write-article スキルの手順で直すか、下書きに戻します。
+動作確認日は、記事のコードを最後に動かして、動いた日です。公開した日でも、本文を直した日でもありません。公開後にコードを動かし直して通ったときは、`verified_at`（原稿の frontmatter、EmDash のこの欄、`logs/<slug>/publish.md`）を新しい日付にします。ツールの版だけが違っていたときは、`run_environment` の版の数字も同じ3か所で更新します。どちらも本文は変えないので、lint、ゲート、別の AI による点検はやり直しません。本文に書いた版が動かした版と合わなくなったとき、記事で固定した直接の依存の版を変えないと動かなかったときは、通ったことにせず、スキルの手順で本文を直します。動かして落ちたときは日付を変えず、write-article スキルの手順で直すか、下書きに戻します。
 
 記事のコード（`logs/<slug>/code/`）の `package-lock.json` はコミットしません。読者と同じように、毎回まっさらな状態から入れ直して動かし、そのとき解決した版を `logs/<slug>/run/` の実行ログに残します。このサイト本体の `package-lock.json` は、上の「使っているもの」のとおりコミットしています。
 
