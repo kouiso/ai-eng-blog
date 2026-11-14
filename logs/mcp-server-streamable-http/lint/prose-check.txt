@@ -1,7 +1,7 @@
 sentences: 304 (prose+frontmatter 215, headings 19, table cells 70)
 not counted: code block lines 256, URL-only table cells 18 (lines [628, 629, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645])
-LONG>60: 0  (50<len<=60: 49)
-prose length min 5 / max 60 / short(<=20) 16 / long(41-60) 104
+LONG>60: 0  (50<len<=60: 50)
+prose length min 5 / max 60 / short(<=20) 16 / long(41-60) 106
 SAME3: 0
 PAT 'など' 624 本文の（出典1）などの番号は、この表の番号を指します。
 PAT 'まとめ' 530 リクエストごとに作り直すのが面倒で、サーバーとトランスポートを1つにまとめたくなります。

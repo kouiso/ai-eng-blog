@@ -53,6 +53,8 @@ article names http://localhost:5173 as the ALLOWED_ORIGINS value: True
 run/21, 22: 500 with 0 bytes: True
 run/19: server printed only the start line: True
 run/37: 7 TS7006 errors without @types/express: True
+run/52: claude mcp list shows Connected while server runs: True
+run/53: claude mcp list shows Failed to connect after server stopped: True
 run 01 exit=0
 run 02 exit=0
 run 03 exit=0
@@ -103,4 +105,8 @@ run 47 exit=0
 run 48 exit=0
 run 49 exit=0
 run 50 exit=0
+run 51 exit=0
+run 52 exit=0
+run 53 exit=0
+run 54 exit=0
 ALL OK

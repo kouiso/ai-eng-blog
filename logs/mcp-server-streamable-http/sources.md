@@ -55,3 +55,4 @@ github.com のページ（出典3〜9）は、このセッションのプロキ�
 | 戻すと手順3と同じ出力 | `run/28.log`〜`31.log` |
 | SDK 1.32.2 が npm の latest | `run/33.log`（2026-11-10 にも `version = '1.32.2'`） |
 | Claude Code 2.1.322（frontmatter の `run_environment`、前提の節） | `run/12.log` |
+| サーバーを止めて `claude mcp list` を打つと `× Failed to connect` と出る（526行目。2026-11-14、Claude Code 2.1.325） | `run/51.log`〜`54.log`（`claude mcp add`、サーバーが動いている間の `claude mcp list` は `√ Connected`（`run/52.log`）、止めたあとは `× Failed to connect — ECONNREFUSED`（`run/53.log`）、`claude mcp remove`） |

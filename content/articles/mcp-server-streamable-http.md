@@ -83,7 +83,7 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 確かめたのは、SDK のクライアント、curl、`claude mcp` で呼ぶところまでです。サーバーはインターネットに公開していません。claude.ai からつなぐ操作も、Claude にツールを呼ばせる操作も実行していません。
 
-Agent SDK では、自作のツールを同じプロセスの MCP サーバーにして、エージェントに渡せます（出典18）。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
+Claude Agent SDK では、自作のツールを同じプロセスの MCP サーバーにして渡せます（出典18）。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
 
 対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。依存を入れる `npm install` は、2026-11-10 の実測で4秒でした。
 
@@ -409,7 +409,7 @@ curl -sS -X POST http://127.0.0.1:3000/mcp \
 status: 406 application/json
 ```
 
-POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` です。HTTP のクライアントを自分で書くと、この1行を忘れがちです。406 が返ったら、まず `Accept` を見てください。
+POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` です。406 が返ったら、まず `Accept` を見てください。
 
 ### GET には 405 が返る
 
@@ -523,7 +523,7 @@ Removed MCP server char-count-http from user config
 File modified: /path/to/tmp-home/.claude.json
 ```
 
-`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めると、ツールは使えなくなります。
+`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。この1行だけは、2026-11-14 に Claude Code 2.1.325 で確かめました。
 
 ## トランスポートを使い回すと2回目から 500 になる
 

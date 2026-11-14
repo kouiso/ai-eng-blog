@@ -1,0 +1,11 @@
+date: 2026-11-14 13:03:13 +0000
+cwd: /path/to/char-count-http
+node: v22.23.4
+npm: 10.9.9
+command: claude mcp list
+exit: 0
+elapsed: 504 ms
+--- stdout+stderr ---
+Checking MCP server health…
+
+char-count-http: http://127.0.0.1:3000/mcp (HTTP) - × Failed to connect — ECONNREFUSED: Unable to connect. Is the computer able to access the url?

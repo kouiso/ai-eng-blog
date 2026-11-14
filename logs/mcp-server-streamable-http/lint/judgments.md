@@ -10,7 +10,7 @@
 
 ## writing-lint.py
 
-- 出力の1行目 `643行/247文`、判定行 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。
+- 出力の1行目 `647行/250文`、判定行 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。
 - DENSITY は11カウンタすべて上限内。0回でないのは B-9 つまり の1回（上限2）だけで、`応答は text/event-stream、つまり SSE（Server-Sent Events）の形です。`（390行目）。`text/event-stream` という形式名を SSE と言い換える換言で、guides/08 B-9 の「換言なのに『つまり』がない」の逆にならない使い方なので残した。
 - WATCH の節は出ていない（転用動詞の検出なし）。SHOULD 0件、INFO 0件。判断する対象は無い。
 
@@ -57,3 +57,9 @@
 - `writing-lint.txt`: `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。SHOULD、WATCH、INFO はどれも0件で判断の対象は無い。
 - `prose-check.txt`: 足した文のリンクの文字と、624行目の確認日の文が、URL や数字を数えて60字を超えて LONG>60 に出たので、リンクの文字を「自作ツールの記事」に縮め、確認日の文を2文に分けた。直したあと LONG>60 は0、SAME3 は0。
 - `check-code-and-outputs.txt`: コードと出力は触っていない。再実行で ALL OK。
+
+## 2026-11-14 の再実行その2（#58、2回目の点検の直し）
+
+- 本文を3か所変えた。86行目は「Agent SDK」を「Claude Agent SDK」にし、「エージェントに」を削って60字以内にした。412行目は、根拠の無い「忘れがちです」の1文を削った。526行目は、出典も実行ログも無かった「サーバーを止めると、ツールは使えなくなります。」を、`run/53.log` の実測の「サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。この1行だけは、2026-11-14 に Claude Code 2.1.325 で確かめました。」に変えた。行数は変わらない（647行）。
+- `ai-smell.txt`: use 0件 / mention 0件、`exit=0`。warn 0件。`writing-lint.txt`: `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。SHOULD、WATCH、INFO は0件で判断の対象は無い。`prose-check.txt`: LONG>60 が0、SAME3 が0。
+- `check-code-and-outputs.py`: `run/52`、`53.log` の2項目を足し、`run/51`〜`54` の終了コードを出すようにした。57項目すべて True、`ALL OK`。
