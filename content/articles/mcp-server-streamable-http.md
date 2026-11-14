@@ -63,6 +63,9 @@ sources:
   - url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
     title: "Cross-Origin Resource Sharing (CORS) (MDN)"
     accessed: 2026-11-10
+  - url: "https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts"
+    title: "@anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts"
+    accessed: 2026-11-14
 ai_assisted: true
 needs_api_key: false
 status: draft
@@ -80,7 +83,7 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 確かめたのは、SDK のクライアント、curl、`claude mcp` で呼ぶところまでです。サーバーはインターネットに公開していません。claude.ai からつなぐ操作も、Claude にツールを呼ばせる操作も実行していません。
 
-Agent SDK のエージェントには、別のプロセスを立てずに MCP のツールを渡せます。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
+Agent SDK では、自作のツールを同じプロセスの MCP サーバーにして、エージェントに渡せます（出典18）。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
 
 対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。依存を入れる `npm install` は、2026-11-10 の実測で4秒でした。
 
@@ -618,7 +621,7 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 
 ## 出典
 
-確認日は、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典18が 2026-11-14 です。出典3と出典15〜17は 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
@@ -639,5 +642,6 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 | 15 | MCP Specification 2026-07-28 Key Changes | https://modelcontextprotocol.io/specification/2026-07-28/changelog | 2026-11-10 |
 | 16 | MCP Specification 2026-07-28 Streamable HTTP | https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http | 2026-11-10 |
 | 17 | Cross-Origin Resource Sharing（CORS）（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | 2026-11-10 |
+| 18 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-14 |
 
 AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。

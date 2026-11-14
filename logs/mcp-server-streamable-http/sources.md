@@ -1,6 +1,6 @@
 # sources: mcp-server-streamable-http
 
-アクセス日は、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02。番号は原稿の出典の表（本文の「（出典n）」）と同じ。frontmatter の `sources` も同じ17件・同じ順。
+アクセス日は、出典18が 2026-11-14、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02。番号は原稿の出典の表（本文の「（出典n）」）と同じ。frontmatter の `sources` も同じ18件・同じ順。
 
 2026-11-10 の取得: 出典3は `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md`、出典15と16は同じページの Markdown 版（URL の末尾に `.md`）、出典17は MDN のページ（HTTP 200、題名「Cross-Origin Resource Sharing (CORS) - HTTP | MDN」）と、その原稿 `https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/http/guides/cors/index.md` を curl で取って読んだ。記事に載せた出典15、16の URL（`.md` なし）も HTTP 200 を返すことを確かめた。
 
@@ -28,6 +28,7 @@ github.com のページ（出典3〜9）は、このセッションのプロキ�
 | 15 | MCP Specification 2026-07-28 Key Changes | https://modelcontextprotocol.io/specification/2026-07-28/changelog | 前の版 2025-11-25 からの変更。Major changes の1: Streamable HTTP からプロトコルのセッションと `Mcp-Session-Id` ヘッダーを削除。2: `initialize` と `notifications/initialized` のハンドシェイクを削除。4: HTTP の GET エンドポイント（と `resources/subscribe`）を `subscriptions/listen` に置き換え。Minor changes の4: Streamable HTTP の POST に `Mcp-Method` と `Mcp-Name` のヘッダーを必須にする | 「Streamable HTTP の決まりを次のように変えました」と箇条書きの4項目、「この初期化のやり取りそのものが無くなりました」 |
 | 16 | MCP Specification 2026-07-28 Streamable HTTP | https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http | 冒頭の注記: 2026-07-28 で GET のストリームのエンドポイントとセッションを削除。Security & Endpoint: すべての接続で Origin を検証（MUST）、Origin があって不正なら 403（MUST）、手元では 127.0.0.1 だけに bind（SHOULD）。Earlier Streamable HTTP Revisions: この版だけに対応するサーバーは、古いクライアントからの GET と DELETE に 405 を返す（SHOULD） | 「Origin を確かめ、不正なら 403 を返す決まりは、2026-07-28 の仕様にも残っています」「古いクライアントからの GET には 405 を返すよう勧めています」 |
 | 17 | Cross-Origin Resource Sharing (CORS)（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | Content-Type が `application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain` 以外（`application/json` など）のリクエストは simple request に当たらず、ブラウザは先に OPTIONS でプリフライトを送り、サーバーが認めてから実際のリクエストを送る。プリフライトには `Access-Control-Request-Method` と `Access-Control-Request-Headers` が付く。プリフライトが要らないリクエストでも、応答をスクリプトに渡すにはサーバーが `Access-Control-Allow-Origin` で許す必要がある | 「別の Origin へ JSON を POST する前に OPTIONS を送ります」「これをプリフライトと呼びます」「プリフライトを認めないので、ブラウザは続く POST を送りません」「このヘッダーが無い応答は、ページのスクリプトから読めません」、公開の箇条書きの「CORS の応答も要ります」 |
+| 18 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-14 に unpkg の同じファイルを取得し（HTTP 200）、`createSdkMcpServer` の JSDoc の640行目「This allows SDK users to define custom tools that run in the same process.」を確かめた。 | 本文86行目の1文目（Agent SDK では自作のツールを同じプロセスの MCP サーバーにして、エージェントに渡せる） |
 
 ## 出典ではなく実行ログを根拠にした文
 
