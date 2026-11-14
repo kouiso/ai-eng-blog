@@ -108,7 +108,7 @@ AI 組み込み開発、つまり「自分のアプリに LLM を組み込む開
 ### 1. キーワードを選ぶ
 
 1. `keywords/` にある CSV をすべて読む。CSV が1つも無ければ、その時点で止めて「CSV 待ち」と報告する。ユーザーが CSV なしで書き進めるよう明示したときだけ先へ進めるが、その記事は `target_query: null`、ゲート G10 は NG、`status: draft` のままにする。CSV に無いキーワードを `target_query`、`brief.md`、`selection.md` に作って書かない。
-   - CSV は2種類ある。ラッコキーワードの CSV（`keywords/<講座のキーワード>.csv`。ユーザーがラッコにログインし、書き出しと選定は Claude が行う）と、Google のサジェストを集めた CSV（`keywords/google-suggest-*.csv`。列は `suggestion,seed_query,rank,fetched_at` で、キーワードは `suggestion` の列）。最初の回は、ラッコの CSV が無くてもサジェストの CSV だけで選んでよい（オーナーの裁定 2026-11-11「最初はサジェストくらいのワードで反応見てみるのもありかな」）。ラッコの画面に出た一覧をプログラムで写し取ることはしない（ラッコの共通規約 第19条がスクレイピングとそれに類する行為を禁じている。https://rakkoid.com/terms 、2026-11-11 確認）。
+   - CSV は2種類ある。ラッコキーワードの CSV（`keywords/<講座のキーワード>.csv`。ユーザーがラッコにログインし、書き出しと選定は Claude が行う）と、Google のサジェストを集めた CSV（`keywords/google-suggest-*.csv`。列は `suggestion,seed_query,rank,fetched_at` で、キーワードは `suggestion` の列）。選ぶ順は、先にラッコの CSV を使い、ラッコの CSV に合うキーワードが無い記事だけサジェストの CSV で選ぶ（CLAUDE.md の「どこに何を置くか」の表と同じ。`keywords/README.md` も同じ）。以前は「最初の回は、ラッコの CSV が無くてもサジェストの CSV だけで選んでよい（オーナーの裁定 2026-11-11「最初はサジェストくらいのワードで反応見てみるのもありかな」）」としていたが、この優先順に置き換えた。ラッコの画面に出た一覧をプログラムで写し取ることはしない（ラッコの共通規約 第19条がスクレイピングとそれに類する行為を禁じている。https://rakkoid.com/terms 、2026-11-11 確認）。
    - サジェストの CSV には検索ボリュームが無い。`rank` は、その種の語を入れたときに候補が出た順番で、検索回数ではない。
 2. 候補の絞り込みは次の順で行う。
    1. 既存記事と重ならないこと。`content/articles/*.md` の frontmatter（`title`、`main_keyword`、`target_query`）を全件読み、同じ検索意図に答える記事が既にある語は外す。表記ゆれ（「LLM API 使い方」と「LLM API 使い方 初心者」など）は同じ意図とみなす。
