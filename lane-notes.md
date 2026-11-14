@@ -123,3 +123,4 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 #67 | review FAIL (1 must: 1.5.0 setup turns site:staging on -> noindex on every page; docs + post-deploy step missing; 5 wants) -> docs fixer running; PR opens after fix
 #77 | r3 review PASS at e30bacb (must 0; want: PR body stale -> update at post time; comma-joined URLs skip; YAML block scalars uncounted; nit fm_values quirks) -> follow-up issue for wants 2-3 + nit after rate limit; gate after LOCAL-CHECK c + review r3 posted
 #67 | docs fixer pushed f9006fb (staging/noindex documented, post-deploy step 1b, free-tier re-measured) -> r2 review running
+#67 | r2 PASS f9006fb, docs fix 0974e6a, r3 PASS 0974e6a (must 0; want: "only 093 rewrites rows" wrong, 094/095 also; nit unclosed bracket) -> round cap reached: merge at 0974e6a, follow-up docs PR for the sentence + bracket; PR opens after rate limit
