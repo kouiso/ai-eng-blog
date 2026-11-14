@@ -35,6 +35,12 @@ closed with reason: #20 #12 #19 #31 (done), #21 (not planned, superseded), #6 (d
 comments: #18 rulings D, #17/#44 count 23->30
 members running: PR53 evidence (sonnet), #24 Node 24 verify (sonnet), #34 typecheck fresh (sonnet), #22 course slug order (sonnet)
 
+PR #59 (#24 Node 24 verify, head 99a5cf4) LOCAL-CHECK posted, review running
+PR #60 (#34 typecheck fresh, head cd1a52f) LOCAL-CHECK posted, review running
+PR #61 (#22 course slug data, head c273fd5) LOCAL-CHECK posted, review running
+manager ruling: rag-chat sample must not need an API key (not exempt) -> filed PBI #62 + SBI #63; #63 before #25; deadlines: before the newsletter form opens or article 14 is scheduled; FYI to owner with G07 FYI
+member: #63 rag-chat to Agent SDK (sonnet)
+
 ## needs owner
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
