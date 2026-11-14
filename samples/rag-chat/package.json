@@ -4,7 +4,7 @@
   "private": true,
   "description": "Minimal offline-retrieval RAG chat sample (BM25 + Claude Agent SDK)",
   "type": "module",
-  "engines": { "node": "^22.18.0 || ^24.0.0" },
+  "engines": { "node": "^22.23.4 || ^24.22.3" },
   "scripts": {
     "start": "node src/cli.ts",
     "typecheck": "tsc --noEmit",
