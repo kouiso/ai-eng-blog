@@ -4,7 +4,7 @@ slug: "llm-json-parse-error-fix"
 description: "LLM の出力を JSON.parse に渡したときの SyntaxError は、原因が2つに分かれます。前後に付いた文字は切り出して直します。JSON が最後まで書かれていない応答は、stop_reason を確かめて取り直します。Node.js 22.22.0 で実際に出たエラーの文を載せています。"
 tags: ["構造化出力", "JSON", "TypeScript"]
 main_keyword: "構造化出力"
-target_query: null
+target_query: "llm json 出力"
 course_step: 2
 cost_estimate: "記事のコードは Node.js の標準の機能だけを使い、API を呼ばないので無料です。応答を取り直すと、そのリクエストの分の API の料金がかかります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）"

@@ -1,6 +1,6 @@
 # gate: llm-json-parse-error-fix
 
-> 2026-11-11 追記: サジェストの CSV を読んだが合う行が無く、`target_query` は null、G10 は NG のまま。G11（別の AI による点検）もまだ。
+> 2026-11-14 追記: `target_query` を決めて G10 を OK に変えた（ラッコの CSV に同じ語は無く、Google のサジェストの CSV の行と一致）。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。G07 も判定し直して OK（#31）。残る項目は、まだ点検を受けていない G11（別の AI による点検）だけ。
 
 
 判定日: 2026-11-10（2026-10-31 の判定のあと、検証で指摘された5点を直した版で全項目を判定し直した）。原稿: `content/articles/llm-json-parse-error-fix.md`（350行。行番号はすべてこの版）。
@@ -39,7 +39,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | OK | 2026-11-14 に #31 で判定し直した。公開の順（`content/plan.md` の「公開の順番」）で9番。本文の内部リンクは2件で、リンク先はすべて自分より前の順番: 331行目 `/posts/zod-validate-llm-json-output`（7番）、44行目 `/posts/zod-to-json-schema-tool-definition`（8番）。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。frontmatter は `prev: zod-to-json-schema-tool-definition`、`next: structured-output-methods-compare` のまま。次の記事への本文リンクは外した。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 350行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。日付は最後の実行（`run/01`〜`10.log`、2026-11-10）と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 原稿と `logs/llm-json-parse-error-fix/`（この gate.md を除く）に `sk-ant`、`api[_-]?key` の代入、`bearer `、`password`、`secret`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を `grep -rniIE` でかけた。該当は frontmatter 34行目の `needs_api_key: false` と、`selection.md` の環境変数の確認の記録だけで、値としての API キーやトークンは0件（コードはキーを使わない）。ログのパスは `<work>`、`<code>`、`<scratch>` に置き換えて保存した。個人名: git のコミット作者名とメールアドレス（Claude 以外の2人分。名前の各語、メールのローカル部とドメインの語）、ユーザーの GitHub アカウント名（`gh api user` で取得）、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）の計11語を1語ずつ `grep -rniI -F` で原稿と `logs/llm-json-parse-error-fix/` にかけ、0件（語そのものはどこにも書いていない） |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | `selection.md` の「2026-11-11 追記」。サジェストの CSV に合う行が無く、`target_query` は null のまま。値は作っていない |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-14 追記」。`target_query` は `keywords/google-suggest-structured-output.csv` の `suggestion` の列に一致する行が1つある（2026-11-14 にスクリプトで確認）。ラッコの CSV には同じ語が無い |
 
 ## B. checklist.md の全項目（原文のまま）
 
@@ -87,15 +87,15 @@
 
 ## 集計
 
-- A: OK 8 / NG 2（G07、G10）（全10項目）
+- A: OK 10 / NG 0（全10項目）
 - B: OK 38 / NG 0 / 任意・あり 1（全39項目）
-- 合計: OK 46 / NG 2（C39 の「任意・あり」は OK にも NG にも数えていない）
+- 合計: OK 48 / NG 0（C39 の「任意・あり」は OK にも NG にも数えていない）
 
 ## 結論
 
-G07 と G10 が NG なので、`status: draft` のまま止める。
+NG は無いが、G11（別の AI による点検）をまだ受けていないので、`status: draft` のまま止める。
 
-- G10: `keywords/` に CSV が届いていない（CSV 待ち）。`target_query` は null で、値は作っていない。
-- G07: 前後と関連のリンク先（`zod-to-json-schema-tool-definition`、`structured-output-methods-compare`、`zod-validate-llm-json-output`）が、どれも公開も予約もされていない。前の2本が先に予約され、次の記事の原稿ができるまで、この記事は公開できない。
+- G10: `target_query` が確定して OK（2026-11-14）。
+- G07: 2026-11-14 に #31 で判定し直して OK。本文の内部リンクはすべて自分より前の公開順で、後の順番・原稿の無い記事への本文リンクは0件（表の G07 の行）。
 
 EmDash への投稿と git のコミットはしていない（執筆するエージェントの担当外）。

@@ -4,7 +4,7 @@ slug: "claude-p-script-first-call"
 description: "Claude Code の claude -p なら、API キーなしでスクリプトから Claude を呼べます。料金は自分の Claude プランの利用枠から引かれます。JSON で答えを受け取り、シェルと Node.js から使うまでを実行結果つきで示します。"
 tags: ["LLM API", "Claude Code", "TypeScript"]
 main_keyword: "LLM API"
-target_query: "llm api 月額"
+target_query: "llm api 呼び出し"
 course_step: 1
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
 run_environment: "macOS（Darwin arm64）、Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、jq 1.7.1 から 1.8.1（型の確認は TypeScript 7.0.2）"
