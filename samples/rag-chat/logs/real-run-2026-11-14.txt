@@ -1,0 +1,22 @@
+# rag-chat 実機の実行記録
+# 日時: 2026-11-14T12:47:51Z  Node v22.23.4  npm 10.9.9  @anthropic-ai/claude-agent-sdk 0.3.322
+# Claude Code（SDK 同梱）: 2.1.322  apiKeySource: none  （起動メッセージ system init の値）
+# 環境: Claude Code のクラウドセッション（Linux）。認証はセッションを動かすホストが渡したもの。ANTHROPIC_API_KEY は env -u で外して実行
+# コマンド: env -u ANTHROPIC_API_KEY npm start -- "日本語の文章はどうやって検索していますか？"
+質問: 日本語の文章はどうやって検索していますか？
+読み込んだチャンク数: 9 / 取り出した件数: 3 (top-k=3)
+
+[1] 02-retrieval.md#1  score=9.277  見出し: トークン化
+[2] 02-retrieval.md#2  score=4.543  見出し: BM25 の点数
+[3] 03-usage.md#1  score=4.113  見出し: 環境変数
+
+--- 回答 (claude-sonnet-5-5) ---
+日本語は単語の間に空白がないため、隣り合う 2 文字を 1 組にした「文字 bigram」でトークン（検索の単位）に分けています。たとえば「検索拡張」は「検索」「索拡」「拡張」の 3 つになります。
+
+こうして分けたトークンをもとに、BM25 で点数をつけて検索します。BM25 は、質問のトークンがチャンクに何回出てくるかで点数を決め、ありふれたトークンは低く、珍しいトークンは高く評価します。また、長すぎるチャンクが有利にならないよう、長さによる補正もかけています。
+
+出典: 02-retrieval.md#1, 02-retrieval.md#2
+
+Agent SDK: claude_code_version=2.1.322 apiKeySource=none
+ターン数: 1 / total_cost_usd（見積もり）: 0.0115805
+# exit=0

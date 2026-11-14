@@ -14,7 +14,9 @@
     "typecheck": "wrangler types && astro check",
     "cf:types": "wrangler types",
     "test": "vitest run",
-    "secret-scan": "node scripts/secret-scan.mjs"
+    "secret-scan": "node scripts/secret-scan.mjs",
+    "check": "node scripts/check.mjs root",
+    "check:samples": "node scripts/check.mjs samples"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.3.1",
