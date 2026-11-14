@@ -46,7 +46,11 @@ member: #63 rag-chat to Agent SDK (sonnet)
 #59 | FIX | review FAIL must 1 (VERIFICATION rag-chat skip wording) issuecomment-6877316758 -> member fixing + base merge + Node 24 rerun
 DESIGN reference (owner via manager): https://claude.ai/artifact/KK25c9pSMdvLqJ71qWaf5t — cannot open from this container: Artifact read -> "artifact not found — it may have been deleted, or it has not been shared with you" (2026-11-14T12:37Z); screen work continues without it, no guessing
 
+manager ruling (tables): pilot blocker -> filed PBI #64 (bug) + SBIs #66 (inventory + docs, before M1), #67 (conversion script + skill/local-mcp fix), #68 (30 local drafts render check + publish-step gate); comment on #5 (pilot held). DP/"ready" not held; owner message must say pilot held. #53 failure definition: breaks inside numbers, dates, Latin words/identifiers that fit; not Japanese char wrap or long URLs. UI PRs judged on pass line only until the design artifact is shared.
+members: #63 rag-chat, #59 fix, #49 docs, #35 check commands; queued: #66
+
 ## needs owner
+- (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
 
