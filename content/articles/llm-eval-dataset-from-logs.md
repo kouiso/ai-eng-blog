@@ -4,7 +4,7 @@ slug: "llm-eval-dataset-from-logs"
 description: "ログから LLM 評価用のテストケースを選び、JSONL に書き出すスクリプトを TypeScript で作ります。重複した質問をまとめ、カテゴリの割合に合わせて件数を決めます。スクリプトはモデルを呼ばないので、API キーは要りません。"
 tags: ["LLM 評価", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: "llm テストケース作成"
+target_query: "llm 評価 データセット"
 course_step: 6
 prev: "promptfoo-llm-eval-intro"
 next: null

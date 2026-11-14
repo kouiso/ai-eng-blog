@@ -1,6 +1,6 @@
 # gate: ai-agent-safe-file-tool
 
-> 2026-11-11 追記: サジェストの CSV を読んだが合う行が無く、`target_query` は null、G10 は NG のまま。G11（別の AI による点検）もまだ。
+> 2026-11-14 追記: ラッコキーワードの CSV（2026-11-14 に書き出し）を読み、`target_query` を決めて G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
 
 
 判定日: 2026-11-10（最初の判定は 2026-10-31）。原稿: `content/articles/ai-agent-safe-file-tool.md`（588行。行番号はすべてこの版）。
@@ -30,7 +30,7 @@
 | G07 | 講座の前後リンクと、既存記事が3本以上なら関連記事への内部リンク。リンク先は公開済みか先に予約済み | `gate.md` | OK | 2026-11-14 に #31 で判定し直した。公開の順（`content/plan.md` の「公開の順番」）で19番。本文の内部リンクは3件で、リンク先はすべて自分より前の順番: 539行目 `/posts/zod-to-json-schema-tool-definition`（8番）、55行目 `/posts/ai-agent-custom-tools-agent-sdk`（16番）、57行目 `/posts/ai-agent-max-turns-budget-limit`（18番）。後の順番の記事・原稿の無い記事への本文リンクは0件（リンク数えの台本で `LINKS_TO_LATER=0 LINKS_TO_MISSING=0`）。frontmatter は `prev: ai-agent-max-turns-budget-limit`、`next: ai-agent-vs-workflow` のまま。次の記事への本文リンクは外した。 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」の決まった表記 | 原稿の末尾 | OK | 588行目「AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。」。日付は最後の実行（`run/13.log`）と `verified_at` と同じ |
 | G09 | 原稿、ログ、frontmatter に秘密情報が無い。原稿に個人名が無い | `gate.md` | OK | 秘密情報: 2026-11-10 に、原稿と `logs/ai-agent-safe-file-tool/`（この gate.md を除く）に `ANTHROPIC`、`sk-ant`、`token`、`password`、`secret`、`api_key`、`/root`、`/home/user`、`tmp/claude`、`scratchpad` を `grep -rniIE` でかけた。該当は、frontmatter の `needs_api_key`（46行目）、Windows のパスの例 `D:\secret.txt`（原稿 333、337行目、`run/07.log`、`code/extra/run-all.sh`）、`selection.md` の環境変数の名前 `ANTHROPIC_API_KEY`（記録は名前と `unset` だけ）と既存記事の slug `llm-api-cost-estimate-js-tiktoken`、`sources.md` の料金ページの英文の "tokens"。値としての API キーやトークンは0件（コードはキーを使わない）。`setup.ts` の `.env` の中身 `SAMPLE_KEY=dummy-value` は見本のダミーの文字列。ログのパスは `<work>`、`<code>`、`<tc>` に置き換えて保存した。`run/09.log` の `root` は実行したユーザーの名前で、人名ではない。個人名: git のコミット作者名とメールアドレス（Claude 以外の全員分。名前の各語、メールのローカル部）と、CLAUDE.md の人格設定の人名（漢字の姓・名、英字の姓・名）とユーザーのアカウント名、計12語を1語ずつ `grep -rniI -F` で原稿と `logs/ai-agent-safe-file-tool/` にかけ、12語とも0件 |
-| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | NG | `selection.md` の「2026-11-11 追記」。サジェストの CSV に合う行が無く、`target_query` は null のまま。値は作っていない |
+| G10 | `target_query` が `keywords/*.csv` の行のキーワードと一致する。CSV が無い、または null なら不合格 | `selection.md` | OK | `selection.md` の「2026-11-14 追記」。`target_query` は `keywords/AIエージェント.csv` の「キーワード」の列に一致する行が1つある（2026-11-14 にスクリプトで確認）。検索数は無料プランで取れていない |
 
 ## B. checklist.md の全項目（原文のまま）
 
@@ -78,14 +78,14 @@
 
 ## 集計
 
-- A: OK 8 / NG 2（G07、G10）（全10項目）
+- A: OK 9 / NG 1（G07）（全10項目）
 - B: OK 38 / NG 0 / 任意・あり 1（全39項目）
 
 ## 結論
 
-G07 と G10 が NG なので、`status: draft` のまま止める。
+G07 が NG なので、`status: draft` のまま止める。
 
-- G10: `keywords/` に CSV が届いていない（CSV 待ち）。`target_query` は null で、値は作っていない。
+- G10: `target_query` が確定して OK（2026-11-14）。ラッコの CSV の行と一致する。
 - G07: 前後と関連のリンク先（`ai-agent-max-turns-budget-limit`、`ai-agent-vs-workflow`、`ai-agent-custom-tools-agent-sdk`、`zod-to-json-schema-tool-definition`、`mcp-server-typescript-stdio`）が、どれも公開も予約もされていない。前の3本は原稿も無いので、本文では中身を「予定」として書いた。3本を書いたら、55、57、569行目をその中身に合わせて直す。
 
 EmDash への投稿と git のコミットはしていない（執筆するエージェントの担当外）。
