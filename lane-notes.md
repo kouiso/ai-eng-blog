@@ -118,3 +118,4 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 - design artifact KK25c9pSMdvLqJ71qWaf5t is not readable from this cloud session (not found / not shared with this account); please share it to this account or paste its content
 - advisor tool not present in this lane
 - Cloudflare connector is authorized for an account that does not hold this project's Worker; production checks (AEB-D1) will need the owner's account connected
+#71 | writer pushed 374c921 (3 musts fixed, run logs 51-54, G10 dated note) -> G11 re-review r3 (opus, fresh) running, writes pending/71-review-r3.md
