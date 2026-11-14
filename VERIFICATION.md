@@ -76,39 +76,40 @@ later authorized deployment.
   - Turnstile のテスト用キーを `--var` で渡したとき: ダミーのトークンの登録は 200、トークンなしは `captcha_failed`。
   - `/`、`/privacy`、`/posts`、`/posts/toc-test`、404 のページを幅 1280 と 375 で開き、横スクロールなし、ページのエラーなし（404 のページ自身の 404 応答を除く）、localhost 以外へのリクエストなし（Google Fonts を読み込んでいない）。
 
-## 2026-11-14 の追記（Node 24 で通した結果、#24）
+## 2026-11-14 の追記（Node v24.22.3、npm 11.19.1、wrangler 4.152.0、emdash 1.4.0、#24）
 
 デプロイで走る Node 24 で、ルートと samples の一式を通した。
 
-- 環境: Node v24.22.3（nodejs.org の公式 linux-x64 tarball。SHASUMS256 で照合。作業環境の設定は変えず、このコマンド列の PATH だけに入れた）、npm 11.19.1。ベースは `develop` の `884cc613d824ae993b4e4fd32bd6599a43ef276a`。日付は 2026-11-14。
-- `npm ci` の出力に EBADENGINE は無い（ルート、samples 2本とも0行）。出たのは deprecated の警告（`@oslojs/*`、`arctic`、`node-domexception`）と install-scripts の案内、`14 vulnerabilities (6 moderate, 8 high)` の報告で、いずれも今回は対処していない。
+- 環境: Node v24.22.3（nodejs.org の公式 linux-x64 tarball）、npm 11.19.1、`npx wrangler --version` は 4.152.0。作業環境の設定は変えず、このコマンド列の PATH だけに入れた。tarball の SHA-256 は `4f2b175a6d53a5c617a80dba2676238a0688cef28c6da4eba35c7d844e66fcfb` で、https://nodejs.org/dist/v24.22.3/SHASUMS256.txt（2026-11-14 取得）の `node-v24.22.3-linux-x64.tar.xz` の行と一致した。
+- ベース: `develop` の `8a3027569d540bc88fc9891147ec16a539021c2c`（#61 まで）を取り込んだマージ結果のツリー。日付は 2026-11-14。
+- `npm ci` の EBADENGINE は、ルート、`samples/mcp-server`、`samples/rag-chat` のどれも0行。
+- `npm ci` の警告は次のとおりで、いずれも今回は対処していない。
+  - ルート: deprecated が9件（`@oslojs/*`、`arctic`、`node-domexception`）、install-scripts の案内（esbuild、workerd）、`14 vulnerabilities (6 moderate, 8 high)`。
+  - `samples/mcp-server`: `2 moderate severity vulnerabilities`、install-scripts の案内（esbuild）。
+  - `samples/rag-chat`: `found 0 vulnerabilities`。警告なし。
 
 ### ルート
 
-| コマンド | 結果 |
-|---|---|
-| `npm ci` | exit 0（685 packages） |
-| `npm run build` | exit 0 |
-| `npm run cf:types` | exit 0 |
-| `npm run typecheck` | exit 0、0 errors / 0 warnings / 0 hints（43 files） |
-| `npm test` | exit 0、9 ファイル 104 件が通った |
-| `npx wrangler deploy --dry-run` | exit 0、`Total Upload: 16067.24 KiB / gzip: 4257.26 KiB`、`env.EMDASH_SITE_URL ("https://ai-eng-blog.kouiso.workers.dev")` |
+- `npm ci`: exit 0（685 packages）
+- `npm run build`: exit 0
+- `npm run cf:types`: exit 0
+- `npm run typecheck`: exit 0、0 errors / 0 warnings / 0 hints（44 files）
+- `npm test`: exit 0、10 ファイル 109 件が通った
+- `npx wrangler deploy --dry-run`: exit 0、`Total Upload: 16068.40 KiB / gzip: 4258.42 KiB`、`env.EMDASH_SITE_URL ("https://ai-eng-blog.kouiso.workers.dev")`
 
 ### samples
 
-| 場所 | コマンド | 結果 |
-|---|---|---|
-| `samples/mcp-server` | `npm ci` | exit 0 |
-| | `npm run build` | exit 0 |
-| | `npm run typecheck` | exit 0 |
-| | `npm test` | exit 0、11 件中 11 件が通った |
-| | `npm run e2e` | exit 0、`E2E OK`（ログイン、API キーは不要。stdio で子プロセスを起動して叩く） |
-| `samples/rag-chat` | `npm ci` | exit 0 |
-| | `npm run typecheck` | exit 0 |
-| | `npm test` | exit 0、7 件中 7 件が通った（Anthropic のクライアントには偽の `fetch` を渡しており、キーは使わない） |
+- `samples/mcp-server`
+  - `npm ci`、`npm run build`、`npm run typecheck`: exit 0
+  - `npm test`: exit 0、11 件中 11 件が通った
+  - `npm run e2e`: exit 0、`E2E OK`（API キーは不要。stdio で子プロセスを起動して叩く）
+- `samples/rag-chat`
+  - `npm ci`、`npm run typecheck`: exit 0
+  - `npm test`: exit 0、7 件中 7 件が通った（Anthropic のクライアントには偽の `fetch` を渡しており、キーは使わない）
+  - `env -u ANTHROPIC_API_KEY npm start`（`node src/cli.ts`）: exit 0。キーなしで検索（BM25）の部分まで動き、上位3件（`02-retrieval.md#1`、`02-retrieval.md#2`、`01-overview.md#0`）とコンテキストを表示して、「ANTHROPIC_API_KEY が未設定のため、Claude への問い合わせは行わずに終了します（検索部分の確認用）。」で終わった。
 
 ### 実行しなかったもの
 
-- `samples/rag-chat` の `npm start`（`node src/cli.ts`）: Claude の呼び出しにログインか API キーが要るため。
+- `samples/rag-chat` の `npm start` のうち、Claude に答えさせる部分: この sha では `ANTHROPIC_API_KEY` が要る（`samples/rag-chat/src/cli.ts`）。CLAUDE.md の方針でキーは使わないので動かしていない。Agent SDK へ移すのは #63。
 - `wrangler deploy`（dry-run ではない本番の deploy）、`wrangler dev --local` での動作確認: #24 の範囲外。
 - engines の変更: このPRでは `package.json` を変えていない（#25）。Node 22 での再実行もしていない。
