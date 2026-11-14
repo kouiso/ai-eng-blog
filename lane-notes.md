@@ -1,4 +1,4 @@
-STATE RUNNING 2026-11-14T12:58Z | merged 10, issues closed 16, open PRs 6 in flight
+STATE RUNNING 2026-11-14T13:52Z | merged 15, issues closed 21, open PRs 1 in flight (#82)
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -137,3 +137,4 @@ DECIDED gate readings (manager, 2026-11-14): C25 frontmatter one-URL values skip
 MERGED 13:38-13:44Z: #53 (3c788c7, Closes #26), #78 (2032c53, Closes #37), #79 (0143864), #80 (855598b), #77 (f97ccb4, Closes #42) - GATE comments on each; local checks on heads + merge results (owner ruling)
 #83 (Mac lane K1, rakko keywords, site keyword 生成AI API, CLAUDE.md edited) merged into develop as 86e1466 by another session, not by this lead - FYI to manager
 #82 | merge result with develop f97ccb4 fails typecheck (table-cell.ts from #53 returns unknown[] vs 1.5.0 PortableText types) -> member merging develop + type-only fix; delta review after (merge-conflict resolution, not a review round)
+HOUR 2026-11-14T13:52Z | merged 15 today (+5 this hour: #53 #78 #79 #80 #77) | closed issues 21 (+5: #25 #26 #37 #38 #42) | PRs closed unmerged 1 (#71, manager ruling) | open PRs: #82 (1.5.0; merge-result type fix fbede26, delta review running), #57 notes excl. | members running 4 (#82 delta reviewer, gate-readings fixer r2, CI follow-up, —) | new: #84 (check-article follow-up), #81 rulings comment posted, #83 merged by another session | owner 4 (Q3 deploy steps + pilot permission, PI2, #3 ask, design artifact share + deploy-now-or-hold choice) | device 0 | rule 1(a): no scrum-board.yml, 0 moved; 1(b): non-claude-cloud first, ~12 moved ahead | -ux skipped 0 | design: artifact unreadable (exact error in NOTES 13:29Z) | checks: owner ruling local pass counts, applied to all 5 merges | goal: set
