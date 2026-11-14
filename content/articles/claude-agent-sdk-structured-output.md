@@ -271,7 +271,7 @@ structured_output がありません
 
 試す回数の上限は、環境変数 `MAX_STRUCTURED_OUTPUT_RETRIES` で決まります。公式の表では、既定は5回で、最初の1回と4回の再試行です（出典4）。既定のままで5回まで試す動きは、この環境では確かめていません。
 
-公式の表は `claude -p` の説明として書いています（出典4）。SDK でも同じ上限になるかを、1にして確かめました。
+公式の表は [`claude -p`](/posts/claude-p-script-first-call) の説明として書いています（出典4）。SDK でも同じ上限になるかを、1にして確かめました。
 
 ```bash
 MAX_STRUCTURED_OUTPUT_RETRIES=1 node impossible.ts

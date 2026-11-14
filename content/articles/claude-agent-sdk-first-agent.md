@@ -69,7 +69,7 @@ SDK は Claude Code の本体を npm の依存として同梱しています（�
 
 検証には、Claude プランでログイン済みの Claude Code が入った Mac を使いました。ログインの操作そのものは、この記事の検証では実行していません。
 
-環境変数 `ANTHROPIC_API_KEY` は、プランのログインより先に使われます（出典4）。プランで試すなら、先に外れていることを確かめます。
+環境変数 [`ANTHROPIC_API_KEY`](/posts/claude-code-api-key-billing-auth) は、プランのログインより先に使われます（出典4）。プランで試すなら、先に外れていることを確かめます。
 
 ```bash
 test -n "$ANTHROPIC_API_KEY" && echo set || echo unset
