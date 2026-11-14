@@ -1,6 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { fileURLToPath } from "node:url";
-import { answerWithClaude, formatContext } from "./answer.ts";
+import { answerWithClaude, formatContext, NotLoggedInError, runWithAgentSdk } from "./answer.ts";
 import { buildBm25Index } from "./bm25.ts";
 import { loadMarkdownChunks } from "./loadDocs.ts";
 
@@ -34,23 +33,21 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  let result;
+  try {
+    result = await answerWithClaude(runWithAgentSdk, model, question, hits);
+  } catch (error) {
+    if (!(error instanceof NotLoggedInError)) throw error;
     console.log("\n--- Claude に渡す予定のコンテキスト ---");
     console.log(formatContext(hits));
     console.log(
-      "\nANTHROPIC_API_KEY が未設定のため、Claude への問い合わせは行わずに終了します（検索部分の確認用）。",
+      "\nClaude Code にログインしていないため、Claude への問い合わせは行わずに終了します。ログインするには `claude` を起動して `/login` を実行してください（検索部分は上のとおり動いています）。",
     );
     return;
   }
-
-  const client = new Anthropic();
-  const result = await answerWithClaude(client, model, question, hits);
   console.log(`\n--- 回答 (${model}) ---`);
   console.log(result.text || "(テキストの回答がありませんでした)");
-  if (result.stopReason === "max_tokens") {
-    console.log("\n注意: max_tokens に達して回答が途中で切れています。src/answer.ts の MAX_TOKENS を増やしてください（思考の分も数えられます）。");
-  }
-  console.log(`\n使用トークン: 入力 ${result.inputTokens} / 出力 ${result.outputTokens}`);
+  console.log(`\nターン数: ${result.numTurns} / total_cost_usd（見積もり）: ${result.totalCostUsd}`);
 }
 
 main().catch((error: unknown) => {
