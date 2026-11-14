@@ -5,10 +5,14 @@
 //
 // 使い方: node scripts/secret-scan.mjs [比較の基準]
 //   基準を省略すると、追跡しているリモートのブランチ（@{upstream}）と比べる。
+//   追跡先の無いブランチでは origin/develop、origin/main の順に基準を探す。どれも無ければ
+//   基準の渡し方を1行で示して終了コード 2 で止まる。
+//   どのフォルダから呼んでも、リポジトリのルートを基準に読む。
 //   「基準から HEAD までにコミットした変更」と「まだコミットしていない変更」の両方を調べる。
 // 見つかれば終了コード 1。値そのものは出さず、ファイル名、行番号、種類だけを出す。
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const PATTERNS = [
 	["private key", /-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY( BLOCK)?-----/],
@@ -38,11 +42,41 @@ const ALLOWED = [
 
 const SKIP = [/^package-lock\.json$/, /^docs\/tech-writing-pack\//, /(^|\/)node_modules\//, /\.(png|jpe?g|gif|webp|ico|zip|pdf|woff2?)$/i];
 
-function git(...args) {
-	return execFileSync("git", args, { encoding: "utf8" });
+function gitIn(cwd, ...args) {
+	return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 }
 
-const base = process.argv[2] ?? "@{upstream}";
+// ルートより下のフォルダから呼ばれても、git の出力（ルートからの相対パス）を読み違えない
+let root;
+try {
+	root = gitIn(process.cwd(), "rev-parse", "--show-toplevel").trim();
+} catch {
+	console.error("secret-scan: git のリポジトリの中で実行してください。");
+	process.exit(2);
+}
+
+function git(...args) {
+	return gitIn(root, ...args);
+}
+
+function resolveBase() {
+	const candidates = process.argv[2] ? [process.argv[2]] : ["@{upstream}", "origin/develop", "origin/main"];
+	for (const candidate of candidates) {
+		try {
+			git("rev-parse", "--verify", "--quiet", `${candidate}^{commit}`);
+			return candidate;
+		} catch {
+			// 次の候補へ
+		}
+	}
+	return null;
+}
+
+const base = resolveBase();
+if (base === null) {
+	console.error("secret-scan: 比べる基準が見つかりません。node scripts/secret-scan.mjs <基準のブランチ> のように渡してください。");
+	process.exit(2);
+}
 const files = new Set(
 	[
 		...git("diff", "--name-only", "--diff-filter=ACMR", `${base}...HEAD`).split("\n"),
@@ -54,9 +88,10 @@ const files = new Set(
 const findings = [];
 let scanned = 0;
 for (const file of files) {
-	if (SKIP.some((re) => re.test(file)) || !existsSync(file)) continue;
+	const path = join(root, file);
+	if (SKIP.some((re) => re.test(file)) || !existsSync(path)) continue;
 	scanned++;
-	const lines = readFileSync(file, "utf8").split("\n");
+	const lines = readFileSync(path, "utf8").split("\n");
 	lines.forEach((raw, index) => {
 		const line = ALLOWED.reduce((text, allowed) => text.replaceAll(allowed, ""), raw);
 		for (const [kind, pattern] of PATTERNS) {
