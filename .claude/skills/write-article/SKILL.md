@@ -97,7 +97,7 @@ AI 組み込み開発、つまり「自分のアプリに LLM を組み込む開
 - 一次情報の URL とアクセス日を、本文に書く。frontmatter の `sources` は記事ページに出ないので、本文の末尾に出典の表（題名、URL、確認日）を置き、断定した文から番号で引く
 - コピーして実行すれば動くコード。Claude が実際に動かしたもの
 - 料金の目安。API を呼ぶ記事は、公式の料金ページの URL とアクセス日を添えて金額の目安を書く。API を呼ばない記事は、記事の手順のうちどこまでが無料で、どこから料金や有料のアカウントが要るか（例 Claude Code を使う操作）を出典付きで書く。実行していない操作まで「無料」と書かない
-- frontmatter の `cost_estimate`（料金の目安）、`run_environment`（動かした環境）、`verified_at`（コードを最後に実行した日）を埋める。記事ページでは、前の2つがタイトルの下の枠に、`verified_at` が公開日の横に「動作確認日」として出る（README の「記事の任意フィールド」）
+- frontmatter の `cost_estimate`（料金の目安）、`run_environment`（動かした環境）、`verified_at`（動作確認日。コードを最後に動かして、動いた日）を埋める。記事ページでは、前の2つがタイトルの下の枠に、`verified_at` が公開日の横に「動作確認日」として出る（README の「記事の任意フィールド」）
 - 文体はですます調で統一する（checklist の C19・C29 を満たすため、サイト全体で揃える）
 - 言語は TypeScript を基本にする（特典のサンプルアプリと揃える）
 
@@ -160,7 +160,7 @@ lint で FATAL になりやすく、技術記事で書きがちな語があり�
 
 - 講座の前後リンク。`prev` があれば本文の冒頭近くに前の記事へのリンクを置く。`next` があれば末尾近くに次の記事へのリンクを置く。リンク先は公開済みか、この記事より前の日時で予約済みの記事に限る（リンク切れを出さない）。
 - 関連記事への内部リンク。既存の記事（公開済みか、この記事より前に予約済みのもの）が3本以上あるときは、内容が関係する記事への内部リンクを本文中に1本以上入れる（guides/01 §5）。3本未満で入れられないときは、その事実を `gate.md` に書く。
-- 末尾の表記。本文の最後の段落を次の形にする。日付はコードを最後に実行した日。
+- 末尾の表記。本文の最後の段落を次の形にする。日付は書いた時点でコードを動かして、動いた日（`verified_at` の最初の値と同じ）。公開後に動かし直しても、本文の日付は変えない（「公開後に直す、取り下げる」）。
 
 ```
 AI 支援で執筆しました。コードは YYYY-MM-DD に実際に実行して確認しています。
@@ -176,7 +176,8 @@ checklist の C08「コードはコピペで動く形（import・前提を省略
 4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。
 5. API キーやトークンは、ログにも記事にも絶対に残さない。出力に混ざったら `***` に置き換えてから保存する。このリポジトリは public です。
 6. Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は書かない。API キーは使わない（オーナーの裁定 2026-11-11）。読者に見せる LLM 呼び出しのコードは Claude Agent SDK か `claude -p` にして、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。このセッションの内部の認証情報（ログインのトークン）を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。
-7. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
+7. 記事のコードの `package-lock.json` はコミットしない。`code/` には記事のコードと、版を固定した `package.json` を置く。`package-lock.json` は置かない。読者と同じように入れ直して動かす（ロックファイルを残したまま動かすと、読者が入れる版と違うものを確かめたことになる）。そのとき解決した版（`npm ls` の出力など）は `run/` のログに残す。
+8. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
 
 ### 7. lint を2本とも回す
 
@@ -272,7 +273,7 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 | G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` |
 | G03 | 下の B の全項目を満たす | `gate.md` |
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。Agent SDK や `claude -p` の記事は、オーナーの Claude プランで動かしたログがあれば合格（「Claude プランで動かす記事」）。Messages API を呼ぶコードの記事は書かない | `code/`、`run/` |
-| G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている（frontmatter の `sources` だけでは不合格）。料金の目安がある（API を呼ぶ記事は出典付きの金額、呼ばない記事は無料の範囲と、有料になる操作）。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter |
+| G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている（frontmatter の `sources` だけでは不合格）。料金の目安がある（API を呼ぶ記事は出典付きの金額、呼ばない記事は無料の範囲と、有料になる操作）。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する。公開後に動かし直して通ったときは、根拠をその回の実行ログに向ける（日付と版の更新は「公開後に直す、取り下げる」） | 原稿の出典の表、`sources.md`、frontmatter |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` |
 | G07 | 講座の前後リンク（`prev`、`next` のうち存在するもの）と、既存記事が3本以上なら関連記事への内部リンクが本文にある。リンク先は公開済みか先に予約済み | `gate.md` にリンク先の slug を列挙 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」を含む決まった表記になっている | 原稿の末尾 |
@@ -357,7 +358,7 @@ ai_assisted: true
 needs_api_key: false            # 新規の記事は常に false（API キーは使わない）
 status: draft                   # draft / ready / scheduled / published
 publish_at: null                # 予約日時（ISO 8601、タイムゾーン付き）。手順10で入れる
-updated: 2026-10-30             # 最後に原稿を直した日
+updated: 2026-10-30             # 本文を直した日。verified_at だけの更新では変えない
 ---
 ```
 
@@ -372,14 +373,14 @@ updated: 2026-10-30             # 最後に原稿を直した日
 | `course_step` | 必須 | 1〜6。講座の表の番号 |
 | `cost_estimate` | 必須 | 料金の目安を1文で。API を呼ぶ記事は出典付きの金額、呼ばない記事は無料の範囲と有料になる操作。本文の料金の記述と食い違わせない |
 | `run_environment` | 必須 | コードを動かした環境。`run/` のログにあるランタイムと主要パッケージのバージョン（例「Node.js 22.22.0、TypeScript 7.0.2」） |
-| `verified_at` | 必須 | コードを最後に実行した日（`YYYY-MM-DD`）。`run/` の最後のログの日付と、末尾の「AI 支援で執筆」の日付にそろえる |
+| `verified_at` | 必須 | 動作確認日。コードを最後に動かして、動いた日（`YYYY-MM-DD`）。`run/` の最後の成功したログの日付にそろえる。新規の記事では末尾の「AI 支援で執筆」の日付にもそろえる。公開後の動かし直しで通ったときの更新は「公開後に直す、取り下げる」 |
 | `prev` / `next` | 必須（値は null 可） | 講座の順番で前後にある記事の slug。同じ `course_step` の中は公開順で並べる |
 | `sources` | 必須（1件以上） | `url`、`title`、`accessed`（YYYY-MM-DD）。`sources.md` と一致させる |
 | `ai_assisted` | 必須 | 常に `true` |
 | `needs_api_key` | 必須 | 新規の記事は常に `false`。API キーは使わない（オーナーの裁定 2026-11-11）。本文のコードは Agent SDK か `claude -p`、または LLM を呼ばないものだけにする |
 | `status` | 必須 | 手順9と10で更新する |
 | `publish_at` | 予約後に必須 | 1日1本になるように入れる |
-| `updated` | 必須 | 直すたびに更新する |
+| `updated` | 必須 | 本文を直した日。`verified_at` だけの更新では変えない |
 
 EmDash の `posts` は `title`、`featured_image`、`content`（Portable Text）、`excerpt`、`cost_estimate`、`run_environment`、`verified_at` と、タクソノミー `category`、`tag` を持っています（`seed/seed.json`、README の「記事の任意フィールド」）。`title` は `title` に、`description` は `excerpt` に、本文は `content` に、`tags` は `tag` に、`cost_estimate`、`run_environment`、`verified_at` は同じ名前のフィールドに入れます。`course_step`、`prev`、`next`、`sources` に当たるフィールドは今のスキーマに無いので、前後リンクと出典は本文に書いたものが読者に見える形になります。専用のフィールドを足すか、`seo` の欄に何を入れるかは、「実装時にドキュメントで確認する」項目です。
 
@@ -390,7 +391,7 @@ logs/<slug>/
 ├── selection.md      # 手順1 キーワードを選んだ理由
 ├── brief.md          # 手順2・3 誰の何を解決するか、記事型、見出し骨格
 ├── sources.md        # 手順4 一次情報（URL、アクセス日、確かめたこと）
-├── code/             # 手順6 記事に載せたコードと同じもの（package.json はバージョン固定）
+├── code/             # 手順6 記事に載せたコードと同じもの（package.json はバージョン固定。package-lock.json は置かない）
 ├── run/              # 手順6 実行ログ 01.log, 02.log …
 ├── lint/
 │   ├── ai-smell.txt      # 手順7 最後の実行の出力と exit=
@@ -408,14 +409,19 @@ logs/<slug>/
 - `selection.md`: 読んだ CSV のファイル名、選んだキーワード、人気度の大小関係とその出どころ（CSV の検索ボリューム、Google トレンド、Search Console のどれか）を言葉で（例「候補の中で最も高い」。CSV の行や数値はそのまま写さない。ラッコ規約と public リポジトリの関係は keywords/README.md）、外した候補と外した理由（重なり、Messages API が検索意図の中心、講座の順番）、選んだ日。
 - `brief.md`: C01 の1行、検索意図のタイプ、上位記事を見たかどうかと見た結果、記事型、見出し骨格、読み終えた人ができるようになること。
 - `sources.md`: 出典ごとに URL、題名、アクセス日、そのページで確かめた事実、記事のどの文の根拠か。
-- `publish.md`: 日時、操作（作成、予約、公開、修正、下書きに戻す、リビジョンを戻す）、EmDash 側の entry の ID、予約日時、操作した理由。
+- `publish.md`: 日時、操作（作成、予約、公開、修正、動作確認日の更新、下書きに戻す、リビジョンを戻す）、EmDash 側の entry の ID、予約日時、操作した理由。
 
 ## 公開後に直す、取り下げる
 
 - 原稿の正はリポジトリである。EmDash の MCP を通すのは、公開、予約、取り下げの操作だけにする。急ぎの直しを MCP で行ったら、同じ会話のうちに、リポジトリの原稿と `logs/<slug>/publish.md` へ書き戻す。
 - 直すときは、必ず `content/articles/<slug>.md` と EmDash の両方を更新する。片方だけ直すと、どちらが正しいかわからなくなる。EmDash の管理画面で人が直した記事は、先にその内容を原稿へ取り込んでから手を入れる。
 - 直した原稿は手順7と8をもう一度通し、`logs/<slug>/lint/` と `gate.md` を更新する。ゲートに落ちる直し方はしない。
-- 直したら frontmatter の `updated` を更新し、`publish.md` に何をなぜ直したかを書く。
+- 公開後にコードを動かし直して通ったときは、`verified_at` を新しい日付にする。更新するのは原稿の frontmatter、EmDash の `verified_at`、`publish.md`（日時、操作「動作確認日の更新」、実行ログの場所）の3か所。`gate.md` の G05 の根拠は、その回の `run/` のログに向ける。本文は変えないので、手順7、8のやり直しと点検はいらない。`updated` は本文を直したときの日付なので変えない。
+  - 通ったが、動かした環境のツールの版だけが違うときは、`verified_at` に加えて `run_environment` の版の数字も更新する（項目と書き方は今のまま、数字だけ）。3か所は同じで、ゲートと点検のやり直しはいらない。
+  - 本文に書いた版が、動かした版と合わなくなったときは、本文の直しになる。手順7と8を通し、終わるまで `verified_at` は変えない。
+  - 記事で固定した直接の依存の版を変えないと動かなかったときは、通ったことにしない。本文の直しとして同じ手順を通す。
+  - 動かして落ちたときは `verified_at` を変えず、原因を直す（手順7と8を通す）か、記事を下書きに戻す。
+- 本文を直したら frontmatter の `updated` を更新し、`publish.md` に何をなぜ直したかを書く。
 - 誤りが見つかって、すぐに直せないときは、EmDash のリビジョンで前の版に戻すか、記事を下書きに戻す（`posts` は `revisions` と `drafts` を持っている）。MCP では、リビジョンで戻すなら `revision_list`（`id` には slug ではなく ULID を渡す。slug を渡すとエラーにならずに空の一覧が返る）→ `revision_restore`（下書きが置き換わるだけ）→ `content_get` → `content_publish` の順に呼ぶ。下書きに戻すなら `content_get` → `content_unpublish` を呼ぶ（根拠は `docs/verification/local-mcp.md`）。原稿側は `status` を `draft` に戻し、git の履歴は消さずに新しいコミットで戻す。
 - 前後リンクの更新（手順10の6）もこの手順で行う。
 
