@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { normalizePortableTextTable } from "@emdash-cms/admin/portable-text-table";
 import { markNumericTableCells } from "../src/utils/table-cell";
 
 const cell = (text: string, extra: Record<string, unknown> = {}) => ({
@@ -17,9 +18,9 @@ const aligned = (blocks: unknown[] | undefined) =>
 	(blocks as any[])[0].rows[0].cells.map((c: any) => c.textAlign);
 
 describe("markNumericTableCells", () => {
-	it("番号・日付・バージョンのセルに left、URL のセルに start を付ける", () => {
+	it("番号・日付・バージョンのセルに left、URL のセルに justify を付ける", () => {
 		const out = markNumericTableCells([table("12", "@scope/sdk", "https://example.com/a-1", "2026-10-31", "1.12.0")]);
-		expect(aligned(out)).toEqual(["left", undefined, "start", "left", "left"]);
+		expect(aligned(out)).toEqual(["left", undefined, "justify", "left", "left"]);
 	});
 
 	it("バージョン表記（v1.2.0、^1.4.0）も番号として扱う", () => {
@@ -27,11 +28,11 @@ describe("markNumericTableCells", () => {
 		expect(aligned(out)).toEqual(["left", "left", "left", undefined, undefined]);
 	});
 
-	it("https:// で始まる 1 語のセルには URL 用の目印（start）を付ける", () => {
+	it("https:// で始まる 1 語のセルには URL 用の目印（justify）を付ける", () => {
 		const out = markNumericTableCells([
 			table("https://docs.example.com/a/b-1", "http://x.test", "see https://x.test", "https://x.test is", "ftp://x.test"),
 		]);
-		expect(aligned(out)).toEqual(["start", "start", undefined, undefined, undefined]);
+		expect(aligned(out)).toEqual(["justify", "justify", undefined, undefined, undefined]);
 	});
 
 	it("元のデータを書き換えず、表以外のブロックはそのまま返す", () => {
@@ -49,5 +50,17 @@ describe("markNumericTableCells", () => {
 		const odd = { _type: "table", rows: "x" };
 		expect(markNumericTableCells([odd])).toEqual([odd]);
 		expect(markNumericTableCells(undefined)).toBeUndefined();
+	});
+});
+
+describe("目印の値が EmDash の表の正規化を通る", () => {
+	// node_modules/@emdash-cms/admin/dist/portable-text-table.js の normalizeAlignment は
+	// left / center / right / justify 以外を捨てる。捨てられると CSS の目印が効かない。
+	it("left と justify が描画前に残る", () => {
+		const marked = markNumericTableCells([table("2026-10-31", "https://example.com/a")]);
+		const result = normalizePortableTextTable(marked?.[0], { path: "test", createKey: () => "k" });
+		expect(result.ok).toBe(true);
+		if (!result.ok) return;
+		expect(result.table.rows[0].cells.map((c) => c.textAlign)).toEqual(["left", "justify"]);
 	});
 });

@@ -17,7 +17,11 @@ function cellText(cell: Record<string, unknown>): string {
  * 表のセルには class を付けられないので、描画側が style 属性として出す textAlign を目印に使う。
  * - 番号・日付・バージョン（2026-10-31、1.12.0、v1.2.0、^1.4.0 など）: textAlign "left"。
  *   [slug].astro の CSS がこのセルだけ折り返さない。
- * - URL（https:// で始まる 1 語のセル）: textAlign "start"。CSS がこのセルだけ途中で折ってよいことにする。
+ * - URL（https:// で始まる 1 語のセル）: textAlign "justify"。CSS がこのセルだけ途中で折ってよいことにする。
+
+ * textAlign には、EmDash の表の正規化（@emdash-cms/admin の normalizeAlignment）が通す
+ * left / center / right / justify しか使えない（それ以外は描画前に捨てられる）。
+ * URL に空白は無いので justify でも見た目は変わらない。
  * どちらも、作者が textAlign を付けたセルには付けない。
  */
 export function markNumericTableCells(blocks: readonly unknown[] | undefined): unknown[] | undefined {
@@ -30,7 +34,7 @@ export function markNumericTableCells(blocks: readonly unknown[] | undefined): u
 				if (!isRecord(cell) || cell.textAlign) return cell;
 				const text = cellText(cell);
 				if (NUMERIC_CELL.test(text)) return { ...cell, textAlign: "left" };
-				if (URL_CELL.test(text)) return { ...cell, textAlign: "start" };
+				if (URL_CELL.test(text)) return { ...cell, textAlign: "justify" };
 				return cell;
 			});
 			return { ...row, cells };
