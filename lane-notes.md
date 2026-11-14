@@ -30,6 +30,11 @@ JUDGE bundles 1-4 (manager, 2026-11-14T12:27Z): close now #20 #12 #19 (done), #2
 rulings: A prev/next = data in course.ts (#22) + template renders published-only prev/next with test (#32); new G07 text (#33); step 10-6 deleted; existing 30 manuscripts not edited; last article of a step links to next step's first published article. B CI yes: pull_request to develop/main + push develop, Node from .nvmrc, npm ci + root check, contents: read, no secrets, no deploy; README "no paid CI" updated. C Node: engines list only versions actually run; root 24.x; samples one shared lower bound (22 and 24). D re-runs: 動作確認日 = last date run and worked (update verified_at only on pass); no committed package-lock; monthly by hand; cost inside plan only.
 order: closes+SBI+comments -> #24 (Node 24) -> M1 -> DP on Node 24 -> owner message (ready, Q3, Q2, #3 ask, G07 FYI) -> #34 #35 #37 -> #25 -> #22 #32 #33 + streamable SBI -> #49 -> #23 -> #27 #28 (one [slug].astro PR at a time) -> #39 #38 -> #42 #43 #44 -> after pilot #45 #46. Check samples/rag-chat @anthropic-ai/sdk API-key need.
 
+#56 | LAND | merged 6d9a067 (merge, head a7dd09b = GATE head) | review PASS issuecomment-6877251643 | #48 closed by merge
+closed with reason: #20 #12 #19 #31 (done), #21 (not planned, superseded), #6 (done, all children closed) | filed #58 (SBI under #13, streamable-http related link)
+comments: #18 rulings D, #17/#44 count 23->30
+members running: PR53 evidence (sonnet), #24 Node 24 verify (sonnet), #34 typecheck fresh (sonnet), #22 course slug order (sonnet)
+
 ## needs owner
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
