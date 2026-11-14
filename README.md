@@ -28,7 +28,7 @@ npx wrangler deploy --dry-run
 npx wrangler dev --local
 ```
 
-`npm run check` は型（`npm run typecheck`）、テスト（`npm test`）、ビルド（`npm run build`）、`npm run secret-scan` をこの順に流し、落ちた手順の名前を示して止まります。`npm run typecheck` は先に `wrangler types` を流して `worker-configuration.d.ts`（Git に入らない生成ファイル）を作ってから `astro check` を流すので、クローン直後に `npm ci` のあとすぐ流せます。`npm run cf:types` を別に流す必要はありません。
+`npm run check` は型（`npm run typecheck`）、テスト（`npm test`）、ビルド（`npm run build`）、`npm run secret-scan` をこの順に流し（secret-scan は `origin/develop` があればそれとの差分を調べます。ブランチの upstream が自分の HEAD と同じでも、0 ファイルで通らないようにするためです）、落ちた手順の名前を示して止まります。`npm run typecheck` は先に `wrangler types` を流して `worker-configuration.d.ts`（Git に入らない生成ファイル）を作ってから `astro check` を流すので、クローン直後に `npm ci` のあとすぐ流せます。`npm run cf:types` を別に流す必要はありません。
 
 特典サンプル（`samples/mcp-server`、`samples/rag-chat`）は、ルートから `npm run check:samples` で確かめます。各サンプルで `npm ci` をしたあと、型、テスト、`mcp-server` の e2e を流します。ログインも API キーも要りません（LLM を呼ぶ `npm start` は流しません）。
 
