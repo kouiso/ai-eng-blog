@@ -1,4 +1,4 @@
-STATE RUNNING 2026-11-14T13:52Z | merged 15, issues closed 21, open PRs 1 in flight (#82)
+STATE PAUSED 2026-11-14T14:23Z (manager: weekly allowance) | merged 16 today, issues closed 21
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -156,3 +156,12 @@ GitHub secondary rate limit again at ~14:04Z (retry after 51m) -> check-in sched
 RULE (manager, GitHub rate limit): max 2 members writing to GitHub at once; >=2s between writes; batched reads, no poll loop <60s; on secondary-limit 403 honor Retry-After and do local work; hourly line states queued writes. Lane practice: one poster at a time, 20s spacing; GATE+merge by lead only.
 QUEUED WRITES (14:08Z): 11 = #86 x4 comments (r1, r2, localcheck, r3) + #82 x2 (localcheck-c, localcheck-d) + #88 x2 (review, localcheck) + 3 GATE/merge pairs (#82, #86, #88; merges counted with their GATE)
 pilot (claude-p-script-first-call) writer done: branch content/81-claude-p-script-first-call head 2ee501c; check-article 0 hard (was 11), lints clean, OUTPUT 13/13, no re-run; not done: Trends (429), top-10 SERP; open: G05 date (run/10 2026-11-12T01:01Z vs verified_at 11-11) -> G11 review running (writes pilot-review.md) | docs/67-followup r2 head 17beee1, r2 review running
+PAUSED (manager order) at the time on line 1. Scheduled 14:56Z check-in deleted (it would start new work).
+IN FLIGHT at pause (write files only, no GitHub writes): pilot G11 reviewer -> scratchpad/pending/pilot-review.md; docs/67-followup round-2 reviewer -> pending/67f-review-r2.md. Both may finish their current step; nothing else runs.
+QUEUED GITHUB WRITES (all texts in /tmp/claude-0/-home-user-ai-eng-blog/c9890e66-ff84-5ec6-8a76-1c402c3c2933/scratchpad/pending/; scratchpad may be cleared on reboot - if gone, re-run the reviews):
+ 1. #86: gr-review.md (prefix "Round 1, run on branch docs/gate-readings at 995327a before this PR was opened."), gr-review-r2.md, 86-localcheck.md, gr-review-r3.md -> GATE + merge at 59acb1b
+ 2. #82: 82-localcheck-c.md, 82-localcheck-d.md (evidence notes/evidence/82-fbede26-*.png) -> GATE + merge at fbede26 (delta review PASS posted 6878328992)
+ 3. #88: 88-review.md (PASS), ss-localcheck.md -> GATE + merge at 6281bce
+ (11 writes; pace >=20s, max 2 writers; secondary limit hit ~14:04Z, retry-after 51m)
+RESUME ORDER: (1) post queue above and merge #82 first (unblocks M1/DP); (2) #86, #88; (3) open PR for docs/67-followup (head 17beee1, body pending/67f-body.md, localcheck pending/67f-localcheck.md) after its r2 review; (4) pilot: post pilot-review.md result, writer fixes if FAIL, open PR (body pending/pilot-body.md); (5) M1 (create main from develop after #82), DP on Node 24; (6) batched owner message; (7) #76, #32/#33, #43/#44, #84, #87, remaining #81 articles.
+Branches pushed and clean: docs/gate-readings (#86), chore/67-emdash-1-5-0 (#82), docs/skill-suggest-rule (#88), docs/67-followup, content/81-claude-p-script-first-call. Nothing half-written in the repo.
