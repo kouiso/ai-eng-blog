@@ -160,7 +160,7 @@ lint で FATAL になりやすく、技術記事で書きがちな語があり�
 
 - 講座の前後リンク。`prev` があれば本文の冒頭近くに前の記事へのリンクを置く。`next` があれば末尾近くに次の記事へのリンクを置く。リンク先は公開済みか、この記事より前の日時で予約済みの記事に限る（リンク切れを出さない）。
 - 関連記事への内部リンク。既存の記事（公開済みか、この記事より前に予約済みのもの）が3本以上あるときは、内容が関係する記事への内部リンクを本文中に1本以上入れる（guides/01 §5）。3本未満で入れられないときは、その事実を `gate.md` に書く。
-- 末尾の表記。本文の最後の段落を次の形にする。日付はコードを最後に実行した日。
+- 末尾の表記。本文の最後の段落を次の形にする。日付は書いた時点でコードを動かして、動いた日（`verified_at` の最初の値と同じ）。公開後に動かし直しても、本文の日付は変えない（「公開後に直す、取り下げる」）。
 
 ```
 AI 支援で執筆しました。コードは YYYY-MM-DD に実際に実行して確認しています。
@@ -176,7 +176,7 @@ checklist の C08「コードはコピペで動く形（import・前提を省略
 4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。
 5. API キーやトークンは、ログにも記事にも絶対に残さない。出力に混ざったら `***` に置き換えてから保存する。このリポジトリは public です。
 6. Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は書かない。API キーは使わない（オーナーの裁定 2026-11-11）。読者に見せる LLM 呼び出しのコードは Claude Agent SDK か `claude -p` にして、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。このセッションの内部の認証情報（ログインのトークン）を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。
-7. 記事のコードの `package-lock.json` はコミットしない。`code/` には `package.json`（版を固定したもの）だけを置き、読者と同じように入れ直して動かす（ロックファイルを残したまま動かすと、読者が入れる版と違うものを確かめたことになる）。そのとき解決した版（`npm ls` の出力など）は `run/` のログに残す。
+7. 記事のコードの `package-lock.json` はコミットしない。`code/` には、記事のコードと `package.json`（版を固定したもの）だけを置き、`package-lock.json` は置かない。読者と同じように入れ直して動かす（ロックファイルを残したまま動かすと、読者が入れる版と違うものを確かめたことになる）。そのとき解決した版（`npm ls` の出力など）は `run/` のログに残す。
 8. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
 
 ### 7. lint を2本とも回す
@@ -358,7 +358,7 @@ ai_assisted: true
 needs_api_key: false            # 新規の記事は常に false（API キーは使わない）
 status: draft                   # draft / ready / scheduled / published
 publish_at: null                # 予約日時（ISO 8601、タイムゾーン付き）。手順10で入れる
-updated: 2026-10-30             # 最後に原稿を直した日
+updated: 2026-10-30             # 本文を直した日。verified_at だけの更新では変えない
 ---
 ```
 
@@ -380,7 +380,7 @@ updated: 2026-10-30             # 最後に原稿を直した日
 | `needs_api_key` | 必須 | 新規の記事は常に `false`。API キーは使わない（オーナーの裁定 2026-11-11）。本文のコードは Agent SDK か `claude -p`、または LLM を呼ばないものだけにする |
 | `status` | 必須 | 手順9と10で更新する |
 | `publish_at` | 予約後に必須 | 1日1本になるように入れる |
-| `updated` | 必須 | 直すたびに更新する |
+| `updated` | 必須 | 本文を直した日。`verified_at` だけの更新では変えない |
 
 EmDash の `posts` は `title`、`featured_image`、`content`（Portable Text）、`excerpt`、`cost_estimate`、`run_environment`、`verified_at` と、タクソノミー `category`、`tag` を持っています（`seed/seed.json`、README の「記事の任意フィールド」）。`title` は `title` に、`description` は `excerpt` に、本文は `content` に、`tags` は `tag` に、`cost_estimate`、`run_environment`、`verified_at` は同じ名前のフィールドに入れます。`course_step`、`prev`、`next`、`sources` に当たるフィールドは今のスキーマに無いので、前後リンクと出典は本文に書いたものが読者に見える形になります。専用のフィールドを足すか、`seo` の欄に何を入れるかは、「実装時にドキュメントで確認する」項目です。
 
@@ -417,7 +417,7 @@ logs/<slug>/
 - 直すときは、必ず `content/articles/<slug>.md` と EmDash の両方を更新する。片方だけ直すと、どちらが正しいかわからなくなる。EmDash の管理画面で人が直した記事は、先にその内容を原稿へ取り込んでから手を入れる。
 - 直した原稿は手順7と8をもう一度通し、`logs/<slug>/lint/` と `gate.md` を更新する。ゲートに落ちる直し方はしない。
 - 公開後にコードを動かし直して通ったときは、`verified_at` だけを更新する。更新するのは原稿の frontmatter、EmDash の `verified_at`、`publish.md`（日時、操作「動作確認日の更新」、実行ログの場所）の3か所。`gate.md` の G05 の根拠は、その回の `run/` のログに向ける。本文は変えないので、手順7、8のやり直しと点検はいらない。`updated` は本文を直したときの日付なので変えない。動かして落ちたときは `verified_at` を変えず、原因を直す（手順7と8を通す）か、記事を下書きに戻す。
-- 直したら frontmatter の `updated` を更新し、`publish.md` に何をなぜ直したかを書く。
+- 本文を直したら frontmatter の `updated` を更新し、`publish.md` に何をなぜ直したかを書く。
 - 誤りが見つかって、すぐに直せないときは、EmDash のリビジョンで前の版に戻すか、記事を下書きに戻す（`posts` は `revisions` と `drafts` を持っている）。MCP では、リビジョンで戻すなら `revision_list`（`id` には slug ではなく ULID を渡す。slug を渡すとエラーにならずに空の一覧が返る）→ `revision_restore`（下書きが置き換わるだけ）→ `content_get` → `content_publish` の順に呼ぶ。下書きに戻すなら `content_get` → `content_unpublish` を呼ぶ（根拠は `docs/verification/local-mcp.md`）。原稿側は `status` を `draft` に戻し、git の履歴は消さずに新しいコミットで戻す。
 - 前後リンクの更新（手順10の6）もこの手順で行う。
 
