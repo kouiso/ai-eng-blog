@@ -92,6 +92,9 @@ members: #53, #42, #38, #67 (1.5.0 bump), #25 (engines), #37 (CI) (sonnet); revi
 #79 (#38 new-articles list, head 6f708fa): review running
 #76 waits for #53 (same files)
 
+manager rulings on #77: C25 URL-only cells not counted (pack writing-lint skips table rows); C30-32 exclude inline code (guides/03-anti-ai.md:372); C17 extraction per pack lint; #77 may merge with 28/30 failing (report is information; manuscripts not wired into npm test/CI); tracking issue #81 under #5 (one PR per article via the skill + G11; pilot claude-p-script-first-call first; rest in publish order; one pass per article; exceptions proposed by writer, confirmed by G11 reviewer; $-transcripts/run output/copyable code never exceptions) -> author fixing #77
+#80 (#25 engines, head c794f8a): range changed to run-versions-only ^22.23.4 || ^24.22.3 per ruling C -> author fixing
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
