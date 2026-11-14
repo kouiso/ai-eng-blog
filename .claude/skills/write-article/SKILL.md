@@ -14,9 +14,31 @@ description: ブログ記事を1本、キーワード選びから EmDash への�
 | 担当 | やること | やらないこと |
 |---|---|---|
 | 執筆するエージェント（サブエージェントでもよい） | 手順1〜9。`content/articles/<slug>.md` と `logs/<slug>/` を書くところまで | EmDash への投稿、git のコミット |
-| メインエージェント | 手順10〜11。ゲート結果を読み直してから MCP で予約公開し、記録を残す。コミットもここでまとめて行う | ゲートに落ちた記事の公開 |
+| 点検するエージェント（書いたエージェントとは別） | 手順9のあと、原稿とログを読んで `logs/<slug>/review.md` を書く（「書く AI と点検する AI」） | 原稿を自分で直すこと、自分が書いた記事の点検 |
+| メインエージェント | 手順10〜11。ゲート結果と点検の結果を読み直してから MCP で予約公開し、記録を残す。コミットもここでまとめて行う | ゲートに落ちた記事の公開 |
 
 原稿をリポジトリに置く理由は3つあります。サブエージェントが EmDash のコネクタを使えなくても執筆は止まりません。D1 が壊れても原稿から戻せます。何をどう書いたかを git の履歴で追えます。公開されている状態の正は EmDash、原稿と経緯の正はリポジトリです。
+
+## 書く AI と点検する AI
+
+記事は、書いた AI とは別の AI が点検してから公開します（オーナーの裁定 2026-11-11「Codexもclaudeも両方片方でも生成して使えるように！Codexとclaude両方あれば敵対的に使わせられたり両者の善し悪しが使えるから」）。使える道具に合わせて、次の3通りのどれかで回します。
+
+| 使える道具 | 書く（手順1〜9） | 点検する |
+|---|---|---|
+| Claude だけ | Claude のサブエージェント | その記事を書いていない、新しく起こした Claude のサブエージェント |
+| Codex だけ | `codex exec` の1セッション | その記事を書いていない、別の `codex exec` のセッション |
+| 両方 | どちらか一方 | もう一方。記事ごとに入れ替えてよい |
+
+- どの場合も、月額プランのログインで動かす。API キーは使わない。Claude は init メッセージの `apiKeySource` が `"none"` であること、Codex は `codex login status` の出力が ChatGPT のログインであることを確かめ、その1行を `review.md` に写す。アカウント名やメールアドレスは写さない。
+- 点検する AI には、原稿、`logs/<slug>/`、このスキル、checklist を渡し、「公開してはいけない理由を探す」ように頼む。書いた AI の報告や結論は渡さない。
+- 点検では、ゲートで OK とした行が本当に OK か、記事の数値と出力が `run/` のログと一致するか、出典がその断定を支えているか、利用規約についての注意書きが足されていないかを確かめる。
+- 結果は `logs/<slug>/review.md` に書く。中身は、書いた道具と点検した道具（名前、バージョン、ログインの方法）、指摘の一覧（直すべきもの、任意のもの）、指摘ごとの対応。直すべき指摘が残っている記事は公開しない（ゲート G11）。
+- 両方を使った記事では、どちらが何を見つけたかを `review.md` に残し、道具ごとの得手不得手を比べる材料にする。
+- 起動の命令は次のとおり。`<頼む文>` には、このスキルを読んで記事を1本書く（または点検する）依頼を書く。どちらも API キーの環境変数を外して、月額プランのログインで動かす。
+  - Claude: 起動前に、init メッセージの `apiKeySource` が `"none"` であることを確かめる。そのうえで `env -u ANTHROPIC_API_KEY claude -p --strict-mcp-config "<頼む文>"` を実行する。
+  - Codex: 起動前に、`codex login status` が ChatGPT のログインを示すことを確かめる。そのうえで `env -u OPENAI_API_KEY codex exec "<頼む文>"` を実行する。
+- Codex の経路は、まだ実際に動かして確かめていない（2026-11-11 の時点でオーナーの ChatGPT のプランが解約中のため）。最初に Codex を使う記事で、`codex exec` がログインだけで動くことと、上の記録が取れることを確かめ、結果をこの節に書き足す。確かめるまでは、Claude だけの行で回す。
+- 2026-11-13 に試した結果: `codex login status` は ChatGPT のログインを示したが、`codex exec` は認証の更新に失敗して動かなかった（401。ログインのし直しが要る）。Claude の経路は同じ日に、ログインだけ（`apiKeySource` が `"none"`）で下調べを書けた。
 
 ## 前提（読む順）
 
@@ -55,9 +77,11 @@ AI 組み込み開発、つまり「自分のアプリに LLM を組み込む開
 
 ### 入門ステップ講座の順番
 
-メインキーワード6語が、そのまま講座の順番です。`course_step` はこの番号を使います。
+検索語は3層です。サイトの主キーワード（サイトで1つ。未定で、ラッコキーワードで調べた後に決める）、講座のキーワード（下の6語）、記事の副キーワード（`target_query`）です。frontmatter の `main_keyword` は、講座のキーワードのどれかを入れる項目で、名前は変えません。
 
-| course_step | メインキーワード | CSV |
+講座のキーワード6語が、そのまま講座の順番です。`course_step` はこの番号を使います。
+
+| course_step | 講座のキーワード | CSV |
 |---|---|---|
 | 1 | LLM API | `keywords/LLM API.csv` |
 | 2 | 構造化出力 | `keywords/構造化出力.csv` |
@@ -84,11 +108,13 @@ AI 組み込み開発、つまり「自分のアプリに LLM を組み込む開
 ### 1. キーワードを選ぶ
 
 1. `keywords/` にある CSV をすべて読む。CSV が1つも無ければ、その時点で止めて「CSV 待ち」と報告する。ユーザーが CSV なしで書き進めるよう明示したときだけ先へ進めるが、その記事は `target_query: null`、ゲート G10 は NG、`status: draft` のままにする。CSV に無いキーワードを `target_query`、`brief.md`、`selection.md` に作って書かない。
+   - CSV は2種類ある。ラッコキーワードの CSV（`keywords/<講座のキーワード>.csv`。ユーザーがラッコにログインし、書き出しと選定は Claude が行う）と、Google のサジェストを集めた CSV（`keywords/google-suggest-*.csv`。列は `suggestion,seed_query,rank,fetched_at` で、キーワードは `suggestion` の列）。最初の回は、ラッコの CSV が無くてもサジェストの CSV だけで選んでよい（オーナーの裁定 2026-11-11「最初はサジェストくらいのワードで反応見てみるのもありかな」）。ラッコの画面に出た一覧をプログラムで写し取ることはしない（ラッコの共通規約 第19条がスクレイピングとそれに類する行為を禁じている。https://rakkoid.com/terms 、2026-11-11 確認）。
+   - サジェストの CSV には検索ボリュームが無い。`rank` は、その種の語を入れたときに候補が出た順番で、検索回数ではない。
 2. 候補の絞り込みは次の順で行う。
    1. 既存記事と重ならないこと。`content/articles/*.md` の frontmatter（`title`、`main_keyword`、`target_query`）を全件読み、同じ検索意図に答える記事が既にある語は外す。表記ゆれ（「LLM API 使い方」と「LLM API 使い方 初心者」など）は同じ意図とみなす。
-   2. `ANTHROPIC_API_KEY` の有無。`test -n "$ANTHROPIC_API_KEY" && echo set || echo unset` で確かめる（値そのものは表示しない、ログにも残さない）。`unset` のあいだは、API を呼ばずに書けるテーマ（MCP サーバー、zod での検証、RAG の検索部分など）を先に選ぶ。Messages API を呼ぶ記事を書いた場合、その記事はゲートで下書き止まりになる。Agent SDK か `claude -p` の記事は「Claude プランで動かす記事（Agent SDK、claude -p）」に従えば `unset` でも動かせる。
+   2. コードの呼び出し口。読者に見せる LLM 呼び出しのコードは、Claude Agent SDK か `claude -p` で書けるテーマだけを選ぶ（オーナーの裁定 2026-11-11: API キーは使わず、Claude プランの月額で動かす）。Messages API（`@anthropic-ai/sdk`）の書き方が検索意図の中心にあるテーマは書かない。LLM を呼ばないテーマ（MCP サーバー、zod での検証、RAG の検索部分など）はそのまま選べる。`ANTHROPIC_API_KEY` の有無は確かめなくてよい。
    3. 講座の順番。`course_step` の小さい語を優先する。ただし上の2が優先。
-   4. 人気度。CSV に検索ボリュームの列があればそれで比べる。ラッコの無料プランには無いので、無ければ Google トレンドで候補を比べ（日本、過去12か月）、同じ条件なら高い語を選ぶ。トレンドの値は比較用の 0〜100 で、検索回数ではない。小さい語は 0 になるので、0 同士は差が無いものとして扱う。公開後は Search Console の実測を優先する。guides/01 の「ビッグキーワードを避けて、具体的なロングテールを狙う」に従い、メインキーワード単体は狙わない。
+   4. 人気度。CSV に検索ボリュームの列があればそれで比べる。ラッコの無料プランには無いので、無ければ Google トレンドで候補を比べ（日本、過去12か月）、同じ条件なら高い語を選ぶ。トレンドの値は比較用の 0〜100 で、検索回数ではない。小さい語は 0 になるので、0 同士は差が無いものとして扱う。公開後は Search Console の実測を優先する。guides/01 の「ビッグキーワードを避けて、具体的なロングテールを狙う」に従い、講座のキーワード単体は狙わない。
 3. 選んだ理由を `logs/<slug>/selection.md` に書く（書式は「logs/<slug>/ の中身」を参照）。
 
 ### 2. 誰の何を解決するかを決める（guides/01）
@@ -149,7 +175,7 @@ checklist の C08「コードはコピペで動く形（import・前提を省略
 3. 実行の記録を `logs/<slug>/run/` に残す。1回の実行で1ファイル（`01.log`、`02.log` …）。中身は、実行日時、実行したコマンド、`node -v` などのランタイムのバージョン、終了コード、標準出力と標準エラー。
 4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。
 5. API キーやトークンは、ログにも記事にも絶対に残さない。出力に混ざったら `***` に置き換えてから保存する。このリポジトリは public です。
-6. `ANTHROPIC_API_KEY` が `unset` のときに Messages API（`@anthropic-ai/sdk`）を呼ぶコードは、実行できないので C38 を満たせない。その記事は下書きで止める。このセッションの内部の認証情報を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。読者に見せるコード自体が Claude Agent SDK か `claude -p` の記事は、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。
+6. Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は書かない。API キーは使わない（オーナーの裁定 2026-11-11）。読者に見せる LLM 呼び出しのコードは Claude Agent SDK か `claude -p` にして、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。このセッションの内部の認証情報（ログインのトークン）を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。
 7. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
 
 ### 7. lint を2本とも回す
@@ -201,6 +227,8 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 
 ### 10. 予約公開する（メインエージェント）
 
+公開は `content/plan.md` の「公開の順番」の表の上から1本ずつ行う。表の1番（`claude-p-script-first-call`）がパイロットで、手順11を終えるまで2番以降は予約しない。
+
 1. `logs/<slug>/gate.md` と lint の出力を読み直す。`status: ready` 以外は投稿しない。
 2. 公開日を決める。1日1本。`content/articles/*.md` の `publish_at` で最も遅い日の翌日と、今日の翌日の、遅いほうにする。時刻は毎日同じにし、最初の記事で決めた時刻を README に書いて以後それに揃える。
 3. EmDash の MCP（`/_emdash/api/mcp`、OAuth 2.1）で `posts` に記事を作り、予約公開にする。`posts` コレクションは `seed/seed.json` で `drafts`、`revisions`、`preview`、`scheduling` を持っていて、予約公開の実行は Worker の scheduled handler と毎分の cron（`wrangler.jsonc`）が担う。作成は `content_create`（`collection:"posts"`、`slug`、`data:{title, excerpt, content, cost_estimate, run_environment, verified_at}`。既定で draft になる。`content` には Markdown の文字列をそのまま渡せば Portable Text に変換される）、予約は `content_get` で `_rev` を取ってから `content_schedule`（未来の ISO 8601。`+09:00` 付きでよい）で行う。`content_publish` は予約を消してすぐ公開するので、予約した記事には使わない。返った ULID の `id` を `publish.md` に記録する。根拠はローカルでの検証記録 `docs/verification/local-mcp.md`（2026-10-31）。予約時刻を過ぎた記事は Cron Trigger で scheduled handler が動いた時点で公開される。本番の Cron が実際に動くことは、deploy 後に確かめる。
@@ -223,11 +251,12 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 
 守ること。
 
-1. 対象は、記事の検索意図が Agent SDK、`claude -p`、または呼び出し口を問わない内容（概念、採点基準、評価ツールの設定など）の記事だけ。Messages API の書き方や Messages API の機能が検索意図の中心にある記事を、検証できるようにするために Agent SDK の記事へ作り替えない。そうした記事は `needs_api_key: true` のまま、`ANTHROPIC_API_KEY` が入るまで下書きで止める（どの記事がどちらかは `content/plan.md` の「キー不要」の列）。
-2. 本文に、このコードは読者自身の Claude プランの利用枠を使うこと、個人で試す用途に限ること、ほかの人に使わせるアプリやサービスに組み込むときは Claude Console で発行した API キーで認証することを書き、上の2つの URL を出典に入れる。
+1. 読者に見せる LLM 呼び出しのコードは、Agent SDK か `claude -p` にする。Messages API（`@anthropic-ai/sdk`）の書き方を見せる記事は書かない。API キーは費用の面から使わない（オーナーの裁定 2026-11-11。費用を月額のプランの範囲に収めるため）。検索意図が API の機能（構造化出力、ストリーミング、認証エラーなど）にある場合も、Agent SDK か `claude -p` で同じ問いに答えられる形に書く。どの記事がどれかは `content/plan.md` の「キー不要」の列。
+2. 本文に、利用規約や利用条件についての注意書きを足さない（オーナーの裁定 2026-11-11。余計な文を足さないため）。「個人で試す用途に限る」「ほかの人に使わせるなら API キーで認証する」「Claude Console でキーを発行する」のような文は書かない。
 3. 料金は、プランの利用枠から引かれることを書く。SDK の `total_cost_usd` は定価で換算した見積もりで、プランで動かしたときの請求額ではない（型定義のコメントに「An estimate, not a billing statement」とある）。`cost_estimate` もこれに合わせる。
 4. `run/` のログには、SDK の init メッセージの `apiKeySource`（`"none"` なら API キーを使っていない）と、Agent SDK と Claude Code のバージョンを残す。ログイン中のアカウント名、メールアドレス、セッションの ID、認証情報はログにも記事にも残さない。
 5. 認証情報は Claude Code のログインに任せる。このセッションの内部の認証情報やトークンを取り出してコードに渡したり、`@anthropic-ai/sdk` から使ったりしない。
+6. claude.ai のコネクタを読み込ませない。Agent SDK の `query()` には `strictMcpConfig: true` を、`claude -p` には `--strict-mcp-config` を必ず付ける。付けないと、ログイン中のアカウントのコネクタのツールが数百個読み込まれ、入力トークンが大きく増える（`tools: []` では外れない。2026-11-11 にこの環境で確かめた）。`settings.disableClaudeAiConnectors` など別の書き方は使わず、この2つに揃える。理由を書くなら、設定の横に短いコードコメントで1行だけにする。本文に段落を足して説明しない。
 
 2026-11-10 にこの環境で確かめた挙動（Agent SDK 0.3.322、Claude Code 2.1.322）は `content/plan.md` の「プラン（Agent SDK、claude -p）の判定基準」にある。
 
@@ -242,13 +271,19 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 | G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行（`title`、`description`、`sources` の `title`）で出た `📎mention` は use として扱い、FATAL に当たる種類なら不合格（手順7の「frontmatter の扱い」）。warn は1件ずつ判断し、use か mention かを記録した | `lint/ai-smell.txt`、`lint/judgments.md` |
 | G02 | `writing-lint.py` の判定行が `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD n` の形で、FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH（出たときだけ）、INFO(要人間確認) は1件ずつ判断を記録した。この FATAL 0 では個人名を検出できない（`PERSONAL_NAMES` が空）ので、個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` |
 | G03 | 下の B の全項目を満たす | `gate.md` |
-| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。Messages API を呼ぶ記事（`needs_api_key: true`）で `ANTHROPIC_API_KEY` が無いときは不合格。Agent SDK や `claude -p` の記事は、オーナーの Claude プランで動かしたログがあれば合格（「Claude プランで動かす記事」） | `code/`、`run/` |
+| G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。Agent SDK や `claude -p` の記事は、オーナーの Claude プランで動かしたログがあれば合格（「Claude プランで動かす記事」）。Messages API を呼ぶコードの記事は書かない | `code/`、`run/` |
 | G05 | 断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている（frontmatter の `sources` だけでは不合格）。料金の目安がある（API を呼ぶ記事は出典付きの金額、呼ばない記事は無料の範囲と、有料になる操作）。frontmatter の `cost_estimate`、`run_environment`、`verified_at` が埋まっていて、`run_environment` と `verified_at` が `run/` のログと一致する | 原稿の出典の表、`sources.md`、frontmatter |
 | G06 | 既存記事と検索意図が重ならない | `selection.md` |
 | G07 | 講座の前後リンク（`prev`、`next` のうち存在するもの）と、既存記事が3本以上なら関連記事への内部リンクが本文にある。リンク先は公開済みか先に予約済み | `gate.md` にリンク先の slug を列挙 |
 | G08 | 本文の最後の段落が「AI 支援で執筆」を含む決まった表記になっている | 原稿の末尾 |
 | G09 | 原稿、ログ、frontmatter に秘密情報（API キー、トークン、パスワード）が無い。原稿に個人名（ユーザーや関係者の名前）が無い | `gate.md` に確かめ方を書く。個人名は手順7のとおり `grep -n` で0件を確かめる |
 | G10 | `target_query` が `keywords/*.csv` のどれかの行のキーワードと1文字も違わない。CSV が無いとき、`target_query` が null のとき、CSV に無い値のときは不合格（「CSV 待ち」）。値を作って合格にしない | `selection.md` に読んだ CSV のファイル名と、一致した行があることを書く（行や数値は写さない） |
+
+G11 は、書いたエージェントの仕事が終わったあとに、点検するエージェントが判定します。
+
+| # | 条件 | 確かめ方と記録先 |
+|---|---|---|
+| G11 | 書いた AI とは別の AI が点検し、直すべき指摘が0件になっている。書いた道具と点検した道具が、名前、バージョン、ログインの方法つきで記録されている | `review.md` |
 
 ### B. checklist.md の全項目（原文のまま）
 
@@ -319,7 +354,7 @@ sources:
     title: "ページの題名"
     accessed: 2026-10-30
 ai_assisted: true
-needs_api_key: false            # 本文のコードが LLM の API を呼ぶなら true
+needs_api_key: false            # 新規の記事は常に false（API キーは使わない）
 status: draft                   # draft / ready / scheduled / published
 publish_at: null                # 予約日時（ISO 8601、タイムゾーン付き）。手順10で入れる
 updated: 2026-10-30             # 最後に原稿を直した日
@@ -331,7 +366,7 @@ updated: 2026-10-30             # 最後に原稿を直した日
 | `title` | 必須 | 検索キーワードを前方に入れる。「徹底解説」「完全ガイド」を使わない（C02） |
 | `slug` | 必須 | ファイル名と同じ。英小文字・数字・ハイフン |
 | `description` | 必須 | リード文の要約。lint の対象になる |
-| `tags` | 必須 | メインキーワードを1つ目に入れる |
+| `tags` | 必須 | 講座のキーワードを1つ目に入れる |
 | `main_keyword` | 必須 | 講座の表の6語のどれか |
 | `target_query` | 必須（CSV が無いときだけ null） | 選んだ CSV の行のキーワードをそのまま。CSV が無ければ null にし、G10 を NG にする。CSV に無い語を作って入れない |
 | `course_step` | 必須 | 1〜6。講座の表の番号 |
@@ -341,7 +376,7 @@ updated: 2026-10-30             # 最後に原稿を直した日
 | `prev` / `next` | 必須（値は null 可） | 講座の順番で前後にある記事の slug。同じ `course_step` の中は公開順で並べる |
 | `sources` | 必須（1件以上） | `url`、`title`、`accessed`（YYYY-MM-DD）。`sources.md` と一致させる |
 | `ai_assisted` | 必須 | 常に `true` |
-| `needs_api_key` | 必須 | `true` で `ANTHROPIC_API_KEY` が無ければ、ゲート G04 で不合格。Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は、Claude プランで検証できる環境でも `true` のまま。本文のコードが Agent SDK か `claude -p` だけなら `false` |
+| `needs_api_key` | 必須 | 新規の記事は常に `false`。API キーは使わない（オーナーの裁定 2026-11-11）。本文のコードは Agent SDK か `claude -p`、または LLM を呼ばないものだけにする |
 | `status` | 必須 | 手順9と10で更新する |
 | `publish_at` | 予約後に必須 | 1日1本になるように入れる |
 | `updated` | 必須 | 直すたびに更新する |
@@ -362,6 +397,7 @@ logs/<slug>/
 │   ├── writing-lint.txt  # 手順7 最後の実行の出力と exit=
 │   └── judgments.md      # 手順7 warn・mention・SHOULD・WATCH・INFO を1件ずつ判断した記録
 ├── gate.md           # 手順8 公開前ゲートの表（A と B の全行に判定と根拠）
+├── review.md         # 別の AI による点検の記録（書いた道具、点検した道具、指摘と対応）
 └── publish.md        # 手順10 以降 投稿・予約・公開・修正・取り下げの記録
 ```
 
@@ -369,13 +405,14 @@ logs/<slug>/
 
 各ファイルの最低限の中身。
 
-- `selection.md`: 読んだ CSV のファイル名、選んだキーワード、人気度の大小関係とその出どころ（CSV の検索ボリューム、Google トレンド、Search Console のどれか）を言葉で（例「候補の中で最も高い」。CSV の行や数値はそのまま写さない。ラッコ規約と public リポジトリの関係は keywords/README.md）、外した候補と外した理由（重なり、API キー、講座の順番）、`ANTHROPIC_API_KEY` の確認結果（`set` か `unset` だけ）、選んだ日。
+- `selection.md`: 読んだ CSV のファイル名、選んだキーワード、人気度の大小関係とその出どころ（CSV の検索ボリューム、Google トレンド、Search Console のどれか）を言葉で（例「候補の中で最も高い」。CSV の行や数値はそのまま写さない。ラッコ規約と public リポジトリの関係は keywords/README.md）、外した候補と外した理由（重なり、Messages API が検索意図の中心、講座の順番）、選んだ日。
 - `brief.md`: C01 の1行、検索意図のタイプ、上位記事を見たかどうかと見た結果、記事型、見出し骨格、読み終えた人ができるようになること。
 - `sources.md`: 出典ごとに URL、題名、アクセス日、そのページで確かめた事実、記事のどの文の根拠か。
 - `publish.md`: 日時、操作（作成、予約、公開、修正、下書きに戻す、リビジョンを戻す）、EmDash 側の entry の ID、予約日時、操作した理由。
 
 ## 公開後に直す、取り下げる
 
+- 原稿の正はリポジトリである。EmDash の MCP を通すのは、公開、予約、取り下げの操作だけにする。急ぎの直しを MCP で行ったら、同じ会話のうちに、リポジトリの原稿と `logs/<slug>/publish.md` へ書き戻す。
 - 直すときは、必ず `content/articles/<slug>.md` と EmDash の両方を更新する。片方だけ直すと、どちらが正しいかわからなくなる。EmDash の管理画面で人が直した記事は、先にその内容を原稿へ取り込んでから手を入れる。
 - 直した原稿は手順7と8をもう一度通し、`logs/<slug>/lint/` と `gate.md` を更新する。ゲートに落ちる直し方はしない。
 - 直したら frontmatter の `updated` を更新し、`publish.md` に何をなぜ直したかを書く。
@@ -389,6 +426,6 @@ logs/<slug>/
 - `keywords/` に CSV が無い、または CSV の列が `keywords/README.md` の想定と違って読めない
 - 公開前ゲートのどれかに落ちた（下書きで止める）
 - ゲートの項目が指すガイドを読めない（その項目は NG）
-- コードを実行できなかった（権限、ネットワーク、API キー）
+- コードを実行できなかった（権限、ネットワーク、Claude プランの利用枠）
 - 一次情報が見つからず、出典の無い断定が残る
 - EmDash の MCP に接続できない（原稿は `ready` のまま残し、メインエージェントが接続を回復してから投稿する）

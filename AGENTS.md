@@ -1,3 +1,13 @@
+## このブログの記事の書き方
+
+記事を書く、直す、点検する、公開するときは、先に次の3つを読みます。
+
+- `CLAUDE.md` の「記事を書くときのルール」
+- `.claude/skills/write-article/SKILL.md`（手順と公開前ゲートの正本）
+- `docs/tech-writing-pack/`（書き方の規約。編集しません）
+
+以下は EmDash 自体の書き方です。
+
 This is an EmDash site -- a CMS built on Astro with a full admin UI.
 
 ## Commands

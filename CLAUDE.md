@@ -14,7 +14,13 @@ EmDash 自体の書き方（サーバーレンダリング必須、画像フィ�
 
 サブの読者は、一度作ったものを評価、コスト、エラー処理まで含めて本番に出せる水準に上げたい人です。
 
-入門ステップ講座は、次のメインキーワード6語の順で並べます。
+検索語は3つの層に分けて呼びます。
+
+- サイトの主キーワード: サイト全体で1つだけです。未定（ラッコキーワードで調べた後に決める）。
+- 講座のキーワード: 入門ステップ講座の6語です。記事の frontmatter の `main_keyword` には、この6語のどれかが入ります（項目名は変えません）。
+- 記事の副キーワード: 記事ごとに狙う検索語で、frontmatter の `target_query` です。
+
+入門ステップ講座は、次の講座のキーワード6語の順で並べます。
 
 1. LLM API
 2. 構造化出力
@@ -33,7 +39,8 @@ EmDash 自体の書き方（サーバーレンダリング必須、画像フィ�
 | `.claude/skills/write-article/` | 記事を1本書いて公開するまでの手順と公開前ゲート |
 | `content/articles/<slug>.md` | 記事の原稿。公開中の状態は EmDash、原稿と経緯はこのリポジトリが持ちます |
 | `logs/<slug>/` | コードの実行ログ、lint の結果、キーワードを選んだ理由、checklist の各項目の根拠 |
-| `keywords/<メインキーワード>.csv` | ユーザーがラッコキーワードから書き出して渡す CSV |
+| `keywords/<講座のキーワード>.csv` | ラッコキーワードから書き出した CSV。ユーザーはログインするだけで、書き出しと選定は Claude が行う |
+| `keywords/google-suggest-*.csv` | Claude が集めた Google のサジェストの CSV。ラッコの CSV が無い間はこれで選ぶ。どちらもコミットしない |
 | `samples/rag-chat/`、`samples/mcp-server/` | メルマガ特典の TypeScript サンプルアプリ |
 
 ## 記事を書くときのルール
@@ -42,9 +49,11 @@ EmDash 自体の書き方（サーバーレンダリング必須、画像フィ�
 
 公開前ゲートでは、`docs/tech-writing-pack/checklist.md` の全項目をそのまま使います。こちらで緩めたり読み替えたりはしません。ひとつでも満たせない記事は下書きで止めて報告します。
 
+- 記事は、書いた AI とは別の AI が点検してから公開します。点検の手順は `.claude/skills/write-article/SKILL.md` の「書く AI と点検する AI」にあります。
+- 記事の原稿の正は、このリポジトリです。EmDash の MCP を通すのは、公開、予約、取り下げの操作だけです。急ぎの直しを MCP で行ったら、同じ会話のうちに、リポジトリの原稿と `logs/<slug>/publish.md` へ書き戻します。
 - `ai-smell-lint.py` は checklist の「`python3 scripts/ai-smell-lint.py 記事.md` を実行し、FATALがゼロ」を満たすまで直します。warn は1件ずつ use か mention かを判断し、`logs/<slug>/` に記録します。
 - `writing-lint.py` も FATAL 0件にし、DENSITY 超過は上限内まで間引きます（pack の `guides/09-ai-writing-manual.md` 2節）。
-- checklist の「コードはコピペで動く形（import・前提を省略していない／実行結果を示した）」と「コードを実際に動かして確認した」を満たすため、記事のコードは Claude が実際に動かします。`ANTHROPIC_API_KEY` が無いあいだは、API を呼ぶコードの入った記事は公開しません。キーの要らないテーマ（MCP サーバー、zod での検証、RAG の検索部分）から書きます。
+- checklist の「コードはコピペで動く形（import・前提を省略していない／実行結果を示した）」と「コードを実際に動かして確認した」を満たすため、記事のコードは Claude が実際に動かします。どの記事のコードも、オーナーの Claude プランで Claude Agent SDK か `claude -p` から動かします。API キー（`ANTHROPIC_API_KEY`）は費用の面から使いません（オーナーの裁定、2026-11-11。費用を月額のプランの範囲に収めるため）。Claude Code のログインのトークンを取り出して Messages API を直接呼ぶことはしません（https://code.claude.com/docs/en/legal-and-compliance 、2026-11-11 確認）。キーの要らないテーマ（MCP サーバー、zod での検証、RAG の検索部分）も同じ方針で、LLM を呼ぶ部分は Agent SDK か `claude -p` で書きます。
 - 断定には一次情報の URL と確認した日付を付けます。既存の記事とテーマが重なる記事は書きません。
 - 記事の末尾に「AI 支援で執筆」と入れます。公開後に誤りが見つかったら、リビジョンで戻すか下書きに戻します。直すときはスキルを通し、原稿と EmDash の両方を更新します。
 

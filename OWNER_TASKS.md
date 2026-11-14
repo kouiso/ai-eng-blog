@@ -99,10 +99,7 @@ sitemap は最大1時間、robots.txt は最大1日、古い内容がキャッ�
 3. claude.ai のカスタムコネクタに EmDash の MCP を追加する
    - claude.ai の設定からカスタムコネクタを追加し、URL に `https://<ドメイン>/_emdash/api/mcp` を入れます。
    - OAuth のログインを1回通します。PAT は作りません。
-4. `ANTHROPIC_API_KEY` を Claude Code 環境の secrets に登録する
-   - 記事のコードを実際に動かすためのキーです。かかる料金は数百円程度の見込みです。
-   - 登録されるまでは、API を呼ぶコードの入った記事は下書きで止まります。キーの要らないテーマ（MCP サーバー、zod での検証、RAG の検索部分）から先に書きます。
-5. Search Console、Web Analytics、Turnstile の登録
+4. Search Console、Web Analytics、Turnstile の登録
    - Google Search Console にサイトを追加し、所有権の確認を済ませます。
    - Search Console のデータを Claude が読めるように認証します。手でトークンを作って渡す方法は使わず、ユーザーがログインして許可する方法（コネクタの OAuth など）にします（CLAUDE.md の秘密情報のルール）。具体的な方法は「実装時にドキュメントで確認する」項目です。
    - Cloudflare のダッシュボードで Web Analytics を有効にします。ビーコンのトークンの発行が要るかどうかを含め、手順は「実装時にドキュメントで確認する」項目です。トークンは公開してよい値なので、Claude に伝えます。Claude が `wrangler.jsonc` の `vars` に `PUBLIC_CF_ANALYTICS_TOKEN` として書いて push します。
@@ -110,11 +107,11 @@ sitemap は最大1時間、robots.txt は最大1日、古い内容がキャッ�
    - **サイトキーやトークンを、ダッシュボードの変数（種類が Text のもの）として登録しないでください。** push のたびに走る `wrangler deploy` が `wrangler.jsonc` の `vars` でダッシュボードの変数を上書きするので、次の deploy で消えます。secret は消えません（https://developers.cloudflare.com/workers/wrangler/configuration/ 、2026-10-31 確認。[docs/decisions/site-url.md](./docs/decisions/site-url.md)）。
    - Turnstile のキーが2つそろうまで、本番の登録フォームは入力欄を無効にし、登録を受け付けません（[docs/decisions/subscribe.md](./docs/decisions/subscribe.md)）。
    - プライバシーポリシーに載せる問い合わせ先のメールアドレスを決め、Claude に伝えます。Claude が `vars` に `PUBLIC_CONTACT_EMAIL` として書いて push します。決まるまで、登録フォームは受け付けません（登録した人が削除を頼む先が無いため）。
-6. キーワードの CSV を渡す
-   - メインキーワード6語のそれぞれをラッコキーワードにかけ、書き出した CSV を渡します。置き場所と名前は [keywords/README.md](./keywords/README.md) にあります。
-   - **CSV は public のこのリポジトリを通して渡しません。** コミット、push、Issue や PR への添付、Gist はどれも使いません。ラッコキーワードの規約で、データの第三者への提供にライセンスが要るためです（keywords/README.md）。Claude Code の作業環境に直接置く方法で渡します。`keywords/*.csv` は `.gitignore` 済みです。
-   - CSV が1つも無いあいだ、Claude は記事を書き始めません。
-7. パイロット記事の報告に返事をする
+5. ラッコキーワードにログインする（任意。急ぎません）
+   - ユーザーがやるのは、ラッコキーワードにログインすることだけです。講座のキーワード6語のそれぞれをかけて CSV を書き出す作業と、キーワードの選定は Claude が行います。置き場所と名前は [keywords/README.md](./keywords/README.md) にあります。
+   - **CSV は public のこのリポジトリを通しません。** コミット、push、Issue や PR への添付、Gist はどれも使いません。ラッコキーワードの規約で、データの第三者への提供にライセンスが要るためです（keywords/README.md）。書き出した CSV は Claude Code の作業環境にだけ置きます。`keywords/*.csv` は `.gitignore` 済みです。
+   - 最初の回は、Claude が集めた Google のサジェストの CSV で進めています（2026-11-11 の裁定）。ラッコの CSV は、検索ボリュームなどでキーワードを選び直したくなったときに、ログインして Claude に書き出させてください。Claude はラッコの画面から一覧を写し取りません（keywords/README.md）。
+6. パイロット記事の報告に返事をする
    - 最初の1本を予約公開まで通したら、Claude がゲートの結果と気になった点を報告します。
    - 返事があるまで、Claude は2本目に進みません。
 
