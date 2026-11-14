@@ -1,57 +1,57 @@
 ---
-title: "LLM API を月額プランで初めて呼ぶ【claude -p をスクリプトから使う、JSON で受け取る】"
+title: "LLM API の呼び出しを月額プランで初めて試す【claude -p をスクリプトから使う、JSON で受け取る】"
 slug: "claude-p-script-first-call"
-description: "Claude Code の claude -p なら、API キーなしでスクリプトから Claude を呼べます。料金は自分の Claude プランの利用枠から引かれます。JSON で答えを受け取り、シェルと Node.js から使うまでを実行結果つきで示します。"
+description: "LLM API の呼び出しは、claude -p なら最初の1回から API キーなしで済みます。料金は自分の Claude プランの利用枠から引かれます。JSON で答えを受け取り、シェルと Node.js から使うまでを実行結果つきで示します。"
 tags: ["LLM API", "Claude Code", "TypeScript"]
 main_keyword: "LLM API"
 target_query: "llm api 呼び出し"
 course_step: 1
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "macOS（Darwin arm64）、Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、jq 1.7.1 から 1.8.1（型の確認は TypeScript 7.0.2）"
+run_environment: "macOS arm64。Node.js 22.23.4。npm 10.9.9。Claude Code 2.1.322。jq 1.7.1 と 1.8.1。TypeScript 7.0.2（型の確認のみ）"
 verified_at: "2026-11-11"
 prev: null
 next: "claude-agent-sdk-streaming"
 sources:
   - url: "https://code.claude.com/docs/en/headless"
     title: "Run Claude Code programmatically"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://code.claude.com/docs/en/cli-reference"
     title: "CLI reference (Claude Code)"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://code.claude.com/docs/en/model-config"
     title: "Model configuration (Claude Code)"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://code.claude.com/docs/en/authentication"
     title: "Authentication (Claude Code)"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan"
     title: "Use the Claude Agent SDK with your Claude plan"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://claude.com/pricing"
     title: "Claude の料金プラン"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://platform.claude.com/docs/en/about-claude/pricing"
     title: "Pricing (Claude API)"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts"
     title: "@anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://nodejs.org/docs/v22.23.0/api/typescript.html"
     title: "Node.js v22.23.0 Modules: TypeScript"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
   - url: "https://nodejs.org/docs/v22.23.0/api/child_process.html"
     title: "Node.js v22.23.0 Child process"
-    accessed: 2026-11-11
+    accessed: 2026-11-14
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-14
 ---
 
-Claude Code の `claude -p` なら、API キーなしでスクリプトから Claude を呼べます。料金は、自分の Claude プランの利用枠から引かれます（出典5）。
+LLM API の呼び出しは、最初の1回から API キーなしで済みます。Claude Code の `claude -p` なら、スクリプトから質問を送り、答えを受け取れる仕組みです。料金は、自分の Claude プランの利用枠から引かれます（出典5）。
 
-`--output-format json` を付ければ、答えは `result` に入って返ります（出典1）。この記事では、シェルと Node.js から1問ずつ投げて、返った JSON を読むところまでを動かします。
+`--output-format json` を付けたときに答えが入る場所は、`result` です（出典1）。この記事では、シェルと Node.js から1問ずつ投げて、返った JSON を読むところまで動かしました。
 
 所要時間は、Claude Code にログイン済みなら15分ほどです。
 
@@ -64,7 +64,9 @@ Claude Code の `claude -p` なら、API キーなしでスクリプトから Cl
 - Node.js 22.18.0 以上。`.ts` のファイルを `node` で直接動かすためです（出典9）。
 - JSON を読む `jq`。シェルの例で使います。
 
-環境変数 `ANTHROPIC_API_KEY` があると、プランより API キーが使われます（出典4）。最初に外れていることを確かめます。
+Claude の API を直接呼ぶ書き方は、この記事では使いません。Claude の API は、使ったトークン数に応じて料金がかかります（出典7）。
+
+環境変数 `ANTHROPIC_API_KEY` があると、`-p` では常にそのキーが使われます（出典4）。最初に、外れていることを確かめてください。
 
 ```bash
 test -n "$ANTHROPIC_API_KEY" && echo set || echo unset
@@ -135,13 +137,13 @@ claude -p "TypeScript の型注釈とは何かを、日本語の1文で答えて
   > answer.json
 ```
 
-画面には何も出ません。フラグの役割は次のとおりです。
+画面には何も出ません。各フラグの役割は次のとおりです。
 
 - `-p` は、1回答えて終了するモードです（出典1）。
-- `--model haiku` は、使うモデルの別名です（出典3）。
+- `--model haiku` は、使うモデルを別名で選びます（出典3）。
 - `--output-format json` は、答えと付随する情報を JSON で返す指定です（出典1）。
-- `--setting-sources ""` は、手元の設定ファイルを1つも読まない指定です（出典2）。
-- `--strict-mcp-config` は、ほかの MCP の設定を無視させます（出典2）。`--mcp-config` で何も渡していないので、MCP サーバーは使いません。
+- `--setting-sources ""` は、手元の設定ファイルを1つも読み込みません（出典2）。
+- `--strict-mcp-config` は、MCP サーバーの設定を読まない指定です（出典2）。`--mcp-config` で渡した設定が使われます。何も渡していないので、MCP サーバーは使いません。
 - `--tools ""` は、組み込みのツールをすべて外す指定です（出典2）。
 
 答えの文章は `result` に入っています。
@@ -223,13 +225,13 @@ claude -p "1+1 の答えを数字だけで答えてください。" \
 {"apiKeySource":"none","model":"claude-haiku-5-5"}
 ```
 
-`apiKeySource` は、通信に使った認証の出どころです（出典8）。環境変数の API キーを使ったときは、その変数名が入ります（出典8）。claude.ai のログインでは `none` です（出典8）。`model` を見れば、別名の `haiku` が `claude-haiku-5-5` になったこともわかります。
+`apiKeySource` は、通信に使った認証の出どころです（出典8）。環境変数の API キーを使ったときは、その変数名が入ります（出典8）。claude.ai のログインでは `none` です（出典8）。別名の `haiku` は、`model` の欄で `claude-haiku-5-5` に変わりました。
 
 `none` 以外が出たら、API キーで動いています。
 
 ## スクリプト向けの --bare は、プランのログインを読まない
 
-公式のページは、スクリプトや CI で動かすときに `--bare` を付ける例を載せています（出典1）。フックや CLAUDE.md を読まずに速く起動するフラグです（出典1）。
+スクリプトや CI で動かすときに `--bare` を付ける例が、公式のページに載っています（出典1）。フックや CLAUDE.md を読まずに速く起動するフラグです（出典1）。
 
 ところが `--bare` は、claude.ai のログイン情報を読みません（出典1）。プランで試すと失敗します。
 
@@ -252,7 +254,7 @@ exit=1
 
 ## --model は haiku から始めて、足りなければ sonnet
 
-`--model` には、`haiku` や `sonnet` のような別名を渡せます（出典3）。モデルの完全な名前も使えます（出典3）。Claude の API では、それぞれ最新の Haiku、Sonnet、Opus を指します（出典3）。同じ質問を2つのモデルに送ってみます。
+`--model` に渡せるのは、`haiku` や `sonnet` のような別名です（出典3）。モデルの完全な名前も使えます（出典3）。Claude の API では、それぞれ最新の Haiku、Sonnet、Opus を指します（出典3）。同じ質問を2つのモデルに順に送るループが、次のコードです。
 
 ```bash
 for model in haiku sonnet; do
@@ -274,7 +276,7 @@ Haiku の数字は、同じ質問を送った最初の実行より小さくな�
 
 ## 標準入力で渡したデータは、プロンプトと一緒に読まれる
 
-`claude -p` は標準入力を読みます（出典1）。ログかファイルの中身をパイプで渡し、何をしてほしいかを `-p` の引数に書きます。まず、渡すエラーログを作ります。
+`claude -p` は標準入力を読みます（出典1）。ログかファイルの中身をパイプで渡し、何をしてほしいかは `-p` の引数に書く形です。まず、渡すエラーログを作ります。
 
 ```bash
 cat > error.log <<'EOF'
@@ -302,7 +304,7 @@ Node.js から呼ぶときも、渡す引数はシェルと同じです。ただ
 
 ### execFile のままだと、3秒待たされる
 
-先に、うまくいかない書き方を載せます。`exec-file.ts` として保存します。
+先に、うまくいかない書き方を載せます。ファイル名は `exec-file.ts` です。
 
 ```ts
 import { execFile } from "node:child_process";
@@ -338,7 +340,7 @@ elapsed_seconds=7.9
 
 ### 標準入力を閉じる関数にまとめる
 
-`spawn` で起動し、渡すデータを書いたら `stdin.end()` で閉じます。渡すデータが無いときは、空のまま閉じます。`ask.ts` として保存します。
+`spawn` で起動して、渡すデータを書いたら `stdin.end()` で閉じる、という手順にしました。渡すデータが無いときは、空のまま閉じます。ファイル名は `ask.ts` です。
 
 ```ts
 import { spawn } from "node:child_process";
@@ -408,9 +410,9 @@ elapsed_seconds=7.9
 
 2回呼んで、警告は出ていません。
 
-`askClaude` は、失敗の見分け方を2段に分けています。
+`askClaude` は、失敗を2段に分けて見分けます。
 
-- 標準出力が空なら、`claude` が起動できなかったか、引数が間違っています。不正なフラグのエラーは標準エラーに出ます（出典1）。
+- 標準出力が空なら、`claude` が起動できなかったか、引数が間違っているかのどちらかです。不正なフラグのエラーは標準エラーに出ます（出典1）。
 - 標準出力に JSON があっても、`is_error` が `true` なら失敗です。認証が無いときなどは、終了コードが0以外になり、理由が `result` に入ります（出典1）。
 
 終了コードで判定すると、失敗の理由を読み損ねます。JSON を先に読んで、`is_error` で分けるほうが確実です。
@@ -419,7 +421,7 @@ elapsed_seconds=7.9
 
 この記事のコードで書いたのは、フラグの並びと、JSON の読み方の2つでした。どのモデルを使うか、手元の設定をどこまで切るかは、呼ぶ側が決めます。
 
-`json` の形式では、答えは最後に1回で返ります。届いた順に表示したいなら、`stream-json` の形式を使います（出典1）。TypeScript から型つきでメッセージを受け取るなら、Agent SDK が向いています。
+`json` の形式では、答えは最後に1回で返ります。届いた順に表示したいなら、使うのは `stream-json` の形式です（出典1）。TypeScript から型つきでメッセージを受け取るなら、Agent SDK が向いています。
 
 あなたのスクリプトで、Claude に読ませたいログは何でしょうか。
 
@@ -429,15 +431,15 @@ elapsed_seconds=7.9
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
-| 1 | Run Claude Code programmatically | https://code.claude.com/docs/en/headless | 2026-11-11 |
-| 2 | CLI reference (Claude Code) | https://code.claude.com/docs/en/cli-reference | 2026-11-11 |
-| 3 | Model configuration (Claude Code) | https://code.claude.com/docs/en/model-config | 2026-11-11 |
-| 4 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | 2026-11-11 |
-| 5 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-11 |
-| 6 | Claude の料金プラン | https://claude.com/pricing | 2026-11-11 |
-| 7 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-11 |
-| 8 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-11 |
-| 9 | Node.js v22.23.0 Modules: TypeScript | https://nodejs.org/docs/v22.23.0/api/typescript.html | 2026-11-11 |
-| 10 | Node.js v22.23.0 Child process | https://nodejs.org/docs/v22.23.0/api/child_process.html | 2026-11-11 |
+| 1 | Run Claude Code programmatically | https://code.claude.com/docs/en/headless | 2026-11-14 |
+| 2 | CLI reference (Claude Code) | https://code.claude.com/docs/en/cli-reference | 2026-11-14 |
+| 3 | Model configuration (Claude Code) | https://code.claude.com/docs/en/model-config | 2026-11-14 |
+| 4 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | 2026-11-14 |
+| 5 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | 2026-11-14 |
+| 6 | Claude の料金プラン | https://claude.com/pricing | 2026-11-14 |
+| 7 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | 2026-11-14 |
+| 8 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-14 |
+| 9 | Node.js v22.23.0 Modules: TypeScript | https://nodejs.org/docs/v22.23.0/api/typescript.html | 2026-11-14 |
+| 10 | Node.js v22.23.0 Child process | https://nodejs.org/docs/v22.23.0/api/child_process.html | 2026-11-14 |
 
 AI 支援で執筆しました。コードは 2026-11-11 に実際に実行して確認しています。
