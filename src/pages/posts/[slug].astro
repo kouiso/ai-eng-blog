@@ -419,8 +419,9 @@ const articleMeta = {
 		border: 1px solid var(--line);
 		padding: 8px 12px;
 		text-align: left;
-		/* 日付 2026-10-31 のハイフンで折れないよう、列が細くなりすぎない下限を置く */
-		min-width: 14ch;
+		/* 日付 2026-10-31 のハイフンや「番号」が途中で折れないよう、セルの中は折り返さない。
+		   表が枠より広いときは、表そのものが横にスクロールする（上の overflow-x: auto） */
+		white-space: nowrap;
 	}
 	.prose :global(img) {
 		border-radius: 8px;
