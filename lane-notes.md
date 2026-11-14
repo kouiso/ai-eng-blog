@@ -104,12 +104,16 @@ manager reconcile on #77: C25 skip only whole-cell URL (listed), reason = not a 
 #71: full G11 review NG (3 musts: stale refs, B rows not re-judged for new text, line 526 unsupported claim) -> writer fixing; G11 login-record and G10 CSV questions sent to manager
 reviews PASS pending post: #53 (r3), #78, #79, #80 (r2); #77 r2 review running
 
+manager rulings for #81 article PRs: G11 login record needs a probe (one-line claude -p / Agent SDK query with the key unset; copy its apiKeySource line + timestamp + Claude Code version into review.md; one sentence that the subagent's own init is not observable; if not "none" -> stop, owner cost question); G10 left as recorded with a dated note, not re-judged in the cloud; nothing (incl. the pilot) is scheduled until the Mac lane reports G10
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
 
 
 ## for main session
+- for the Mac lane (keyword collection): please do the pilot article claude-p-script-first-call's G10 first, and report keep/change per article, keeping the existing target_query wherever its data supports it (manager ruling 2026-11-14)
+- owner FYI list (batched into the post-DP message): EmDash bump to 1.5.0 (#67), G07 text change (#13 ruling A), ruling D amendment (verified_at + run_environment), C25 skips whole-cell URLs (138 cells), G11 login probe, CLAUDE.md line PRs for the owner to merge (site keyword, emdash version)
 - AEB-I3 was closed using the manager's per-issue decisions instead of the original triage list P/issue-triage.tsv (not readable from the cloud); if that list differs, please paste it into NOTES
 - design artifact KK25c9pSMdvLqJ71qWaf5t is not readable from this cloud session (not found / not shared with this account); please share it to this account or paste its content
 - advisor tool not present in this lane
