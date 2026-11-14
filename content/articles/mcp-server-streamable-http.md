@@ -67,7 +67,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-14
 ---
 
 HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
@@ -79,6 +79,8 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 講座の[前の記事](/posts/mcp-server-typescript-stdio)は stdio の回です。同じツールを stdio で作り、Claude Code にもつなぎました。ツールの中身の説明は、そちらに任せます。
 
 確かめたのは、SDK のクライアント、curl、`claude mcp` で呼ぶところまでです。サーバーはインターネットに公開していません。claude.ai からつなぐ操作も、Claude にツールを呼ばせる操作も実行していません。
+
+Agent SDK のエージェントには、別のプロセスを立てずに MCP のツールを渡せます。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
 
 対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。依存を入れる `npm install` は、2026-11-10 の実測で4秒でした。
 
