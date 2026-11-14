@@ -23,6 +23,8 @@ PASS LINE (articles/docs): write-article skill; checklist.md all rows + G1-G11 i
 M1 ruling: yes, lane creates main from the post-I2 develop sha (Q1 delegated it; creating a ref deploys nothing; revert = delete the branch). "main on hold like Q3" applies to production deploy/pilot only -> superseded for the branch. No default-branch change or protection. main may be fast-forwarded to newer develop until the owner connects Cloudflare; after OWNER_TASKS step 2 every push to main is production and needs the owner
 order: #53 and #56 in parallel, merge #53 first -> AEB-I3 -> AEB-M1 -> AEB-DP -> one owner message -> non-claude-cloud issues (deploy-breaking, reader-facing defects, doc drift, rest) -> claude-cloud issues -> PI2 and 29 articles after the owner's pilot reply
 
+CYCLE 1 T=2026-11-14T12:19Z | PRs 2 (+ NOTES #57 excluded) | issues 41 (claude-cloud 11, -ux 0) | ledger rows 17 not done
+
 ## needs owner
 
 ## for main session
