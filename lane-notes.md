@@ -120,3 +120,4 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 - Cloudflare connector is authorized for an account that does not hold this project's Worker; production checks (AEB-D1) will need the owner's account connected
 #71 | writer pushed 374c921 (3 musts fixed, run logs 51-54, G10 dated note) -> G11 re-review r3 (opus, fresh) running, writes pending/71-review-r3.md
 #77 | r2 review FAIL (2 musts: C25 URL pattern accepts glued full-width text; frontmatter keys outside a fixed list dropped uncounted) -> fixer round 3/3 running; lead decision: frontmatter url: values listed under [SKIP C25-URL], not hidden
+#67 | review FAIL (1 must: 1.5.0 setup turns site:staging on -> noindex on every page; docs + post-deploy step missing; 5 wants) -> docs fixer running; PR opens after fix
