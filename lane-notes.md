@@ -106,6 +106,8 @@ reviews PASS pending post: #53 (r3), #78, #79, #80 (r2); #77 r2 review running
 
 manager rulings for #81 article PRs: G11 login record needs a probe (one-line claude -p / Agent SDK query with the key unset; copy its apiKeySource line + timestamp + Claude Code version into review.md; one sentence that the subagent's own init is not observable; if not "none" -> stop, owner cost question); G10 left as recorded with a dated note, not re-judged in the cloud; nothing (incl. the pilot) is scheduled until the Mac lane reports G10
 
+#83 | LAND | merged 86e1466 (head 1960ef3) | review PASS issuecomment-6878128341 | Mac lane: AEB-K1/K2 done (Rakko export 2026-11-14, SITE_MAIN 生成AI API, 4 target_query changed; Rakko CSVs exist only on the Mac, gitignored)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
