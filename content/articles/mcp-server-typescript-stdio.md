@@ -6,7 +6,7 @@ tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
 target_query: "mcpサーバー 作り方 typescript"
 course_step: 5
-prev: null
+prev: "ai-agent-vs-workflow"
 next: null
 sources:
   - url: "https://modelcontextprotocol.io/docs/getting-started/intro"
@@ -72,7 +72,7 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 確かめた範囲は、SDK のクライアントで呼ぶところと、Claude Code に登録して接続するところまでです。Claude Code の会話で Claude にツールを呼ばせる操作は、この記事では実行していません。
 
-対象は、JS か TypeScript で何か作ったことがあり、ターミナルで npm を使える人です。書き写すコードは5ファイルで、合わせて88行あります。待ち時間がいちばん長いコマンドは `npm install` で、2026-10-31 の実測では5秒でした。
+対象は、JS か TypeScript で何か作ったことがあり、ターミナルで npm を使える人です。書き写すコードは5ファイルで、合わせて88行あります。待ち時間がいちばん長いコマンドは `npm install` で、2026-10-31 の実測では5秒でした。講座の前の記事は[エージェントとワークフローの違い](/posts/ai-agent-vs-workflow)です。
 
 ## MCP サーバーは LLM が呼べるツールを公開するプログラム
 
@@ -223,7 +223,7 @@ await server.connect(new StdioServerTransport());
 console.error("char-count MCP server started (stdio)");
 ```
 
-`inputSchema` には zod のスキーマを書きます。SDK は、zod を必須の peer dependency にしています（出典4）。SDK はハンドラーを呼ぶ前に、入力をこのスキーマで確かめます（出典14）。合わない入力ではハンドラーを呼ばず、エラーの結果を返す作りです（出典14）。そのため、ハンドラーの中には入力を確かめるコードを書いていません。
+`inputSchema` には [zod のスキーマ](/posts/zod-to-json-schema-tool-definition)を書きます。SDK は、zod を必須の peer dependency にしています（出典4）。SDK はハンドラーを呼ぶ前に、入力をこのスキーマで確かめます（出典14）。合わない入力ではハンドラーを呼ばず、エラーの結果を返す作りです（出典14）。そのため、ハンドラーの中には入力を確かめるコードを書いていません。
 
 ツールの説明には、改行の数え方を書きました。文字数は、改行も1文字と数えます。行数は改行（LF）で区切った数なので、末尾が改行の文章は最後の空の行も1行です。呼ぶ側が数字を読み違えないよう、この決まりを説明に入れています。
 
