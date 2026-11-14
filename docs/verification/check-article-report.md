@@ -1,6 +1,6 @@
 # check-article.py を30本に通した結果（issue #42）
 
-`python3 scripts/check-article.py --all` の結果です。各記事の `logs/<slug>/lint/` にある自前のスクリプトと並べています。
+`python3 scripts/check-article.py --all` の結果です。数字は、スクリプトと試験を入れたコミット 9bf4815982b4437e886b382c5aa71eb826315633 で出しました。この報告を足すコミットは、その子で、この報告のファイルだけを変えます（つまり、この報告を足すコミットの親で出した結果です）。各記事の `logs/<slug>/lint/` にある自前のスクリプトと並べています。
 スクリプトは30本が通るように調整していません。出た結果をそのまま載せます。記事の直しと、出力ブロックの例外の登録（`scripts/check-article-exceptions.json`、今は空）は、この PR の範囲に入れていません（#44 以降）。
 
 自前の列は、各記事の `prose-check.py` を実行した出力から読んだ件数です（書式が記事ごとに違うので、読み取れなかったところは `-`）。自前の `check-code-and-outputs.py` は30本とも OK で、終了コードは 0 でした。
@@ -43,15 +43,17 @@
 
 ## 検査の読み方
 
-- C17: 並びに入れる文は、地の文と箇条書きの文です。見出しと表のセルは並びに入れません。語尾は2通りで見ます。末尾3字の一致と、文末の形の一致です。形（でしょう、ましょう、ません、ました、でした、です、ます）はそれぞれ別の語尾で、「です」「ます」「ました」が混ざる並びは同じ語尾と数えません。形は guides/03-anti-ai.md の409行と193行に結びつけたデータです。重なる窓は1つの区間にまとめます。
-- C25: 地の文、箇条書き、見出し、表の中の文、frontmatter の読者に見える文字列、sources の title、インラインコード（1字ずつ）をすべて数えます。数えないのは、セルの中身がちょうど URL 1つだけの表のセルです（文ではなく、URL は句読点で切れません。出典の表に URL を置く規約があります）。URL と語が混じるセルは全体を数えます。数えなかったセルの件数は記事ごとに出し、60字を超えるものは `[SKIP C25-URL]` として行番号つきで一覧に出します（30本で 138 件）。
-- C30 から C32: コードブロックとインラインコードの中の記号は数えません（guides/03-anti-ai.md 372行「コードは原文のままが正しい」）。
+- C17: 並びに入れる文は、地の文と箇条書きの文です。見出しと表のセルは並びに入れません。語尾は2通りで見ます。末尾3字の一致と、文末の形の一致です。形（でしょう、ましょう、ません、ました、でした、です、ます）はそれぞれ別の語尾で、「です」「ます」「ました」が混ざる並びは同じ語尾と数えません。形はデータです。guides/03-anti-ai.md の409行（ましょう、でしょう、です、ません）と193行（です の3連続）に載っている形に、ます、ました、でした を足しました。この3つはガイドの行にはなく、丁寧体の基本形として足したものです（7つのうち4つがガイドの行、3つが追加）。重なる窓は1つの区間にまとめます。
+- C25: 地の文、箇条書き、見出し、表の中の文、インラインコード（1字ずつ）、frontmatter の文字列の値（tags などの一覧の要素、main_keyword、target_query、sources の title など、引用符つきの値すべて）を数えます。数えないのは、表のセルの中身、または frontmatter の値が、ちょうど URL 1つ（URL に使える ASCII の文字だけで、全体が URL）のものです（文ではなく、URL は句読点で切れません。出典の表と sources の url に URL を置く規約があります）。URL と語が混じるもの（「URL（英語のページ）」「URL、URL」）は全体を数えます。数えなかったものの件数は記事ごとに出します（30本で 668 件。表のセルと frontmatter の値で 334 件ずつ）。60字を超えるものは `[SKIP C25-URL]` として行番号つきで一覧に出します（表のセル 138 件、frontmatter の url 138 件、計 276 件）。一覧は `python3 scripts/check-article.py --all | grep SKIP` で出ます。この報告の下の一覧には入れていません（`[FAIL` の行だけです）。
+- C30 から C32: コードブロックとインラインコードの中の記号は数えません（guides/03-anti-ai.md 372行「コードは原文のままが正しい」）。C31 の記号は checklist C31 に合わせて `—` と `─`（`──` は連続）だけで、`―`（U+2015）は数えません。
 - OUTPUT: 記事の ```text ブロックすべてを run ログの出力部分と照合します。promptfoo の記事の古い書式のログ（`$ コマンド` と、`----` だけの行が2本で囲んだ出力）は、書式が一意に決まるので読めるようにしました（ログ自体は触っていません）。ファイル構成の図と数式のように実行の出力ではない text ブロックは失敗として出ます。例外に載せるかどうかは #44 で決めます。
 
 ## 新しいスクリプトで落ちた箇所（確定）
 
+`python3 scripts/check-article.py --all` の `[FAIL ...]` の行を、出力の順のまま、1行も切らずに載せます（201 行）。
+
 ```text
-[FAIL C25] ai-agent-custom-tools-agent-sdk.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は Ty
+[FAIL C25] ai-agent-custom-tools-agent-sdk.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C17] ai-agent-custom-tools-agent-sdk.md:52-52 語尾「ます」が3文連続（1窓）
 [FAIL C17] ai-agent-custom-tools-agent-sdk.md:140-233 語尾「ます」が6文連続（4窓）
 [FAIL C17] ai-agent-custom-tools-agent-sdk.md:235-237 語尾「ます」が4文連続（2窓）
@@ -61,7 +63,7 @@
 [FAIL C17] ai-agent-custom-tools-agent-sdk.md:313-313 語尾「ます」が3文連続（1窓）
 [FAIL OUTPUT] ai-agent-custom-tools-agent-sdk.md:64 出力ブロック（7行、先頭「tool("get_product", 説明, zod の入力定義, 処理)   … ツールを1つ作」）がどの run ログにも無い
 [FAIL C25] ai-agent-max-turns-budget-limit.md:9 61字 [fm] SDK の total_cost_usd は手元で計算した見積もりで、結果を載せた11回の合計は約0.0076ドルでした。
-[FAIL C25] ai-agent-max-turns-budget-limit.md:10 147字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、モデル claude-haiku-5-5、macOS arm
+[FAIL C25] ai-agent-max-turns-budget-limit.md:10 147字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、モデル claude-haiku-5-5、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C25] ai-agent-safe-file-tool.md:10 73字 [fm] Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）、Linux x86_64
 [FAIL C25] ai-agent-safe-file-tool.md:55 84字 [prose] モデルにツールを渡す流れは、[自作ツールを Agent SDK に渡す記事](/posts/ai-agent-custom-tools-agent-sdk)で扱います。
 [FAIL C17] ai-agent-safe-file-tool.md:561-565 語尾「いるか」が5文連続（3窓）
@@ -73,7 +75,7 @@
 [FAIL C17] ai-agent-vs-workflow.md:276-278 語尾「ます」が3文連続（1窓）
 [FAIL C17] ai-agent-vs-workflow.md:402-404 語尾「です」が3文連続（1窓）
 [FAIL C17] ai-agent-vs-workflow.md:410-414 語尾「ます」が6文連続（4窓）
-[FAIL C25] claude-agent-sdk-first-agent.md:10 126字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.
+[FAIL C25] claude-agent-sdk-first-agent.md:10 126字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C25] claude-agent-sdk-first-agent.md:72 93字 [prose] 環境変数 [`ANTHROPIC_API_KEY`](/posts/claude-code-api-key-billing-auth) は、プランのログインより先に使われます（出典4）。
 [FAIL C17] claude-agent-sdk-first-agent.md:133-133 語尾「ます」が3文連続（1窓）
 [FAIL C17] claude-agent-sdk-first-agent.md:176-178 語尾「です」が3文連続（1窓）
@@ -81,9 +83,9 @@
 [FAIL C17] claude-agent-sdk-first-agent.md:222-226 語尾「です」が3文連続（1窓）
 [FAIL C17] claude-agent-sdk-first-agent.md:226-280 語尾「ます」が5文連続（3窓）
 [FAIL C17] claude-agent-sdk-first-agent.md:304-310 語尾「ます」が5文連続（3窓）
-[FAIL C25] claude-agent-sdk-streaming.md:10 134字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）（型の確認は TypeScrip
+[FAIL C25] claude-agent-sdk-streaming.md:10 134字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）（型の確認は TypeScript 7.0.2）
 [FAIL C17] claude-agent-sdk-streaming.md:56-58 語尾「ます」が3文連続（1窓）
-[FAIL C25] claude-agent-sdk-structured-output.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は
+[FAIL C25] claude-agent-sdk-structured-output.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C25] claude-agent-sdk-structured-output.md:274 73字 [prose] 公式の表は [`claude -p`](/posts/claude-p-script-first-call) の説明として書いています（出典4）。
 [FAIL C17] claude-agent-sdk-structured-output.md:180-182 語尾「ます」が3文連続（1窓）
 [FAIL C17] claude-agent-sdk-structured-output.md:194-196 語尾「ます」が3文連続（1窓）
@@ -92,7 +94,7 @@
 [FAIL C17] claude-agent-sdk-structured-output.md:368-374 語尾「ます」が4文連続（2窓）
 [FAIL C17] claude-agent-sdk-structured-output.md:384-388 語尾「です」が3文連続（1窓）
 [FAIL C25] claude-code-api-key-billing-auth.md:9 61字 [fm] 有効なキーで動いた分はキーの持ち主に従量で請求され、Haiku 5.5 なら入力は100万トークンあたり0.10ドルです。
-[FAIL C25] claude-code-api-key-billing-auth.md:10 146字 [fm] Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm
+[FAIL C25] claude-code-api-key-billing-auth.md:10 146字 [fm] Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C17] claude-code-api-key-billing-auth.md:96-100 語尾「ます」が3文連続（1窓）
 [FAIL C17] claude-code-api-key-billing-auth.md:102-106 語尾「ます」が4文連続（2窓）
 [FAIL C25] claude-p-script-first-call.md:10 108字 [fm] macOS（Darwin arm64）、Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、jq 1.7.1 から 1.8.1（型の確認は TypeScript 7.0.2）
@@ -118,7 +120,7 @@
 [FAIL C17] llm-api-429-retry-sdk-mock.md:361-363 語尾「ます」が5文連続（3窓）
 [FAIL OUTPUT] llm-api-429-retry-sdk-mock.md:287 出力ブロック（14行、先頭「$ node client.ts rate-limit」）がどの run ログにも無い
 [FAIL OUTPUT] llm-api-cost-estimate-js-tiktoken.md:88 出力ブロック（1行、先頭「料金（ドル）= (入力トークン数 × 入力単価 + 出力トークン数 × 出力単価) ÷ 1,000,」）がどの run ログにも無い
-[FAIL C25] llm-as-a-judge-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0
+[FAIL C25] llm-as-a-judge-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2
 [FAIL C25] llm-as-a-judge-claude.md:208 61字 [prose] - `systemPrompt` に文字列を渡すと、SDK はその文字列だけをシステムプロンプトとして送ります（出典3）。
 [FAIL C17] llm-as-a-judge-claude.md:61-65 語尾「ます」が3文連続（1窓）
 [FAIL C17] llm-as-a-judge-claude.md:357-359 語尾「です」が3文連続（1窓）
@@ -168,14 +170,14 @@
 [FAIL C17] mcp-server-typescript-stdio.md:358-362 語尾「ます」が5文連続（3窓）
 [FAIL OUTPUT] mcp-server-typescript-stdio.md:110 出力ブロック（7行、先頭「char-count-mcp/」）がどの run ログにも無い
 [FAIL OUTPUT] mcp-server-typescript-stdio.md:332 出力ブロック（23行、先頭「$ claude mcp add char-count --scope user --transpo」）がどの run ログにも無い
-[FAIL C25] promptfoo-llm-eval-intro.md:10 144字 [fm] Node.js 22.23.4、npm 10.9.9、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は T
+[FAIL C25] promptfoo-llm-eval-intro.md:10 144字 [fm] Node.js 22.23.4、npm 10.9.9、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C17] promptfoo-llm-eval-intro.md:73-77 語尾「ます」が4文連続（2窓）
 [FAIL C17] promptfoo-llm-eval-intro.md:229-231 語尾「ます」が3文連続（1窓）
 [FAIL C17] promptfoo-llm-eval-intro.md:241-245 語尾「ます」が3文連続（1窓）
 [FAIL C17] promptfoo-llm-eval-intro.md:301-303 語尾「ます」が3文連続（1窓）
 [FAIL C17] promptfoo-llm-eval-intro.md:317-355 語尾「ます」が4文連続（2窓）
 [FAIL C17] promptfoo-llm-eval-intro.md:392-398 語尾「ます」が5文連続（3窓）
-[FAIL C25] rag-answer-with-citations-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は Typ
+[FAIL C25] rag-answer-with-citations-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2
 [FAIL C17] rag-answer-with-citations-claude.md:49-51 語尾「ます」が4文連続（2窓）
 [FAIL C17] rag-answer-with-citations-claude.md:101-118 語尾「ます」が3文連続（1窓）
 [FAIL C17] rag-answer-with-citations-claude.md:221-225 語尾「ます」が5文連続（3窓）
@@ -214,7 +216,7 @@
 [FAIL C17] rag-retrieval-eval-recall-mrr.md:331-410 語尾「ます」が3文連続（1窓）
 [FAIL C17] rag-retrieval-eval-recall-mrr.md:468-472 語尾「ます」が4文連続（2窓）
 [FAIL C25] structured-output-methods-compare.md:9 62字 [fm] SDK の total_cost_usd は定価で換算した見積もりで、30回の呼び出しを1回通して0.006ドル相当でした。
-[FAIL C25] structured-output-methods-compare.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は 
+[FAIL C25] structured-output-methods-compare.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
 [FAIL C17] structured-output-methods-compare.md:86-100 語尾「ます」が3文連続（1窓）
 [FAIL C17] structured-output-methods-compare.md:172-176 語尾「ます」が4文連続（2窓）
 [FAIL C17] structured-output-methods-compare.md:209-229 語尾「ます」が4文連続（2窓）
