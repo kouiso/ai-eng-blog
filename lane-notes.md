@@ -79,6 +79,14 @@ DECIDED | AEB-I3 done: #21 closed (not planned, restated); the original "A" tria
 #74 (PR for #66 inventory, head 04cee2a): 1.4.0 has no table conversion; 1.5.0 changelog says GFM tables convert; options A (repo converter) / B (bump 1.5.0) / C; sent to manager
 members: #53 finish, #42, #71 fix, #65 fix, #38 (sonnet); reviewers: #69, #70 (opus)
 
+#69 | LAND | merged 3fc54e1 (head 7900db6) | review PASS r3 issuecomment-6877476970 | closes #49
+#70 | LAND | merged f2c634b (head 79edf34) | review PASS r2 issuecomment-6877497265 | #5 announcement posted, #35 closed with reason
+#65 | LAND | merged aecb256 (head 98bdbf6) | review PASS r3 issuecomment-6877506027 | closes #63; #62 stays open (a reader's own /login run unverified — needs a machine outside this cloud session)
+#66 decision (manager): EmDash 1.5.0 bump first (B), repo converter fallback (A), C rejected; M1 waits for B's verdict; #67 re-scoped to the bump; filed #76 (URL cells become links at render time)
+#53: round-2 code 62cb3f3 had a defect (URL marker "start" dropped by EmDash normalizeAlignment) -> switching marker to "justify" (lead decision, technical), new head pending
+#74 (#66) review running; #71 full-article G11 review running
+members: #53, #42, #38, #67 (1.5.0 bump), #25 (engines), #37 (CI) (sonnet); reviewers: #74, #71-G11 (opus)
+
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
 - #3: do you want the public-content check in this repo now, and how will the rule list be handed over without putting it in the public repo? (recommend: later; batched into the post-DP message)
