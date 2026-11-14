@@ -49,7 +49,7 @@ DESIGN reference (owner via manager): https://claude.ai/artifact/KK25c9pSMdvLqJ7
 manager ruling (tables): pilot blocker -> filed PBI #64 (bug) + SBIs #66 (inventory + docs, before M1), #67 (conversion script + skill/local-mcp fix), #68 (30 local drafts render check + publish-step gate); comment on #5 (pilot held). DP/"ready" not held; owner message must say pilot held. #53 failure definition: breaks inside numbers, dates, Latin words/identifiers that fit; not Japanese char wrap or long URLs. UI PRs judged on pass line only until the design artifact is shared.
 members: #63 rag-chat, #59 fix, #49 docs, #35 check commands; queued: #66
 
-AEB-Q2 answered by owner 2026-11-14: keyword-tool login "not needed" (無理にやらなくていい) -> route Q2=2 (Google suggestion CSVs); AEB-K1 unblocked, member running; K2 after K1
+AEB-Q2: an earlier "not needed" reading was WITHDRAWN by the manager (owner did not mean that). Then: owner logged in to the keyword tool himself (「ラッコログインしといたよ」, 2026-11-14 21:42 JST) -> AEB-Q2 answered. The login lives in the owner Mac mini Chrome; a Mac lane ("ai-eng-blog [mac]") takes keyword collection for the rows AEB-Q2 blocked (AEB-K1, AEB-K2, and the 2 manuscripts with target_query null). This lane does not touch them until the Mac lane reports done. K1/K2 members stopped 12:42Z before pushing (nothing on GitHub). For the Mac lane: manager rulings on file — site main keyword provisional 「LLM アプリ 開発」 from Google suggestions; K2 = top <title>, meta description, one hero-lead mention, OWNER_TASKS step 5 site-name suggestion; zero articles; CLAUDE.md line via a separate owner-merged PR. Suggest CSVs (uncommitted) in this container keywords/google-suggest-*.csv.
 cap raised to 8 members (manager, owner's word)
 #53 | FIX | review FAIL must 2 (Latin words split in text cells; crops not full pages) issuecomment-6877355877 -> member fixing (one rework round per policy)
 #59 | FIX->review | fixed 5c6d7c4 (base merged 8a30275, Node 24 rerun) LOCAL-CHECK posted, re-review running
@@ -57,6 +57,13 @@ cap raised to 8 members (manager, owner's word)
 #69 (#49 verified_at docs, head 6d0d37b) review FAIL must 1 (SKILL.md:163 old definition) -> author fixing
 #70 (#35 check commands, head a6e860d) LOCAL-CHECK posted, review running; #35 asks for a comment on #5 after merge
 members: #53 fix, K1, #23, #39, #58, #66, #49 fix (sonnet); reviewers: #59, #65, #70 (opus)
+
+#59 | LAND | merged fd51b62 (head 5c6d7c4) | review PASS issuecomment-6877407066 | closes #24
+#65 | FIX | review FAIL must 1 (SDK bundled Claude Code version 2.1.322 vs 2.1.325 in README/log) -> author fixing
+#69 | FIX | 2nd review FAIL must 1 (SKILL.md:179 "only") + product gap run_environment -> sent to manager (close-or-one-more-round)
+#71 (#58) | waiting on the skill's G11 review by a different AI (running), then PR review
+#72 (#23 tag course order, 8c9dff8) and #73 (#39 diagnosis link, 75581d8): LOCAL-CHECK posted, reviews running
+#42: manager rulings delivered (checklist-defined baseline, conventions, Python + npm test, 60 copies untouched); member implementing
 
 ## needs owner
 - (batched post-DP message) please share the design artifact KK25c9pSMdvLqJ71qWaf5t with this account; the lane cannot open it
