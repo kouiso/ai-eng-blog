@@ -403,9 +403,10 @@ const articleMeta = {
 		font-size: 14px;
 		overflow-wrap: normal;
 	}
-	/* 表の中で途中で折れてよいのは URL（リンク）だけ */
+	/* 表の中で途中で折れてよいのは URL だけ（リンクと、markNumericTableCells が textAlign: "start" を付けた URL のセル） */
 	.prose :global(td a),
-	.prose :global(th a) {
+	.prose :global(th a),
+	.prose :global(td[style*="text-align: start"]) {
 		overflow-wrap: anywhere;
 	}
 	.prose :global(th),
@@ -414,18 +415,18 @@ const articleMeta = {
 		padding: 8px 12px;
 		text-align: left;
 	}
-	/* 見出しの行は折らない。本文のセルは、表が枠に収まらないときだけ途中で折れてよい。
-	   ただし 1 文字幅まで縮まないよう下限を置く */
+	/* 見出しの行は折らない。本文のセルは英単語・識別子の途中では折らず（日本語は文字の間で折れる）、
+	   表が枠に収まらないときは .emdash-table-wrapper の中で横にスクロールする */
 	.prose :global(th) {
 		white-space: nowrap;
 	}
 	.prose :global(td) {
 		min-width: 8ch;
-		overflow-wrap: anywhere;
+		overflow-wrap: normal;
 	}
-	/* 番号・日付・バージョンのセル（markNumericTableCells が textAlign を付けたもの）は
+	/* 番号・日付・バージョンのセル（markNumericTableCells が textAlign: "left" を付けたもの）は
 	   2026-10-31 のハイフンで折らず、下限も付けない。表が枠より広いときは表が横にスクロールする */
-	.prose :global(td[style*="text-align"]) {
+	.prose :global(td[style*="text-align: left"]) {
 		white-space: nowrap;
 		min-width: 0;
 	}
