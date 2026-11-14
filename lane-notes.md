@@ -121,3 +121,5 @@ manager rulings for #81 article PRs: G11 login record needs a probe (one-line cl
 #71 | writer pushed 374c921 (3 musts fixed, run logs 51-54, G10 dated note) -> G11 re-review r3 (opus, fresh) running, writes pending/71-review-r3.md
 #77 | r2 review FAIL (2 musts: C25 URL pattern accepts glued full-width text; frontmatter keys outside a fixed list dropped uncounted) -> fixer round 3/3 running; lead decision: frontmatter url: values listed under [SKIP C25-URL], not hidden
 #67 | review FAIL (1 must: 1.5.0 setup turns site:staging on -> noindex on every page; docs + post-deploy step missing; 5 wants) -> docs fixer running; PR opens after fix
+#77 | r3 review PASS at e30bacb (must 0; want: PR body stale -> update at post time; comma-joined URLs skip; YAML block scalars uncounted; nit fm_values quirks) -> follow-up issue for wants 2-3 + nit after rate limit; gate after LOCAL-CHECK c + review r3 posted
+#67 | docs fixer pushed f9006fb (staging/noindex documented, post-deploy step 1b, free-tier re-measured) -> r2 review running
