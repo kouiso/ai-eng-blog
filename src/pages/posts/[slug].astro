@@ -10,6 +10,7 @@ import Base from "../../layouts/Base.astro";
 import { courseStepForTags, formatDateJa } from "../../utils/course";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import { getSiteOrigin } from "../../utils/site-origin";
+import { markNumericTableCells } from "../../utils/table-cell";
 import { buildToc } from "../../utils/toc";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -141,7 +142,7 @@ const articleMeta = {
 			}
 
 			<div class="prose" data-prose>
-				<PortableText value={post.data.content} />
+				<PortableText value={markNumericTableCells(post.data.content)} />
 			</div>
 
 			{
@@ -419,9 +420,21 @@ const articleMeta = {
 		border: 1px solid var(--line);
 		padding: 8px 12px;
 		text-align: left;
-		/* 日付 2026-10-31 のハイフンや「番号」が途中で折れないよう、セルの中は折り返さない。
-		   表が枠より広いときは、表そのものが横にスクロールする（上の overflow-x: auto） */
+	}
+	/* 見出しの行は折らない。本文のセルは、表が枠に収まらないときだけ途中で折れてよい。
+	   ただし 1 文字幅まで縮まないよう下限を置く */
+	.prose :global(th) {
 		white-space: nowrap;
+	}
+	.prose :global(td) {
+		min-width: 8ch;
+		overflow-wrap: anywhere;
+	}
+	/* 番号・日付・バージョンのセル（markNumericTableCells が textAlign を付けたもの）は
+	   2026-10-31 のハイフンで折らず、下限も付けない。表が枠より広いときは表が横にスクロールする */
+	.prose :global(td[style*="text-align"]) {
+		white-space: nowrap;
+		min-width: 0;
 	}
 	.prose :global(img) {
 		border-radius: 8px;
