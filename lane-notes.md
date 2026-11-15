@@ -1,4 +1,4 @@
-STATE PAUSED 2026-11-14T14:23Z (manager: weekly allowance) | merged 16 today, issues closed 21
+STATE DONE-WAITING 2026-11-15T06:45Z | merged 7 today (#82 #90 #88 #86 #91 #92 #93) | waiting on owner: 3 needs-owner questions (defaults recorded) | keyword selection PR landed (#90)
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -211,3 +211,7 @@ HANDOFF 2026-11-15T06:40Z (context near limit)
 - In flight: fix/87-keyword-records head b7758e6 (9 files, closes #87 + #90/#88 follow-ups; no target_query change). Fresh opus reviewer running; PR not opened yet. Body draft /tmp/aeb-87-body.md (needs prose check). On PASS: open PR, post REVIEW verbatim + LOCAL-CHECK + evidence image (evidence/<pr>-<sha>.png on this branch), premerge record ~/.claude/state/premerge/kouiso__ai-eng-blog__<n>.md, GATE, merge --match-head-commit. On FAIL: fix in _lanes/aeb-87, re-review.
 - After that the lane goal is met: write STATE DONE-WAITING (waiting on owner answers in needs owner) and stop.
 REVIEW r1 fix/87 (b7758e6): FAIL must 2 (keyword-selection.md:25 single-candidate claim false for ai-agent-vs-workflow; Trends half of #87 item 1 not done/untracked) want 2 nit 2 -> writer fixing; Trends stays open in #87 (Refs, not Closes). 12 other gate.md A-summary mismatches -> left for #81.
+
+MERGED #93 fix/87 (30756c3 squash, head 9e36d5f) 06:44Z | r2 PASS must 0 (issuecomment-6890481080) | LOCAL-CHECK pass 4/0 + evidence/93-9e36d5f.png (6890481597) | GATE posted | squash message without closing keyword; #87 stays OPEN for the Trends step + r2 want-1/nits (comment issuecomment-6890489382). 23 gate.md summary mismatches left for #81.
+HOUR 2026-11-15T06:45Z | merged 7 | closed 1 (#67) | fixed 0 | blocked: none
+DONE-WAITING: handoff items done (#82 merged, #86 #88 reviewed+merged, #83 nits via #93, pilot G11 fixed+merged #92, docs/67-followup merged #91). Open work tracked in #87 (Trends, nits) and #81 (23 gate.md summaries). Waiting on owner: needs owner x3 (Rakko paid plan: default no; pilot S1 wording: default keep; pilot S6 section: default keep). Worktrees left: aeb-k1 (handoff branch, clean), aeb-notes.
