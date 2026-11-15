@@ -24,8 +24,9 @@ function cellText(cell: Record<string, unknown>): string {
  * URL に空白は無いので justify でも見た目は変わらない。
  * どちらも、作者が textAlign を付けたセルには付けない。
  */
-export function markNumericTableCells(blocks: readonly unknown[] | undefined): unknown[] | undefined {
-	if (!blocks) return undefined;
+export function markNumericTableCells<T extends readonly unknown[] | undefined>(blocks: T): T {
+	if (!blocks) return blocks;
+	// セルに textAlign を足すだけで、ブロックの形は変えない。入力と同じ型として返す。
 	return blocks.map((block) => {
 		if (!isRecord(block) || block._type !== "table" || !Array.isArray(block.rows)) return block;
 		const rows = block.rows.map((row: unknown) => {
@@ -40,5 +41,5 @@ export function markNumericTableCells(blocks: readonly unknown[] | undefined): u
 			return { ...row, cells };
 		});
 		return { ...block, rows };
-	});
+	}) as unknown as T;
 }

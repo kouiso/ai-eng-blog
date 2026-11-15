@@ -1,6 +1,6 @@
-# Cloudflare Workers の無料枠に収まるかの確認（2026-10-31）
+# Cloudflare Workers の無料枠に収まるかの確認（2026-10-31。サイズは 2026-11-14 に emdash 1.5.0 で測り直した）
 
-結論: Worker のサイズは 15.69 MiB で、無料枠の上限 64 MiB の約 25% です。サイズは問題ありません。CPU 時間（1回の呼び出しで 10 ms）は、ローカルでは測れません。本番に deploy したあと、下の「本番で確かめること」で確かめます。まだ deploy していないので、本番での確認は済んでいません。
+結論: Worker のサイズは 16.59 MiB（emdash 1.5.0、2026-11-14）で、無料枠の上限 64 MiB の約 26% です。サイズは問題ありません。CPU 時間（1回の呼び出しで 10 ms）は、ローカルでは測れません。本番に deploy したあと、下の「本番で確かめること」で確かめます。まだ deploy していないので、本番での確認は済んでいません。
 
 ## 根拠にした上限（https://developers.cloudflare.com/workers/platform/limits/ 、2026-10-31 確認）
 
@@ -17,7 +17,7 @@ CPU 時間を超えると、Cloudflare はクライアントに Error 1102（「
 
 ## サイズの測定
 
-`.gitignore` に `bundled/` を足してから、次を実行しました（emdash 1.4.0、wrangler 4.152.0、Node 22.22.0）。
+`.gitignore` に `bundled/` を足してから、次を実行しました（2026-11-14 に測り直した値。emdash 1.5.0、wrangler 4.152.0、Node 24.22.3。最初の測定は 2026-10-31、emdash 1.4.0 で 16062.39 KiB / gzip 4255.24 KiB）。
 
 ```sh
 npm run build
@@ -27,16 +27,16 @@ npx wrangler deploy --outdir bundled/ --dry-run
 出力（抜粋）:
 
 ```
-Total Upload: 16062.39 KiB / gzip: 4255.24 KiB
+Total Upload: 16991.71 KiB / gzip: 4586.90 KiB
 --dry-run: exiting now.
 ```
 
 | 値 | 計算 |
 |---|---|
-| 圧縮前 16062.39 KiB = 15.69 MiB | 64 MiB に対して 24.5% |
-| gzip 4255.24 KiB = 4.16 MiB | 無料枠に圧縮後の上限は無い。参考値 |
+| 圧縮前 16991.71 KiB = 16.59 MiB | 64 MiB に対して 25.9%（約 26%） |
+| gzip 4586.90 KiB = 4.48 MiB | 無料枠に圧縮後の上限は無い。参考値 |
 
-`bundled/` には 652 ファイル、合計 16,448,004 バイトが出力されました。`.map` ファイルは0件です。大きいのは `chunks/entrypoints_*.mjs`（698,327 バイト）と、管理画面の各言語の `messages-*.mjs`（約 540〜630 KB）でした。`bundled/` は確認用の出力なので、コミットしません。
+`bundled/` には 673 ファイル、合計 17,399,624 バイトが出力されました。`.map` ファイルは0件です。大きいのは `chunks/entrypoints_*.mjs`（727,989 バイト）と、管理画面の各言語の `messages-*.mjs`（36ファイル、177,339〜693,422 バイト）でした。2026-11-14 に、1.5.0 で `npm run build` のあと `npx wrangler deploy --outdir <出力先> --dry-run` で出し直し、`find` と `ls -l` でバイト数を測った値です（ファイル数と合計は上と同じ 673、17,399,624）。バイト数は、バンドルにチェックアウト先のパスが入るため、作業ディレクトリによって数百バイト変わります（`entrypoints_*.mjs` と合計。約 26% という結論は変わりません）。`bundled/` は確認用の出力なので、コミットしません。
 
 ## 本番で確かめること（deploy のあと、Claude が行う）
 

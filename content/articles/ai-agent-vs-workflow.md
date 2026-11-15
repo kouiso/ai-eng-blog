@@ -4,7 +4,7 @@ slug: "ai-agent-vs-workflow"
 description: "AI エージェントとワークフローの違いは、次の手順を LLM が決めるか、コードが決めるかです。Claude Agent SDK で同じ仕分けを2通りに書いて動かし、呼び出し回数と時間を実測で比べます。答えを確かめられる時点の違いも示します。"
 tags: ["AIエージェント", "Claude Agent SDK", "TypeScript"]
 main_keyword: "AIエージェント"
-target_query: "ai エージェント ワークフロー 違い"
+target_query: "aiエージェント ワークフロー 違い"
 course_step: 4
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は見積もりで、請求額とは別の数字です。"
 run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"

@@ -8,7 +8,7 @@ Claude 向けの運用ルールは [CLAUDE.md](./CLAUDE.md)、EmDash のコー�
 
 | 部分 | 中身 |
 |---|---|
-| CMS | [EmDash](https://github.com/emdash-cms/emdash) 1.4.0（Astro 製。MCP サーバーを内蔵。版を上げた経緯は [docs/decisions/emdash-version.md](./docs/decisions/emdash-version.md)） |
+| CMS | [EmDash](https://github.com/emdash-cms/emdash) 1.5.0（Astro 製。MCP サーバーを内蔵。版を上げた経緯は [docs/decisions/emdash-version.md](./docs/decisions/emdash-version.md)） |
 | フレームワーク | Astro 7.3.2、`@astrojs/cloudflare` 14.3.1 |
 | 実行環境 | Cloudflare Workers |
 | データ | D1（記事などの DB）、R2（画像）、KV（セッション） |
@@ -74,7 +74,7 @@ npx wrangler dev --local --var EMDASH_SITE_URL:http://localhost:8787
 
 Workers の無料枠では、Worker のサイズは圧縮前で 64 MiB まで、CPU 時間は1回の呼び出しで 10 ms までです。10 ms の上限は HTTP リクエストだけでなく Cron Trigger にもかかります（https://developers.cloudflare.com/workers/platform/limits/ 、2026-10-31 確認）。
 
-- サイズ: `npx wrangler deploy --outdir bundled/ --dry-run` の結果は `Total Upload: 16062.39 KiB / gzip: 4255.24 KiB` でした。圧縮前 15.69 MiB で、上限の約 25% です（2026-10-31、emdash 1.4.0）。`bundled/` は `.gitignore` 済みです。
+- サイズ: `npx wrangler deploy --outdir bundled/ --dry-run` の結果は `Total Upload: 16991.71 KiB / gzip: 4586.90 KiB` でした。圧縮前 16.59 MiB で、上限の約 26% です（2026-11-14、emdash 1.5.0）。`bundled/` は `.gitignore` 済みです。
 - CPU 時間: ローカルでは測れません。deploy のあと、全ページを巡回して Error 1102（Worker exceeded resource limits）が出ないこと、ダッシュボードの Metrics → Errors の呼び出しの状態に Exceeded resources が無いこと、Settings → Trigger Events で毎分の cron が成功していることを Claude が確かめます。
 
 測り方と本番で確かめる手順の詳細は [docs/verification/free-tier.md](./docs/verification/free-tier.md) にあります。
