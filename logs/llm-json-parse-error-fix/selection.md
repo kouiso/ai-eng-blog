@@ -71,7 +71,7 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 
 | 外した候補 | 外した理由 |
 |---|---|
-| サジェストの `構造化出力 json`（種「構造化出力」の 7 番目）。構造化出力と JSON を組み合わせたラッコの語もこれと同じ語で、ラッコの CSV にはこの1つしか無い | JSON の出し方を探す語。出し方を比べるのは `structured-output-methods-compare`（`構造化出力 プロンプト`）が答える意図で、重なる（G06） |
+| サジェストの `構造化出力 json`（種「構造化出力 」の 7 番目。種の末尾に空白がある）。構造化出力と JSON を組み合わせたラッコの語もこれと同じ語で、ラッコの CSV にはこの1つしか無い | JSON の出し方を探す語。出し方を比べるのは `structured-output-methods-compare`（`構造化出力 プロンプト`）が答える意図で、重なる（G06） |
 | LLM API と JSON や JSON Schema を組み合わせたラッコの語 | API の機能で JSON を出させる方法を探す語。API を直接呼ぶ書き方が中心で、API を呼ばないこの記事とは合わない（SKILL の手順1の2の2） |
 | サジェストの `dify llm json 出力`（種「llm json 出力」の 2 番目） | Dify で JSON を出す方法を探す語。この記事は Dify を扱わない |
 | サジェストの `zod parse json schema`（種「zod json schema」の 7 番目） | zod のスキーマの話で、`zod-to-json-schema-tool-definition` の範囲 |
