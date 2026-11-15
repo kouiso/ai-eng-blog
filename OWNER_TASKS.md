@@ -113,7 +113,7 @@ sitemap は最大1時間、robots.txt は最大1日、古い内容がキャッ�
 5. ラッコキーワードにログインする（任意。急ぎません）
    - ユーザーがやるのは、ラッコキーワードにログインすることだけです。講座のキーワード6語のそれぞれをかけて CSV を書き出す作業と、キーワードの選定は Claude が行います。置き場所と名前は [keywords/README.md](./keywords/README.md) にあります。
    - **CSV は public のこのリポジトリを通しません。** コミット、push、Issue や PR への添付、Gist はどれも使いません。ラッコキーワードの規約で、データの第三者への提供にライセンスが要るためです（keywords/README.md）。書き出した CSV は Claude Code の作業環境にだけ置きます。`keywords/*.csv` は `.gitignore` 済みです。
-   - 最初の回は、Claude が集めた Google のサジェストの CSV で進めています（2026-11-11 の裁定）。ラッコの CSV は、検索ボリュームなどでキーワードを選び直したくなったときに、ログインして Claude に書き出させてください。Claude はラッコの画面から一覧を写し取りません（keywords/README.md）。
+   - キーワードは先にラッコの CSV から選びます。ラッコの CSV に合う語が無い記事だけ、Claude が集めた Google のサジェストの CSV で選びます。記事ごとの結果は [docs/decisions/keyword-selection.md](./docs/decisions/keyword-selection.md) にあります。ラッコの CSV の「月間検索数」は無料プランでは全行が null です。そのため検索数では比べていません。Claude はラッコの画面から一覧を写し取りません（keywords/README.md）。
 6. パイロット記事の報告に返事をする
    - 最初の1本を予約公開まで通したら、Claude がゲートの結果と気になった点を報告します。
    - 返事があるまで、Claude は2本目に進みません。
