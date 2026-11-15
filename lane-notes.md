@@ -1,4 +1,4 @@
-STATE RUNNING 2026-11-15T07:15Z | merged 8 today | in work: fix/87-trends (Google Trends via browser for 6 articles + #94 nits 2-4)
+STATE DONE-WAITING 2026-11-15T08:22Z | merged 10 today (#82 #90 #88 #86 #91 #92 #93 #94 #95 #96) | closed 2 (#67 #87) | waiting on owner: 3 needs-owner questions (defaults recorded) | nothing parked
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -225,3 +225,7 @@ REOPENED 07:15Z: Trends step and #94 nits 2-4 taken now (not parked). Branch fix
 REVIEW r1 fix/87-trends (c289cf8): FAIL must 4 (2 wrong CSV attributions, wrong 「6本」 basis, colon-space/読点) want 3 nit 3 -> writer fixing. Trends data itself held up (12 higher-scoring candidates all excluded by earlier rules). Trends screenshot shows Rakko-only words -> keep local, not PR evidence.
 REVIEW r2 fix/87-trends (07cb54e): FAIL must 1 (body 読点) want 2 nit 3; all round-1 findings closed, selection logic and Rakko check 0件 -> writer fixing body + 読点 splits + restored annotated bullet + screen-reading statement.
 MERGED #95 fix/87-trends (be5fe08, head 93f2084) 07:47Z | r3 PASS must 0 want 0 nit 1 (issuecomment-6891242707) | LOCAL-CHECK pass 4/0 + evidence/95-93f2084.png | #87 CLOSED. Trends: 6 pages read in browser 07:10-07:13 UTC, no target_query change. Last nit + claude-p SKILL refs -> fix/87-last-nits 18308eb, fresh reviewer running.
+MERGED #96 fix/87-last-nits (d08ab60, head 18308eb) 08:20Z | review PASS must 0 want 0 nit 2 optional (issuecomment-6891582449) | LOCAL-CHECK pass 4/0 + evidence/96-18308eb.png | GATE posted | deploy nothing.
+DECIDED #96 review nits 1-2 left: reviewer marked both optional (old wording, no rule broken). Redo: edit logs/claude-p-script-first-call/selection.md:57 and logs/ai-agent-vs-workflow/selection.md:64.
+HOUR 2026-11-15T08:22Z | merged 10 | closed 2 (#67 #87) | fixed 0 | blocked: none
+DONE-WAITING: keyword selection landed (#90); handoff items all done: #82 merged; #86 #88 reviewed+merged; #83 review nits fully done via #93 #94 #95 #96 incl. Google Trends (issue #87 closed); pilot G11 fixed+merged #92; docs/67-followup merged #91. Tracked elsewhere, not this handoff: 23 gate.md summary-vs-table mismatches -> issue #81 (per-article work). Waiting on owner: Rakko paid plan (default no), pilot S1 wording (default keep), pilot S6 section (default keep). Open PRs: #57 notes, #89 handoff (never merge). Worktrees: aeb-k1 (handoff branch), aeb-notes.
