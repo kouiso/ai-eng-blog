@@ -238,3 +238,8 @@ HANDOFF 2026-11-15T10:12Z
 - needs owner (3, defaults recorded above): Rakko paid plan for search volume (default no); pilot S1 lead wording (default keep); pilot S6 flags section (default keep).
 - On RESUME: nothing is waiting in this lane. Next startable work outside this handoff: issue #81 (23 gate.md summary-vs-table mismatches, per-article); optional wording nits from #96 review (2 lines). Take them only if the manager orders it.
 - Open PRs: #57 (these notes), #89 (handoff). Never merge or close either.
+ASK 2026-11-15T11:30Z (reminder to 統括, owner's order 「ちゃんと催促送って」): 3 needs-owner questions are still unanswered. Please put them to the owner. Each is yes/no with the default this lane will use if no answer comes.
+- Q1 ラッコキーワードを有料プランにして、検索数で検索語を選び直しますか？ default: no（無料のまま。公開後に検索の実測で選び直す）。根拠: 無料の書き出しは月間検索数が6ファイル全行 null。
+- Q2 パイロット記事（claude-p-script-first-call）のタイトルと書き出しで、claude -p を「LLM API の呼び出し」と言うてええですか？ default: yes（今の書き方のまま）。
+- Q3 同じ記事の、3つのフラグの効果を表と段落で説明する節を残しますか？ default: yes（残す）。
+Lane stays PAUSED; no work started by this reminder.
