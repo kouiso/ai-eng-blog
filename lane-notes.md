@@ -1,4 +1,4 @@
-STATE DONE-WAITING 2026-11-15T08:22Z | merged 10 today (#82 #90 #88 #86 #91 #92 #93 #94 #95 #96) | closed 2 (#67 #87) | waiting on owner: 3 needs-owner questions (defaults recorded) | nothing parked
+STATE PAUSED 2026-11-15T10:12Z (manager: allowance guard) | merged 10 today (#82 #90 #88 #86 #91 #92 #93 #94 #95 #96) | closed 2 (#67 #87) | lane was DONE-WAITING before the pause
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -229,3 +229,12 @@ MERGED #96 fix/87-last-nits (d08ab60, head 18308eb) 08:20Z | review PASS must 0 
 DECIDED #96 review nits 1-2 left: reviewer marked both optional (old wording, no rule broken). Redo: edit logs/claude-p-script-first-call/selection.md:57 and logs/ai-agent-vs-workflow/selection.md:64.
 HOUR 2026-11-15T08:22Z | merged 10 | closed 2 (#67 #87) | fixed 0 | blocked: none
 DONE-WAITING: keyword selection landed (#90); handoff items all done: #82 merged; #86 #88 reviewed+merged; #83 review nits fully done via #93 #94 #95 #96 incl. Google Trends (issue #87 closed); pilot G11 fixed+merged #92; docs/67-followup merged #91. Tracked elsewhere, not this handoff: 23 gate.md summary-vs-table mismatches -> issue #81 (per-article work). Waiting on owner: Rakko paid plan (default no), pilot S1 wording (default keep), pilot S6 section (default keep). Open PRs: #57 notes, #89 handoff (never merge). Worktrees: aeb-k1 (handoff branch), aeb-notes.
+PAUSED 2026-11-15T10:12Z (manager order, allowance guard). No subagent alive. Nothing in flight.
+HANDOFF 2026-11-15T10:12Z
+- State before pause: DONE-WAITING since 08:22Z. Keyword selection landed (#90). All handoff items done. Issue #87 closed (Google Trends done in #95).
+- Pushed: every local branch is 0 ahead of origin (checked 10:12Z: develop, notes/ai-eng-blog, handoff/notes-20261114, content/81-claude-p-script-first-call, feat/keyword-selection-all, fix/87-keyword-records, fix/87-review-nits, fix/87-trends, fix/87-last-nits, feat/k1-rakko-keywords). Worktrees aeb-k1 and aeb-notes clean.
+- Not committed on purpose: the main worktree (local develop at b02b67f, far behind origin/develop d08ab60) holds uncommitted changes from an earlier session of another lane. This lane never touched it and worked only in separate worktrees. Do not switch branches there.
+- Local only, never to be committed: keywords/*.csv (Rakko exports + suggest CSVs) in the main worktree; /tmp/aeb-87c-trends.png (Trends screenshot showing Rakko-only words).
+- needs owner (3, defaults recorded above): Rakko paid plan for search volume (default no); pilot S1 lead wording (default keep); pilot S6 flags section (default keep).
+- On RESUME: nothing is waiting in this lane. Next startable work outside this handoff: issue #81 (23 gate.md summary-vs-table mismatches, per-article); optional wording nits from #96 review (2 lines). Take them only if the manager orders it.
+- Open PRs: #57 (these notes), #89 (handoff). Never merge or close either.
