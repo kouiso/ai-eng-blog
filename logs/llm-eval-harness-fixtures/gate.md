@@ -20,8 +20,8 @@
 
 | # | 条件 | 確かめ方と記録先 | 判定 | 根拠 |
 |---|---|---|---|---|
-| G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行で出た `📎mention` は use として扱う。warn は1件ずつ判断した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」と「lint との関係」を読んで判定。2026-11-10 の実行で `lint/ai-smell.txt` 3行目 `✅ クリーン`、4行目 `use 0件 / 📎mention 0件`、5行目 `✅ 致命なし`、10行目 `exit=0`（1行目は空行）。frontmatter（1〜50行目）の mention も0件。warn 0件。コードフェンスは24行（`grep -c '^```'`）で、対応はずれていない（`lint/judgments.md`） |
-| G02 | `writing-lint.py` の判定行で FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH、INFO は1件ずつ判断した。個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。2026-11-10 の実行で `lint/writing-lint.txt` 1行目 `344行/145文`、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。DENSITY の10カウンタはすべて0回で、上限は guides/08 の標準の列と一致。WATCH の節なし、SHOULD 0件、INFO 0件 |
+| G01 | `ai-smell-lint.py` の FATAL が0件。frontmatter の行で出た `📎mention` は use として扱う。warn は1件ずつ判断した | `lint/ai-smell.txt`、`lint/judgments.md` | OK | guides/03「引用（mention）と使用（use）の区別」と「lint との関係」を読んで判定。2026-11-10 の実行で `lint/ai-smell.txt` 3行目 `✅ クリーン`、4行目 `use 0件 / 📎mention 0件`、5行目 `✅ 致命なし`、10行目 `exit=0`（1行目は空行）。frontmatter（1〜50行目）の mention も0件。warn 0件。コードフェンスは24行（`grep -c '^```'`）で、対応はずれていない（`lint/judgments.md`）。2026-11-15 にタイトルを直したあとの版でもう一度実行し、同じ結果だった（`✅ クリーン`、`use 0件 / 📎mention 0件`、`✅ 致命なし`、FATAL 0、warn 0件、exit 0）。`lint/ai-smell.txt` は書き換えていない |
+| G02 | `writing-lint.py` の判定行で FATAL と DENSITY超過がどちらも 0。SHOULD、WATCH、INFO は1件ずつ判断した。個人名は G09 で確かめる | `lint/writing-lint.txt`、`lint/judgments.md` | OK | guides/09 §2 と guides/08 の密度基準総表を読んで判定。2026-11-10 の実行で `lint/writing-lint.txt` 1行目 `344行/145文`（この数はコミット 4bff6ac の版の `lint/writing-lint.txt` のもの。今の `lint/writing-lint.txt` の1行目は `342行/143文`）、21行目 `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、23行目 `exit=0`。DENSITY の10カウンタはすべて0回で、上限は guides/08 の標準の列と一致。WATCH の節なし、SHOULD 0件、INFO 0件。2026-11-15 にタイトルを直したあとの版でもう一度実行し、同じ結果だった（`### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、DENSITY の10カウンタはすべて0回、INFO 0件、exit 0）。この実行の1行目も `342行/143文` だった。`lint/writing-lint.txt` は書き換えていない |
 | G03 | 下の B の全項目を満たす | `gate.md` | OK | B は C01〜C38 がすべて OK、C39（任意）は「あり」 |
 | G04 | 記事のコードを記事の形のまま実際に動かし、ログがある。API を呼ぶ記事で `ANTHROPIC_API_KEY` が無いときは不合格 | `code/`、`run/` | OK | `lint/check-code-and-outputs.txt`（2026-11-10 の実行で ALL OK、exit=0）: 記事のコード6つ（`package.json`、`graders.ts`、`cases.ts`、`answers.ts`、`run-eval.ts`、`compare.ts`）が `code/` と1文字も違わない。作業フォルダの形（87〜95行目）も `code/` のファイル一覧と同じ。2026-11-10 に `code/extra/run-all.sh` で記事の手順（`mkdir llm-eval`、`cd llm-eval`）から実行し直し、`run/02.log`（`node run-eval.ts; echo "終了コード: $?"`）と `run/03.log`（`node compare.ts`）の出力は、記事の実行結果2つと1文字も違わない。`run/02.log` の `exit=0` は末尾の `echo` のもので、`node` の終了コード 1 は出力の `終了コード: 1` に出ている（`code/README.md`）。node v22.22.0 / npm 10.9.4。型は `run/07.log`（tsc 7.0.2、exit=0）、外へ出ないことは `run/08.log`。API は呼ばない（`needs_api_key: false`、46行目）。作業場所は一時フォルダで、実行後に消した |
 | G05 | 断定した事実すべてに一次情報の出典があり、本文に出ている。料金の目安がある。`cost_estimate`、`run_environment`、`verified_at` が埋まり、ログと一致する | 原稿の出典の表、`sources.md`、frontmatter | OK | 本文 327〜342行目に出典の表（10件、題名、URL、確認日。出典2と出典5は 2026-11-10 に読み直した日、ほかは 2026-11-02。329行目にもそう書いた）。断定した文は（出典n）で表を引く（70、74、76、97、155、163、205、249、269、277、281、304、310行目）。74行目は出典2（v22 の文書）の範囲に合わせて「Node.js 22 系で…22.18.0 以降」とした。163行目は出典5の `test()` の戻り値を引く。文ごとの対応と、実行ログを根拠にした文（247行目は `run/11.log`、277行目は `run/05.log` と `run/09.log`）は `sources.md`。料金は 306〜310行目で、記事のコードは API を呼ばないので無料、モデルに回答を作らせると1件ごとにリクエストが増え、Claude Haiku 5.5 は100万トークンで入力 0.10 ドル、出力 0.50 ドル（10万トークン以下のプロンプト、出典10）。モデルを呼ぶ操作は実行していないので「無料」とは書かず、金額も計っていないと書いた。frontmatter 42行目の `cost_estimate`（本文と同じ内容）、43行目の `run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）"`（`run/*.log` の見出し `node: v22.22.0 / npm: 10.9.4`、`run/07.log` の `Version 7.0.2`、`run/10.log` の `Linux x86_64` と一致）、44行目の `verified_at: "2026-11-10"`（`run/` の全ログの日付 2026-11-10） |
@@ -77,15 +77,17 @@
 
 ## 集計
 
-- A: OK 8 / NG 2（G07、G10）（全10項目）
+> 2026-11-15 追記（#87）。集計と結論を、表の G07 と G10 の行（どちらも OK）に合わせて書き直した。前は A を「OK 8 / NG 2（G07、G10）」、結論の G10 を「CSV 待ち」、G07 をリンク先が公開も予約もされていないと書いていた。表の判定は変えていない。
+
+- A: OK 10 / NG 0（全10項目）
 - B: OK 38 / NG 0 / 任意・あり 1（全39項目）
 
 ## 結論
 
-G07 と G10 が NG なので、`status: draft` のまま止める。
+NG は無い。G11（別の AI による点検）をまだ受けていないので `status: draft` のまま止める。
 
-- G10: `keywords/` に CSV が届いていない（CSV 待ち）。`target_query` は null で、値は作っていない。
-- G07: 前後と関連のリンク先（`mcp-connection-closed-fix`、`llm-as-a-judge-claude`、`zod-validate-llm-json-output`）が、どれも公開も予約もされていない。前の記事と関連の記事が先に予約され、次の記事の原稿ができて予約されるまで、この記事は公開できない。次の記事 `llm-as-a-judge-claude` は API を呼ぶ記事（`content/plan.md` でキー不要 ×）なので、`ANTHROPIC_API_KEY` が入るまで原稿もできない（2026-11-10 の確認でも `unset`）。
+- G10 は `target_query` が確定して OK。ラッコの CSV の行と一致する（表の G10 の行）。
+- G07 は 2026-11-14 に #31 で判定し直して OK（表の G07 の行）。
 
 ## 3版目（2026-11-10）で直したもの
 

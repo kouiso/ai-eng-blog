@@ -1,5 +1,7 @@
 # gate: llm-json-parse-error-fix
 
+> 2026-11-11 追記: サジェストの CSV を読んだが合う行が無く、`target_query` は null、G10 は NG のまま。G11（別の AI による点検）もまだ。
+>
 > 2026-11-14 追記: `target_query` を決めて G10 を OK に変えた（ラッコの CSV に同じ語は無く、Google のサジェストの CSV の行と一致）。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。G07 も判定し直して OK（#31）。残る項目は、まだ点検を受けていない G11（別の AI による点検）だけ。
 
 
