@@ -43,7 +43,6 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 - この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
 - ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。
 
-
 ## 2026-11-15 追記: target_query をラッコの語に替えた
 
 - 旧 `llm 自動評価`（`keywords/google-suggest-llm-eval.csv`）から、新 `llm 自動 評価`（`keywords/LLM 評価.csv`）に替えた。

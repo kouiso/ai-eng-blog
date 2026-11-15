@@ -41,7 +41,6 @@
 - この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
 - ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。
 
-
 ## 2026-11-15 追記: target_query をラッコの語に替えた
 
 - 旧 `ai エージェント ワークフロー 違い`（`keywords/google-suggest-ai-agent.csv`）から、新 `aiエージェント ワークフロー 違い`（`keywords/AIエージェント.csv`）に替えた。

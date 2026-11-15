@@ -4,7 +4,7 @@ slug: "mcp-server-streamable-http"
 description: "公式 SDK v1.32.2 で、文字数のツールを Streamable HTTP のサーバーとして動かします。SDK のクライアント、curl、Claude Code から呼んだ実際の出力と、つまずく2か所を載せています。"
 tags: ["MCPサーバー", "TypeScript", "Streamable HTTP"]
 main_keyword: "MCPサーバー"
-target_query: "mcpサーバー http"
+target_query: "mcp streamable http typescript"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせる操作には、Claude Code を使える有料のアカウントが要ります。"
 run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322"
