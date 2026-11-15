@@ -53,3 +53,11 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 - 選んだ理由: TypeScript SDK で Streamable HTTP のサーバーを動かす記事です。
 - この CSV に検索ボリュームは無い。人気度は比べていない。公開後に Search Console の実測で見直す。
 - ほかの29本の `target_query` と重なっていないことを、同じスクリプトで確かめた。
+
+
+## 2026-11-15 追記: target_query をラッコの語に替えた
+
+- 旧 `mcp streamable http typescript`（`keywords/google-suggest-mcp-server.csv`）から、新 `mcpサーバー http`（`keywords/MCPサーバー.csv`）に替えた。
+- 理由: CLAUDE.md の表のとおり、ラッコの CSV に合う語があればそちらを使う。MCP サーバーを HTTP で動かす方法を探す語がラッコの CSV にあり、タイトルの「MCP サーバーを Streamable HTTP で」と合う。
+- ラッコの書き出しの検索数の列は、無料プランではすべての行が `null` で、人気度は比べていない。
+- 一致する行がラッコの CSV に1つあることを、2026-11-15 にスクリプトで確かめた。30本の一覧と選び方は `docs/decisions/keyword-selection.md`。CSV の行や値はこのリポジトリに写していない（`keywords/README.md`）。
