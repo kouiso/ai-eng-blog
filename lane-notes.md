@@ -222,3 +222,4 @@ DECIDED #94 r2 nits 2-4 not fixed: reviewer graded them nit with no rule broken 
 HOUR 2026-11-15T07:10Z | merged 8 | closed 1 (#67) | fixed 0 | blocked: Google Trends HTTP 429 (#87)
 DONE-WAITING: handoff items all done. Waiting on owner: Rakko paid plan (default no), pilot S1 wording (default keep), pilot S6 section (default keep).
 REOPENED 07:15Z: Trends step and #94 nits 2-4 taken now (not parked). Branch fix/87-trends from a446eb3; implementer uses Claude in Chrome (person-like, <=6 explore pages, no sound). If Trends refuses, record page+message and park in NOTES with the exact missing thing.
+REVIEW r1 fix/87-trends (c289cf8): FAIL must 4 (2 wrong CSV attributions, wrong 「6本」 basis, colon-space/読点) want 3 nit 3 -> writer fixing. Trends data itself held up (12 higher-scoring candidates all excluded by earlier rules). Trends screenshot shows Rakko-only words -> keep local, not PR evidence.
