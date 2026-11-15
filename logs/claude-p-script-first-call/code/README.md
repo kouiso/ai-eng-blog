@@ -24,7 +24,7 @@
 
 ## ブロック10の再実行（接続の守りを足した版）
 
-`blocks/10-bare.sh` に `--strict-mcp-config` を足したので、このブロックだけを同じ手順（`env -i`、標準入力は `/dev/null`、スクラッチの領域、終わったあとに削除）でやり直し、`run/10.log` を新しい出力に置き換えた。足す前の出力は `run/10-before-strict-guard.log` に残した。ログの見出しの時刻は UTC なので日付が 2026-11-12 になっているが、このマシンの日付は 2026-11-11（`verified_at` と同じ）。`jq` は `jq-1.7.1-apple` で動かした（ほかのログは 1.8.1）。出力は足す前と同じ（終了コード1、`is_error: true`、`Not logged in · Please run /login`）。`--bare` はログインを読まないので、モデルは呼ばれていない。
+`blocks/10-bare.sh` に `--strict-mcp-config` を足したので、このブロックだけを同じ手順（`env -i`、標準入力は `/dev/null`、スクラッチの領域、終わったあとに削除）でやり直し、`run/10.log` を新しい出力に置き換えた。足す前の出力は `run/10-before-strict-guard.log` に残した。ログの見出しの日付は 2026-11-12 で、時刻の順でこれが最後のログなので、`verified_at` と本文の日付の行はこの日付に合わせた（`docs/decisions/gate-readings.md` の8）。動かしたマシンの現地の日付は確かめていない。`jq` は `jq-1.7.1-apple` で動かした（ほかのログは 1.8.1）。出力は足す前と同じ（終了コード1、`is_error: true`、`Not logged in · Please run /login`）。`--bare` はログインを読まないので、モデルは呼ばれていない。
 
 ## 1回目の実行の失敗（記録）
 
