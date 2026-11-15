@@ -10,8 +10,8 @@
 | 4 | Authentication (Claude Code) | https://code.claude.com/docs/en/authentication | "If you have an active Claude subscription but also have ANTHROPIC_API_KEY set in your environment, Claude Code uses the API key once you approve it"、"Run unset ANTHROPIC_API_KEY to fall back to your subscription"。対話モードでは承認を聞かれるが、"In non-interactive mode (-p), the key is always used when present" | 69、79行目 |
 | 5 | Use the Claude Agent SDK with your Claude plan | https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan | "when you’re signed in with your Claude plan, the Claude Agent SDK and `claude -p` still draw from your subscription limits"（"Update October 7, 2026" の段落。2026-11-14 に再確認。"Update June 15, 2026" の段落にも同じ趣旨の文がある） | 52、208行目 |
 | 6 | Claude の料金プラン | https://claude.com/pricing | Pro は "$20 if billed monthly"。比較表の Claude Code の行は Free が No、Pro・Max・Ultra が Yes。"Claude Code is included in all paid plans" | 62行目、frontmatter の cost_estimate |
-| 7 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | Haiku 5.5 は入力 $0.10 / MTok（"for prompts up to 100,000 tokens"）、出力 $0.50 / MTok、キャッシュの読み出し（Hits and refreshes）$0.01 / MTok。Sonnet 5.5 は入力 $2 / MTok、出力 $10 / MTok。料金表は Input、Output を $ / MTok の単価で載せ、使ったトークン数に単価を掛ける worked example がある（67行目の「トークン数に応じて料金がかかる」の根拠） | 67、210、273行目（273行目はキャッシュの読み出しが通常の入力より安い単価であること、Sonnet 5.5 の入力単価） |
-| 8 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | `total_cost_usd` のコメント "An estimate, not a billing statement"。init の `apiKeySource` のコメント "'ANTHROPIC_API_KEY' (environment variable), 'apiKeyHelper' ..., '/login managed key' ..., or 'none' (no API key in use - e.g. claude.ai OAuth login, ...)"。`claude -p` の stream-json の init は SDK と同じメッセージの形で、`run/09.log` で `apiKeySource` が出ることを確かめた | 208、228行目 |
+| 7 | Pricing (Claude API) | https://platform.claude.com/docs/en/about-claude/pricing | Haiku 5.5 は入力 $0.10 / MTok、出力 $0.50 / MTok で、どちらも "for prompts up to 100,000 tokens" の行（超えると入力 $0.50、出力 $2.50。2026-11-14 に G11 の点検への対応で開き直して確かめた）、キャッシュの読み出し（Hits and refreshes）$0.01 / MTok。Sonnet 5.5 は入力 $2 / MTok、出力 $10 / MTok。料金表は Input、Output を $ / MTok の単価で載せ、使ったトークン数に単価を掛ける worked example がある（67行目の「トークン数に応じて料金がかかる」の根拠） | 67、210、273行目（273行目は Sonnet 5.5 の入力単価と、Haiku 5.5 の20倍であること） |
+| 8 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | `total_cost_usd` のコメント "An estimate, not a billing statement"。`costBasis` のコメント（1536行目）"Claude Code's built-in list prices ('list')"（2026-11-14 に G11 の点検への対応で開き直して確かめた）。init の `apiKeySource` のコメント "'ANTHROPIC_API_KEY' (environment variable), 'apiKeyHelper' ..., '/login managed key' ..., or 'none' (no API key in use - e.g. claude.ai OAuth login, ...)"。`claude -p` の stream-json の init は SDK と同じメッセージの形で、`run/09.log` で `apiKeySource` が出ることを確かめた | 208行目（`costBasis` の `list` の意味と "An estimate, not a billing statement"）、228行目 |
 | 9 | Node.js v22.23.0 Modules: TypeScript | https://nodejs.org/docs/v22.23.0/api/typescript.html | 履歴の表に "v22.18.0 Type stripping is enabled by default" | 64行目 |
 | 10 | Node.js v22.23.0 Child process | https://nodejs.org/docs/v22.23.0/api/child_process.html | `spawn` の `options.stdio` の既定は `['pipe', 'pipe', 'pipe']` で、子の標準入力は `subprocess.stdin` につながる | 339行目 |
 
@@ -23,10 +23,10 @@
 | 208 | `costBasis` が `list` | `run/08.log` |
 | 228 | 別名の `haiku` が `claude-haiku-5-5` になった | `run/09.log` |
 | 253 | `--bare` で終了コード1、`subtype` が `success`、`is_error` が `true` | `run/10.log` |
-| 273 | Haiku の数字が最初の実行より小さい | `run/11.log` の 0.00008206 と `run/07.log` の 0.0006710900000000001。理由はキャッシュと断定せず、キャッシュの読み出しが安いことだけを出典7で書いた |
+| 273 | Haiku の数字が最初の実行より小さい | `run/11.log` の 0.00008206 と `run/07.log` の 0.0006710900000000001。本文は「理由は確かめていません」とし、理由を書いていない。出典7を引くのは、同じ行の Sonnet 5.5 の単価と20倍の所だけ |
 | 299 | `--tools ""` なので `src/list.ts` を開いていない | `--tools ""` で組み込みツールをすべて外すこと（`run/18.log` の `claude --help`、出典2） |
 | 339 | `execFile` で警告が出て3秒待つ。標準入力が閉じられないまま残る | `run/14.log`。警告の文面は claude 自身が出したもの |
-| 411 | 2回呼んで警告なし（所要時間の比較は載せていない） | `run/15.log`、`run/14.log` |
+| 411 | 2回とも、`result` に答えが入って返った | `run/15.log` の出力の `answer:` と `cause:` の行。`ask.ts` は標準出力が空か `is_error` が `true` なら `reject` するので、2行とも出たことが、2回とも `is_error` が `false` で `result` が返ったことを示す。成功した回は標準エラーを出さないので、警告の有無はこのログでは分からない。前の版の「警告は出ていません」は、この理由で G11 の点検の直すべき指摘2になり、消した |
 | 56 | 所要時間15分ほど | 見積もり。`run/01.log`（2026-11-11T11:04:46Z）から `run/15.log`（2026-11-11T11:05:28Z）の開始までが42秒で、15 の実行（7.9秒）を足しても1分に収まる。残りは読者がファイルを保存し、出力を読む時間として見積もった |
 
 ## 本文と frontmatter に書いたツールの版と、記録した行（2026-11-14 に全件つけ直した）

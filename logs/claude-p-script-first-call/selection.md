@@ -22,6 +22,8 @@
 
 書いている途中に、並行して書かれた原稿が増えた（`git status` で確認。`claude-agent-sdk-streaming`、`claude-code-api-key-billing-auth`、`claude-agent-sdk-structured-output`、`ai-agent-custom-tools-agent-sdk`、`rag-answer-with-citations-claude`）。このうち隣り合う2本は見出しと本文の該当行を読んだ。
 
+下の表は 2026-11-11 の版の記録。行番号はその版のもので、今の本文にはリンクが無い（`/posts/` は0件）。今の版での判定は `gate.md` の G06 の行（212〜230、253、424行目）。
+
 | slug | 答える検索意図 | 重なり |
 |---|---|---|
 | `claude-agent-sdk-first-agent`（#17） | Agent SDK の導入と `query()` のメッセージの読み分け | なし。この記事は Agent SDK のコードを載せず、422行目でリンクするだけ。`apiKeySource` は 210〜228行目で `claude -p` の `stream-json` から1回読むだけで、メッセージの種類の読み分けはしない |
