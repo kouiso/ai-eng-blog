@@ -22,10 +22,10 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 
 ラッコの CSV には検索数が無いので、ラッコの語に替えても人気の裏付けは増えない。だから広い語へ替えることはしなかった。公開したあとは Search Console の実測で選び直す。
 
-替えた2本では Google トレンドでの比較（SKILL の手順1の2の4）を実行していない。どちらも替えたのは空白の有無だけの表記の違いだ。
+替えた2本では Google トレンドでの比較（SKILL の手順1の2の4）を実行していない。比べる相手が残らなかったからだ。ラッコの CSV の語を上の「選び方」の1〜3で絞った。3つをすべて満たす語はどちらの記事でも1つで、その語を選んだ。以前の語との違いは空白の有無だけだ。
 
-- `llm-eval-harness-fixtures` では同じ意図の候補がラッコの CSV に1つしか無かった。
-- `ai-agent-vs-workflow` ではワークフロー型のエージェントと自律型のエージェントの違いを問うラッコの語もあった（書き方の違う2つ）。これはエージェントの2つの種類を比べる語だ。この記事のタイトルはエージェントとワークフローを比べる。意図が違うので選ばなかった（`logs/ai-agent-vs-workflow/selection.md` の「2026-11-15 追記（#87）」）。
+- `llm-eval-harness-fixtures` で選び方の1〜3をすべて満たすラッコの語は1つだけだった。回答や出力の評価を全般に指す語もあった。評価のやり方を限らない語で、今の語より広い。だから選び方の2で外した。評価に使う関数を指す語もあった。タイトルに「関数」が無く、替えるとタイトルとの合い方が悪くなる。だから選び方の3で外した（`logs/llm-eval-harness-fixtures/selection.md` の「2026-11-15 追記（#87。外した候補）」）。
+- `ai-agent-vs-workflow` ではエージェントとワークフローの違いを問う語がラッコの CSV に1つしか無かった。ワークフローを全般に指す語は今の語より広い。だから選び方の2で外した。ワークフロー型のエージェントと自律型のエージェントの違いを問うラッコの語もあった（書き方の違う2つ）。これはエージェントの2つの種類を比べる語だ。この記事のタイトルはエージェントとワークフローを比べる。意図が違うので選ばなかった（`logs/ai-agent-vs-workflow/selection.md` の「2026-11-15 追記（#87。外した候補）」）。
 
 ## 記事ごとの結果
 
@@ -50,7 +50,7 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 | `llm-json-parse-error-fix` | `llm json 出力` | サジェスト `google-suggest-structured-output.csv` | 種「llm json 出力」の 1 番目 | 据え置き（#83 の判断）。ラッコの近い語は JSON の出し方を探す語で、`structured-output-methods-compare` と意図が重なる |
 | `mcp-connection-closed-fix` | `mcp connection closed` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp connection closed」の 1 番目 | 据え置き。ラッコの近い語はエラー全般の広い語。このエラー文で探す人に合わせる |
 | `mcp-inspector-debug` | `mcp inspector 使い方` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp inspector」の 2 番目 | 据え置き。ラッコにデバッグの語があり意図は近いが、替えるとタイトルの「MCP Inspector」と合わなくなる |
-| `mcp-server-resources-prompts` | `mcp server resources and prompts` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp resources prompts」の 4 番目 | 据え置き。ラッコの近い語は Resources か Prompts のどちらか1つだけを指す。両方を扱う記事に替えると片方を落とした語になる |
+| `mcp-server-resources-prompts` | `mcp server resources and prompts` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp resources prompts」の 4 番目 | 据え置き。ラッコの近い語は Resources か Prompts のどちらか1つだけを指す。この記事は両方を扱う。だからその語に替えると片方を落とした語になる |
 | `mcp-server-streamable-http` | `mcp streamable http typescript` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp streamable http」の 7 番目 | 据え置き。ラッコの近い語は HTTP 全般の広い語で、Streamable HTTP の方式を探す人に合わない（ラッコに streamable の語は無い） |
 | `mcp-server-typescript-stdio` | `mcpサーバー 作り方 typescript` | ラッコ `MCPサーバー.csv` | 種「MCPサーバー TypeScript」の 2 番目 | 据え置き（ラッコとサジェストの両方にある） |
 | `promptfoo-llm-eval-intro` | `promptfoo とは` | サジェスト `google-suggest-llm-eval.csv` | 種「promptfoo」の 2 番目 | 据え置き。ラッコの近い語は評価ツールを比べたい人の語で、promptfoo の入門と意図が違う |
