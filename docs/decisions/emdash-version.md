@@ -167,7 +167,7 @@ write-article スキルで記事を作るときは、先に `taxonomy_list_terms
 
 ### 新しいサイトは staging（noindex）で始まる
 
-1.5.0 のセットアップは `site:staging` を true にする（`node_modules/emdash/src/astro/routes/api/setup/index.ts:140` の `options.setIfAbsent("site:staging", true)`）。staging のあいだ、`EmDashHead` は `<meta name="robots" content="noindex, nofollow">` を出す（`node_modules/emdash/src/components/EmDashHead.astro:128-129`（129 行目が `noindex, nofollow`）。このサイトは `src/layouts/Base.astro:99` で `EmDashHead` を使っているので、全ページが対象になる。ローカルの新しい DB でも出た。`/robots.txt` の中身は変わらず、ページを開くことはできる。検索に載らないだけ。
+1.5.0 のセットアップは `site:staging` を true にする（`node_modules/emdash/src/astro/routes/api/setup/index.ts:140` の `options.setIfAbsent("site:staging", true)`）。staging のあいだ、`EmDashHead` は `<meta name="robots" content="noindex, nofollow">` を出す（`node_modules/emdash/src/components/EmDashHead.astro:128-129`。129 行目が `noindex, nofollow`）。このサイトは `src/layouts/Base.astro:99` で `EmDashHead` を使っているので、全ページが対象になる。ローカルの新しい DB でも出た。`/robots.txt` の中身は変わらず、ページを開くことはできる。検索に載らないだけ。
 
 本番の D1 は空で（README）、deploy のあとにセットアップを通すので、本番のサイトは staging で始まる。検索から読者を集めるブログなので、外し忘れると記事が検索に出ない。外すのは管理画面の Settings > General > Site Status の **Go live**（MCP の `settings_update` でもよい）。既存のサイトは影響を受けない（設定が無いサイトは公開のまま）。この点は #66 の `docs/decisions/markdown-conversion.md:153` でも挙げていたもので、deploy の後の手順は [docs/verification/post-deploy.md](../verification/post-deploy.md) の「1b. 初回のセットアップのあと」にある。
 
@@ -176,13 +176,13 @@ write-article スキルで記事を作るときは、先に `taxonomy_list_terms
 1.4.0 の tarball（`npm pack emdash@1.4.0`）の `src/database/migrations/` は `091_redirect_artifacts.ts` で終わる。1.5.0 の `node_modules/emdash/src/database/migrations/runner.ts` は、その後ろに次の6つを読み込む（2026-11-14 に確認）。
 
 - `092_plugin_kv_options`: サンドボックス側の plugin の KV（`_plugin_storage` の `__kv`）を、プロセス内の `options` 表へ `plugin:<id>:<key>` として写す。`options` に同じ名前があれば上書きしない。元の行は残す。plugin を使わないこのサイトでは対象の行が無い。
-- `093_menu_item_orphans`: 親が同じメニューに無いメニュー項目の `parent_id` を `NULL` にして、最上位へ移す。`UPDATE` で既存の行を書き換えるのは、この移行だけ。空の DB には対象の行が無い。
+- `093_menu_item_orphans`: 親が同じメニューに無いメニュー項目の `parent_id` を `NULL` にして、最上位へ移す。既存のメニュー項目の行を書き換える。ほかの移行の書き換えは「既存の行を書き換えるのは…」の段落にまとめた。空の DB には対象の行が無い。
 - `094_media_usage_file_url_reindex`: リッチテキストの項目を持つコレクションで、メディア使用状況の索引を作り直す対象としてマークする（`_emdash_media_usage_index_status` を更新する）。必要な表と有効な記録が無ければ何もしない。
 - `095_plugin_storage_unique_scope`: plugin の storage の unique index を、宣言したコレクションの範囲に限った partial index に作り直す。changelog は、plugin storage の unique index があるサイトには、この移行のためのメンテナンスの時間が要ると書いている。このサイトは plugin storage を使わないので、対象の index が無い。
 - `096_revision_kind_and_editors`: `revisions` に `kind` と `edited_by` の列を足す。`columnExists` で確かめて、列が無いときだけ足す。既存の版には埋めない。
 - `097_room_storage`: 共同編集用の `_emdash_rooms` と `_emdash_room_updates` を `ifNotExists` で作る。
 
-既存の行を書き換えるのは 093 だけで、ほかは列や表の追加、索引の作り直し、plugin のデータの複製。空の本番 D1 では 092〜095 は対象の行が無く、何もしないまま通る。`seed/seed.json` は表の構造に依存しないので影響しない。新しい DB では、ほかのマイグレーションと一緒に流れるだけ。ただし changelog には「いったんマイグレーションを流したサイトは、1.4.0 以前の EmDash ではサイト移行（書き出しと取り込み）ができない」とある（#4637。096 の列のこと）。このサイトは移行を使わないが、1.5.0 を deploy したあとで 1.4.0 に戻しても、書き出しと取り込みは戻らない。
+既存の行を書き換えるのは 093（`UPDATE _emdash_menu_items`）、094（`UPDATE _emdash_media_usage_index_status`）、095（`_plugin_indexes` の `DELETE` と `INSERT`）の3つで、ほかは列や表の追加、索引の作り直し、plugin のデータの複製（092 は `options` への `INSERT`）。空の本番 D1 では 092〜095 は対象の行が無く、何もしないまま通る。`seed/seed.json` は表の構造に依存しないので影響しない。新しい DB では、ほかのマイグレーションと一緒に流れるだけ。ただし changelog には「いったんマイグレーションを流したサイトは、1.4.0 以前の EmDash ではサイト移行（書き出しと取り込み）ができない」とある（#4637。096 の列のこと）。このサイトは移行を使わないが、1.5.0 を deploy したあとで 1.4.0 に戻しても、書き出しと取り込みは戻らない。
 
 ## 戻すとき
 
