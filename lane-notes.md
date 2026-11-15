@@ -1,4 +1,4 @@
-STATE RUNNING 2026-11-15T06:50Z | merged 7 today | in work: fix/87-review-nits (PR #93 r2 want-1 + nits 2-6), implementer running
+STATE DONE-WAITING 2026-11-15T07:10Z | merged 8 today (#82 #90 #88 #86 #91 #92 #93 #94) | waiting on owner: 3 needs-owner questions (defaults recorded) | open only: #87 Google Trends step (blocker HTTP 429)
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -217,3 +217,7 @@ HOUR 2026-11-15T06:45Z | merged 7 | closed 1 (#67) | fixed 0 | blocked: none
 DONE-WAITING: handoff items done (#82 merged, #86 #88 reviewed+merged, #83 nits via #93, pilot G11 fixed+merged #92, docs/67-followup merged #91). Open work tracked in #87 (Trends, nits) and #81 (23 gate.md summaries). Waiting on owner: needs owner x3 (Rakko paid plan: default no; pilot S1 wording: default keep; pilot S6 section: default keep). Worktrees left: aeb-k1 (handoff branch, clean), aeb-notes.
 REOPENED 06:50Z: #93 r2 leftovers (want-1 SKILL line refs, nits 2-6) are fixable now, not blocked -> branch fix/87-review-nits from 30756c3, implementer dispatched. Only the Google Trends step stays open in #87 (blocker: HTTP 429).
 REVIEW r1 fix/87-review-nits (86fbc97): FAIL must 1 (PR body said #93 shifted SKILL lines; it was #86 8a96363) want 1 (harness: rules 1-3 leave one word, not intent alone) nit 4 -> writer fixing (body + 3 repo edits).
+MERGED #94 fix/87-review-nits (a446eb3 squash, head 6fc79eb) 07:08Z | r2 PASS must 0 want 0 nit 4 (issuecomment-6890846698) | LOCAL-CHECK pass 4/0 + evidence/94-6fc79eb.png | GATE posted | #87 stays OPEN for the Trends step only (issuecomment-6890853264).
+DECIDED #94 r2 nits 2-4 not fixed: reviewer graded them nit with no rule broken (nit 2 optional, matches file style; nit 3 extra seed rows; nit 4 wording of one cell). Revert/redo: a small PR editing logs/llm-eval-harness-fixtures/selection.md and logs/ai-agent-vs-workflow/selection.md.
+HOUR 2026-11-15T07:10Z | merged 8 | closed 1 (#67) | fixed 0 | blocked: Google Trends HTTP 429 (#87)
+DONE-WAITING: handoff items all done. Waiting on owner: Rakko paid plan (default no), pilot S1 wording (default keep), pilot S6 section (default keep).
