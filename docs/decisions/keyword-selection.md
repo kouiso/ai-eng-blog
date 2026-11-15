@@ -5,8 +5,9 @@
 ## 結論
 
 - 30本すべての `target_query` が、`keywords/` のどれかの CSV の行と1文字も違わない（G10）。
-- 3本を、サジェストの語からラッコの語へ替えた。残り27本は据え置き。
-- 30本のうち15本がラッコの CSV の語、15本がサジェストの CSV だけにある語になった。
+- 2本を、サジェストの語からラッコの語へ替えた。残り28本は据え置き。
+- 30本のうち14本がラッコの CSV の語、16本がサジェストの CSV だけにある語になった。
+- 替えた2本のうち `llm-eval-harness-fixtures` は、タイトルに「評価」を入れた。
 - 検索数では比べていない。ラッコの書き出しの「月間検索数」の列は、無料プランでは6つの CSV のすべての行が `null` だった。
 
 ## 選び方
@@ -40,21 +41,21 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 | `llm-api-cost-estimate-js-tiktoken` | `openai api トークン 料金` | サジェスト `google-suggest-llm-api.csv` | 種「openai api トークン 料金」の 1 番目 | 据え置き。ラッコの料金やトークンの語は広く、タイトルの「OpenAI API の料金」と合わない |
 | `llm-as-a-judge-claude` | `llm as a judge やり方` | サジェスト `google-suggest-llm-eval.csv` | 種「llm as a judge」の 4 番目 | 据え置き。ラッコの近い語は API を直接呼ぶ語で、Agent SDK の記事と合わない |
 | `llm-eval-dataset-from-logs` | `llm 評価 データセット` | ラッコ `LLM 評価.csv` | 種「LLM 評価」の 9 番目 | 据え置き（#83 でラッコから選んだ語） |
-| `llm-eval-harness-fixtures` | `llm 自動 評価` | ラッコ `LLM 評価.csv` | サジェストの CSV に無い | 変更。同じ意図の語がラッコにあったので、ラッコの表記に替えた（旧 `llm 自動評価`） |
+| `llm-eval-harness-fixtures` | `llm 自動 評価` | ラッコ `LLM 評価.csv` | サジェストの CSV に無い | 変更。同じ意図の語がラッコにあったので、ラッコの表記に替えた（旧 `llm 自動評価`）。タイトルに「評価」を入れた |
 | `llm-json-parse-error-fix` | `llm json 出力` | サジェスト `google-suggest-structured-output.csv` | 種「llm json 出力」の 1 番目 | 据え置き（#83 の判断）。ラッコの近い語は JSON の出し方を探す語で、`structured-output-methods-compare` と意図が重なる |
 | `mcp-connection-closed-fix` | `mcp connection closed` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp connection closed」の 1 番目 | 据え置き。ラッコの近い語はエラー全般の広い語。このエラー文で探す人に合わせる |
 | `mcp-inspector-debug` | `mcp inspector 使い方` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp inspector」の 2 番目 | 据え置き。ラッコにデバッグの語があり意図は近いが、替えるとタイトルの「MCP Inspector」と合わなくなる |
-| `mcp-server-resources-prompts` | `mcpサーバー resource` | ラッコ `MCPサーバー.csv` | サジェストの CSV に無い | 変更。タイトルの「Resources」と合う語がラッコにあった（旧 `mcp server resources and prompts`）。Prompts の語は入らないが、両方を含む語はラッコに無い |
+| `mcp-server-resources-prompts` | `mcp server resources and prompts` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp resources prompts」の 4 番目 | 据え置き。ラッコの近い語は Resources だけを指し、Prompts を落とした広い語になる |
 | `mcp-server-streamable-http` | `mcp streamable http typescript` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp streamable http」の 7 番目 | 据え置き。ラッコの近い語は HTTP 全般の広い語で、Streamable HTTP の方式を探す人に合わない（ラッコに streamable の語は無い） |
 | `mcp-server-typescript-stdio` | `mcpサーバー 作り方 typescript` | ラッコ `MCPサーバー.csv` | 種「MCPサーバー TypeScript」の 2 番目 | 据え置き（ラッコとサジェストの両方にある） |
 | `promptfoo-llm-eval-intro` | `promptfoo とは` | サジェスト `google-suggest-llm-eval.csv` | 種「promptfoo」の 2 番目 | 据え置き。ラッコの近い語は評価ツールを比べたい人の語で、promptfoo の入門と意図が違う |
 | `rag-answer-with-citations-claude` | `rag 出典` | サジェスト `google-suggest-rag.csv` | 種「rag 出典」の 1 番目 | 据え置き。ラッコの近い語は RAG と Claude だけの広い語で、出典を付ける記事の中身と合わない |
 | `rag-bm25-search-typescript` | `rag bm25` | ラッコ `RAG.csv` | 種「rag bm25」の 1 番目 | 据え置き（ラッコとサジェストの両方にある） |
-| `rag-chunking-japanese-text` | `rag チャンク分割` | ラッコ `RAG.csv` | 種「rag チャンク」の 5 番目 | 据え置き（ラッコから選んだ語） |
+| `rag-chunking-japanese-text` | `rag チャンク分割` | ラッコ `RAG.csv` | 種「rag チャンク」の 5 番目 | 据え置き（ラッコとサジェストの両方にある） |
 | `rag-hybrid-search-rrf` | `rag ハイブリッド検索` | ラッコ `RAG.csv` | 種「rag ハイブリッド検索」の 1 番目 | 据え置き（ラッコとサジェストの両方にある） |
 | `rag-local-embeddings-transformers-js` | `rag ベクトル検索` | ラッコ `RAG.csv` | 種「rag ベクトル検索」の 1 番目 | 据え置き（ラッコとサジェストの両方にある） |
-| `rag-retrieval-eval-recall-mrr` | `rag 評価指標` | ラッコ `RAG.csv` | 種「rag 評価」の 1 番目 | 据え置き（ラッコから選んだ語） |
-| `structured-output-methods-compare` | `構造化出力 プロンプト` | ラッコ `構造化出力.csv` | 種「構造化出力」の 8 番目 | 据え置き（ラッコから選んだ語） |
+| `rag-retrieval-eval-recall-mrr` | `rag 評価指標` | ラッコ `RAG.csv` | 種「rag 評価」の 1 番目 | 据え置き（ラッコとサジェストの両方にある） |
+| `structured-output-methods-compare` | `構造化出力 プロンプト` | ラッコ `構造化出力.csv` | 種「構造化出力」の 8 番目 | 据え置き（ラッコとサジェストの両方にある） |
 | `zod-to-json-schema-tool-definition` | `zod json schema` | サジェスト `google-suggest-structured-output.csv` | 種「zod json schema」の 1 番目 | 据え置き。ラッコの近い語は API の機能を探す語で、zod から作る記事と意図が違う |
 | `zod-validate-llm-json-output` | `zod schema llm` | サジェスト `google-suggest-structured-output.csv` | 種「zod llm」の 6 番目 | 据え置き。ラッコに zod の語が無い |
 

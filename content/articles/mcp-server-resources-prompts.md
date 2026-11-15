@@ -4,7 +4,7 @@ slug: "mcp-server-resources-prompts"
 description: "MCP サーバーに、ツール以外の Resources と Prompts を登録します。使うのは公式 SDK v1.32.2 と TypeScript です。SDK のクライアントで一覧と取得を確かめ、ツールと違うエラーの返り方も実行結果付きで書いています。"
 tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
-target_query: "mcpサーバー resource"
+target_query: "mcp server resources and prompts"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude Code の会話で Resources と Prompts を使うには、Claude Code を使える有料のプランか Console のアカウントが要ります。"
 run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、zod 4.6.7、Linux x86_64（Inspector の確認は 2.13.0、型の確認は TypeScript 7.0.2）"
