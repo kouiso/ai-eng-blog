@@ -22,7 +22,10 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 
 ラッコの CSV には検索数が無いので、ラッコの語に替えても人気の裏付けは増えない。だから広い語へ替えることはしなかった。公開したあとは Search Console の実測で選び直す。
 
-替えた2本では Google トレンドでの比較（SKILL の手順1の2の4）を使わなかった。どちらも同じ意図の候補が1つしか無く、替えたのは空白の有無だけの表記の違いだったため。
+替えた2本では Google トレンドでの比較（SKILL の手順1の2の4）を実行していない。どちらも替えたのは空白の有無だけの表記の違いだ。
+
+- `llm-eval-harness-fixtures` では同じ意図の候補がラッコの CSV に1つしか無かった。
+- `ai-agent-vs-workflow` ではワークフロー型のエージェントと自律型のエージェントの違いを問うラッコの語もあった（書き方の違う2つ）。これはエージェントの2つの種類を比べる語だ。この記事のタイトルはエージェントとワークフローを比べる。意図が違うので選ばなかった（`logs/ai-agent-vs-workflow/selection.md` の「2026-11-15 追記（#87）」）。
 
 ## 記事ごとの結果
 
@@ -43,7 +46,7 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 | `llm-api-cost-estimate-js-tiktoken` | `openai api トークン 料金` | サジェスト `google-suggest-llm-api.csv` | 種「openai api トークン 料金」の 1 番目 | 据え置き。ラッコの料金やトークンの語は広く、タイトルの「OpenAI API の料金」と合わない |
 | `llm-as-a-judge-claude` | `llm as a judge やり方` | サジェスト `google-suggest-llm-eval.csv` | 種「llm as a judge」の 4 番目 | 据え置き。ラッコの近い語は API を直接呼ぶ語で、Agent SDK の記事と合わない |
 | `llm-eval-dataset-from-logs` | `llm 評価 データセット` | ラッコ `LLM 評価.csv` | 種「LLM 評価」の 9 番目 | 据え置き（#83 でラッコから選んだ語） |
-| `llm-eval-harness-fixtures` | `llm 自動 評価` | ラッコ `LLM 評価.csv` | サジェストの CSV に無い | 変更。同じ意図の語がラッコにあったので、ラッコの表記に替えた（旧 `llm 自動評価`）。タイトルに「評価」を入れた。旧の語の「評価」も旧のタイトルに無かった（旧のタイトルは「採点」）。だからこのタイトルの直しは、前からあった C02 の抜けを埋めたことにもなる |
+| `llm-eval-harness-fixtures` | `llm 自動 評価` | ラッコ `LLM 評価.csv` | サジェストの CSV に無い | 変更。同じ意図の語がラッコにあったので、ラッコの表記に替えた（旧 `llm 自動評価`）。タイトルに「評価」を入れた。旧の語の「評価」も旧のタイトルに無かった（旧のタイトルは「採点」）。だからこのタイトルの直しで、前からあった C02 の抜けも埋まった |
 | `llm-json-parse-error-fix` | `llm json 出力` | サジェスト `google-suggest-structured-output.csv` | 種「llm json 出力」の 1 番目 | 据え置き（#83 の判断）。ラッコの近い語は JSON の出し方を探す語で、`structured-output-methods-compare` と意図が重なる |
 | `mcp-connection-closed-fix` | `mcp connection closed` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp connection closed」の 1 番目 | 据え置き。ラッコの近い語はエラー全般の広い語。このエラー文で探す人に合わせる |
 | `mcp-inspector-debug` | `mcp inspector 使い方` | サジェスト `google-suggest-mcp-server.csv` | 種「mcp inspector」の 2 番目 | 据え置き。ラッコにデバッグの語があり意図は近いが、替えるとタイトルの「MCP Inspector」と合わなくなる |
