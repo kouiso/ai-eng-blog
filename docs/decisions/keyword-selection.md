@@ -32,7 +32,7 @@ CLAUDE.md の「どこに何を置くか」の表のとおり、先にラッコ�
 
 #87 の対象の4本（`ai-agent-safe-file-tool`、`claude-p-script-first-call`、`llm-eval-dataset-from-logs`、`llm-json-parse-error-fix`）と 2026-11-15 に語を替えた2本（`ai-agent-vs-workflow`、`llm-eval-harness-fixtures`）について今の `target_query` と外した候補を5語まで並べて Google トレンドを開いた（#87）。ほかの24本はトレンドで比べていない。
 
-- 開いたページは `https://trends.google.com/trends/explore?geo=JP&date=today%2012-m&q=<5語をカンマでつないだもの>`（日本、過去12か月）。ブラウザで記事ごとに1回だけ開いた。グラフの期間は 2025-11-09 の週から 2026-11-15 の週までだった。URL の `date` は Trends で外れたが、期間の欄は既定の過去12か月だった。
+- 開いたページは `https://trends.google.com/trends/explore?geo=JP&date=today%2012-m&q=<5語をカンマでつないだもの>`（日本、過去12か月）。ブラウザで記事ごとに1回だけ開いた。グラフの期間は 2025-11-09 の週から 2026-11-15 の週までだった。URL の `date` は Trends で外れた。期間の欄は既定の過去12か月のままだった。
 - アクセスは 2026-11-15 の 16:10〜16:13（日本時間）。
 - 読んだのはグラフの凡例の「平均」。同じページの5語の中で比べた 0〜100 の値だ。検索回数ではない。0 同士は差が無いものとして扱う。
 - 語ごとの値は各記事の `logs/<slug>/selection.md` の「2026-11-15 追記（#87。Google トレンドでの比較）」にある。ラッコだけにある語はここでも意味だけを書く。
