@@ -53,27 +53,26 @@ CSV が無いので、候補の一覧そのものが無い。講座の順番（c
 
 ## 2026-11-15 追記（#87 の1。人気度と外した候補）
 
-#83 で `target_query` を `llm json 出力` に決めた。そのときの SKILL.md:117（人気度）と SKILL.md:409（外した候補）の記録が抜けていた。その分をここに足す。`target_query` と G10 の判定は変えない。
+#83 で `target_query` を `llm json 出力` に決めた。そのときの SKILL の手順1の2の4（人気度）と SKILL の「logs/<slug>/ の中身」の selection.md（外した候補）の記録が抜けていた。その分をここに足す。`target_query` と G10 の判定は変えない。
 
-### 人気度（SKILL.md:117）
+### 人気度（SKILL の手順1の2の4）
 
 比べていない。
 
 - サジェストの CSV には検索数の列が無い。ラッコの書き出しの「月間検索数」も6つの CSV のすべての行で null だった。無料プランで書き出したためだ。2026-11-15 にスクリプトで確かめた。
-- 検索数が無いときは Google トレンドで候補を比べるのが SKILL.md:117 の手順だ。この変更ではトレンドでの比較を実行していない。
+- 検索数が無いときは Google トレンドで候補を比べるのが SKILL の手順1の2の4 だ。この変更ではトレンドでの比較を実行していない。
 - 別の記事で前にトレンドを取りに行ったときは HTTP 429 が返り、取れなかった（`logs/claude-p-script-first-call/selection.md` の62〜68行目）。
 - 残ったこの手順は #87 で開いたままにしておく。
 - そのため `llm json 出力` が候補の中で検索の多い語かどうかは裏付けが無い。公開後に Search Console の実測で見直す。
 
-### 外した候補（SKILL.md:409）
+### 外した候補（SKILL の「logs/<slug>/ の中身」の selection.md）
 
 読んだのは `keywords/構造化出力.csv` と `keywords/LLM API.csv`（ラッコ）、`keywords/google-suggest-structured-output.csv`（サジェスト）。ラッコの語は利用規約の都合で語そのものを書かず、意味だけを書く（`keywords/README.md`）。サジェストの語は種と順番も書く。順番は検索回数ではない。
 
 | 外した候補 | 外した理由 |
 |---|---|
-| 構造化出力と JSON を組み合わせたラッコの語 | JSON の出し方を探す語。出し方を比べるのは `structured-output-methods-compare`（`構造化出力 プロンプト`）が答える意図で、重なる（G06） |
+| サジェストの `構造化出力 json`（種「構造化出力」の 7 番目）。構造化出力と JSON を組み合わせたラッコの語もこれと同じ語で、ラッコの CSV にはこの1つしか無い | JSON の出し方を探す語。出し方を比べるのは `structured-output-methods-compare`（`構造化出力 プロンプト`）が答える意図で、重なる（G06） |
 | LLM API と JSON や JSON Schema を組み合わせたラッコの語 | API の機能で JSON を出させる方法を探す語。API を直接呼ぶ書き方が中心で、API を呼ばないこの記事とは合わない（SKILL の手順1の2の2） |
-| サジェストの `構造化出力 json`（種「構造化出力」の 7 番目） | 1行目と同じく、JSON の出し方を探す語 |
 | サジェストの `dify llm json 出力`（種「llm json 出力」の 2 番目） | Dify で JSON を出す方法を探す語。この記事は Dify を扱わない |
 | サジェストの `zod parse json schema`（種「zod json schema」の 7 番目） | zod のスキーマの話で、`zod-to-json-schema-tool-definition` の範囲 |
 
