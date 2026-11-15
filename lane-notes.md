@@ -206,3 +206,7 @@ needs owner: pilot S1 — リードで claude -p を「LLM API の呼び出し�
 needs owner: pilot S6 — --strict-mcp-config など3つのフラグの効果を表と段落で説明する節を残すか？ default yes（残す）
 HOUR 2026-11-15T06:14Z | merged 6 today (#82 #90 #88 #86 #91 #92) | closed 1 (#67) | fixed 0 | blocked: none
 REMAINING: follow-up PR closing #87 (implementer dispatched next).
+HANDOFF 2026-11-15T06:40Z (context near limit)
+- Merged today: #82 #90 #88 #86 #91 #92. Open PRs: only #57 (notes) and #89 (handoff) — never merge.
+- In flight: fix/87-keyword-records head b7758e6 (9 files, closes #87 + #90/#88 follow-ups; no target_query change). Fresh opus reviewer running; PR not opened yet. Body draft /tmp/aeb-87-body.md (needs prose check). On PASS: open PR, post REVIEW verbatim + LOCAL-CHECK + evidence image (evidence/<pr>-<sha>.png on this branch), premerge record ~/.claude/state/premerge/kouiso__ai-eng-blog__<n>.md, GATE, merge --match-head-commit. On FAIL: fix in _lanes/aeb-87, re-review.
+- After that the lane goal is met: write STATE DONE-WAITING (waiting on owner answers in needs owner) and stop.
