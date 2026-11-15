@@ -35,6 +35,7 @@ Cloudflare のダッシュボードでの操作と、パスキーを登録する
    - サイトの名前を入れ、自分のメールアドレスと名前を入れます。
    - 最初の選択（コンテンツ）は、既定の「Sample content」のままにします。「Empty site」は選びません。「Empty site」を選ぶと、講座6語のタグが入りません。画面の説明は「例の記事と固定ページ」と書いてありますが、このサイトの `seed/seed.json` には英語のサンプル記事も固定ページも無いので、「Sample content」を選んでも入るのは講座6語のタグ（とカテゴリ General・Updates）だけです。
    - 「Create passkey」で、いま使っている端末にパスキーを登録します。
+   - 管理者を作ったら、管理画面の Settings → General → Site Status で **Go live** を押し、staging（検索に載らない状態）を外します。EmDash 1.5.0 の新しいサイトは staging で始まり、外し忘れると記事が検索に出ません。確かめ方は [docs/verification/post-deploy.md](./docs/verification/post-deploy.md) の「1b」です。
    - 終わった後に、次のとおりになっていることを確かめます。`https://ai-eng-blog.kouiso.workers.dev/posts` の記事一覧が空で、`https://ai-eng-blog.kouiso.workers.dev/sitemap-posts.xml` に記事の URL が1つも無いこと。管理画面の Tags に、LLM API・構造化出力・RAG・AIエージェント・MCPサーバー・LLM 評価の6つだけがあり、Starter と Example が無いこと。Posts と Pages に、英語の「Welcome」と「About」が無いこと。
 6. パスキーを2つにする
    - Settings → Security の Register Passkey で、別の端末（PC とスマートフォンなど）にもう1つ登録します。1人10個まで登録できます。パスキーが1つしかないと、その端末をなくしたときに入れなくなります。メールを設定していないこのサイトでは、復旧のマジックリンクも使えません（https://docs.emdashcms.com/guides/authentication/ 、2026-10-31 確認）。
