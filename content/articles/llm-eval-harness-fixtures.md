@@ -1,10 +1,10 @@
 ---
-title: "LLM の回答を自動で採点する仕組みを作る【完全一致、部分一致、正規表現】"
+title: "LLM の回答を自動で評価する仕組みを作る【完全一致、部分一致、正規表現で採点】"
 slug: "llm-eval-harness-fixtures"
 description: "LLM の回答を、完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムを作ります。採点するのは手で書いた見本の回答なので、API キーは要りません。合格率が基準を下回ると、終了コード 1 で終わります。"
 tags: ["LLM 評価", "TypeScript"]
 main_keyword: "LLM 評価"
-target_query: "llm 自動評価"
+target_query: "llm 自動 評価"
 course_step: 6
 prev: "mcp-connection-closed-fix"
 next: "llm-as-a-judge-claude"

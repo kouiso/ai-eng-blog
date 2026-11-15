@@ -64,7 +64,7 @@
 | 23 | 5 | MCPサーバー | `mcp-inspector-debug` | MCP Inspector で MCP サーバーを調べる【ツール一覧と呼び出しを画面と CLI で】 | やり方 | ○ | Inspector は npx で手元で動く。CLI モードで結果を記録できる | 21, 25 |
 | 24 | 5 | MCPサーバー | `mcp-server-resources-prompts` | MCP サーバーで Resources と Prompts を公開する【ツール以外の2つの機能】 | やり方 | ○ | SDK のクライアントで一覧と取得を確かめる。モデルは使わない | 21 |
 | 25 | 5 | MCPサーバー | `mcp-connection-closed-fix` | MCP サーバーにつながらない（Connection closed）原因と直し方 | エラー | ○ | 失敗の再現も直したあとの確認も SDK のクライアントで行う。stdout にログを書く原因は 21 にあるのでリンクで済ませる | 21, 23 |
-| 26 | 6 | LLM 評価 | `llm-eval-harness-fixtures` | LLM の回答を自動で採点する仕組みを作る【完全一致、部分一致、正規表現】 | やり方 | ○ | 採点するのは手作りの見本の回答で、採点の処理だけを動かす。実際のモデルの出力とは書かない | 27, 30 |
+| 26 | 6 | LLM 評価 | `llm-eval-harness-fixtures` | LLM の回答を自動で評価する仕組みを作る【完全一致、部分一致、正規表現で採点】 | やり方 | ○ | 採点するのは手作りの見本の回答で、採点の処理だけを動かす。実際のモデルの出力とは書かない | 27, 30 |
 | 27 | 6 | LLM 評価 | `llm-as-a-judge-claude` | LLM-as-a-Judge で回答を採点する【Claude Agent SDK に基準と JSON スキーマを渡す】 | やり方 | プラン | 中身は採点基準の書き方と採点結果の受け取り方で、呼び出し口は問わない。`tools: []`、短い `systemPrompt`、`outputFormat` で採点結果を `structured_output` に受け取れることを確かめた。Structured Outputs の API の説明は 6 に任せる | 26, 29 |
 | 28 | 6 | LLM 評価 | `rag-retrieval-eval-recall-mrr` | LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】 | やり方 | ○ | 11・15 の検索器と、手で作った質問と正解の組で計算する | 11, 15, 26 |
 | 29 | 6 | LLM 評価 | `promptfoo-llm-eval-intro` | promptfoo で LLM のプロンプトを評価する【設定ファイル1つから、Claude プランで動かす】 | やり方 | プラン | 記事の中身は promptfoo の設定（prompts、providers、tests、assert）。公式の `anthropic:claude-agent-sdk` プロバイダーに `apiKeyRequired: false` を付けて、モデルを呼ぶ評価が通ることを確かめた | 26, 27 |
