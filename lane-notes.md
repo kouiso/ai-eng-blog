@@ -1,4 +1,4 @@
-STATE DONE-WAITING 2026-11-15T07:10Z | merged 8 today (#82 #90 #88 #86 #91 #92 #93 #94) | waiting on owner: 3 needs-owner questions (defaults recorded) | open only: #87 Google Trends step (blocker HTTP 429)
+STATE RUNNING 2026-11-15T07:15Z | merged 8 today | in work: fix/87-trends (Google Trends via browser for 6 articles + #94 nits 2-4)
 mission: それぞれのプロジェクトに書いてあるプランに書いてある作業をやること / どのプロジェクトもまず既存のPRを本質的に対処することを作業を優先してください。そうしないと溜まってばっかりなので
 model Opus 5.5 (lead, cloud) | advisor absent | github via connector (gh token invalid) | push via git | png ok
 goal: work plan ai-eng-blog until this cycle is DONE or DONE-WAITING, then write the list and stop | DONE-WAITING satisfies it: yes
@@ -221,3 +221,4 @@ MERGED #94 fix/87-review-nits (a446eb3 squash, head 6fc79eb) 07:08Z | r2 PASS mu
 DECIDED #94 r2 nits 2-4 not fixed: reviewer graded them nit with no rule broken (nit 2 optional, matches file style; nit 3 extra seed rows; nit 4 wording of one cell). Revert/redo: a small PR editing logs/llm-eval-harness-fixtures/selection.md and logs/ai-agent-vs-workflow/selection.md.
 HOUR 2026-11-15T07:10Z | merged 8 | closed 1 (#67) | fixed 0 | blocked: Google Trends HTTP 429 (#87)
 DONE-WAITING: handoff items all done. Waiting on owner: Rakko paid plan (default no), pilot S1 wording (default keep), pilot S6 section (default keep).
+REOPENED 07:15Z: Trends step and #94 nits 2-4 taken now (not parked). Branch fix/87-trends from a446eb3; implementer uses Claude in Chrome (person-like, <=6 explore pages, no sound). If Trends refuses, record page+message and park in NOTES with the exact missing thing.
