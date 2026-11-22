@@ -16,8 +16,10 @@ checklist とガイドに無い除外は入れない。数えないものは次�
   - C30 から C32 では、インラインコードの中の記号も数えない（guides/03-anti-ai.md 372行）。
   - C25 では、表のセルの中身、または frontmatter の値が、ちょうど URL 1つだけのものは数えない
     （文ではなく、URL は句読点で切れない。出典の表と sources の url に URL を置く規約がある）。
+    `https?://` が2回以上ある値（空白なしのカンマつなぎの2URL など）は URL だけの値にしない。
     URL と語が混じるセル、地の文、箇条書き、見出し、表の中の文、インラインコード（1字ずつ）、
-    frontmatter の文字列の値（tags などの一覧の要素、main_keyword、target_query、sources の title を含む）は
+    frontmatter の文字列の値（tags などの一覧の要素、main_keyword、target_query、sources の title、
+    `key: >` `key: |` のブロック形式の字下げ行を含む）は
     すべて数える。数えなかったものの件数と、60字を超えるものの行を [SKIP C25-URL] として出力する。
   - C17 の文の並びは、地の文と箇条書きの文。見出しと表のセルは並びに入れない。
 実行はしない。LLM も呼ばない。
@@ -82,6 +84,8 @@ C31_CHARS = "—─"   # U+2014 U+2500（── は ─ の連続）。checklist
 # URL だけのセル、値: URL に使える文字（RFC 3986 の ASCII の範囲）だけの URL 1つで、全体に一致するもの。
 # 全角の文字、読点、空白が混じるものは URL だけとは見ない。
 URL_ONLY = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
+# ブロック形式の目印（`>` `|` `>-` `|+` `>2` など）。値ではなく、字下げした行が値の中身
+FM_BLOCK_INDICATOR = re.compile(r"[>|][+-]?\d?")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
 END_MARKER = re.compile(r"^-{3,5} (?:exit\b|command\b)")
 
@@ -104,17 +108,32 @@ def split_sentences(text):
     return [p.strip() for p in re.findall(r"[^。]+。?", text) if p.strip()]
 
 
+def url_only(s):
+    """値全体が URL ちょうど1つなら真。`https?://` が2回以上ある値（空白なしのカンマつなぎの2URL など）は、
+    URL だけの値とは見ない（文として数える側に回す）。"""
+    return bool(URL_ONLY.fullmatch(s)) and len(re.findall(r"https?://", s)) == 1
+
+
 def fm_values(raw):
     """frontmatter の1行から、文字列の値を取り出す。`[a, "b"]` の一覧は要素ごとに、`- 値` と `キー: 値` は値を返す。
-    引用符のない数値、日付、真偽、null は文字列ではないので返さない。"""
+    引用符のない数値、日付、真偽、null は文字列ではないので返さない。
+    値の後ろの ` # コメント` は値に含めない（引用符の中の `#` は値の一部）。"""
     m = FM_KEY_VALUE.match(raw)
     if m:
         val = (m.group(1) or "").strip()
     else:
         m = FM_LIST_ITEM.match(raw)
         val = m.group(1).strip() if m else ""
+    if val.startswith(('"', "'")):
+        # 引用符で始まる値は、閉じ引用符までが値。後ろにコメントがあっても値に入れない
+        q = re.match(r"(['\"]).*?\1", val)
+        if q:
+            val = q.group(0)
+    else:
+        # 引用符なしの値は、空白 + `#` から行末までがコメント（URL の `#fragment` のように空白の無い `#` は値の一部）
+        val = re.sub(r"\s+#.*$|^#.*$", "", val).rstrip()
     if val.startswith("[") and val.endswith("]"):
-        items = [x.strip() for x in re.findall(r'"[^"]*"|[^,\s][^,]*', val[1:-1])]
+        items = [x.strip() for x in re.findall(r'"[^"]*"|\'[^\']*\'|[^,\s][^,]*', val[1:-1])]
     else:
         items = [val]
     out = []
@@ -133,6 +152,7 @@ def parse_article(text):
     code_lines = 0
     in_fm = False
     in_code = False
+    fm_block = None  # ブロック形式（key: > や key: |）の中身を読んでいるとき、目印の行の字下げの深さ
     for i, raw in enumerate(text.split("\n"), 1):
         if i == 1 and raw == "---":
             in_fm = True
@@ -142,9 +162,20 @@ def parse_article(text):
             plain_lines.append((i, raw))
             if raw == "---":
                 in_fm = False
-            else:
-                for v in fm_values(raw):
-                    segs.append((i, "url-cell" if URL_ONLY.fullmatch(v) else "fm", v))
+                continue
+            indent = len(raw) - len(raw.lstrip(" "))
+            if fm_block is not None:
+                if not raw.strip():
+                    continue  # 空行はブロックの区切りにしない
+                if indent > fm_block:
+                    segs.append((i, "fm", raw.strip()))  # ブロックの中身の行は文字列の値として数える
+                    continue
+                fm_block = None  # 字下げが目印の行以下に戻ったのでブロック終わり
+            for v in fm_values(raw):
+                if FM_BLOCK_INDICATOR.fullmatch(v):
+                    fm_block = indent  # この行より深い字下げが続く間、ブロックの中身
+                    continue
+                segs.append((i, "url-cell" if url_only(v) else "fm", v))
             continue
         if raw.startswith("```"):
             in_code = not in_code
@@ -161,7 +192,7 @@ def parse_article(text):
                 continue
             for cell in [c.strip() for c in s.strip("|").split("|")]:
                 if cell:
-                    segs.append((i, "url-cell" if URL_ONLY.fullmatch(cell) else "cell", cell))
+                    segs.append((i, "url-cell" if url_only(cell) else "cell", cell))
             continue
         if s.startswith("#"):
             segs.append((i, "heading", s.lstrip("#").strip()))
