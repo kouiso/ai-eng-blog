@@ -10,7 +10,7 @@ import Base from "../../layouts/Base.astro";
 import { courseStepForTags, formatDateJa } from "../../utils/course";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import { getSiteOrigin } from "../../utils/site-origin";
-import { markNumericTableCells } from "../../utils/table-cell";
+import { markTableCells } from "../../utils/table-cell";
 import { buildToc } from "../../utils/toc";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -142,7 +142,7 @@ const articleMeta = {
 			}
 
 			<div class="prose" data-prose>
-				<PortableText value={markNumericTableCells(post.data.content)} />
+				<PortableText value={markTableCells(post.data.content)} />
 			</div>
 
 			{
@@ -429,6 +429,12 @@ const articleMeta = {
 	.prose :global(td[style*="text-align: left"]) {
 		white-space: nowrap;
 		min-width: 0;
+	}
+	/* 文と混ざったセルの中の日付・数字の並びは、markBreakableNumberRuns が underline の目印で
+	   包んだもの。目印に使う線は消して、その並びだけ折れないようにする（原稿の文字は変えない） */
+	.prose :global(td u) {
+		text-decoration: none;
+		white-space: nowrap;
 	}
 	.prose :global(img) {
 		border-radius: 8px;
