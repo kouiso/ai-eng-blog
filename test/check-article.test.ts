@@ -105,12 +105,36 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 	it.each([
 		["URL の後ろに全角の語が空白なしで続くセル", "c25-url-ja"],
 		["URL が2つ、読点でつながるセル", "c25-url-two"],
+		["URL が2つ、空白なしのカンマでつながるセル", "c25-url-comma"],
 	])("C25 は、%s を URL だけのセルとは見ず、全体を数える", (_label, slug) => {
 		const r = check("prose", slug);
 		expect(r.code, r.out).toBe(1);
 		expect(r.out).toContain("[FAIL C25]");
 		expect(r.out).toContain("全体が URL 1つ）: 0件");
 		expect(r.out).not.toContain("[SKIP C25-URL]");
+	});
+
+	it("C25 は、ブロック形式（key: >）の字下げ行を文として数え、`>` 自体は値に数えない", () => {
+		const r = check("prose", "c25-fm-block");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL C25] c25-fm-block.md:4");
+		// 文の総数は title・字下げ2行・見出し・地の文で5。`>` を値に数える旧い読み方では4
+		expect(r.out).toContain("prose: 文 5");
+	});
+
+	it("frontmatter の値の後ろの ` # コメント` は値に数えない", () => {
+		const r = check("prose", "c25-fm-comment");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("確定 0");
+		expect(r.out).toContain("prose: 文 4");
+	});
+
+	it("シングルクォートで囲んだ一覧の項目は、中のカンマで分かれない", () => {
+		const r = check("prose", "c28-fm-squote");
+		expect(r.code, r.out).toBe(0);
+		// `aや,b` が1つの項目なら C28 の候補に上がる。カンマで分かれる旧い読み方では `'aや` で終わり、上がらない
+		expect(r.out).toContain("[候補 C28]");
+		expect(r.out).toContain("aや");
 	});
 
 	it.each([
