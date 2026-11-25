@@ -7,8 +7,8 @@ main_keyword: "MCPサーバー"
 target_query: "mcp streamable http typescript"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせる操作には、Claude Code を使える有料のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322"
-verified_at: "2026-11-10"
+run_environment: "Node.js 22.22.0 と 22.23.4、SDK 1.32.2、Claude Code 2.1.322"
+verified_at: "2026-11-14"
 prev: "mcp-server-typescript-stdio"
 next: "mcp-inspector-debug"
 sources:
@@ -70,7 +70,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-14
+updated: 2026-11-25
 ---
 
 HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
@@ -523,7 +523,7 @@ Removed MCP server char-count-http from user config
 File modified: /path/to/tmp-home/.claude.json
 ```
 
-`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。この1行だけは、2026-11-14 に Claude Code 2.1.325 で確かめました。
+`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。`× Failed to connect` の行だけは、2026-11-14 に確かめました。
 
 ## トランスポートを使い回すと2回目から 500 になる
 
@@ -644,4 +644,4 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 | 17 | Cross-Origin Resource Sharing（CORS）（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | 2026-11-10 |
 | 18 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-14 |
 
-AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-14 に実際に実行して確認しています。

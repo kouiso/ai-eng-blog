@@ -63,3 +63,9 @@
 - 本文を3か所変えた。86行目は「Agent SDK」を「Claude Agent SDK」にし、「エージェントに」を削って60字以内にした。412行目は、根拠の無い「忘れがちです」の1文を削った。526行目は、出典も実行ログも無かった「サーバーを止めると、ツールは使えなくなります。」を、`run/53.log` の実測の「サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。この1行だけは、2026-11-14 に Claude Code 2.1.325 で確かめました。」に変えた。行数は変わらない（647行）。
 - `ai-smell.txt`: use 0件 / mention 0件、`exit=0`。warn 0件。`writing-lint.txt`: `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`。SHOULD、WATCH、INFO は0件で判断の対象は無い。`prose-check.txt`: LONG>60 が0、SAME3 が0。
 - `check-code-and-outputs.py`: `run/52`、`53.log` の2項目を足し、`run/51`〜`54` の終了コードを出すようにした。57項目すべて True、`ALL OK`。
+
+## 2026-11-25 の再実行（#58、3回目の点検の直し）
+
+- 本文を変えたのは4か所。526行目の「この1行だけは、2026-11-14 に Claude Code 2.1.325 で確かめました。」を、バージョンログが `run/51`〜`54.log` に無いので「`× Failed to connect` の行だけは、2026-11-14 に確かめました。」に変えた（47字）。frontmatter の `verified_at`（2026-11-14）と `run_environment`（「Node.js 22.22.0 と 22.23.4、SDK 1.32.2、Claude Code 2.1.322」に、`run/51`〜`54` の環境を足した）、`updated`（2026-11-25）、647行目の「AI 支援で執筆」の確認日（2026-11-14）。行数は変わらない（647行）。
+- `ai-smell.txt`: use 0件 / mention 0件、`exit=0`。warn 0件で判断の対象は無い（前の結果と同じ内容で再実行）。`writing-lint.txt`: `### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、`exit=0`、647行/250文（同じく前と同じ内容）。`prose-check.txt`: LONG>60 が0、SAME3 が0。直した文は47字で、41〜60字は106文（`run_environment` が長くなった分で、50字を超えて60字以下の文は51文になった）。
+- `check-code-and-outputs.py`: コードと出力は触っていない。再実行で57項目すべて True、`ALL OK`、`exit=0`。
