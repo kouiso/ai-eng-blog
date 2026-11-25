@@ -1,32 +1,5 @@
-blocks in article: 15 / expected: 15
-OK #1: bash cmd 16
-OK #2: text out 16
-OK #3: bash literal mkdir/cd + run/17 + run/18 command
-OK #4: text out 18
-OK #5: bash cmd 19
-OK #6: text out 19
-OK #7: bash cmd 20
-OK #8: text out 20
-OK #9: ts code hello.ts
-OK #10: bash cmd 21
-OK #11: text out 21
-OK #12: bash code setup-tasks.sh
-OK #13: ts code agent.ts
-OK #14: bash cmd 23
-OK #15: text out 23
-OK run/15.log exit=0
-OK run/16.log exit=0
-OK run/17.log exit=0
-OK run/18.log exit=0
-OK run/19.log exit=0
-OK run/20.log exit=0
-OK run/21.log exit=0
-OK run/22.log exit=0
-OK run/23.log exit=0
-OK run/24.log exit=0
-OK run/25.log exit=0
-OK run/26.log exit=1 (want 1) contains 'ERR_UNKNOWN_FILE_EXTENSION'=True
-OK run/21.log exit=0 (want 0) contains 'apiKeySource=none'=True
-OK run/14.log exit=0 (want 0) contains 'claude-agent-sdk-linux-x64'=True
-ALL OK
-exit=0
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/claude-agent-sdk-first-agent/lint/check-code-and-outputs.py", line 10, in <module>
+    art, logdir = sys.argv[1], sys.argv[2]
+                  ~~~~~~~~^^^
+IndexError: list index out of range

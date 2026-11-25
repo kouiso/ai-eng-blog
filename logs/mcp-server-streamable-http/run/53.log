@@ -1,0 +1,158 @@
+date: 2026-11-24 19:26:58 -0800
+cwd: /path/to/char-count-http
+node: v22.23.4
+npm: 10.9.9
+command: for i in $(seq 1 30); do echo "run $i"; node dist/check.js 2>&1; done
+exit: 0
+elapsed: 4085 ms
+--- stdout+stderr ---
+run 1
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 2
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 3
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 4
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 5
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 6
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 7
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 8
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 9
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 10
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 11
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 12
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 13
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 14
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 15
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 16
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 17
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 18
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 19
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 20
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 21
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 22
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 23
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 24
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 25
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 26
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 27
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 28
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 29
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted
+run 30
+tools: [ 'count_chars' ]
+ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
+session: undefined
+client error: SSE stream disconnected: AbortError: This operation was aborted

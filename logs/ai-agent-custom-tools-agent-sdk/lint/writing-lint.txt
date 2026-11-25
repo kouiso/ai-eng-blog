@@ -1,4 +1,4 @@
-## writing-lint v2: ai-agent-custom-tools-agent-sdk.md (type=article, register=standard, 356行/157文)
+## writing-lint v2: ai-agent-custom-tools-agent-sdk.md (type=article, register=standard, 356行/162文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

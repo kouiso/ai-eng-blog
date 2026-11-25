@@ -1,5 +1,5 @@
 ---
-title: "zod のスキーマから JSON Schema を作ってツール定義に使う【zod v4 の z.toJSONSchema】"
+title: "zod スキーマからツール定義用の JSON Schema を作る【zod v4 の z.toJSONSchema】"
 slug: "zod-to-json-schema-tool-definition"
 description: "zod 4.6.7 の z.toJSONSchema で、zod のスキーマを JSON Schema に変換します。変換した結果は、Claude API のツール定義の input_schema に入れます。io の指定で必須の項目が変わる点と、変換できない型の扱いを、API キーを使わずに動かした出力付きで書いています。"
 tags: ["構造化出力", "zod", "TypeScript"]
@@ -43,7 +43,7 @@ sources:
     title: "Modules: TypeScript | Node.js v22 Documentation"
     accessed: 2026-10-31
   - url: "https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/resources/messages/messages.ts"
-    title: "anthropic-sdk-typescript sdk-v1.3.0 src/resources/messages/messages.ts"
+    title: "anthropic-sdk-typescript messages/messages.ts（sdk-v1.3.0）"
     accessed: 2026-10-31
   - url: "https://www.npmjs.com/package/@anthropic-ai/sdk"
     title: "@anthropic-ai/sdk (npm)"
@@ -55,10 +55,10 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-Claude API のツール定義に書く `input_schema` は、zod のスキーマから作れます。使うのは zod v4 の `z.toJSONSchema()` です。変換のときに `{ io: "input" }` を渡すと、`.default()` の項目は必須の一覧から外れます。モデルにとっては、省略してよい項目として伝わります。
+Claude API のツール定義に書く `input_schema` は、zod のスキーマから作れます。使うのは zod v4 の `z.toJSONSchema()` です。変換のときに `{ io: "input" }` を渡すと、`.default()` の項目は必須の一覧から外れます。モデルにとっては、省略してよい項目として伝わる仕組みです。
 
 この記事では、注文を検索するツールのスキーマを zod で1回だけ書きます。そこからツール定義を組み立て、SDK の型で確かめるまでを実際の出力付きで載せました。モデルが返した入力も、同じスキーマで検証します。
 
@@ -76,7 +76,7 @@ zod v3 のスキーマには、`zod-to-json-schema` という別のパッケー�
 
 zod でスキーマを書く利点は、同じスキーマを2つの用途に使えることにあります。1つはモデルに渡すツール定義で、もう1つはモデルが返した入力の検証です。JSON Schema を手で書き、zod のスキーマも別に書くと、片方だけ直したときに2つが食い違います。この記事の書き方なら、直すのは zod のスキーマ1か所で済みます。
 
-Anthropic の TypeScript SDK には、`betaZodTool` という関数もあります（出典9）。中では同じ `z.toJSONSchema()` を呼んでいます（出典9）。この記事では、変換の結果を自分の目で確かめるために、変換の部分を自分で書きます。
+Anthropic の TypeScript SDK にも `betaZodTool` があるのです（出典9）。中では同じ `z.toJSONSchema()` を呼んでいます（出典9）。この記事では、変換の結果を自分の目で確かめるために、変換の部分を自分で書きます。
 
 ## 前提となる環境
 
@@ -118,7 +118,7 @@ mkdir -p zod-tool-schema/src
 cd zod-tool-schema
 ```
 
-作業フォルダに `package.json` を置きます。バージョンに `^` を付けていないのは、記事と同じバージョンを入れるためです。
+作業フォルダに `package.json` を置いてください。バージョンに `^` を付けていないのは、記事と同じバージョンを入れるためです。
 
 ```json
 {
@@ -199,11 +199,11 @@ export const searchOrdersInput = z.object({
 });
 ```
 
-`.meta()` に書いた値は、変換した JSON Schema にそのまま写ります（出典1）。ツール定義の JSON Schema は、API がモデル向けに組み立てるシステムプロンプトに入ります（出典5）。項目の `description` も、モデルが読む文の一部です。
+`.meta()` に書いた値は、変換した JSON Schema にそのまま写る仕様です（出典1）。ツール定義の JSON Schema は、API がモデル向けに組み立てるシステムプロンプトに入ります（出典5）。項目の `description` も、モデルが読む文の一部です。
 
 `.describe()` でも説明は付けられます。zod の公式ドキュメントは `.meta()` を勧めているので、こちらを使いました（出典2）。
 
-`limit` には `.default(10)` を付けています。モデルが `limit` を省いても、zod で検証した結果には10が入ります。この性質が、手順3と手順4の両方に関わってきます。
+`limit` には `.default(10)` を付けています。モデルが `limit` を省いても、zod で検証した結果には10が入ります。この性質が、手順3と手順4の両方に関わる点です。
 
 ## 3. 変換した結果を toInputSchema でツール定義に入れる
 
@@ -232,7 +232,7 @@ const searchOrdersTool: Anthropic.Tool = {
 console.log(JSON.stringify(searchOrdersTool, null, 2));
 ```
 
-1行目は `import type` にしています。Node.js は型を取り除くときに `import type` の行も消します（出典10）。そのため、実行時に SDK は読み込まれません。SDK の型だけを借りて、定義の形が合っているかを `tsc` に確かめさせる使い方です。
+1行目は `import type` にしています。Node.js は型を取り除くときに `import type` の行も消すのです（出典10）。そのため、実行時に SDK は読み込まれません。SDK の型だけを借りて、定義の形が合っているかを `tsc` に確かめさせる使い方です。
 
 `toInputSchema` の中の `if` は、変換した結果の `type` を調べています。SDK の型が、`type` に `'object'` しか認めないからです（出典11）。SDK の `betaZodTool` も、同じ確認をしてから定義を作ります（出典9）。
 
@@ -247,7 +247,7 @@ src/tool.ts(10,3): error TS2322: Type 'ZodStandardJSONSchemaPayload<ZodType<unkn
 
 `as` で型を言い張る書き方でもエラーは消えます。それでも、`if` で中身を確かめてから書き直すほうが、配列のスキーマを渡したときに実行時の例外で気づけます。
 
-型をチェックしてから、実行します。
+型をチェックしてから、実行してください。
 
 ```bash
 npm run typecheck
@@ -303,11 +303,11 @@ node src/tool.ts
 
 `required` には、`email` と `status` の2つだけが入っています。`limit` は `"default": 10` を持つ省略できる項目になりました。
 
-ツールの名前は、正規表現 `^[a-zA-Z0-9_-]{1,128}$` に合う必要があります（出典5）。`search_orders` はこの決まりに合っています。`description` の文は、公式ドキュメントが3〜4文以上を勧めています（出典5）。記事の例は2文なので、実際のツールでは返さない情報と使う場面も書き足してください（出典5）。
+ツールの名前は、正規表現 `^[a-zA-Z0-9_-]{1,128}$` に合う必要があります（出典5）。`search_orders` はこの決まりに合う名前です。`description` の文は、公式ドキュメントが3〜4文以上を勧めています（出典5）。記事の例は2文なので、実際のツールでは返さない情報と使う場面も書き足してください（出典5）。
 
 ## 4. モデルが返した入力は同じスキーマで確かめる
 
-モデルがツールを呼ぶと、入力は応答の `tool_use` ブロックに入って届きます（出典6）。その入力を、手順2の `searchOrdersInput` で検証します。`src/check-input.ts` を作ります。
+モデルがツールを呼ぶと、入力は応答の `tool_use` ブロックに入って届きます（出典6）。その入力を、手順2の `searchOrdersInput` で検証します。`src/check-input.ts` を作ってください。
 
 ```ts
 import { searchOrdersInput } from "./schema.ts";
@@ -374,7 +374,7 @@ strict input: [ 'email', 'status' ] false
 
 1行目が、`io` を指定しないときの結果です。検証した後のデータには必ず `limit` があるので、`required` に `limit` が入りました。この定義をモデルに渡すと、`limit` は毎回送るべき項目として伝わります。
 
-ツールの入力は、モデルが作って `safeParse` に渡す側の値です。そのため、この記事では `io: "input"` を選びました。前に触れた `betaZodTool` は、`io` を指定せずに変換しています（出典9）。このスキーマを渡すと、`limit` は必須の項目になります。
+ツールの入力は、モデルが作って `safeParse` に渡す側の値です。そのため、この記事では `io: "input"` を選びました。前に触れた `betaZodTool` は、`io` を指定せずに変換しています（出典9）。このスキーマを渡すと、`limit` は必須の項目になるのです。
 
 2つの行では、`additionalProperties` も違います。zod は、出力側では `false` を書き、入力側では何も書きません（出典1）。入力側でも `false` を書かせるには、`z.strictObject()` を使います（出典1）。結果は3行目のとおりです。
 
@@ -407,13 +407,13 @@ error: Date cannot be represented in JSON Schema
 fixed: string date
 ```
 
-モデルが返すのは JSON なので、JavaScript の `Date` のオブジェクトはそもそも届きません。日付は `z.iso.date()` で、`"YYYY-MM-DD"` の文字列として受け取ります。変換すると `"format": "date"` が付きます（出典1）。この `date` は、strict のツールでも使える形式の一覧に入っています（出典7）。
+モデルが返すのは JSON なので、JavaScript の `Date` のオブジェクトはそもそも届きません。日付は `z.iso.date()` で、`"YYYY-MM-DD"` の文字列として受け取ります。変換すると `"format": "date"` が付きます（出典1）。この `date` は、strict のツールでも使える形式の1つです（出典7）。
 
 ## 料金がかからない範囲
 
 手順1から4までと、`io` の比較、日付の例外の確認は、どれも API を呼びません。npm のパッケージも無料なので、記事のとおりに動かすだけなら料金はかかりません。
 
-料金が要るのは、作ったツール定義を付けて Claude API を呼ぶ操作です。呼ぶには API キーが要ります（出典5）。ツール定義の名前、説明、スキーマは、[入力トークンとして料金に数えられます](/posts/llm-api-cost-estimate-js-tiktoken)（出典6）。ツールを1つ以上渡すと、ツール用のシステムプロンプトのトークンも足されます（出典6）。Claude Opus 5.5 なら、その分は286トークンです（出典6）。`tool_choice` が `auto` のときの値です（出典6）。この記事は API を呼んでいないので、1回あたりの金額は載せていません。
+料金が要るのは、作ったツール定義を付けて Claude API を呼ぶ操作です。呼ぶには API キーが要ります（出典5）。ツール定義の名前、説明、スキーマは、入力トークンとして料金に数えられます（出典6）。料金は[この記事](/posts/llm-api-cost-estimate-js-tiktoken)に書きました。ツールを1つ以上渡すと、ツール用のシステムプロンプトのトークンも足されます（出典6）。Claude Opus 5.5 なら、その分は286トークンです（出典6）。`tool_choice` が `auto` のときの値です（出典6）。この記事は API を呼んでいないので、1回あたりの金額は載せていません。
 
 ## まとめ
 

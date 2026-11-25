@@ -1,7 +1,5 @@
-sentences: 205 (prose+frontmatter 166, headings 11, table cells 28)
-not counted: code block lines 230, URL-only table cells 8 (lines [478, 479, 480, 481, 482, 483, 484, 485])
-LONG>60: 0  (50<len<=60: 24)
-prose length min 7 / max 60 / short(<=20) 22 / long(41-60) 53
-SAME3: 0
-AND/OR candidates (や in prose, judge by eye):
-  YA 199 を1つ増やし
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/rag-chunking-japanese-text/lint/prose-check.py", line 9, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

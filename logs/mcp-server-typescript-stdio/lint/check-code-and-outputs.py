@@ -25,13 +25,17 @@ checks = {
     "14 npm run check": out(14, "npm run check"),
     "15 node compare.mjs": out(15, "node compare.mjs"),
     "17 npm run check (console.log)": out(17, "npm run check"),
-    "20 claude mcp add/list/get/remove": "\n\n".join(f"$ {c}\n{o.strip(chr(10))}" for c, o, e in blocks(20)),
     "lead ok line (14)": next(l for l in out(14, "npm run check").split("\n") if l.startswith("ok:")),
 }
 for name, text in checks.items():
     hit = text in fences
     ok &= hit
     print(f"output {name}: {hit}")
+# 記事は run/20 の claude mcp の結果を、コマンド（bash ブロック）と出力（text ブロック）の組で載せる
+for c, o, e in blocks(20):
+    hit = c in fences and o.strip("\n") in fences
+    ok &= hit
+    print(f"output run/20 {c!r} command+output in article: {hit}")
 same = out(19, "npm run check") == out(14, "npm run check")
 ok &= same
 print(f"19 (reverted) check output == 14: {same}")

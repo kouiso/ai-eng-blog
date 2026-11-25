@@ -7,7 +7,7 @@ main_keyword: "LLM API"
 target_query: "llm ストリーミング"
 course_step: 1
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。API キーは使いません。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS（Darwin arm64）。型の確認は TypeScript 7.0.2"
 verified_at: "2026-11-11"
 prev: "claude-p-script-first-call"
 next: "llm-api-cost-estimate-js-tiktoken"
@@ -37,7 +37,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 Agent SDK の `query()` は、ふつうは書き終わった応答をまとめて返します。`includePartialMessages: true` を足すと、途中の文字も届きます（出典1）。
@@ -55,7 +55,7 @@ Agent SDK の `query()` は、ふつうは書き終わった応答をまとめ�
 
 `query()` が返すメッセージの種類と、SDK の入れ方は省きます。
 
-環境変数 `ANTHROPIC_API_KEY` があると、Claude Code はそのキーを使うかを聞きます。承認すると、プランより API キーが優先されます（出典4）。プランで試すなら、外れていることを先に確かめてください。
+環境変数 `ANTHROPIC_API_KEY` があると、Claude Code はそのキーを使うかを聞きます。承認すると、API キーのほうが優先です（出典4）。プランで試すなら、外れていることを先に確かめてください。
 
 ```bash
 test -n "$ANTHROPIC_API_KEY" && echo set || echo unset

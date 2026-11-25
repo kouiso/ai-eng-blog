@@ -1,1 +1,78 @@
-{}
+{
+  "ai-agent-custom-tools-agent-sdk": [
+    {
+      "first_line": "tool(\"get_product\", 説明, zod の入力定義, 処理)   … ツールを1つ作る",
+      "reason": "ツールを作ってエージェントに渡すまでの呼び出しの流れを示す図（書き方の見本）。実行の出力ではない。"
+    }
+  ],
+  "ai-agent-safe-file-tool": [
+    {
+      "first_line": "safe-file-tool/",
+      "reason": "作業フォルダの配置を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "llm-api-cost-estimate-js-tiktoken": [
+    {
+      "first_line": "料金（ドル）= (入力トークン数 × 入力単価 + 出力トークン数 × 出力単価) ÷ 1,000,000",
+      "reason": "料金の計算式。実行の出力ではない。"
+    }
+  ],
+  "llm-eval-harness-fixtures": [
+    {
+      "first_line": "llm-eval/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "mcp-connection-closed-fix": [
+    {
+      "first_line": "notes-mcp/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "mcp-inspector-debug": [
+    {
+      "first_line": "inspector-demo/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "mcp-server-resources-prompts": [
+    {
+      "first_line": "writing-helper-mcp/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "mcp-server-streamable-http": [
+    {
+      "first_line": "char-count-http/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "mcp-server-typescript-stdio": [
+    {
+      "first_line": "char-count-mcp/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ],
+  "rag-bm25-search-typescript": [
+    {
+      "first_line": "重み = idf × tf / (tf + k1 × (1 - b + b × dl / avgdl))",
+      "reason": "BM25 の重みの式。実行の出力ではない。"
+    },
+    {
+      "first_line": "1.281 × 2 / (2 + 1.2 × (0.25 + 0.75 × 22 / 27.375)) ≈ 0.847",
+      "reason": "式への数値の代入の例（式）。実行の出力ではない。"
+    }
+  ],
+  "rag-hybrid-search-rrf": [
+    {
+      "first_line": "RRF の点数(d) = Σ 1 / (k + 順位(d))",
+      "reason": "RRF の点数の式。実行の出力ではない。"
+    }
+  ],
+  "zod-to-json-schema-tool-definition": [
+    {
+      "first_line": "zod-tool-schema/",
+      "reason": "作業フォルダの構成を示すファイルの木。実行の出力ではない。"
+    }
+  ]
+}

@@ -1,38 +1,5 @@
-units=236 excluded_url_only_cells=12
-C25 over60=0 max=60
-C16 prose+bullet sentences=163 min=11 max=60 le20=13 41to60=74
-C17 A(全単位) 末尾3字の3連続=0
-C17 A(全単位) 末尾2字の3連続=0
-C17 B(文の単位・見出しと表をまたぐ) 末尾3字の3連続=0
-C17 B(文の単位・見出しと表をまたぐ) 末尾2字の3連続=0
-C19 non-desumasu prose+bullet=0
-PAT bold **: 0
-PAT em-dash —: 0
-PAT 罫線 ─: 0
-PAT ― U+2015: 0
-PAT 全角コロン ：: 0
-PAT 全角スラッシュ ／: 0
-PAT 徹底解説: 0
-PAT 完全ガイド: 0
-PAT でしょう: 0
-PAT かもしれ: 0
-PAT ここから: 0
-PAT ここまで: 0
-PAT 次は: 0
-PAT まとめ: 0
-PAT 整理: 0
-PAT 見ていき: 0
-PAT 解説します: 0
-PAT 紹介します: 0
-PAT ではなく: 0
-PAT ではありません: 0
-PAT じゃない: 0
-PAT や（並列候補）: 0
-PAT さまざま: 0
-PAT 落ちる: 0
-PAT 効く: 1
-    (105, 'は、TypeScript のまま  で実行します。Node.js は 22.18.0 から、型の記述')
-PAT 回す: 0
-PAT 仕様書: 0
-PAT 地図: 0
-exit=0
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/mcp-inspector-debug/lint/prose-check.py", line 12, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

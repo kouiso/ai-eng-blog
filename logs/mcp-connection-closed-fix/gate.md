@@ -1,6 +1,7 @@
 # gate: mcp-connection-closed-fix
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+> 2026-11-24 追記: check-article.py の確定項目（C25 1か所、C17 0か所、OUTPUT）を直し、`check-article.py --all` で確定 0 を確認した。直したのは文章だけでコードとコマンドは同じなので、実行ログと `verified_at` はそのまま使える。C16/C28 の候補は全部読んで判定を `lint/judgments.md` の「2026-11-24 の再判定」に書いた。G10 はこの追記より前の判定のまま。キーワード選定の仕組みの整備は #83 で扱う予定。G11（別の AI による点検）は依然として未実施のため、`status: draft` を維持する。
 
 
 判定日: 2026-11-10（指摘5件を直した版で全項目を判定し直した。前回の判定は 2026-11-02）。原稿: `content/articles/mcp-connection-closed-fix.md`（502行、frontmatter は1〜56行目。行番号はすべてこの版）。日時はログと同じ UTC。

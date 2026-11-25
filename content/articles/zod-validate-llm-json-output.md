@@ -43,14 +43,14 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-LLM が返した JSON は、`JSON.parse` のあとに zod の `safeParse` で検証します。失敗したら、`error.issues` を `path`、`code`、`message` の順に読みます。手で作った5つの見本を検証し、実際に出た issues をそのまま載せて読み方を示します。
+LLM が返した JSON は、`JSON.parse` のあとに zod の `safeParse` で検証します。失敗したときは、`error.issues` を `path`、`code`、`message` の順に読んでください。手で作った5つの見本を検証し、実際に出た issues をそのまま載せて読み方を示します。
 
 対象は、TypeScript で何か作ったことがあり、LLM の出力をアプリで使い始めた人です。手順は15分ほどで終わります。
 
-講座の前の記事では、Agent SDK の outputFormat で Claude に JSON を返させる方法を扱いました。[前の記事](/posts/claude-agent-sdk-structured-output)から読むと流れがつながります。
+講座の前の記事では、Agent SDK の outputFormat で JSON を返させる方法を扱いました。[前の記事](/posts/claude-agent-sdk-structured-output)からが自然です。
 
 ## safeParse の失敗は path、code、message の順に読む
 
@@ -64,7 +64,7 @@ LLM が返した JSON は、`JSON.parse` のあとに zod の `safeParse` で検
 | 2 | `code` | 何が合わないか。型の違い、候補に無い値、余分なキー、上限の超過を区別する |
 | 3 | `message` | 人が読むための英語の説明文 |
 
-プログラムで処理を分けるときは `path` と `code` を使います。`message` は画面とログに出す文として使います。
+プログラムで処理を分けるときは `path` と `code` を使います。`message` は画面とログに出す文です。
 
 zod 4.6.7 の issue の `code` は11種類あります（出典5）。この記事の見本で出たのは、そのうち次の4種類です。
 
@@ -83,9 +83,9 @@ Claude の Structured Outputs は、出力をスキーマに合わせる機能�
 
 文字列の候補（JSON Schema の `enum`）は、大文字と小文字の違いまでは保証されません（出典7）。`max_tokens` で途中まで切れた出力も、スキーマに合わないことがあります（出典7）。Structured Outputs を使わないときは、必須のフィールドの抜けと型のずれも起こり得ます（出典7）。
 
-公式の TypeScript SDK には `zodOutputFormat()` があります（出典7）。zod のスキーマをこれで包み、`parse()` に渡して使います（出典7）。このとき `parse()` は、外した制約も元のスキーマのとおりに応答で確かめます（出典7）。同じ SDK の `jsonSchemaOutputFormat()` は、応答を検証しません（出典7）。API が対応しない制約に反する値も、そのまま通します（出典7）。
+公式の TypeScript SDK にも `zodOutputFormat()` があるのです（出典7）。zod のスキーマをこれで包み、`parse()` に渡して使います（出典7）。このとき `parse()` は、外した制約も元のスキーマのとおりに応答で確かめます（出典7）。同じ SDK の `jsonSchemaOutputFormat()` は、応答を検証しません（出典7）。API が対応しない制約に反する値も、そのまま通します（出典7）。
 
-この記事は SDK を使わずに、受け取った JSON を zod で検証します。SDK を通さないとき、または検証しないヘルパーを使うときは、文字数と数値の範囲まで自分のコードで確かめます。`zodOutputFormat()` と `parse()` を使うなら、同じ確認を重ねて書かずに済みます（出典7）。
+この記事は SDK を使わずに、受け取った JSON を zod で検証する方法です。SDK を通さないとき、または検証しないヘルパーを使うときは、文字数と数値の範囲まで自分のコードで確かめます。`zodOutputFormat()` と `parse()` を使うなら、同じ確認を重ねて書かずに済みます（出典7）。
 
 ## 使うバージョンと準備
 
@@ -100,7 +100,7 @@ mkdir zod-llm-check
 cd zod-llm-check
 ```
 
-`package.json` を置きます。zod のバージョンは `^` を付けずに固定しています。
+`package.json` を置きます。zod のバージョンは `^` を付けずに固定です。
 
 ```json
 {
@@ -146,7 +146,7 @@ export const Ticket = z.strictObject({
 export type Ticket = z.infer<typeof Ticket>;
 ```
 
-このファイルを `schema.ts` として保存します。`z.strictObject` は、スキーマに無いキーをエラーにします（出典3）。`z.infer` で、同じスキーマから TypeScript の型も作れます（出典1）。
+このファイルを `schema.ts` として保存します。`z.strictObject` は、スキーマに無いキーをエラーにする指定です（出典3）。`z.infer` で、同じスキーマから TypeScript の型も作れます（出典1）。
 
 見本は、モデルの出力の形をまねて手で作った文字列です。実際のモデルの出力ではありません。`ok` 以外の4つには、わざと違反を入れてあります。
 
@@ -197,7 +197,7 @@ success: {
 }
 ```
 
-成功すると、`result.data` に検証を通った値が入ります（出典1）。`if` の中では `result.data` の型が `Ticket` になるので、以降のコードで型の補完が使えます。
+成功すると、`result.data` に検証を通った値が入る仕組みです（出典1）。`if` の中では `result.data` の型が `Ticket` になるので、以降のコードで型の補完が使えます。
 
 ## 見本ごとの issues の読み方
 
@@ -293,7 +293,7 @@ node check.ts many
 
 見本 `many` には違反を3つ入れ、issues も3件返りました。最初の違反で止まらないので、この見本では1回の検証で3か所すべてがわかりました。
 
-`too_big` の `maximum` は上限の3です。`inclusive: true` と `message` の `<=3` から、3 は許されるとわかります。`summary` のキーが無いときは、`invalid_type` になります。`message` には `received undefined` と出ます。`[ 'tags', 1 ]` の 1 は配列の添字で、2つ目の要素の `3` を指しています。
+`too_big` の `maximum` は上限の3です。`inclusive: true` と `message` の `<=3` から、3 は許されるとわかります。`summary` のキーが無いときは、`invalid_type` になります。`message` には `received undefined` と出る結果です。`[ 'tags', 1 ]` の 1 は配列の添字で、2つ目の要素の `3` を指しています。
 
 ## 大文字と小文字の違いは z.enum の前にそろえる
 
@@ -319,7 +319,7 @@ const ticket = CaseInsensitiveTicket.safeParse(JSON.parse(samples["bad-enum"]));
 console.log("bad-enum:", ticket.success, ticket.data?.category);
 ```
 
-このファイルを `lowercase-enum.ts` として保存し、実行します。
+このファイルを `lowercase-enum.ts` として保存し、実行してください。
 
 ```bash
 node lowercase-enum.ts
@@ -358,7 +358,7 @@ if (!result.success) {
 }
 ```
 
-このファイルを `retry-message.ts` として保存し、実行します。
+このファイルを `retry-message.ts` として保存し、実行してください。
 
 ```bash
 node retry-message.ts
@@ -379,7 +379,7 @@ node retry-message.ts
 
 ## メッセージを日本語にする
 
-`z.config` に zod の日本語のロケール `ja` を渡すと、メッセージが日本語になります（出典4）。
+`z.config` に zod の日本語のロケール `ja` を渡すと、メッセージは日本語です（出典4）。
 
 ```ts
 import * as z from "zod";
@@ -394,7 +394,7 @@ if (!result.success) {
 }
 ```
 
-このファイルを `pretty-ja.ts` として保存し、実行します。
+このファイルを `pretty-ja.ts` として保存し、実行してください。
 
 ```bash
 node pretty-ja.ts
@@ -409,7 +409,7 @@ node pretty-ja.ts
   → at tags[1]
 ```
 
-`z.config` は zod 全体の設定です（出典4）。設定すると、モデルに返す再依頼の文まで日本語に変わります。英語の文はそのまま検索しやすいので、この講座では英語のまま使います。
+`z.config` は zod 全体の設定です（出典4）。設定すると、モデルに返す再依頼の文まで日本語に変わります。英語の文はそのまま検索しやすいので、この講座では英語のまま使う方針です。
 
 ## z.object は余分なキーを黙って消す
 
@@ -430,7 +430,7 @@ const result = LooseTicket.safeParse(JSON.parse(samples["extra-key"]));
 console.log(result.success, result.data);
 ```
 
-このファイルを `strip.ts` として保存し、実行します。
+このファイルを `strip.ts` として保存し、実行してください。
 
 ```bash
 node strip.ts
@@ -448,7 +448,7 @@ true { category: 'billing', priority: 1, summary: '請求額が二重になっ�
 
 記事の手順は zod しか使わず、API を呼ばないので無料です。zod は MIT ライセンスで配布されています（出典6）。通信したのは `npm install` の1回でした。ネットワークの無い環境で実行し直しても、`node` のコマンドはすべて成功しました。
 
-再依頼の文を実際にモデルへ送ると、[トークン数に応じた料金](/posts/llm-api-cost-estimate-js-tiktoken)がかかります（出典9）。Claude Haiku 5.5 なら、100万トークンあたり入力 $0.10、出力 $0.50 です（出典9）。この単価は、プロンプトが10万トークン以下のときのものです（出典9）。
+再依頼の文を実際にモデルへ送ると、トークン数に応じた料金がかかります（出典9）。料金は[この記事](/posts/llm-api-cost-estimate-js-tiktoken)にあります。Claude Haiku 5.5 なら、100万トークンあたり入力 $0.10、出力 $0.50 です（出典9）。この単価は、プロンプトが10万トークン以下のときのものです（出典9）。
 
 ## 確認すること
 

@@ -6,8 +6,8 @@ tags: ["MCPサーバー", "MCP Inspector", "TypeScript"]
 main_keyword: "MCPサーバー"
 target_query: "mcp inspector 使い方"
 course_step: 5
-cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには Claude Code が要ります。Claude Code は、Pro、Max などのプランか Console のアカウント、または Amazon Bedrock、Microsoft Foundry などの API の提供元を通して使えます。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、MCP Inspector 2.13.0、SDK 1.32.2、zod 4.6.7、Linux x86_64（型の確認は TypeScript 7.0.2）"
+cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには Claude Code が要ります。Claude Code は、Pro、Max などのプランか Console のアカウントで使えます。Amazon Bedrock、Microsoft Foundry などの API の提供元からも使えます。"
+run_environment: "Node.js 22.22.0。npm 10.9.4。MCP Inspector 2.13.0。SDK 1.32.2。zod 4.6.7。Linux x86_64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-10"
 prev: "mcp-server-streamable-http"
 next: "mcp-server-resources-prompts"
@@ -52,7 +52,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 MCP Inspector は、MCP サーバーのテストとデバッグに使う公式の開発ツールです（出典1）。CLI モードなら、ツールの一覧も呼び出しの結果も、1行のコマンドで JSON として返ります。成否を表すのは終了コードです（出典3）。手元では、API キーを使わず、LLM も通さずに、自作のサーバーのツールを呼べました。この記事では、2.13.0 の CLI と、ブラウザで開く画面の両方で、文字数を数えるツールを持つサーバーを調べます。

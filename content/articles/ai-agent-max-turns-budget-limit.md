@@ -6,8 +6,8 @@ tags: ["AIエージェント", "Claude Agent SDK", "TypeScript"]
 main_keyword: "AIエージェント"
 target_query: "ai エージェント 上限"
 course_step: 4
-cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。SDK の total_cost_usd は手元で計算した見積もりで、結果を載せた11回の合計は約0.0076ドルでした。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、モデル claude-haiku-5-5、macOS arm64（型の確認は TypeScript 7.0.2）"
+cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。SDK の total_cost_usd は見積もりです。結果を載せた11回の合計は、約0.0076ドルでした。"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。モデルは claude-haiku-5-5。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "claude-agent-sdk-first-agent"
 next: "ai-agent-safe-file-tool"
@@ -43,7 +43,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 Agent SDK のエージェントは、Claude がツールを呼ばない返答を出すまでループを続けます（出典1）。止める手段は、`query()` に渡す2つの上限です。`maxTurns` は応答の回数、`maxBudgetUsd` は米ドルでの見積もり額を数えます（出典1）。

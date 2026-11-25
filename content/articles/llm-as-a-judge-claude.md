@@ -7,7 +7,7 @@ main_keyword: "LLM 評価"
 target_query: "llm as a judge やり方"
 course_step: 6
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS（Darwin arm64）。型の確認は TypeScript 7.0.2"
 verified_at: "2026-11-11"
 prev: "llm-eval-harness-fixtures"
 next: "rag-retrieval-eval-recall-mrr"
@@ -49,7 +49,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 LLM-as-a-Judge は、採点基準を書いたプロンプトをモデルに渡して、別の回答に点を付けさせるやり方です。この記事では、Claude Agent SDK の `query()` に採点基準と JSON スキーマを渡します。受け取るのは、点と理由の2つです。
@@ -62,7 +62,7 @@ LLM-as-a-Judge は、採点基準を書いたプロンプトをモデルに渡�
 
 ## 文字列で決められない観点だけをモデルに採点させる
 
-採点の方法は、速くて確実なものから選びます。Anthropic の評価のページは、コードでの採点を最も速く確実な方法としています（出典1）。
+採点の方法は、速くて確実なものから選びます。Anthropic の評価のページが最も速く確実とするのは、コードでの採点です（出典1）。
 
 モデルによる採点は、速く柔軟で、複雑な判断にも使える方法です（出典1）。同じページは、まず信頼できるかを確かめてから広げるよう書いています（出典1）。
 
@@ -205,7 +205,7 @@ export async function judge(rubric: string, input: string) {
 `query()` に渡したオプションの役割は、次のとおりです。
 
 - `model: "haiku"` はモデルの別名です。別の確認用のコードで init の `model` を表示すると、`claude-haiku-5-5` でした。
-- `systemPrompt` に文字列を渡すと、SDK はその文字列だけをシステムプロンプトとして送ります（出典3）。
+- `systemPrompt` に文字列を渡したとき、SDK はそれだけをシステムプロンプトにします（出典3）。
 - `tools: []` は、組み込みのツールをすべて外す指定です（出典2）。
 - `settingSources: []` では、手元の設定と CLAUDE.md を読みません（出典2、出典3）。
 - `outputFormat` は、返す値の形を決める JSON スキーマです（出典8）。結果の `structured_output` に、その形の値が入ります（出典8）。
@@ -356,7 +356,7 @@ d は、参考情報に無い返金の日数を書き足した回答です。5�
 
 出力の `total_cost_usd の合計（見積もり）: 0.0018` は、SDK が定価で換算した見積もりです。型定義のコメントには「An estimate, not a billing statement」とあります（出典2）。プランで動かした分の請求額とは別の数字です。
 
-API キーで使う場合、Haiku 5.5 は100万トークンあたり入力0.10ドル、出力0.50ドルです（出典11）。これはプロンプトが10万トークン以下のときの単価です（出典11）。
+API キーなら、Haiku 5.5 は100万トークンあたり入力0.10ドル、出力0.50ドルになります（出典11）。これはプロンプトが10万トークン以下のときの単価です（出典11）。
 
 ## 採点を任せる前に決めておくこと
 

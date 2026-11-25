@@ -7,7 +7,7 @@ main_keyword: "構造化出力"
 target_query: "claude 構造化出力"
 course_step: 2
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。zod 4.6.7。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "claude-code-api-key-billing-auth"
 next: "zod-validate-llm-json-output"
@@ -43,7 +43,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 決めた形の JSON を受け取るなら、Agent SDK の `outputFormat` を使います。
@@ -177,7 +177,7 @@ node classify.ts
 
 `apiKeySource=none` は、API キーを使っていないという意味です（出典3）。`structured_output` には、スキーマどおりの4項目が入りました。
 
-`outputFormat` の `type` に書ける値は `"json_schema"` の1つだけです（出典3）。`schema` には JSON Schema のオブジェクトをそのまま渡します（出典1）。`enum`、`required`、入れ子のオブジェクトも使えます（出典1）。
+`outputFormat` の `type` に書ける値は `"json_schema"` の1つだけです（出典3）。`schema` には JSON Schema のオブジェクトをそのまま渡します（出典1）。`enum`、`required`、入れ子のオブジェクトも指定可能です（出典1）。
 
 `structured_output` を読む前に、3つの条件を確かめます。`subtype` が `success`、`is_error` が `false`、値があることです（出典1）。公式のページも、この3つで成功を判定しています（出典1）。
 
@@ -193,7 +193,7 @@ node classify.ts
 
 スキーマを満たす値が作れないと、SDK は不一致をモデルに返して作り直させます（出典1）。わざと満たせないスキーマを渡すと、終わり方を確かめられます。
 
-`priority` を「5以上かつ3以下」にしたスキーマで試します。この条件を満たす整数はありません。
+`priority` を「5以上かつ3以下」にしたスキーマで試してください。この条件を満たす整数はありません。
 
 ```ts
 import { query } from "@anthropic-ai/claude-agent-sdk";
@@ -271,7 +271,7 @@ structured_output がありません
 
 試す回数の上限は、環境変数 `MAX_STRUCTURED_OUTPUT_RETRIES` で決まります。公式の表では、既定は5回で、最初の1回と4回の再試行です（出典4）。既定のままで5回まで試す動きは、この環境では確かめていません。
 
-公式の表は [`claude -p`](/posts/claude-p-script-first-call) の説明として書いています（出典4）。SDK でも同じ上限になるかを、1にして確かめました。
+公式の表は `claude -p` の説明として書いています（出典4）。`claude -p` は[こちら](/posts/claude-p-script-first-call)で扱います。SDK でも同じ上限になるかを、1にして確かめました。
 
 ```bash
 MAX_STRUCTURED_OUTPUT_RETRIES=1 node impossible.ts
@@ -290,7 +290,7 @@ caught: Error: Claude Code returned an error result: Failed to provide valid str
 
 ### 失敗を減らすのはスキーマの側
 
-スキーマが深く入れ子になり、必須の項目が多いほど、満たすのは難しくなります（出典1）。文から読み取れないことがある項目は、任意にしておくのが公式のすすめです（出典1）。
+スキーマが深く入れ子になり、必須の項目が多いほど、満たすのは難しくなる構造です（出典1）。文から読み取れないことがある項目は、任意にしておくのが公式のすすめです（出典1）。
 
 1本目の `due_date` は、必須のまま `null` を許しました。期限の無い問い合わせでも、項目そのものは必ず返ってきます。
 
@@ -359,7 +359,7 @@ SDK がスキーマの検証に使うのは、JSON Schema の draft-07 です（
 Error: Claude Code process exited with code 1. stderr: Error: --json-schema is not a valid JSON Schema: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"
 ```
 
-エラーの中の `$schema` の URL が、Draft 2020-12 を指しています。公式のページも、新しい版を宣言したスキーマは受け付けないと書いています（出典1）。
+エラーの中の `$schema` の URL が、Draft 2020-12 を指していました。公式のページも、新しい版を宣言したスキーマは受け付けないと書いています（出典1）。
 
 ### structured_output は safeParse で読み直す
 
@@ -369,7 +369,7 @@ Error: Claude Code process exited with code 1. stderr: Error: --json-schema is n
 
 ## プロンプトで JSON を頼む書き方との違い
 
-プロンプトに「JSON で答えて」と書くだけの方法もあります。その場合、答えは文字列で届き、形が合っているかは自分で確かめます。
+プロンプトに「JSON で答えて」と書くだけの方法もあります。その場合、答えは文字列で届き、形が合うかの確認は自分のコードの仕事です。
 
 `outputFormat` を使うと、形の確認と作り直しを SDK が受け持ちます（出典1）。
 
@@ -385,7 +385,7 @@ Pro は月払いで月20ドルです（出典8）。
 
 ## 出典
 
-本文の（出典n）は、この表の番号です。確認日は、どれもページを読んだ日です。
+本文の（出典n）は、この表の番号を指します。確認日は、どれもページを読んだ日です。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|

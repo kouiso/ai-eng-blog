@@ -1,8 +1,5 @@
-sentences: 187 (prose+frontmatter 129, headings 11, table cells 47)
-not counted: code block lines 154, URL-only table cells 9 (lines [418, 419, 420, 421, 422, 423, 424, 425, 426])
-LONG>60: 0  (50<len<=60: 21)
-prose length min 9 / max 60 / short(<=20) 9 / long(41-60) 51
-SAME3: 0
-AND/OR candidates (や in prose, judge by eye):
-  YA 159 依存を増やさないためにこの記事では
-  YA 410 長い日本語の文書を検索しやすい大きさに分けます
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/rag-bm25-search-typescript/lint/prose-check.py", line 9, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

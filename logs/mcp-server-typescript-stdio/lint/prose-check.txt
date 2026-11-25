@@ -1,7 +1,5 @@
-sentences: 219 (prose+frontmatter 147, headings 13, table cells 59)
-not counted: code block lines 153, URL-only table cells 15 (lines [410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424])
-LONG>60: 0  (50<len<=60: 34)
-prose length min 13 / max 60 / short(<=20) 8 / long(41-60) 78
-SAME3: 0
-PAT '言語モデル' 81 MCP サーバーは、LLM（大規模言語モデル）が呼べるツールを公開するプログラムです（出典2）。
-AND/OR candidates (や in prose, judge by eye):
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/mcp-server-typescript-stdio/lint/prose-check.py", line 8, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

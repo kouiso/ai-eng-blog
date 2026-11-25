@@ -40,13 +40,13 @@ sources:
     title: "Pricing"
     accessed: 2026-11-02
 cost_estimate: "記事のコードは API を呼ばないので無料です。見本の代わりにモデルの回答を採点すると、回答を作らせる分の API の料金がかかります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.22.0。npm 10.9.4。依存パッケージなし。Linux x86_64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-10"
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 プロンプトを1行直すたびに LLM の回答を目で読み直していると、テストケースの件数だけ読む量が増えます。この記事で作るのは、回答を完全一致、部分一致、正規表現の3つの方法で採点する TypeScript のプログラムです。合格率が基準を下回ると終了コード 1 で終わるので、変更で回答が悪くなったことに実行1回で気づけます。

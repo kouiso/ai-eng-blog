@@ -49,7 +49,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 RAG の検索が良くなったかどうかは、Recall@k と MRR の2つの数字で判定できます。用意するのは、質問と正解の文書の組です。Recall@k は、上位 k 件に正解の文書が入った割合を表します。MRR は、最初の正解の順位の逆数を、質問ごとに求めて平均した値です。
@@ -88,7 +88,7 @@ mkdir retrieval-eval
 cd retrieval-eval
 ```
 
-`package.json` を置きます。`import` と `export` を使うので、`"type": "module"` を入れます（出典4）。依存のバージョンは、`^` を付けずに 4.3.2 で固定しました。
+`package.json` を置きます。`import` と `export` を使うので、`"type": "module"` が必要です（出典4）。依存のバージョンは、`^` を付けずに 4.3.2 で固定しました。
 
 ```json
 {
@@ -128,7 +128,7 @@ export function mean(values: number[]): number {
 }
 ```
 
-このファイルを `metrics.ts` として保存します。
+このファイルを `metrics.ts` として保存してください。
 
 `recallAtK` は、上位 k 件の id を `Set` に入れ、正解のうちいくつがその中にあるかを数えます。割る数は、正解の文書の数です。k で割ると、上位 k 件に占める正解の割合を表す Precision@k という別の指標です（出典1）。
 
@@ -202,7 +202,7 @@ Anthropic の評価の作り方のページは、実際の利用で来る質問�
 
 採点する検索器は、講座の RAG の回で作ったものです。BM25 は[BM25 の記事](/posts/rag-bm25-search-typescript)で作りました。RRF の説明は[ハイブリッド検索の記事](/posts/rag-hybrid-search-rrf)にあります。次の6ファイルは、ハイブリッド検索の記事のものと1文字も違いません。仕組みの説明はそれぞれの記事に任せ、ここにはコードを載せます。
 
-`tokenize.ts` は、日本語の文を `Intl.Segmenter` で語に分けます。
+`tokenize.ts` は、日本語の文を `Intl.Segmenter` で語に分けるファイルです。
 
 ```ts
 const segmenter = new Intl.Segmenter("ja", { granularity: "word" });
@@ -407,7 +407,7 @@ for (const name of names) {
 }
 ```
 
-このファイルを `eval.ts` として保存します。
+このファイルを `eval.ts` として保存してください。
 
 1つ目の引数が Recall@k の k で、既定は3です。ハイブリッド検索の記事で、モデルに渡す件数を上位3件にしたからです。2つ目の引数で、BM25 の結果に置くスコアの下限を決めます。既定の 0.1 には、ハイブリッド検索の記事の既定値をそのまま使いました。
 
@@ -469,7 +469,7 @@ MRR の平均は、ベクトル検索が 0.967、ハイブリッド検索が 0.9
 
 ## k を小さくすると Recall@k の差が開く
 
-k を変えて、Recall@k の平均を比べます。`tail -n 4` で、末尾の平均の4行だけを表示します。`tail` が無い環境では、`node eval.ts 1` の出力の最後の4行を見てください。
+k を変えて、Recall@k の平均を比べた結果です。`tail -n 4` で、末尾の平均の4行だけを表示します。`tail` が無い環境では、`node eval.ts 1` の出力の最後の4行を見てください。
 
 ```bash
 node eval.ts 1 | tail -n 4

@@ -28,3 +28,4 @@ run/19.log command=OK exit=0
 run/20.log command=OK exit=1
 run/21.log command=OK exit=0
 ALL OK
+exit=0

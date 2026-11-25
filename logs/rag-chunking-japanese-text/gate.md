@@ -1,6 +1,7 @@
 # gate: rag-chunking-japanese-text
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+> 2026-11-24 追記: check-article.py の確定項目（C25 1か所、C17 7か所）を直し、`check-article.py --all` で確定 0 を確認した。直したのは文章だけでコードとコマンドは同じなので、実行ログと `verified_at` はそのまま使える。C16/C28 の候補は全部読んで判定を `lint/judgments.md` の「2026-11-24 の再判定」に書いた。G10 はこの追記より前の判定のまま。キーワード選定の仕組みの整備は #83 で扱う予定。G11（別の AI による点検）は依然として未実施のため、`status: draft` を維持する。
 
 
 判定日: 2026-11-10（初版 2026-10-31。レビューで指摘された7点を直して全項目を判定し直した。直した内容は `lint/judgments.md` の「2026-11-10 の手直し」）。原稿: `content/articles/rag-chunking-japanese-text.md`（487行、`md5sum` 88c473fb963f6c7013504fd6f9807d12。行番号はすべてこの版）。

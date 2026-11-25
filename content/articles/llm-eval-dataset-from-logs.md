@@ -34,7 +34,7 @@ sources:
     title: "RFC 2606 Reserved Top Level DNS Names"
     accessed: 2026-11-02
   - url: "https://www.rfc-editor.org/rfc/rfc8259.txt"
-    title: "RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format"
+    title: "RFC 8259 The JavaScript Object Notation (JSON)"
     accessed: 2026-11-02
   - url: "https://platform.claude.com/docs/en/about-claude/pricing"
     title: "Pricing"
@@ -43,13 +43,13 @@ sources:
     title: "wc (The Open Group Base Specifications Issue 8)"
     accessed: 2026-11-02
 cost_estimate: "記事のコードは API を呼ばないので無料です。書き出したテストケースでモデルに回答を作らせると、その分の API の料金がかかります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.22.0。npm 10.9.4。依存パッケージなし。Linux x86_64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-10"
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 評価用のテストケースをログから手で写すと、同じ質問が何度も入り、問い合わせの多いカテゴリばかりが並びます。作るのは、ログの JSONL から重複した質問を除いてテストケースを選ぶ TypeScript のスクリプトです。件数はカテゴリの割合に合わせて決め、結果は `cases.jsonl` に書き出します。同じログからは何度実行しても同じテストケースが選ばれるので、Git で差分を見られます。

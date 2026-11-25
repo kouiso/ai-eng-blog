@@ -7,7 +7,7 @@ main_keyword: "AIエージェント"
 target_query: "aiエージェント ファイル操作"
 course_step: 4
 cost_estimate: "記事のコードは API を呼ばないので無料です。モデルにつないで動かすと、ツールの定義と結果の文字列も入力トークンとして料金がかかります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）、Linux x86_64"
+run_environment: "Node.js 22.22.0。npm 10.9.4。依存パッケージなし（型の確認は TypeScript 7.0.2）。Linux x86_64"
 verified_at: "2026-11-10"
 prev: "ai-agent-max-turns-budget-limit"
 next: "ai-agent-vs-workflow"
@@ -46,13 +46,13 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-24
 ---
 
 
 AI エージェントのファイル操作ツールは、モデルが渡したパスをそのまま開くと作業フォルダの外まで読みます。防ぐ手立ては、`realpath` で実体に直したパスを `path.relative` で中か外か判定することです。そのうえで、拡張子、書き込み先、ツール名を許可リストで絞ります。
 
-対象は、tool use で AI エージェントを作り始めた人です。この記事のコードは API を呼ばず、危ない入力をツールの関数に直接渡して確かめます。モデルにつなぐループのコードは、この記事には載せていません。モデルにツールを渡す流れは、[自作ツールを Agent SDK に渡す記事](/posts/ai-agent-custom-tools-agent-sdk)で扱います。
+対象は、tool use で AI エージェントを作り始めた人です。この記事のコードは API を呼ばず、危ない入力をツールの関数に直接渡して確かめます。モデルにつなぐループのコードは、この記事には載せていません。モデルにツールを渡す流れは扱いません。[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)で扱います。
 
 この記事は[前の記事](/posts/ai-agent-max-turns-budget-limit)の続きです。講座の前の回では、エージェントのループを最大ターン数とトークン予算で止める予定にしています。今回は、そのループから呼ばれるツールの関数に検査を入れます。
 
@@ -560,7 +560,7 @@ AI エージェントにファイル操作のツールを渡す前に、次の�
 
 - 入力のパスを作業フォルダの絶対パスにつなぎ、`path.relative` で中かを判定しているか
 - `realpath` でリンクをたどった先にも、同じ判定をかけているか
-- 拡張子と大きさを許可リストで絞っているか
+- 拡張子と大きさの許可リストがあるか
 - 書き込みを決まったフォルダに限り、`"wx"` で既にある名前を断っているか
 - ツール名を `Map` の許可リストで引き、エラーを `is_error` で返しているか
 

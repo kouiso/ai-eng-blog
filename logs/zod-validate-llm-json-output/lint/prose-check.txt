@@ -1,9 +1,5 @@
-sentences: 205 (prose+frontmatter 128, headings 16, table cells 61)
-not counted: code block lines 184, URL-only table cells 9 (lines [472, 473, 474, 475, 476, 477, 478, 479, 480])
-LONG>60: 0  (50<len<=60: 26)
-prose length min 8 / max 60 / short(<=20) 5 / long(41-60) 62
-SAME3: 0
-PAT 'ではありません' 151 実際のモデルの出力ではありません。
-AND/OR candidates (や in prose, judge by eye):
-  YA 343 で読みやすい文字列に直します（出
-  YA 412 英語の文はそのまま検索しやすいので
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/zod-validate-llm-json-output/lint/prose-check.py", line 9, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

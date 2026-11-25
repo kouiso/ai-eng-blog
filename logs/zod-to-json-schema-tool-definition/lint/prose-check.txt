@@ -1,12 +1,5 @@
-sentences: 218 (prose+frontmatter 152, headings 13, table cells 53)
-not counted: code block lines 172, URL-only table cells 13 (lines [432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444])
-LONG>60: 1  (50<len<=60: 42)
-LONG 2 fm 61 zod のスキーマから JSON Schema を作ってツール定義に使う【zod v4 の z.toJSONSchema】
-prose length min 13 / max 61 / short(<=20) 7 / long(41-60) 82
-SAME3: 0
-PAT '約' 381 prose `limit` の `min(1)` と `max(50)` は、strict のツールでは使えない制約です。
-PAT '約' 422 prose strict を付けると入力の形は保証されますが、`limit` の上限のような数の制約はスキーマに書けません。
-PAT 'など' 385 prose `z.date()`、`z.bigint()` などは JSON Schema で表せない型です（出典1）。
-PAT 'など' 428 prose 本文の（出典1）などの番号は、この表の番号を指します。
-AND/OR candidates (や in prose, judge by eye):
-  YA 75 2025年11月で保守をやめたと書いています（出典
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/zod-to-json-schema-tool-definition/lint/prose-check.py", line 8, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

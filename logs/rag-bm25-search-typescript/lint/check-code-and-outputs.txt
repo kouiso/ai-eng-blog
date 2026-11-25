@@ -51,3 +51,4 @@ run 15 exit=0
 run 16 exit=0
 run 17 exit=0
 ALL OK
+exit=0

@@ -26,3 +26,4 @@ OK   block 21 (line 434) output == run/11.log stdout
 OK   block 1 (line 50) is a run of whole lines in run/08.log stdout
 OK   21 code blocks in article (found 21)
 ALL OK
+exit=0

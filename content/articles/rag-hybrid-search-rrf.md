@@ -13,7 +13,7 @@ prev: "rag-answer-with-citations-claude"
 next: "ai-agent-custom-tools-agent-sdk"
 sources:
   - url: "https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf"
-    title: "Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods"
+    title: "Reciprocal Rank Fusion（SIGIR 2009, Cormack らの論文）"
     accessed: 2026-10-31
   - url: "https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion"
     title: "Reciprocal rank fusion"
@@ -43,7 +43,7 @@ sources:
     title: "Intl.Segmenter() constructor"
     accessed: 2026-10-31
   - url: "https://tc39.es/ecma402/#sec-createsegmentdataobject"
-    title: "ECMAScript Internationalization API Specification 19.7.1 CreateSegmentDataObject"
+    title: "ECMAScript Intl API Spec 19.7.1 CreateSegmentDataObject"
     accessed: 2026-10-31
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort"
     title: "Array.prototype.sort()"
@@ -58,7 +58,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 BM25 とベクトル検索の結果は、スコアを足さずに順位で合わせます。RRF は、文書ごとに `1 / (60 + 順位)` を足して並べ直す計算です。TypeScript では、型の定義を含めて15行のファイル1つで書けます。
@@ -91,7 +91,7 @@ RRF の点数(d) = Σ 1 / (k + 順位(d))
 | 5位 | 1 / 65 ≈ 0.01538 |
 | 表に無い | 0 |
 
-1位と5位の差は 0.001 ほどです。両方の順位表で6位以内に入った文書は、0.03 を超えます。6位どうしでも `2 / 66` ≈ 0.0303 だからです。どちらか一方の1位（0.01639）よりも、両方の中位が上に来やすい計算です。
+1位と5位の差は、0.001 ほどになります。両方の順位表で6位以内に入った文書は、0.03 を超えます。6位どうしでも `2 / 66` ≈ 0.0303 だからです。どちらか一方の1位（0.01639）よりも、両方の中位が上に来やすい計算です。
 
 Elasticsearch のドキュメントによると、RRF は調整が要りません（出典2）。合わせる指標どうしが関係していなくてもかまいません（出典2）。Anthropic も、BM25 と埋め込みの結果を rank fusion で合わせる手順を示しています（出典3）。
 
@@ -101,7 +101,7 @@ Elasticsearch のドキュメントによると、RRF は調整が要りませ�
 
 Node.js 22.18.0 以上は、`.ts` のファイルを型を外してそのまま実行します（出典9）。型は調べないので（出典9）、型の確認は別に TypeScript 7.0.2 の `tsc` で行いました。`import` にはファイルの拡張子を書き、型だけを読み込むときは `type` を付けます（出典9）。
 
-作業フォルダを作って移動します。
+作業フォルダを作って移動してください。
 
 ```bash
 mkdir hybrid-search
@@ -238,7 +238,7 @@ export async function embed(texts: string[]): Promise<number[][]> {
 }
 ```
 
-このファイルを `embed.ts` として保存します。`dtype: "q8"` は8ビットに量子化した重みを選ぶ指定です（出典8）。`pooling: "mean"` は、プーリングの方法に平均を選ぶ指定です（出典7）。`normalize: true` を付けると、できたベクトルを正規化します（出典7）。`tolist()` を呼ぶと、結果が JavaScript の配列になります（出典7）。
+このファイルを `embed.ts` として保存します。`dtype: "q8"` は8ビットに量子化した重みを選ぶ指定です（出典8）。`pooling: "mean"` は、プーリングの方法に平均を選ぶ指定です（出典7）。`normalize: true` を付けると、できたベクトルを正規化します（出典7）。`tolist()` を呼ぶと、結果は JavaScript の配列です（出典7）。
 
 ```ts
 import type { Doc, Hit } from "./bm25.ts";
@@ -289,7 +289,7 @@ export function rrf(lists: string[][], k = 60): Fused[] {
 }
 ```
 
-このファイルを `rrf.ts` として保存します。配列の位置に1を足したものが順位です。Elasticsearch の説明も、順位を1から数えています（出典2）。`ranks` には順位表ごとの順位を残し、載っていない順位表は `null` にします。結果を見たときに、どちらの検索で何位だったかを確かめるためです。
+このファイルを `rrf.ts` として保存してください。配列の位置に1を足したものが順位です。Elasticsearch の説明も、順位を1から数えています（出典2）。`ranks` には順位表ごとの順位を残し、載っていない順位表は `null` にします。結果を見たときに、どちらの検索で何位だったかを確かめるためです。
 
 引数には BM25 のスコアもコサイン類似度も入りません。スコアの目盛りが違う検索でも、順位にすれば同じ式で足せます。
 
@@ -326,7 +326,7 @@ for (const row of fused.slice(0, 3)) {
 }
 ```
 
-このファイルを `hybrid.ts` として保存します。2つ目の引数は、BM25 の結果に置く下限です。既定の 0.1 は、BM25 の記事で助詞だけが一致した文書を外すために決めた値です。3つ目の引数で `k` を変えられます。
+このファイルを `hybrid.ts` として保存してください。2つ目の引数は、BM25 の結果に置く下限です。既定の 0.1 は、BM25 の記事で助詞だけが一致した文書を外すために決めた値です。3つ目の引数で `k` を変えられます。
 
 出力の `順位 1 / 2` は、BM25 で1位、ベクトル検索で2位だったことを表します。`-` はその検索の上位5件に入らなかった印です。
 
@@ -474,7 +474,7 @@ node hybrid.ts "E1021 が出た" 0.7
 
 ## BM25 の下限を外すと助詞だけの一致が1位になる
 
-反対に下限を0にすると、雑音がそのまま BM25 の順位表に入ります。「返金はいつ？」で、下限 0.1 と0を比べます。
+反対に下限を0にすると、雑音がそのまま BM25 の順位表に入ります。「返金はいつ？」で、下限 0.1 と0の2つを比べました。
 
 ```bash
 node hybrid.ts 返金はいつ？

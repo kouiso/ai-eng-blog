@@ -57,18 +57,20 @@ check("article has 'npm install'", "npm install" in fences)
 check("article has 'npm run check'", "npm run check" in fences)
 for n in [7, 8, 9, 10, 11]:
     check(f"run/{n:02d} curl command in article", run(n)[0] in fences)
-claude_block = next(b for b in fences if b.startswith("$ claude mcp add"))
+# 記事は 13〜16 の claude mcp の結果を、コマンド（bash ブロック）と出力（text ブロック）の組で載せる
 for n in [13, 14, 15, 16]:
     cmd, out, _ = run(n)
-    check(f"run/{n:02d} '$ {cmd}' + output in Claude Code block", f"$ {cmd}\n{out}" in claude_block)
+    check(f"run/{n:02d} command in article", cmd in fences)
+    check(f"run/{n:02d} output in article", out in fences)
 
 # 実行結果: ログから取り出したものが記事のコードブロックと一致
 for n in [3, 5, 6, 7, 8, 9, 10, 11, 20, 27]:
     check(f"output run/{n:02d} in article", run(n)[1] in fences)
 check("run/31 (restored) output == run/06 output", run(31)[1] == run(6)[1])
-check("run/23 exception text in article", run(23)[1].split("2nd threw: ", 1)[1] in fences)
+check("run/23 exception line in article", run(23)[1].splitlines()[1] in fences)
 abort_line = "client error: SSE stream disconnected: AbortError: This operation was aborted"
 check("AbortError line in article", abort_line in fences)
+check("run/53 has abort line verbatim", abort_line in run(53)[1])
 r36 = run(36)[1]
 check("run/36: 30 runs, all ok=1, abort=1 in 3", r36.count("ok=1") == 30 and r36.count("abort=1") == 3)
 r42 = run(42)[1]
@@ -85,6 +87,6 @@ check("article names http://localhost:5173 as the ALLOWED_ORIGINS value", '`"htt
 check("run/21, 22: 500 with 0 bytes", all("status: 500  0 bytes" == run(n)[1] for n in (21, 22)))
 check("run/19: server printed only the start line", run(19)[1].splitlines()[-1].startswith("char-count MCP server:") and "Error" not in run(19)[1])
 check("run/37: 7 TS7006 errors without @types/express", run(37)[1].count("error TS7006") == 7)
-for n in range(1, 51):
+for n in range(1, 54):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")
