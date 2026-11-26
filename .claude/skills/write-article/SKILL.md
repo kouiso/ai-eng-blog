@@ -68,6 +68,7 @@ pack はどれも Read ツールで読めます。`vendor/` の下に置くと�
 - `gate.md` の冒頭に、読んだガイドのファイル名と読んだ日を書く。各行の根拠には、照らし合わせたガイドの節を書く（例「guides/05 §1 文の長さ」）。
 - ガイドが読めないとき（権限、パスの誤りなど）は、その項目を NG にして止め、読めない理由を報告する。読めないまま lint や要約で OK にしない。
 - 判定のために補助のスクリプトを書くときも、checklist とガイドに無い除外を入れない（例 C25 の文字数を数えるときに、インラインコードを1字に縮める、表やリストを飛ばす）。除外しないと通らない文は、除外せずに直す。
+- 機械で数えられる行（C16、C17、C25、C26、C28、C30〜C32 と、記事の実行結果とログの照合）は、共通のスクリプト `scripts/check-article.py` で数える（手順6〜8）。記事ごとの検査スクリプトを `logs/<slug>/lint/` に写して書かない。足りない検査は `scripts/check-article.py` に足し、`test/check-article.test.ts` に試験を足す。
 
 ### 読者
 
@@ -174,13 +175,13 @@ checklist の C08「コードはコピペで動く形（import・前提を省略
 1. 記事に載せるコードを、記事に書いた形のまま `logs/<slug>/code/` に置く。記事のコードと1文字でも違うものを動かしたら確認したことにならない。依存パッケージはバージョンを固定する（`package.json` に `^` を付けない）。
 2. 記事に書いた手順どおりのコマンドで実行する。インストールから実行まで、記事の読者が打つコマンドと同じものを打つ。
 3. 実行の記録を `logs/<slug>/run/` に残す。1回の実行で1ファイル（`01.log`、`02.log` …）。中身は、実行日時、実行したコマンド、`node -v` などのランタイムのバージョン、終了コード、標準出力と標準エラー。
-4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。
+4. 記事に載せる実行結果は、このログからそのまま写す。手で整えた出力を載せない。写したあと、記事の ```text のブロックがログの出力に1字も違わず載っているかを `python3 scripts/check-article.py --only outputs <slug>` で確かめ、`[FAIL OUTPUT]` が0件になるまで直す（記録は手順7の `check-article.txt` に残す）。実行の出力ではないブロック（ファイルの木、式、書き方の見本、悪い例や断片と明記したコード）だけは、理由を付けて `scripts/check-article-exceptions.json` に載せてよい。`$` から始まる実行の写し、実行結果として見せるもの、読者が写して動かすコードは例外にしない。例外は点検する AI が認めたものだけを残す（`docs/decisions/gate-readings.md` の7）。
 5. API キーやトークンは、ログにも記事にも絶対に残さない。出力に混ざったら `***` に置き換えてから保存する。このリポジトリは public です。
 6. Messages API（`@anthropic-ai/sdk`）を呼ぶ記事は書かない。API キーは使わない（オーナーの裁定 2026-11-11）。読者に見せる LLM 呼び出しのコードは Claude Agent SDK か `claude -p` にして、下の「Claude プランで動かす記事（Agent SDK、claude -p）」に従って動かす。このセッションの内部の認証情報（ログインのトークン）を取り出したり、Messages API のサンプルコードに流用したりすることは不正利用になるので、回避策として使わない。
 7. 記事のコードの `package-lock.json` はコミットしない。`code/` には記事のコードと、版を固定した `package.json` を置く。`package-lock.json` は置かない。読者と同じように入れ直して動かす（ロックファイルを残したまま動かすと、読者が入れる版と違うものを確かめたことになる）。そのとき解決した版（`npm ls` の出力など）は `run/` のログに残す。
 8. 権限、ネットワーク、インストールの制限などで実行そのものができなかったときも、同じく下書きで止める。実行できなかった事実とエラーを `run/` に残す。
 
-### 7. lint を2本とも回す
+### 7. lint を2本と共通の検査を回す
 
 リポジトリのルートで実行します。出力と終了コードを `logs/<slug>/lint/` に保存します。保存先のディレクトリが無いとリダイレクトが失敗して lint が走らないので、最初に作ります。
 
@@ -192,7 +193,21 @@ python3 docs/tech-writing-pack/scripts/ai-smell-lint.py content/articles/<slug>.
 
 python3 docs/tech-writing-pack/scripts/writing-lint.py content/articles/<slug>.md --type article --register standard \
   > logs/<slug>/lint/writing-lint.txt 2>&1; echo "exit=$?" >> logs/<slug>/lint/writing-lint.txt
+
+python3 scripts/check-article.py <slug> \
+  > logs/<slug>/lint/check-article.txt 2>&1; echo "exit=$?" >> logs/<slug>/lint/check-article.txt
 ```
+
+3つ目の `scripts/check-article.py` は、pack の2本では数えない checklist の行を、全記事で同じ物差しで数える共通のスクリプトです（#42）。実行はせず、LLM も呼びません。出力の読み方は次のとおりです。
+
+| 出力 | 意味 | 扱い |
+|---|---|---|
+| `[FAIL C17]` `[FAIL C25]` `[FAIL C30]` `[FAIL C31]` `[FAIL C32]` `[FAIL OUTPUT]` | 確定の検査に落ちた（終了コード 1） | 0件になるまで原稿を直す。C25 と C17 の数え方は `docs/decisions/gate-readings.md` の3と4 |
+| `[候補 C16]` `[候補 C26]` `[候補 C28]` | 機械では決められない候補（終了コードには入らない） | 1件ずつ読んで判断し、`judgments.md` に書く |
+| `[SKIP C25-URL]` | 表のセル1つか frontmatter の値1つが丸ごと URL 1つなので、C25 で数えなかった値 | 件数を `gate.md` の C25 の根拠に写す |
+| 末尾の `SUMMARY <slug>: 確定 n … / 候補 m …` | 確定と候補の件数 | 確定が 0 で、`exit=0` であること |
+
+終了コードは、0 が確定の検査がすべて通った、1 が確定の検査に1件以上落ちた、2 が使い方の誤りか記事ファイルが無い、です。スクリプトは補助で、見落としもあります。C17 は、スクリプトが0件でも読んで連続があれば満たしていません（`docs/decisions/gate-readings.md` の4）。
 
 スクリプトのソースから読み取れる判定の仕組みは次のとおりです。
 
@@ -217,11 +232,19 @@ writing-lint.py の FATAL のうち個人名の検出は、スクリプトの `P
 - `ai-smell-lint.py` の `⚠️warn` と `📎mention`、`writing-lint.py` の `SHOULD`、`WATCH`（出たときだけ）、`INFO(要人間確認)`（と、超過したときの DENSITY）は、1件ずつ `logs/<slug>/lint/judgments.md` に書く。書く内容は、行番号、検出された語、use か mention か、直したか残したか、残した理由。`WATCH` は「転用か、実体のある用法か」を判断し、転用なら具体的な動作に書き直す（例「テストが落ちる」→「テストが失敗する」）。
 - 両スクリプトは、症状やカウンタごとに先頭の数件しか行番号を出さない（`ai-smell-lint.py` は1症状5件まで、`writing-lint.py` は SHOULD が12件、DENSITY が1カウンタ4件、WATCH が1動詞5件まで。INFO は9件まで全部出ることを確かめている）。出力にある件数（例「7件(use)」「SHOULD: 15件」）が表示された行数より多いときは、検出語で原稿を `grep -n` して残りの行番号を自分で洗い出し、全件を judgments.md に書く。スクリプトは書き換えない。
 - `📎mention` と出ても地の文で使っていれば直す。悪い例の引用なのに `🚨FATAL`（use）と判定されたときは、guides/03「悪い例を引用するときの書き方」の3点に合わせて書き直し、lint が `📎mention` と判定する形にする。checklist の C35 は「引用なら合格」としているが、このゲートは C33「FATALがゼロ」も同時に求めるので、終了コード 0 になるまで書き直す。判断の経緯は judgments.md に書く。
-- 直したら2本とも回し直し、最後の実行結果で上書きする。
+- 直したら3つとも回し直し、最後の実行結果で上書きする。
 
 ### 8. checklist.md を1項目ずつ確かめる
 
 下の「公開前ゲート」の表を `logs/<slug>/gate.md` に写し、全行の判定と根拠を埋めます。根拠は「どのファイルの何行目を見たか」「どのログのどの出力か」のように、後から人が確かめられる形で書きます。「問題なし」だけの行は不合格とみなします。
+
+次の行は、手順7の `lint/check-article.txt` を根拠の1つにします。どの行も、指すガイドを読んでから判定する決まり（「ゲートの項目はガイドを読んでから判定する」）は変わりません。
+
+| 行 | `check-article.txt` の読み方 |
+|---|---|
+| C17、C25、C30、C31、C32 | その行の `[FAIL …]` が0件なら、読んで判定する材料がそろう。1件でもあれば NG |
+| C08、C38 | `[FAIL OUTPUT]` が0件で、使った例外があれば `例外:` の行の理由を根拠に写す。1件でもあれば NG |
+| C16、C26、C28 | `[候補 …]` を1件ずつ読み、`judgments.md` に書いた判断を根拠にする。候補が0件でも、読んで判定する |
 
 ### 9. 原稿を書き出す
 
@@ -397,7 +420,8 @@ logs/<slug>/
 ├── lint/
 │   ├── ai-smell.txt      # 手順7 最後の実行の出力と exit=
 │   ├── writing-lint.txt  # 手順7 最後の実行の出力と exit=
-│   └── judgments.md      # 手順7 warn・mention・SHOULD・WATCH・INFO を1件ずつ判断した記録
+│   ├── check-article.txt # 手順7 scripts/check-article.py の最後の実行の出力と exit=
+│   └── judgments.md      # 手順7 warn・mention・SHOULD・WATCH・INFO と、check-article の候補を1件ずつ判断した記録
 ├── gate.md           # 手順8 公開前ゲートの表（A と B の全行に判定と根拠）
 ├── review.md         # 別の AI による点検の記録（書いた道具、点検した道具、指摘と対応）
 └── publish.md        # 手順10 以降 投稿・予約・公開・修正・取り下げの記録
