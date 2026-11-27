@@ -307,18 +307,17 @@ const articleMeta = {
 		flex-direction: column;
 		gap: 16px;
 	}
-	@media (min-width: 900px) {
-		.article-aside {
-			position: sticky;
-			top: 24px;
-		}
-	}
+
 	/* 本文（560px）と横の欄（280px）と間（40px）が並ぶ幅（880px + 左右の余白 48px）からは横に並べる。
 	   それより狭いと横の欄は本文の後ろに回るので、目次は本文の前に折りたたんだ形（.toc--inline）で出す。
 	   折り返しを幅の media query に合わせて決め、スクロールバーの幅で2つの目次が両方消える幅を作らない */
 	@media (min-width: 928px) {
 		.article-layout {
 			flex-wrap: nowrap;
+		}
+		.article-aside {
+			position: sticky;
+			top: 24px;
 		}
 		.toc--inline {
 			display: none;
@@ -327,6 +326,15 @@ const articleMeta = {
 	@media (max-width: 927.98px) {
 		.toc--aside {
 			display: none;
+		}
+	}
+	/* 印刷では、閉じた details の中身が出ないので、今までどおり横の欄の目次（項目の一覧）を出す */
+	@media print {
+		.toc--inline {
+			display: none;
+		}
+		.toc--aside {
+			display: block;
 		}
 	}
 	.toc {
