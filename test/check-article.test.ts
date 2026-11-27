@@ -214,6 +214,27 @@ describe("出力ブロックと run ログの照合", () => {
 		expect(r.out).toContain("先頭「```」");
 	});
 
+	it("項目の記号の直後のフェンスと、閉じないままファイルが終わるフェンスも照合する", () => {
+		const r = check("outputs", "out-fence-list-eof");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 2件、ログに一致 0件");
+		expect(r.out).toContain("先頭「FAKE AFTER MARKER」");
+		expect(r.out).toContain("先頭「FAKE AT EOF」");
+	});
+
+	it("地の文で4つ以上字下げした ``` はフェンスとして開きも閉じもしない", () => {
+		const r = check("outputs", "out-fence-indented4");
+		// 字下げした ```text は字下げしたコードなので数えない。2つ目のブロックの中の字下げした ``` は中身の文字
+		expect(r.out).toContain("```text 1件、ログに一致 0件");
+		expect(r.out).toContain("出力ブロック（3行、先頭「real output」）");
+	});
+
+	it("実行結果に使われがちな ```console などのフェンスは、text で載せ直すよう落とす", () => {
+		const r = check("outputs", "out-fence-console");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL OUTPUT] out-fence-console.md:7 実行結果は ```text で載せる（```console は照合しない）");
+	});
+
 	it("run ディレクトリが無い記事は落ちる（飛ばさない）", () => {
 		const r = check("outputs", "out-norun");
 		expect(r.code).toBe(1);

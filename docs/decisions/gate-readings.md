@@ -92,7 +92,7 @@ SKILL.md のゲートの行の文言と、pack の checklist と guides は変�
 - 規則: 例外は、書く AI が理由つきで出し、G11 の点検する AI が認めたものだけである。`$` から始まる実行の記録、実行結果、コピーして使うコードは、例外にできない（#81）。
 - 読む行: なし（`scripts/check-article.py` の OUTPUT。checklist の「コードはコピペで動く形（import・前提を省略していない／実行結果を示した）」と「コードを実際に動かして確認した」の行の照合に使う）
 - 出典: https://github.com/kouiso/ai-eng-blog/issues/81#issuecomment-6878197474 の7。
-- 根拠: `scripts/check-article.py:35`（OUTPUT の定義）と :389（例外に必要な項目）。
+- 根拠: `scripts/check-article.py:35`（OUTPUT の定義）と :409（例外に必要な項目）。
 - オーナーが覆せる: コメントに記載なし。
 - 日付: 2026-11-14
 
