@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 // scripts/check-article.py（記事ごとの検査。issue #42）の試験。
-// 標準ライブラリだけの Python なので python3 が要る。無ければ試験は落ちる（飛ばさない）。
+// python3 と、コードブロックを取り出す scripts/code-blocks.mjs（npm ci で入る依存）が要る。無ければ試験は落ちる（飛ばさない）。
 const script = resolve(__dirname, "../scripts/check-article.py");
 const root = resolve(__dirname, "fixtures/check-article");
 const exceptions = resolve(root, "exceptions.json");
@@ -122,6 +122,12 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		expect(r.out).toContain("prose: 文 5");
 	});
 
+	it("~~~ のフェンスと字下げした ``` のフェンスの中身は、C25 で数えない", () => {
+		const r = check("prose", "c25-tilde");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("数えなかったコードブロックの行 2");
+	});
+
 	it("frontmatter の値の後ろの ` # コメント` は値に数えない", () => {
 		const r = check("prose", "c25-fm-comment");
 		expect(r.code, r.out).toBe(0);
@@ -190,6 +196,79 @@ describe("出力ブロックと run ログの照合", () => {
 		const r = check("outputs", "out-nonconform");
 		expect(r.code).toBe(1);
 		expect(r.out).toContain("書式に沿っていない");
+	});
+
+	it("リストの中で字下げした ```text、属性つきの ```text、~~~text、````text も出力ブロックとして照合する", () => {
+		const r = check("outputs", "out-fence-forms");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 4件、ログに一致 0件");
+		for (const first of ["FAKE IN LIST", "FAKE WITH ATTR", "FAKE TILDE", "FAKE FOUR"]) {
+			expect(r.out).toContain(`先頭「${first}」`);
+		}
+	});
+
+	it("字下げしたフェンスの中身は字下げを外して照合し、4本のフェンスの中の ``` はブロックの一部として読む", () => {
+		const r = check("outputs", "out-fence-forms-ok");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 3件、ログに一致 2件");
+		expect(r.out).toContain("先頭「```」");
+	});
+
+	it("項目の記号の直後のフェンスと、閉じないままファイルが終わるフェンスも照合する", () => {
+		const r = check("outputs", "out-fence-list-eof");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 2件、ログに一致 0件");
+		expect(r.out).toContain("先頭「FAKE AFTER MARKER」");
+		expect(r.out).toContain("先頭「FAKE AT EOF」");
+	});
+
+	it("項目の中で開いたフェンスは、項目の中身より浅い行で項目ごと終わり、その後のブロックも照合する", () => {
+		const r = check("outputs", "out-fence-list-exit");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 1件、ログに一致 0件");
+		expect(r.out).toContain("先頭「FAKE AFTER LIST」");
+	});
+
+	it("引用（> ）の中のフェンスも照合し、引用の目印が無くなった行でブロックを閉じる", () => {
+		const r = check("outputs", "out-fence-quote");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 4件、ログに一致 1件");
+		for (const first of ["FAKE QUOTE", "FAKE OPEN QUOTE", "FAKE AFTER QUOTE"]) {
+			expect(r.out).toContain(`先頭「${first}」`);
+		}
+	});
+
+	it("ブロックの中の `>` で始まる行（npm の出力）は、引用の目印ではなく中身の文字として照合する", () => {
+		const r = check("outputs", "out-fence-npm");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 1件、ログに一致 1件");
+	});
+
+	it("段落の次の行の「2.」は箇条書きを始めず、その後ろの ``` もフェンスとして開かない（CommonMark）", () => {
+		const r = check("outputs", "out-fence-para2");
+		// 「2. ```text」と FAKE は段落の文字。次の行の ``` で情報文字列の無いフェンスが開き、最後まで続く（text のブロックは無い）
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 0件");
+		expect(r.out).not.toContain("FAKE");
+	});
+
+	it("frontmatter の中の ``` は本文のコードブロックとして読まない", () => {
+		const r = check("outputs", "out-fence-fm");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 1件、ログに一致 1件");
+	});
+
+	it("地の文で4つ以上字下げした ``` はフェンスとして開きも閉じもしない", () => {
+		const r = check("outputs", "out-fence-indented4");
+		// 字下げした ```text は字下げしたコードなので数えない。2つ目のブロックの中の字下げした ``` は中身の文字
+		expect(r.out).toContain("```text 1件、ログに一致 0件");
+		expect(r.out).toContain("出力ブロック（3行、先頭「real output」）");
+	});
+
+	it("実行結果に使われがちな ```console などのフェンスは、text で載せ直すよう落とす", () => {
+		const r = check("outputs", "out-fence-console");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("[FAIL OUTPUT] out-fence-console.md:7 実行結果は ```text で載せる（```console は照合しない）");
 	});
 
 	it("run ディレクトリが無い記事は落ちる（飛ばさない）", () => {

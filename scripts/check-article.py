@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""記事ごとの検査を1本にまとめたスクリプト（issue #42）。標準ライブラリだけで動く。
+"""記事ごとの検査を1本にまとめたスクリプト（issue #42）。Python は標準ライブラリだけで動き、コードブロックの取り出しだけ
+Node の scripts/code-blocks.mjs（`npm ci` で入れる mdast-util-from-markdown）を呼ぶ。
 
 使い方（リポジトリのルートで）:
     python3 scripts/check-article.py <slug> [<slug> ...]
@@ -32,16 +33,18 @@ checklist とガイドに無い除外は入れない。数えないものは次�
     C30  `**` が残っていない（コードとインラインコードの外）  (guides/03-anti-ai.md 記号)
     C31  em-dash `—` と罫線 `─` を使っていない（`──` は `─` の連続） (同上。checklist C31 の記号に合わせ、`―` U+2015 は数えない)
     C32  `：`+半角スペース、`／` を使っていない    (同上)
-    OUTPUT  記事の出力ブロック（```text）が、run ログの出力部分に1字も違わず載っている
+    OUTPUT  記事の出力ブロック（情報文字列の最初の語が text のフェンス。~~~、字下げ、属性つきも）が、run ログの出力部分に1字も違わず載っている
   候補（一覧に出すだけ）
     C16  文長に緩急がある                        (guides/03-anti-ai.md 4節「リズムの不在」)
     C26  用語が統一されている                    (guides/05-technical-writing.md「用語の統一」「表記の統一」)
     C28  AND/OR が明確（「AやB」）               (guides/05-technical-writing.md「AやB」は曖昧)
 """
 import argparse
+import functools
 import json
 import os
 import re
+import subprocess
 import sys
 
 ARTICLES = "content/articles"
@@ -88,6 +91,11 @@ URL_ONLY = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 FM_BLOCK_INDICATOR = re.compile(r"[>|][+-]?\d?")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
 END_MARKER = re.compile(r"^-{3,5} (?:exit\b|command\b)")
+# コードブロックは scripts/code-blocks.mjs（CommonMark のパーサー）で取り出す。行頭の ``` を手で読むと、
+# 字下げ、箇条書きと引用の中、~~~、属性つきなどのブロックを取りこぼし、照合から漏れたため
+CODE_BLOCKS_JS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code-blocks.mjs")
+# 実行結果を載せるときに使われがちな、text 以外の情報文字列。照合されないまま通るので、text で載せ直させる
+OUTPUT_LIKE_INFO = {"console", "output", "shell-session", "sh-session", "terminal", "stdout", "stderr", "log"}
 
 
 class Result:
@@ -145,13 +153,23 @@ def fm_values(raw):
     return out
 
 
-def parse_article(text):
+@functools.lru_cache(maxsize=None)
+def code_blocks(path):
+    """記事のコードブロックを [{start, end, lang, value}] で返す（行番号は frontmatter を含めたファイルの行）。
+    Node と npm ci で入れた mdast-util-from-markdown を使う。動かせなければ止める（読まずに通さない）。"""
+    r = subprocess.run(["node", CODE_BLOCKS_JS, path], capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise SystemExit(f"code-blocks.mjs が失敗した（npm ci を流したか確かめる）: {r.stderr.strip()}")
+    return json.loads(r.stdout)
+
+
+def parse_article(text, blocks):
     """本文を (行番号, 種類, 文字列) に分ける。種類は fm / heading / cell / prose。
-    コードブロックの中身は数えず、行数だけ返す。非コード行は plain_lines に残す。"""
+    コードブロック（blocks。code_blocks の戻り値）の行は数えず、中身の行数だけ返す。非コード行は plain_lines に残す。"""
     segs, plain_lines = [], []
-    code_lines = 0
     in_fm = False
-    in_code = False
+    code_line_nos = {n for b in blocks for n in range(b["start"], b["end"] + 1)}
+    code_lines = sum(len(b["value"].split("\n")) if b["value"] else 0 for b in blocks)
     fm_block = None  # ブロック形式（key: > や key: |）の中身を読んでいるとき、目印の行の字下げの深さ
     for i, raw in enumerate(text.split("\n"), 1):
         if i == 1 and raw == "---":
@@ -177,11 +195,7 @@ def parse_article(text):
                     continue
                 segs.append((i, "url-cell" if url_only(v) else "fm", v))
             continue
-        if raw.startswith("```"):
-            in_code = not in_code
-            continue
-        if in_code:
-            code_lines += 1
+        if i in code_line_nos:
             continue
         plain_lines.append((i, raw))
         s = raw.strip()
@@ -210,7 +224,7 @@ def ending3(s):
 
 def check_prose(res, path):
     text = open(path, encoding="utf-8").read()
-    sents, plain_lines, code_lines = parse_article(text)
+    sents, plain_lines, code_lines = parse_article(text, code_blocks(path))
     name = os.path.basename(path)
     res.info.append(f"prose: 文 {len(sents)}、数えなかったコードブロックの行 {code_lines}")
 
@@ -294,19 +308,9 @@ def check_prose(res, path):
 
 # --- 出力ブロックの照合 -------------------------------------------------------
 
-def fences_of(text):
-    """(開始行, 情報文字列, 本文の行リスト) をコードブロックごとに返す。"""
-    out, cur = [], None
-    for i, raw in enumerate(text.split("\n"), 1):
-        if raw.startswith("```"):
-            if cur is None:
-                cur = (i, raw[3:].strip(), [])
-            else:
-                out.append(cur)
-                cur = None
-        elif cur is not None:
-            cur[2].append(raw.rstrip("\r"))
-    return out
+def fences_of(path):
+    """(開始行, 情報文字列の最初の語, 中身の行リスト) をコードブロックごとに返す。中身は字下げや引用の目印を外したもの"""
+    return [(b["start"], b["lang"], b["value"].split("\n") if b["value"] else []) for b in code_blocks(path)]
 
 
 def log_regions(text):
@@ -365,7 +369,11 @@ def check_outputs(res, root, slug, exceptions_path):
     art = os.path.join(root, ARTICLES, slug + ".md")
     run_dir = os.path.join(root, LOGS, slug, "run")
     name = slug + ".md"
-    blocks = [f for f in fences_of(open(art, encoding="utf-8").read()) if f[1] == "text"]
+    fences = fences_of(art)
+    blocks = [f for f in fences if f[1] == "text"]
+    for i, info, _body in fences:
+        if info.lower() in OUTPUT_LIKE_INFO:
+            res.fail("OUTPUT", f"{name}:{i}", f"実行結果は ```text で載せる（```{info} は照合しない）")
     exceptions = load_exceptions(exceptions_path, slug, res)
     if not os.path.isdir(run_dir):
         res.fail("OUTPUT", run_dir, "run ディレクトリが無い")

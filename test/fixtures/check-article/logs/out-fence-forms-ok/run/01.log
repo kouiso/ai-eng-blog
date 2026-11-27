@@ -1,0 +1,7 @@
+date: 2026-01-01T00:00:00Z
+command: node a.js
+exit: 0
+--- stdout+stderr ---
+real output
+second line
+--- exit=0 ---

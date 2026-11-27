@@ -1,0 +1,10 @@
+date: 2026-01-01T00:00:00Z
+command: npm start
+exit: 0
+--- stdout+stderr ---
+
+> pkg@1.0.0 start
+> node a.js
+
+real output
+--- exit=0 ---
