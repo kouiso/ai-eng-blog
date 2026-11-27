@@ -18,8 +18,23 @@ describe("gate-list.py", () => {
 		expect(r.code, r.err).toBe(0);
 		expect(r.out).toContain("| ok | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 合格 |");
 		expect(r.out).toContain("| ng | OK | OK | OK | OK | OK | OK | NG | OK | OK | OK | OK | 不合格 |");
-		expect(r.out).toContain("2本のうち、G01〜G11 がすべて OK の記事: 1本");
+		expect(r.out).toContain("2本のうち、G01〜G11 がすべて OK の記事: 1本、NG は無いが未判定がある記事: 0本、NG がある記事: 1本");
 		expect(r.out).toContain("G07 1、");
+	});
+
+	it("NG が無く未判定だけがある記事は「未判定あり」にし、まとめにも数える", () => {
+		const r = run(["ok", "ng", "pending"]);
+		expect(r.code, r.err).toBe(0);
+		expect(r.out).toContain("| pending | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 未判定 | 未判定あり |");
+		expect(r.out).toContain("3本のうち、G01〜G11 がすべて OK の記事: 1本、NG は無いが未判定がある記事: 1本、NG がある記事: 1本");
+	});
+
+	it("コードフェンスの中の見出し・gate: の行・## は無いものとして読む", () => {
+		for (const slug of ["fence-heading", "fence-after", "fence-gate"]) {
+			const r = run([slug]);
+			expect(r.code, `${slug}: ${r.err}`).toBe(0);
+			expect(r.out).toContain(`| ${slug} | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 合格 |`);
+		}
 	});
 
 	it("--tsv でタブ区切りに出し、まとめの行は標準エラーに出す", () => {

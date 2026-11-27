@@ -15,6 +15,9 @@
     python3 scripts/gate-list.py --tsv      # タブ区切り
     python3 scripts/gate-list.py <slug>...  # 指定した記事だけ
 
+合否の欄は3つの値になる。G01〜G11 がすべて OK なら「合格」、NG が1つでもあれば「不合格」、
+NG は無いが未判定が1つ以上あれば「未判定あり」。
+
 終了コード: 一覧を出せたら 0（NG や未判定があっても 0）。行が無い・形が違う gate.md が1つでもあれば 1。
 """
 from __future__ import annotations
@@ -30,6 +33,8 @@ HEADING = "## 機械で読む合否"
 LINE_RE = re.compile(r"^gate:(.*)$")
 TOKEN_RE = re.compile(r"^(G\d{2})=(\S+)$")
 # 公開前ゲートの表の行。| G07 | 条件 | 確かめ方 | 判定 | 根拠 | の4列目が判定
+# コードフェンスの行。1組目が ``` か ~~~ の並び、2組目がその後ろの文字
+FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 TABLE_ROW_RE = re.compile(r"^\|\s*(G\d{2})\s*\|")
 
 
@@ -37,9 +42,30 @@ class GateError(Exception):
     pass
 
 
+def outside_fences(lines: list[str]) -> list[str]:
+    """コードフェンス（``` か ~~~。CommonMark と同じく行頭から3字まで字下げでき、3つ以上並べる）の中の行を空行に置きかえる。
+    行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。"""
+    result: list[str] = []
+    fence: tuple[str, int] | None = None
+    for line in lines:
+        m = FENCE_RE.match(line)
+        if fence is None:
+            if m:
+                fence = (m.group(1)[0], len(m.group(1)))
+                result.append("")
+            else:
+                result.append(line)
+            continue
+        # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない）
+        if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip():
+            fence = None
+        result.append("")
+    return result
+
+
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    lines = [line.rstrip() for line in text.lstrip("\ufeff").splitlines()]
+    lines = outside_fences([line.rstrip() for line in text.lstrip("\ufeff").splitlines()])
     try:
         start = lines.index(HEADING)
     except ValueError:
@@ -142,17 +168,25 @@ def main(argv: list[str] | None = None) -> int:
         print("| " + sep.join(head) + " |")
         print("|" + "---|" * len(head))
     passed = 0
+    pending = 0
     for slug, verdicts in rows:
-        ok = all(v == "OK" for v in verdicts.values())
-        passed += ok
-        cells = [slug, *(verdicts[g] for g in GATES), "合格" if ok else "不合格"]
+        values = verdicts.values()
+        if "NG" in values:
+            overall = "不合格"
+        elif "未判定" in values:
+            overall = "未判定あり"
+            pending += 1
+        else:
+            overall = "合格"
+            passed += 1
+        cells = [slug, *(verdicts[g] for g in GATES), overall]
         print(sep.join(cells) if args.tsv else "| " + sep.join(cells) + " |")
 
     # --tsv のときは表だけを標準出力に出し、まとめの行は標準エラーに出す
     summary = sys.stderr if args.tsv else sys.stdout
     counts = {g: sum(1 for _, v in rows if v[g] == "OK") for g in GATES}
     print(file=summary)
-    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本", file=summary)
+    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本、NG は無いが未判定がある記事: {pending}本、NG がある記事: {len(rows) - passed - pending}本", file=summary)
     print("項目ごとの OK の本数: " + "、".join(f"{g} {counts[g]}" for g in GATES), file=summary)
     for e in errors:
         print(f"[ERROR] {e}", file=sys.stderr)
