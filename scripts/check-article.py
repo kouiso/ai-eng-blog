@@ -171,10 +171,15 @@ class FenceScanner:
         line = raw.rstrip("\r")
         if self.opened is not None:
             cut, base, ch, n, _word = self.opened
-            if _lead(line) <= base + 3 and re.fullmatch(re.escape(ch) + "{%d,}[ \t]*" % n, line.lstrip(" ")):
+            if base > 0 and line.strip() and _lead(line) < base:
+                # 項目の中のブロックは、項目の中身より浅い行で項目ごと終わる。この行は項目の外として読み直す
                 self.opened = None
-                return ("close", None)
-            return ("code", line[min(cut, _lead(line)):])
+                self.list_col = 0
+            else:
+                if _lead(line) <= base + 3 and re.fullmatch(re.escape(ch) + "{%d,}[ \t]*" % n, line.lstrip(" ")):
+                    self.opened = None
+                    return ("close", None)
+                return ("code", line[min(cut, _lead(line)):])
         rest, col = line, 0
         m = LIST_ITEM.match(line)
         if m:

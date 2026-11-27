@@ -222,6 +222,13 @@ describe("出力ブロックと run ログの照合", () => {
 		expect(r.out).toContain("先頭「FAKE AT EOF」");
 	});
 
+	it("項目の中で開いたフェンスは、項目の中身より浅い行で項目ごと終わり、その後のブロックも照合する", () => {
+		const r = check("outputs", "out-fence-list-exit");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 1件、ログに一致 0件");
+		expect(r.out).toContain("先頭「FAKE AFTER LIST」");
+	});
+
 	it("地の文で4つ以上字下げした ``` はフェンスとして開きも閉じもしない", () => {
 		const r = check("outputs", "out-fence-indented4");
 		// 字下げした ```text は字下げしたコードなので数えない。2つ目のブロックの中の字下げした ``` は中身の文字
