@@ -218,3 +218,53 @@
 | 7 | `logs/claude-p-script-first-call/lint/` | SKILL.md 手順7にある `lint/check-article.txt` が無い（30本どれにも無い）。この点検で流した `check-article.py` の結果を保存しておくとよい |
 | 8 | `review.md` の2回目の点検の節 | 書いた道具の記録と、裁定6の「書いた AI の init は見えない」の1文が無い。この3回目の節で補ったが、`gate.md` の G11 の根拠を2回目に向けたままにしない |
 | 9 | 記事:2、:4、:52、:177-189 | 前回からの S1 と S6 は、まだオーナーの判断待ち |
+
+## 点検（2026-11-27、4回目。head 3876a6e、通し）
+
+- 判定: PASS。直すべき指摘0件、任意の指摘9件。3回目の直すべき指摘2件は、どちらも閉じた。点検する側は読み取りだけで、ファイルは直していない。
+- 点検した道具: Claude Code のサブエージェント（general-purpose）。モデルは Opus 5.5（claude-opus-5-5）で、この記事の執筆と直しには関わっていない。`claude --version` は `2.1.332 (Claude Code)`。ログインはプランのログイン。環境変数 `ANTHROPIC_API_KEY` は未設定。
+- 裁定6の確認: `env -u ANTHROPIC_API_KEY claude -p --output-format stream-json --verbose --strict-mcp-config "1+1は？"` を `head` なしで、2026-11-27T14:16:16Z〜14:16:22Z に実行した（exit=0）。3行目が `system`/`init` の行で（1行目は `active_goal`、2行目は `autocompact_state`）、値は `"apiKeySource":"none"`。同じ行の `claude_code_version` は 2.1.332。
+- 書いた AI のサブエージェント自身の init は、点検する側からは見えない。
+- 書いた道具: Claude Code のサブエージェント（Claude）。コードは 2026-11-11 と 11-12 に、オーナーの端末の Claude Code 2.1.322 で動かした。ログインはプランのログイン（`run/09.log` の `apiKeySource: none`、`run/01.log`〜`15.log` の `ANTHROPIC_API_KEY: unset`）。2026-11-27 の直し（3876a6e）も Claude のサブエージェントで、コードは動かし直していない。
+- 渡されたもの: 原稿、`logs/claude-p-script-first-call/` の全部、SKILL.md、checklist.md、gate-readings.md、点検の項目を並べた依頼文（f434f8b からの差分を念入りに見るよう書いてあった）。書いた AI の報告と結論は渡されていない。
+
+### 確かめたこと
+
+- `git diff f434f8b HEAD -- content logs` を全部読んだ。本文で変わったのは 181、214、257、418行目と frontmatter の `updated`（2026-11-27）。コードと出力のブロックは変わっていない。
+- `python3 scripts/check-article.py claude-p-script-first-call`（作業用の一時フォルダで `npm ci` のあと）: exit=0、確定0件、候補0件、OUTPUT 13件がログに一致、例外0件。保存済みの `lint/check-article.txt` と一致。
+- ai-smell-lint は致命なし、use 0件、mention 0件。writing-lint は `445行/147文`、`FATAL 0 / DENSITY超過 0 / SHOULD 0`。保存済みの `lint/` と1文字も違わず一致。`check-code-and-outputs.py` は ALL OK。
+- C25: 変わった4行と前後の文を自分で数え、どれも60字以下（最長58字）。C17: 52〜426行目の115文で3連続は0件。C16、C28: `gate.md:77` と一致、直した4行に「や」の並列の曖昧さは無い。
+- 181行目: 質問の文面は `code/extra/measure-isolation.sh:19`、CLAUDE.md は同じスクリプトの :12 と `run/16.log:4` で確かめた。0.00063319 は `run/16.log:7`、0.0006710900000000001 は `run/07.log`（質問は `run/05.log` の TypeScript の型注釈）。原因は書いていない。
+- 214行目: 出典1（2026-11-27 取得）の "It is the first event in the stream unless startup events precede it" と矛盾しない。257行目: 出典3（2026-11-27 取得）の表の "Anthropic API | Opus 5.5 | Sonnet 5.5 | Haiku 5.5" と一致。418行目: 出典1の終了コードと `result` の説明と合う。
+- 記事のブロック09を 2.1.332 で1回流し（2026-11-27T14:18:20Z、exit=0）、出力 `{"apiKeySource":"none","model":"claude-haiku-5-5"}` が本文225行目と一致した。
+- 出典の（出典n）は39か所で、`sources.md` の表と `gate.md` の G05 の「39か所」と一致。gate.md の見出しと根拠の行番号も今の本文と合う。
+- G09 の検索（`sk-ant`、`/Users/`、`session_01`、`@gmail`、`/tmp/claude`、`/home/<名前>/`、UUID の形）: 当たりは review.md と gate.md の検索語の説明の行だけ。利用規約の注意書きは0件。記号（`**`、ダッシュ類、`：`、`／`、`ではなく`）は0件。
+
+### 確かめていないこと
+
+- ブロック09のほか、モデルを呼ぶブロック（05、11、13、14、15）とトークン数の測定は動かし直していない。
+- `keywords/` の CSV はこの環境に無く、G10 の CSV との一致は確かめていない（裁定2の注記のとおり）。
+- 出典2、4〜10 は開き直していない（3回目が 2026-11-27 に確かめ、その後これらに当たる本文は変わっていない）。guides/01〜10 は読み直していない。
+
+### 直すべき指摘
+
+無し。
+
+### 任意の指摘
+
+| # | 場所 | 内容 |
+|---|---|---|
+| 1 | 記事:181 | 「作業フォルダに CLAUDE.md を1つ置いて」の「作業フォルダ」は `<work>/isolation` で、99行目・128行目の作業フォルダとは別（C26）。また `run/16.log:5-7` は3行とも `has_nyan=False` で、CLAUDE.md が答えに出たことはログで示せていない。「測定用の別のフォルダに」と書き、効き目は書かない案 |
+| 2 | `gate.md` の C17、`lint/judgments.md` | 418行目の語尾の記録が「です」「ます」「です」だが、実際は「です」「ません」「です」。結論は変わらない |
+| 3 | `sources.md`、この review.md の3回目の節 | 「`run/16.log` の3行目」は4行目。`selection.md:251-273` は `selection.md:92-114` |
+| 4 | この review.md の3回目の節 | 指摘ごとの対応が無い |
+| 5 | `lint/judgments.md` の冒頭、`gate.md` の C33、G05 | lint の最後の実行日が 2026-11-14 のまま（最後は 2026-11-27）。G05 の `SKILL.md:377` は今は :413 |
+| 6 | 記事:418 | 「理由は JSON の `result` に入るので」は実行中の失敗に限る話。「実行中の失敗の理由は」とする案 |
+| 7 | 記事:232-253、出典1 | 出典1に「`--bare` は将来 `-p` の既定になる」とある。公開後に版を上げて動かし直すときに見る項目 |
+| 8 | 記事:257 | 「Claude の API では」は出典3の表の Anthropic API の行を指す。誤りではない |
+| 9 | 3回目の任意の指摘2、4、6、9 | 次の記事へのリンク、`ask.ts` の `JSON.parse`、`--bare` の文面、S1・S6 は開いたまま |
+
+### 3回目の直すべき指摘
+
+- 1（`gate.md` の G10 の根拠）: 閉じた。
+- 2（記事:181 の測定の質問）: 閉じた。
