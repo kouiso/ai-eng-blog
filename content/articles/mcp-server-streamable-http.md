@@ -7,8 +7,8 @@ main_keyword: "MCPサーバー"
 target_query: "mcp streamable http typescript"
 course_step: 5
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせる操作には、Claude Code を使える有料のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322"
-verified_at: "2026-11-10"
+run_environment: "Node.js 22.22.0 と 22.23.4、SDK 1.32.2、Claude Code 2.1.322"
+verified_at: "2026-11-14"
 prev: "mcp-server-typescript-stdio"
 next: "mcp-inspector-debug"
 sources:
@@ -63,11 +63,14 @@ sources:
   - url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
     title: "Cross-Origin Resource Sharing (CORS) (MDN)"
     accessed: 2026-11-10
+  - url: "https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts"
+    title: "@anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts"
+    accessed: 2026-11-14
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-25
 ---
 
 HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
@@ -79,6 +82,8 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 講座の[前の記事](/posts/mcp-server-typescript-stdio)は stdio の回です。同じツールを stdio で作り、Claude Code にもつなぎました。ツールの中身の説明は、そちらに任せます。
 
 確かめたのは、SDK のクライアント、curl、`claude mcp` で呼ぶところまでです。サーバーはインターネットに公開していません。claude.ai からつなぐ操作も、Claude にツールを呼ばせる操作も実行していません。
+
+Claude Agent SDK では、自作のツールを同じプロセスの MCP サーバーにして渡せます（出典18）。やり方は[自作ツールの記事](/posts/ai-agent-custom-tools-agent-sdk)にあります。
 
 対象は、stdio の MCP サーバーを1つ作ったことがある人です。書き写すコードは4ファイルで、合わせて121行あります。依存を入れる `npm install` は、2026-11-10 の実測で4秒でした。
 
@@ -404,7 +409,7 @@ curl -sS -X POST http://127.0.0.1:3000/mcp \
 status: 406 application/json
 ```
 
-POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` です。HTTP のクライアントを自分で書くと、この1行を忘れがちです。406 が返ったら、まず `Accept` を見てください。
+POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` です。406 が返ったら、まず `Accept` を見てください。
 
 ### GET には 405 が返る
 
@@ -518,7 +523,7 @@ Removed MCP server char-count-http from user config
 File modified: /path/to/tmp-home/.claude.json
 ```
 
-`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めると、ツールは使えなくなります。
+`√ Connected` と出たので、Claude Code はこの URL のサーバーにつながっています。stdio と違い、Claude Code はサーバーを起動しません。サーバーを止めて `claude mcp list` を打つと、`× Failed to connect` と出ます。`× Failed to connect` の行だけは、2026-11-14 に確かめました。
 
 ## トランスポートを使い回すと2回目から 500 になる
 
@@ -616,7 +621,7 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 
 ## 出典
 
-確認日は、出典3と出典15〜17が 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
+確認日は、出典18が 2026-11-14 です。出典3と出典15〜17は 2026-11-10、ほかは 2026-11-02 です。本文の（出典1）などの番号は、この表の番号を指します。
 
 | # | 題名 | URL | 確認日 |
 |---|---|---|---|
@@ -637,5 +642,6 @@ claude.ai のカスタムコネクタは、手元のサーバーにつながり�
 | 15 | MCP Specification 2026-07-28 Key Changes | https://modelcontextprotocol.io/specification/2026-07-28/changelog | 2026-11-10 |
 | 16 | MCP Specification 2026-07-28 Streamable HTTP | https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http | 2026-11-10 |
 | 17 | Cross-Origin Resource Sharing（CORS）（MDN） | https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS | 2026-11-10 |
+| 18 | @anthropic-ai/claude-agent-sdk 0.3.322 の型定義 sdk.d.ts | https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts | 2026-11-14 |
 
-AI 支援で執筆しました。コードは 2026-11-10 に実際に実行して確認しています。
+AI 支援で執筆しました。コードは 2026-11-14 に実際に実行して確認しています。

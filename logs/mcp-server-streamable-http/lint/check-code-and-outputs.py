@@ -85,6 +85,8 @@ check("article names http://localhost:5173 as the ALLOWED_ORIGINS value", '`"htt
 check("run/21, 22: 500 with 0 bytes", all("status: 500  0 bytes" == run(n)[1] for n in (21, 22)))
 check("run/19: server printed only the start line", run(19)[1].splitlines()[-1].startswith("char-count MCP server:") and "Error" not in run(19)[1])
 check("run/37: 7 TS7006 errors without @types/express", run(37)[1].count("error TS7006") == 7)
-for n in range(1, 51):
+check("run/52: claude mcp list shows Connected while server runs", "√ Connected" in run(52)[1])
+check("run/53: claude mcp list shows Failed to connect after server stopped", "× Failed to connect" in run(53)[1] and "√ Connected" not in run(53)[1])
+for n in range(1, 55):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")

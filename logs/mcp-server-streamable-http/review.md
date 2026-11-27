@@ -1,0 +1,162 @@
+# review: mcp-server-streamable-http
+
+- 点検した日: 2026-11-14
+- 点検の対象: #58 の直し（コミット `4f97efe`）。本文83行目に足した関連記事のリンクの1文、`updated`、`gate.md` の G07 と集計と追記、`lint/` の取り直し。直しの前からある本文（83行目以外）は、`check-code-and-outputs.py` の再実行と行番号の突き合わせのほかは読み直していない（下の「確かめていないこと」）
+- 書いた道具: Claude Code のサブエージェント（Claude、Sonnet 5.5。コミット `4f97efe` の Co-Authored-By の行）。この直しではコードを動かしておらず、モデルも呼んでいない（記事は `needs_api_key: false`、`check-code-and-outputs.txt` は変えていない）
+- 点検した道具: Claude Code のサブエージェント（Claude、Opus 5.5）。書いたエージェントとは別。Claude Code のバージョン 2.1.325（`claude --version` の出力）。プランのログインのセッションで、`ANTHROPIC_API_KEY` は未設定（点検のシェルで設定の有無だけを見た）。自分の init の `apiKeySource` は、サブエージェントからは見えないので確かめていない。点検ではモデルを呼ぶコードを動かしていない
+- 結果: 直すべき指摘 3 件、任意の指摘 2 件
+
+## 直すべき指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 根拠（ログ名:行、出典など） | 直し方の案 |
+|---|---|---|---|---|
+| 1 | `logs/mcp-server-streamable-http/gate.md:93-101`（集計と結論） | 集計と結論が表と食い違っていて、ゲートの記録として読めない。集計の A は「OK 9 / NG 1（G10）」だが、表の G10（`gate.md:46`）は OK で、G07（`gate.md:43`）も今は OK。合計は「OK 46 / NG 2」のまま。結論は「G07 と G10 に落ちたので draft のまま止める」と書き、G07 のリンク先を `mcp-server-typescript-stdio` と `mcp-inspector-debug` としている。今の G07 の根拠（本文のリンク先は21番と16番、`next` の本文リンクは外した）と合わない。G11 の行も無かった（この点検で `gate.md:47` に足した）。メインエージェントは公開の前にこの記録を読み直すので、どれが正しい判定か分からない | `gate.md:43`、`gate.md:46`、`gate.md:95-97`、`gate.md:101`。冒頭 `gate.md:3` の追記も「残る NG は G07 と G11」のまま | 集計を表の今の判定で数え直す（A は G01〜G10 が OK、G11 は点検の結果）。結論を今の状態に書き直し、冒頭3行目の追記も合わせる。「ただし冒頭の追記のとおり…」の読み替えの注記は消す |
+| 2 | `logs/mcp-server-streamable-http/gate.md` の本文の行番号（G05、G06、G07 以外の C 行の多く）と `gate.md:105`（2026-11-14 の追記） | 行番号のずれの説明が逆になっている。追記は「617行目、621行目など、これより下の参照は2行ずれている」と書くが、617、621、625〜641、643行目の参照は今の原稿（643行）で正しい（`content/articles/mcp-server-streamable-http.md:617` の問い、`:621` の出典の注記、`:643` の末尾）。ずれているのは 84〜615行目あたりを指す参照で、どれも今は2行後ろにある。例: C10 の「93行目」は `:95`、「282行目」は `:284`、「456行目」は `:458`、「570行目」は `:572`、「591行目」は `:593`、「613行目」は `:615`。C27 の「83行目」（4ファイルで121行）は `:85`。C13 の「615行目『講座の次の記事は…』」は、本文に「講座の次の記事」の語が無い（#31 で外した文。`grep -n "講座の次の記事"` で0件）。同じ日の `ai-agent-custom-tools-agent-sdk/review.md` の点検でも、gate.md の行番号が今の原稿と合わないことを直すべき指摘にしている | `git show origin/develop:content/articles/mcp-server-streamable-http.md` は641行で、その版では問いが615行目、末尾が641行目（gate.md はすでに2行ずれていた）。今の版との行の対応は、文を `grep -n` で引いて比べた | gate.md の行番号を今の原稿（643行）に合わせて全行書き直す。C13 から外した文の引用を消す。2026-11-14 の追記の「2行ずれている」の説明を消すか、正しい範囲に直す |
+| 3 | `content/articles/mcp-server-streamable-http.md:83` | 足した1文目「Agent SDK のエージェントには、別のプロセスを立てずに MCP のツールを渡せます。」は Agent SDK についての事実の断定だが、この記事の本文に出典が無い。G05 は「断定した事実すべてに一次情報の出典（URL とアクセス日）があり、それが本文に出ている」で、CLAUDE.md も「断定には一次情報の URL と確認した日付を付けます」。この記事の出典の表（`:623-641`）に Agent SDK の資料は無い。G05 の行は、この文について判定し直されていない（`gate.md:105-107` の追記は C 行を据え置きと書き、G05 にも触れていない） | 中身は正しい。`@anthropic-ai/claude-agent-sdk` 0.3.322 の `sdk.d.ts` の `createSdkMcpServer` のコメントは「define custom tools that run in the same process」（2026-11-14 に手元の 0.3.322 のパッケージで確認）。リンク先の `content/articles/ai-agent-custom-tools-agent-sdk.md:74` も同じことを出典5（この `sdk.d.ts`）付きで書いている | どちらか。(a) 出典の表に `sdk.d.ts` 0.3.322（リンク先の記事の出典5と同じ URL）を18番として足し、1文目に（出典18）を付け、`sources.md` と frontmatter の `sources` にも足す。(b) 断定をリンク先の記事についての文に変える（例「別のプロセスを立てずに MCP のツールを Agent SDK に渡す方法は、[自作ツールの記事](…)で扱っています。」）。どちらでも lint 4本を取り直し、G05 の根拠を書き直す |
+
+## 任意の指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 根拠（ログ名:行、出典など） | 直し方の案 |
+|---|---|---|---|---|
+| 1 | `content/articles/mcp-server-streamable-http.md:83` | 「MCP のツール」が何を指すかが少しあいまい。この記事の HTTP のサーバーのツールを、別のプロセスなしで Agent SDK に渡せるとも読める。リンク先で渡しているのは、`tool()` で作ったツールを `createSdkMcpServer()` でまとめた、同じプロセスの MCP サーバー | `ai-agent-custom-tools-agent-sdk.md:52`、`:67`、`:74` | 「自分で書いた関数を、同じプロセスの MCP サーバーにまとめて渡せます」のように、何を渡すかを書く。直すべき指摘3の (b) で書き換えるなら一緒に直る |
+| 2 | `logs/mcp-server-streamable-http/gate.md:6` | 冒頭の判定日が 2026-11-10 のままで、「行番号はすべてこの版」と書いている。2026-11-14 に G07 を判定し直したことが冒頭から分からない | `gate.md:6`、`gate.md:43` | 判定日に 2026-11-14（#58、G07 と G11）を足す |
+
+## 確かめて問題が無かったこと
+
+- 足した文の位置と形: 83行目、前後の段落（81行目の確かめた範囲、85行目の対象読者）と別の段落で、リンクは文の中に置いた。`prev` や `next` の言い回し（「次の記事」「前の記事」）は使っていない。講座の前のリンクは79行目の別の文。
+- G07 の決まり: リンク先 `ai-agent-custom-tools-agent-sdk` は `content/plan.md:57` で16番、この記事は `content/plan.md:63` で22番。自分より前の順番の記事だけ。本文の `/posts/` は79行目（21番）と83行目（16番）の2件で、後の順番の記事への本文リンクは0件。原稿は `content/articles/ai-agent-custom-tools-agent-sdk.md` にあり、`slug` が一致する。frontmatter の `prev`（21番）と `next`（23番）は変わっていない。#31 で判定し直したほかの記事の G07 と同じ扱い。
+- 主張の中身: リンク先の記事は `createSdkMcpServer()` で作る同じプロセスの MCP サーバーを扱っている（`ai-agent-custom-tools-agent-sdk.md:4`、`:52`、`:67`、`:74`、`:187`）。一次情報の `sdk.d.ts` 0.3.322 のコメントも「run in the same process」。gate.md の G07 の「その記事の74行目」も正しい。
+- `updated`: `2026-11-14` に変わった（70行目）。本文を変えた日と同じ。`verified_at` はコードを動かし直していないので `2026-11-10` のままで正しい。末尾の643行目の日付も実行の日のままで正しい。
+- lint 4本を点検の作業場所で再実行し、保存されたものと比べた。`ai-smell.txt`、`writing-lint.txt`、`prose-check.txt` は1文字も違わない（`diff` で差分なし）。ai-smell は use 0 / mention 0、writing-lint は `FATAL 0 / DENSITY超過 0 / SHOULD 0`、prose-check は LONG>60 が0、SAME3 が0。`check-code-and-outputs.py` は `ALL OK`（保存したファイルとの違いは、末尾の `exit=0` の行が保存したほうに無いことだけ）。`judgments.md` の 2026-11-14 の再実行の記録も、この結果と合う。
+- 足した2文の長さ: prose-check で60字以下。リンクの文字を縮めた経緯は `judgments.md` にある。
+- 秘密情報: 差分（記事、gate.md、lint/）に、キー、トークン、パス、個人名は無い。
+
+## 確かめていないこと
+
+- 直しの前からある本文（83行目以外）の出典、数値、文体。この記事には、これまで別の AI による点検の記録（`review.md`）が無かった。G11 を OK にするには、直すべき指摘を直したあと、記事全体を別の AI が点検し直す必要がある。
+- 出典の表の17件のページ。開いていない。
+- 記事のコードの再実行（コードは変わっていない）。
+
+## 2026-11-14 記事全体の点検（2回目、PR #71 の 6468fdf）
+
+- 点検した日: 2026-11-14
+- 点検の対象: PR #71（#58）のブランチの `6468fdf`。本文の全行（647行）、frontmatter、出典18件、`code/`、`run/` の50本、`lint/` の全ファイル、`gate.md` の全行、`sources.md`、`selection.md`、`brief.md`、上の1回目の点検の直すべき指摘3件
+- 書いた道具: Claude Code のサブエージェント（Claude）。本文の大部分は Claude Opus 5.5（コミット `29c1a8e` 2026-11-02、`4bff6ac` 2026-11-10 の Co-Authored-By の行）。#58 の直し（86行目の2文、出典18、gate.md の書き直し）は Claude Sonnet 5.5（`4f97efe`、`6468fdf` の Co-Authored-By の行）。2026-11-10 の実行で使った Claude Code は 2.1.322（`run/12.log`）。ログインの方法は、`ANTHROPIC_API_KEY` が未設定だったこと（`selection.md:15`、2026-11-02）だけが記録にあり、init の `apiKeySource` は記録が無い。記事はモデルを呼ばない（`needs_api_key: false`）
+- 点検した道具: Claude Code のサブエージェント（Claude、Opus 5.5）。この記事を書いておらず、1回目の点検もしていない、新しく起こしたサブエージェント。Claude Code 2.1.325（`claude --version`）。プランのログインのセッションで、`ANTHROPIC_API_KEY` は未設定（点検のシェルで有無だけを見た）。自分の init の `apiKeySource` はサブエージェントからは見えないので確かめていない。点検ではモデルを呼ぶコードを動かしていない
+- 点検の前に Read ツールで読んだもの（2026-11-14）: `.claude/skills/write-article/SKILL.md`（全文）、`CLAUDE.md`、`docs/tech-writing-pack/checklist.md`、`guides/01`、`02`、`03`、`04`、`05`、`06`、`08`、`09`（全文）
+- 結果: 直すべき指摘 3 件、任意の指摘 4 件。G11 は NG のまま
+
+### 直すべき指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 根拠（ログ名:行、出典など） | 直し方の案 |
+|---|---|---|---|---|
+| 1 | `logs/mcp-server-streamable-http/gate.md:58`（C06）、`:62`（C10）、`:40`（G04）、`:85`（C33）、`logs/mcp-server-streamable-http/lint/judgments.md:13` | 1回目の直すべき指摘2（行番号のずれ）が直りきっていない。書き直しで漏れた参照が残っていて、根拠を後から確かめられない（スキル手順8「後から人が確かめられる形」）。漏れは次のとおりで、これで全部（gate.md と judgments.md の「N行目」と見出しの番号を全件、本文と突き合わせた）。C06 の H2 の14個: 85→90、106→111、139→144、206→211、296→301、365→370、422→427、491→496、523→528、574→579、593→598、605→610、611→616、619→622。C06 の H3 の5個: 95→100、124→129、391→396、409→414、458→463。C10 の節の見出しの番号（「85:」「95:」…「619:」の16個）も同じ対応でずれている（括弧の中の文の行番号は正しい）。G04 の「`needs_api_key: false`、67行目」は今の70行目。C33 の「643行の版」は今の647行の版。judgments.md:13 の「1行目 `643行/247文`」は、今の `writing-lint.txt` の1行目「647行/250文」と合わない | `grep -n '^##' content/articles/mcp-server-streamable-http.md` の出力（90、100、111、129、144、211、301、370、396、414、427、463、496、528、579、598、610、616、622行目）。`content/articles/mcp-server-streamable-http.md:70`。`lint/writing-lint.txt:1`。ほかの行の参照（G01、G02、G05、G06、G07、G08、C03〜C05、C07〜C09、C10 の括弧内、C11、C13、C14、C16〜C24、C26〜C28、C36、C37、C39 の参照すべて）は本文の同じ文を指していることを確かめた | 上の漏れを直す。直したあと、C06 の番号は `grep -n '^##'` の出力と並べて確かめる |
+| 2 | `logs/mcp-server-streamable-http/gate.md:108`（2026-11-14 の追記の3つ目）と B の全行、G03 | #58 で足した本文86行目の2文と624行目の1文について、C 行が判定されていない。追記は「ガイドを読み直していないので、C 行の判定は据え置きで、足した文についての再判定はしていない」と書く。スキルの「ゲートの項目はガイドを読んでから判定する」は、ガイドを読まずに判定した項目を NG と数える。今の B の OK と G03 の OK は、647行の原稿に対しては裏付けが無い。点検した側でガイドを読んで足した3文を見た結果は「確かめて問題が無かったこと」に書いた（C の判定に当たる不合格は見つからなかった）が、gate.md の記録は書いた側が直す | `gate.md:108`、`gate.md:6`（判定日が 2026-11-10 のまま）、SKILL.md の「ゲートの項目はガイドを読んでから判定する」 | ガイドを読み直して、86行目と624行目を含む今の原稿で B の全行を判定し直し、冒頭の判定日と読んだ日を 2026-11-14 にする。点検した側の判断: この指摘を直すべきものに数えるかは、スキルの文言から決めた。メインエージェントの判断で任意に下げるなら、その理由を gate.md に書く |
+| 3 | `content/articles/mcp-server-streamable-http.md:526`（3文目） | 「サーバーを止めると、ツールは使えなくなります。」は断定だが、出典も実行ログも無い。G05 は「断定した事実すべてに一次情報の出典」。`sources.md` の「出典ではなく実行ログを根拠にした文」の表にもこの文は無い。`run/` の50本に、サーバーを止めた状態で `claude mcp list` や `claude mcp get` を打ったログは無い（`run/13`〜`16.log` はどれもサーバーが動いている間）。同じ段落の2文目「stdio と違い、Claude Code はサーバーを起動しません」は、`run/05.log` で自分で `npm start` し、`run/13.log` が URL を登録しただけなので、実行の記録で支えられている | `run/` の各ログの `command:` の行（`run/12`〜`16.log` は `claude --version`、`mcp add`、`mcp list`、`mcp get`、`mcp remove`）。出典12（`code.claude.com/docs/en/mcp`）には、つながらないときの状態表示として `✘ Failed to connect` がある（2026-11-14 に確認）が、本文はこの出典を引いていない | どちらか。(a) サーバーを止めて `claude mcp list` を打ち、`run/` にログを残して `sources.md` の表に足す（出典12の `✘ Failed to connect` を引いてもよい）。(b) 文を削るか、実行した範囲の言い方にする。どちらでも lint を取り直す |
+
+### 任意の指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 根拠（ログ名:行、出典など） | 直し方の案 |
+|---|---|---|---|---|
+| 1 | `content/articles/mcp-server-streamable-http.md:86` | 「Agent SDK」が初出で説明が無い。この記事の「SDK」は、ほかの全部の箇所で MCP の TypeScript SDK を指すので、別の SDK だと分かりにくい（guides/05 §4「用語の統一」、§5「知らない用語は初出時に定義する」） | 出典18の題名は `@anthropic-ai/claude-agent-sdk`。本文の「SDK」は76、96、113、123、287、291 行目ほか | 「Claude Agent SDK」と書く |
+| 2 | `content/articles/mcp-server-streamable-http.md:412` | 「HTTP のクライアントを自分で書くと、この1行を忘れがちです。」は一般論で、根拠になる観察が記事に無い（guides/09 §3 の4「具体性の検証」） | 本文で 406 が出たのは、点検のために `Accept` を外した curl（`run/08.log`）だけ | 「406 が返ったら、まず `Accept` を見てください。」だけを残すか、何で確かめたかを書く |
+| 3 | `content/articles/mcp-server-streamable-http.md:86` の位置 | リードの中で、確かめた範囲（84行目）と対象読者（88行目）の間に、別の講座の記事の話が入っている。前の記事へのリンク（82行目）と並べると流れが切れにくい（guides/02 タイプ1 のリード、guides/03 不在3） | 76〜88行目 | 88行目の後か、まとめの近くに移す。必須ではない |
+| 4 | `logs/mcp-server-streamable-http/gate.md:42`（G06）、`selection.md` の G06 の表 | G06 の根拠は 2026-11-10 の18ファイル（この記事のほか17本）で、今の `content/articles/` は30ファイル。増えた12本（`ai-agent-custom-tools-agent-sdk`、`ai-agent-max-turns-budget-limit`、`ai-agent-vs-workflow`、`claude-agent-sdk-first-agent`、`claude-agent-sdk-streaming`、`claude-agent-sdk-structured-output`、`claude-code-api-key-billing-auth`、`claude-p-script-first-call`、`llm-as-a-judge-claude`、`promptfoo-llm-eval-intro`、`rag-answer-with-citations-claude`、`structured-output-methods-compare`）が表に無い | 点検した側で12本の `title` と `target_query` を読み、本文を `streamable`、`transport http`、`--transport` で `grep -i` して12本とも0件。HTTP で受ける MCP サーバーの作り方に答える記事は無く、G06 の結論（重なりなし）は今も正しい | `selection.md` の表と G06 の根拠に12本を足す |
+
+### 1回目の直すべき指摘の今の状態
+
+| 1回目の # | 内容 | 今の状態 |
+|---|---|---|
+| 1 | gate.md の集計と結論が表と食い違う | 直りきっていなかった。集計の A が「OK 9 / NG 0 / 未判定 1（全10項目）」で、表の G01〜G10 は10行とも OK、G11 の行は NG なので、数も種類も合わない（A は11行）。合計も「全49項目」で、表は A 11行と B 39行の50行。この点検で G11 を判定したので、集計、結論、冒頭3行目の追記を表に合わせて書き直した（この点検のコミット） |
+| 2 | 行番号のずれ | 直りきっていない。上の直すべき指摘1 |
+| 3 | 86行目の Agent SDK の断定に出典が無い | 直っている。出典18（`https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts`）を 2026-11-14 に取り直し（HTTP 200）、640行目に `createSdkMcpServer` の「This allows SDK users to define custom tools that run in the same process.」があり、651行目の `createSdkMcpServer` の宣言に続くことを確かめた。本文86行目、出典の表645行目、624行目の確認日、frontmatter の `sources`（66〜68行目）、`sources.md` の18番が一致する。足した2文は、1回目の任意の指摘1（何を渡すかがあいまい）も直している |
+
+### スキルの4つの確かめ方ごとの結果
+
+- ゲートで OK とした行が本当に OK か: G01、G02（lint を点検の作業場所で取り直し、`ai-smell.txt`、`writing-lint.txt` と1文字も違わない。use 0 / mention 0、`FATAL 0 / DENSITY超過 0 / SHOULD 0`、どちらも `exit=0`）、G04、G06（根拠の表が古いことは任意の指摘4）、G07、G08、G09 は中身として OK。G05 は直すべき指摘3の1文を除いて OK。G03 と B の行は、中身は点検した側の判定でも不合格が無かったが、記録が直すべき指摘1と2のとおり。G10 は下の「確かめられなかったこと」。
+- 記事の数値と出力が `run/` のログと一致するか: 一致する。`lint/check-code-and-outputs.py` を取り直して `ALL OK`（保存したものとの違いは末尾の `exit=` の行だけ）。自分でも次を突き合わせた。79、354行目の `ok:` の行と `run/06.log`、203〜208行目と `run/03.log`（`added 108 packages … in 4s`）、476〜487行目と `run/47.log`、`run/36.log` の `ok=1` 30回と `abort=1` 3回、`run/42.log` の `notfound=2` 30回、127行目の7件と `run/37.log` の TS7006 7件、`express@5.3.0` と `run/32.log`、4ファイル121行と69行（`code/` の `wc -l`）、`tsconfig.json` が前の記事の `code/` と同じ（`diff` で差分なし）、`ok:` の行が前の記事の本文と同じ。ログの日付は 2026-11-10 07:16:09〜07:17:23 UTC で、`verified_at`、647行目、`run_environment`（Node.js 22.22.0、SDK 1.32.2、Claude Code 2.1.322）と合う。
+- 出典がその断定を支えているか: 18件すべてを 2026-11-14 に取り直して読んだ（どれも HTTP 200。github.com の出典3〜9は同じブランチの raw.githubusercontent.com、MDN は mdn/content の原稿、code.claude.com と modelcontextprotocol.io は末尾 `.md` の版、出典10は `npm view`）。本文の（出典n）の付いた文はすべて、その出典の記述で支えられていた。主なもの: 出典1 の stdio と Streamable HTTP の2つ、独立したプロセス、POST と GET の1つのエンドポイント、Origin の検証と 403、127.0.0.1、認証、DNS リバインディング、Accept の2形式、SSE か JSON、GET に SSE か 405、セッション ID は MAY。出典2 の「MUST be the first interaction」。出典3 の maintenance line、2025-11-25 まで、v2 が current stable release、2026-07-27 から少なくとも6か月。出典4 の recommended for remote servers、Stateless と Stateful、Bearer の節。出典5 の `express.json()`、`localhostHostValidation()`、`allowedHosts`、`listen` を呼ばない。出典6 の3つの名前と DNS リバインディングの注記。出典7 の `enableJsonResponse` 既定 false、`allowedOrigins` の deprecated、再利用時の例外の文言とメッセージ ID の注記。出典8 の POST ごとの作成と GET、DELETE の 405。出典9 の initialized の 202 のあとの GET、405 の扱い、`Failed to open SSE stream`、`close()` の abort と `SSE stream disconnected`。出典10 の latest 1.32.2 と `node >=18`。出典11 の欄の行。出典12 の `--transport http <name> <url>`。出典13 の Pro、Max、Ultra、Team、Enterprise、Console と無料プランに含まれないこと。出典14 の Anthropic のクラウドからつなぐこと、IP の範囲、Free は1つまで。出典15 の Major 1、2、4 と Minor 4。出典16 の Origin と 403、古いクライアントの GET と DELETE に 405（SHOULD）。出典17 の JSON の POST のプリフライトと、`Access-Control-Allow-Origin` が無いとスクリプトに応答を渡さないこと。出典18 は上の表。出典ではなくログで支える文は `sources.md` の後半の表で、直すべき指摘3の1文のほかは表のログで支えられている。`check-code-and-outputs.py` の55項目は `run/01`〜`50.log` の50本すべてを読む。点検した側が直接開いたのは `run/03`、`06`、`12`、`19`（終了まで起動の1行だけ）、`21`、`22`（どちらも `status: 500  0 bytes`）、`23`、`36`、`37`、`42`、`47`、`48`（200 で `Access-Control-Allow-Origin` の行が無い）と、50本すべての `command:` の行。
+- 利用規約についての注意書きが足されていないか: 足されていない。本文に「個人で試す用途に限る」「API キーで認証する」の類の文は無い。84、612、614行目は、実行した範囲と料金の説明。
+
+### 確かめて問題が無かったこと
+
+- 足した3文（86行目の2文、624行目）を、ガイドを読んだうえで C 行の観点で見た。C10（言い切りの文）、C12、C13（「やり方は…にあります」は章をまたぐ予告ではなく、ほかの記事への案内）、C17（84〜88行目の文末は「ません」「ます」「ます」「です」「ます」「でした」で3連続なし）、C19、C25（prose-check で60字以下）、C26（任意の指摘1のほかは用語の揺れなし）、C27、C30〜C32、C14、C15 に当たる不合格は無い。
+- 本文全体の文体と記号: 太字、ダッシュ、全角コロンと空白、全角スラッシュは無い（prose-check の PAT）。否定対比は0回。ですます調で統一（judgments.md の文末の調査と同じ結果を、点検の側の lint の取り直しで確かめた）。
+- G07: 本文の `/posts/` は82行目（21番 `mcp-server-typescript-stdio`）と86行目（16番 `ai-agent-custom-tools-agent-sdk`）の2件で、`content/plan.md:57`、`:62`、`:63` の順番で、この記事（22番）より前。リンク先の原稿はどちらもあり、`slug` が一致する。16番の記事の74行目は「`createSdkMcpServer()` が作るのは、同じプロセスの中で動く MCP サーバーです」で、86行目の主張と合う。
+- 123行目「特典サンプルとバージョンをそろえる」: `samples/mcp-server/package.json` の SDK は 1.32.2。
+- G09: 原稿と `logs/mcp-server-streamable-http/` に、キー、トークン、パスワードの値は無い（`sk-ant`、`ghp_`、`github_pat`、`Bearer ` と英数字、`api_key=` などを `grep` で検索。該当は `needs_api_key: false` と、出典4の節名の説明だけ）。個人名は、git のコミット作者名とメールアドレス、リポジトリのオーナーのアカウント名、それらの語の漢字表記の候補を `grep -i` でかけて0件。
+- 価格: 本文の料金の節（610〜614行目）と `cost_estimate` は食い違っていない。API を呼ばない範囲と、有料のアカウントが要る操作を出典13付きで分けている。
+
+### 確かめられなかったこと
+
+- G11 の後半の条件（書いた道具と点検した道具の、ログインの方法の記録）: 書いた側は `ANTHROPIC_API_KEY` が未設定だったこと（`selection.md:15`、2026-11-02）だけが記録にあり、スキルの「書く AI と点検する AI」が写すよう求める init の `apiKeySource` の1行は、書いた側にも点検した側（1回目と2回目）にも無い。サブエージェントからは自分の init が見えないため。直すべき指摘3件が直っても、この記録が無いままでは G11 の条件を満たすとは言い切れない。誰がどう記録するか（メインエージェントがサブエージェントを起こすときの init を写す、など）はメインエージェントに確かめる。点検した側は、これを直すべき指摘には数えていない
+
+- G10: 点検した環境の `keywords/` にある CSV は、2026-11-14 に集め直したもので（`fetched_at` が 2026-11-14、`google-suggest-mcp-server.csv` を含む8ファイル）、`target_query` と1文字も違わない行が無かった。この環境の CSV では、30本の記事のうち `target_query` を持つ28本のうち1本だけが一致する。`selection.md` は 2026-11-11 の CSV で一致を確かめたと書くが、その CSV はこの環境に無い（CSV はコミットしない決まり）。G10 の行は書き換えていない。どの CSV で G10 を判定するかはメインエージェントに確かめる（CSV の行はここに写していない）。
+- 記事のコードの再実行。コードは 2026-11-10 から変わっていないので、ログと記事の一致だけを確かめた。
+- github.com のページそのもの（raw.githubusercontent.com の同じブランチのファイルで読んだ。v1.x ブランチは 2026-11-02 より後に変わっている可能性があるが、npm の latest は 2026-11-14 も 1.32.2 で、本文が引いた記述はどれも今のファイルにある）。
+
+## 2026-11-14 記事全体の点検（3回目、PR #71 の 374c921）
+
+- 点検した日: 2026-11-14
+- 点検の対象: PR #71（#58）の `374c921`
+  - 本文の全行（647行）、frontmatter、出典18件（3件は開いて確かめた）
+  - `run/` のうち、本文の出力の写し元（06〜11、20、27、52、53）と、足した51〜54
+  - `lint/` の全ファイル、`gate.md`、`judgments.md`、`sources.md`、`selection.md`
+  - 2回目の点検の直すべき指摘3件
+- 書いた道具: Claude Code のサブエージェント（Claude）。本文の大部分は Claude Opus 5.5、#58 の直しは Claude Sonnet 5.5（どちらもコミットの Co-Authored-By の行）。書いた側の init の `apiKeySource` は記録が無い（サブエージェントの中からは見えない）
+- 点検した道具: Claude Code のサブエージェント（Claude、Opus 5.5）。この記事を書いておらず、1回目と2回目の点検もしていない。Claude Code 2.1.325（`claude --version`）
+- ログインの方法の確認: 2026-11-14T13:10:24Z（UTC）に、別のプロセスで `env -u ANTHROPIC_API_KEY claude -p "say ok" --strict-mcp-config --output-format stream-json --verbose` を実行した
+  - init の行は `apiKeySource: "none"`（`claude_code_version: 2.1.325`）、result は `success`
+  - これはこの環境のログインの状態の記録。点検したサブエージェント自身の init と、書いたサブエージェントの init は、見えないので確かめていない
+- 点検の前に読んだもの（2026-11-14）: `CLAUDE.md`、`.claude/skills/write-article/SKILL.md`、`docs/tech-writing-pack/checklist.md`、`guides/01`〜`06`、`08`、`09`（ガイドは Read ツールで全文）
+- 結果: 直すべき指摘 5 件、任意の指摘 7 件。G11 は NG のまま
+
+### 2回目の直すべき指摘の今の状態
+
+| 2回目の # | 今の状態 |
+|---|---|
+| 1 行番号 | 直っている（40か所以上を本文と突き合わせて、ずれは0件）。引用している文の中身が古い箇所は、下の4 |
+| 2 B と G03 の判定し直し | 一部だけ直っている。読み直したガイドに、`guides/06` と `guides/08` の後半が入っていない（下の2） |
+| 3 526行目 | 一部だけ直っている。`× Failed to connect` は `run/53.log` で裏付けられた。「Claude Code 2.1.325」は裏付けが無い（下の1）。`run/51`〜`54` を足したことで、`verified_at` と `run_environment` がログと合わなくなった（下の3） |
+
+### 直すべき指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 根拠（ログ名:行、出典など） | 直し方の案 |
+|---|---|---|---|---|
+| 1 | `content/articles/mcp-server-streamable-http.md:526`、`sources.md:58`、`gate.md:40` | 「Claude Code 2.1.325」を裏付けるログが無い | `run/51`〜`54.log` の見出しは node と npm だけで、`claude --version` が無い。2.1.322 には `run/12.log` がある。スキル手順6の3、G05 | `claude --version` から取り直して `run/` に残すか、本文からバージョンを外す |
+| 2 | `gate.md:108`、`:119`（C37〜C39）、`:120`（G02） | 判定し直す前に、C37〜C39 で読む `guides/06` と、G02 で読む `guides/08`（B-2 以降と密度基準総表）を読んでいない。この版の C37〜C39、G02、G03 の OK が成り立たない | SKILL.md:54、:64、:65。2026-11-10 に読んだ記録（gate.md:14）は、本文を変える前のもので代わりにならない | 2つのガイドを全文読み直してから判定し、読んだ節を根拠に書く |
+| 3 | 原稿の10、11、647行目、`gate.md:41`、`:44` | `verified_at` と647行目が 2026-11-10 のままで、`run/` の最後のログ（`run/54.log`、2026-11-14）と合わない。`run_environment` が `run/51`〜`54` の環境を含まない。gate.md は最後の実行を `run/50.log` と書いている | SKILL.md:374、:375、G05。`run/54.log` の `date:` の行。gate.md:40 によれば 2026-11-14 にもコードをビルドして動かした | 1つの環境でまとめて取り直すか、frontmatter と647行目を `run/` の最後のログに合わせる。G05、G08 の行も書き直す |
+| 4 | `gate.md:43`、`:76`、`:68`、`:3`、`sources.md:31`、`:21` | 本文と食い違う引用と数がある。86行目の古い文面、287行目と594行目の文面の誤り、C16 の103文（今は106文）、冒頭の「3件残る」 | 本文86、287、594行目、`lint/prose-check.txt` の `long(41-60) 106`、gate.md:98、:102 | 今の本文とログに合わせて書き直す |
+| 5 | `gate.md:46`（G10） | 点検の環境の `keywords/google-suggest-mcp-server.csv`（追跡の外、`fetched_at` は 2026-11-14）に、`target_query` と一致する行が0件。gate.md 自身も、判定し直していないと書いている | SKILL.md の G10。gate.md:46、:102 | どの CSV を正とするかをメインエージェントが決める。判定し直すまでは G10 を保留か NG にする |
+
+### 任意の指摘
+
+| # | 場所（ファイル:行） | 何が問題か | 直し方の案 |
+|---|---|---|---|
+| 1 | 原稿の86行目 | 「渡せます」の渡す先が文から消えた（1回目の任意の指摘1と同じ問題） | 渡す先を書く（例「`query()` に渡せます」） |
+| 2 | `run/51`〜`54.log` | `npm install`、`tsc`、サーバーの起動と停止のログが無い | 1回の実行で1ファイル残す |
+| 3 | `gate.md:45`（G09） | 確かめた範囲が 2026-11-10 の79ファイルのまま。点検の側で新しいファイルも検索し、秘密情報は0件だった | 日付と範囲を新しくする |
+| 4 | G07 | リンク先の2本は今 `draft` | 予約するときに、リンク先が先に予約済みであることを確かめる |
+| 5 | 原稿の526行目 | 「この1行だけは」の指す先があいまい | 「`× Failed to connect` の行だけは」と書く |
+| 6 | `gate.md:40`、`:41` | G04 と G05 の条件の欄が、今のスキルの文面と違う | スキルの文面に写し直す |
+| 7 | G11 | 書いた AI の init の `apiKeySource` は、メインエージェントが起動のときに写さないと取れない | 起動のときに init を写す |
+
+### 行った確認
+
+- `ai-smell-lint.py`（use 0 / mention 0、exit=0）と `writing-lint.py`（FATAL 0 / DENSITY超過 0 / SHOULD 0、exit=0）を取り直した。どちらも `lint/` に保存された結果と同じだった。
+- `prose-check.py` は保存と同じ結果。`check-code-and-outputs.py` は ALL OK。
+- 本文の出力を、スクリプトとは別に `run/06`〜`11`、`20`、`27`、`52`、`53` と突き合わせ、どれも一致した。
+- `npm test` は 109 passed。`node scripts/secret-scan.mjs origin/develop` は 0 finding。
+- 出典1、3、18 を開いて、本文の断定を支えていることを確かめた（どれも HTTP 200）。
+
+### 3回目の直すべき指摘への対応（2026-11-25、書いた側）
+
+| 3回目の # | 対応 |
+|---|---|
+| 1 526行目のバージョン | 直した。バージョンログの再取得ではなく、本文からバージョンを外す方を選んだ。526行目は「`× Failed to connect` の行だけは、2026-11-14 に確かめました。」（任意の指摘5の「`× Failed to connect` の行だけは」の書き方も取り入れた）。`sources.md` の実行ログの表の行も合わせて直した |
+| 2 ガイドを読み直さずに判定 | 直した。`guides/03`、`04`、`05`、`06`、`08`、`09` を 2026-11-25 に全文読み直した（`06` は B-2 を含む後半まで、`08` は B-2 以降と198行目からの密度基準総表を含む全文）。読み直しの記録は `gate.md` 冒頭の「判定の前に読み直した記録」、判定し直しは同じファイルの「2026-11-25 の追記（#58 の残り）」。`guides/01`、`02` は直しの当たる行が無かったので、2026-11-14 の読み直しのまま |
+| 3 日付と環境の食い違い | 直した。`verified_at` を「2026-11-14」に、`run_environment` を「Node.js 22.22.0 と 22.23.4、SDK 1.32.2、Claude Code 2.1.322」（2環境をそのまま列挙）に、647行目の確認日を「2026-11-14」に合わせた。`gate.md` の G04・G05・G08 の「最後の実行は `run/50.log`」も `run/54.log` に直した。`updated` は 2026-11-25 |
+| 4 引用と件数のずれ | 直した。`gate.md` の G07（86行目の文）、G08（647行目の文）、C24（287行目の文）の引用を今の本文に合わせ、C16 の件数を取り直した `prose-check.txt` の「41〜60字106文」に合わせた。冒頭の「3件残る」はこの gate.md の更新で解消（集計と結論に3回目の点検の記録を足した）。`sources.md:21`、`:31` の引用も今の本文に合わせた |
+| 5 G10 の判定し直し | 統括の裁定（issue #58 のコメント、2026-11-14）で、クラウドの環境では G10 を判定し直さないことになった。判定は OK のまま据え置き、G10 の行に 2026-11-25 の注記を足した。最終の判定は Mac のレーンのキーワード作業の後 |
+
+任意の指摘への対応: 1（「渡せます」の渡す先）は本文86行目の文をそのままにしている。渡す先は前の文「自作のツールを同じプロセスの MCP サーバーにして」で「エージェントに」が省略されていると読める文だが、任意なので今回は変えていない（次の点検者に判断を委ねる）。2（run/51〜54 の手順ログ）も任意で、G04 の行に「これらの手順と `claude --version` のログは `run/` に残っていない」と明記した。3（G09 の範囲）は、G09 の行に 2026-11-25 の範囲での再検索の記録を足した。4（リンク先が draft）は、G07 の条件は「公開済みか先に予約済み」で、2本ともこの記事の予約より前の順番（16番、21番）なので条件の範囲内。6（G04・G05 の条件の欄）は、今のスキルの文面に写し直した。7（init の `apiKeySource`）は G11 の行の注記どおり、次の点検者の作業。
