@@ -45,6 +45,34 @@ describe("gate-list.py", () => {
 		}
 	});
 
+	it("引用・番号つきリストの中のフェンス、4つの閉じ、info の ` つきの ~~~、見出しの後ろの全角空白を正しく読む", () => {
+		for (const slug of ["fence-quote", "fence-list-ordered", "fence-tilde-info-backtick", "fence-longer-closer", "heading-fullwidth-trailing"]) {
+			const r = run([slug]);
+			expect(r.code, `${slug}: ${r.err}`).toBe(0);
+			expect(r.out).toContain(`| ${slug} | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 合格 |`);
+		}
+	});
+
+	it("入れ物（リストの項目・引用）が終われば、閉じていないフェンスもそこで終わる", () => {
+		for (const slug of ["fence-list-ended", "fence-quote-ended", "fence-list-ended-by-heading", "fence-quote-ended-by-heading"]) {
+			const r = run([slug]);
+			expect(r.code, `${slug}: ${r.err}`).toBe(0);
+			expect(r.out).toContain(`| ${slug} | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 合格 |`);
+		}
+	});
+
+	it("リストの項目の字下げより浅い行でフェンスは終わり、その行の gate: は節の外のものとして数える", () => {
+		const r = run(["fence-list-dedent"]);
+		expect(r.code).toBe(1);
+		expect(r.err).toContain("節の外にもあります");
+	});
+
+	it("`` の2つ並びはフェンスではないので、後ろの ## を見つけて落とす", () => {
+		const r = run(["fence-two-backticks"]);
+		expect(r.code).toBe(1);
+		expect(r.err).toContain("ファイルの最後に置きます");
+	});
+
 	it("--tsv でタブ区切りに出し、まとめの行は標準エラーに出す", () => {
 		const r = run(["--tsv", "ok"]);
 		expect(r.code).toBe(0);

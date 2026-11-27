@@ -46,33 +46,56 @@ class GateError(Exception):
     pass
 
 
+# リストの印（字下げのあと）。フェンスの入っているリストの項目が終わったかを見るのに使う
+LIST_MARKER_RE = re.compile(r"^( *)(?:[-*+]|\d+[.)])[ \t]+")
+
+
 def outside_fences(lines: list[str]) -> list[str]:
     """コードフェンス（``` か ~~~。3つ以上並べる。リストの項目や引用の中、字下げつきも含む）の中の行を空行に置きかえる。
-    行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。"""
+    行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。
+    lines は行末を落としていない行。フェンスを閉じる行の判定には半角の空白とタブだけを落とした行を使い、
+    フェンスの外の行は行末の空白を（全角の空白や NBSP も）すべて落として返す。"""
     result: list[str] = []
-    fence: tuple[str, int] | None = None
-    for line in lines:
-        if fence is None:
-            m = FENCE_OPEN_RE.match(line)
-            # CommonMark と同じく、``` の開きの後ろ（info string）に ` があれば、フェンスではなくインラインのコード。~~~ は ` があってもよい
-            if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
-                fence = (m.group(1)[0], len(m.group(1)))
+    # 開いているフェンス: (字, 並びの数, 入れ物の種類, リストの項目の中身の桁)
+    fence: tuple[str, int, str, int] | None = None
+    for raw in lines:
+        if fence is not None:
+            # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
+            m = FENCE_CLOSE_RE.match(raw)
+            if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
+                fence = None
                 result.append("")
+                continue
+            # 入れ物（引用・リストの項目）が終わったら、フェンスもそこで閉じる。その行はフェンスの外の行として読み直す
+            if fence[2] == "quote":
+                ended = not raw.lstrip(" ").startswith(">")
+            elif fence[2] == "list" and raw.strip():
+                indent = len(raw) - len(raw.lstrip(" "))
+                marker = LIST_MARKER_RE.match(raw)
+                ended = indent < fence[3] or (marker is not None and len(marker.group(1)) <= fence[3])
             else:
-                result.append(line)
-            continue
-        # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
-        m = FENCE_CLOSE_RE.match(line)
-        if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
+                ended = False
+            if not ended:
+                result.append("")
+                continue
             fence = None
-        result.append("")
+        m = FENCE_OPEN_RE.match(raw)
+        # CommonMark と同じく、``` の開きの後ろ（info string）に ` があれば、フェンスではなくインラインのコード。~~~ は ` があってもよい
+        if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
+            prefix = raw[: m.start(1)]
+            kind = "quote" if ">" in prefix else "list" if prefix.strip() else "top"
+            fence = (m.group(1)[0], len(m.group(1)), kind, m.start(1))
+            result.append("")
+        else:
+            result.append(raw.rstrip())
     return result
 
 
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    # 行末は半角の空白とタブだけ落とす（全角の空白を落とすと、フェンスの後ろの全角空白が消えて閉じる行に見えてしまう）
-    lines = outside_fences([line.rstrip(" \t") for line in text.lstrip("\ufeff").splitlines()])
+    # フェンスを閉じる行の判定には行末を落とさない行を渡す（全角の空白を落とすと、フェンスの後ろの全角空白が消えて閉じる行に見えてしまう）。
+    # 見出し・gate: の行・表の行の判定に使う行は、outside_fences が行末の空白をすべて落として返す
+    lines = outside_fences(text.lstrip("\ufeff").splitlines())
     try:
         start = lines.index(HEADING)
     except ValueError:
