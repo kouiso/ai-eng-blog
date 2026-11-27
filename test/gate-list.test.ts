@@ -139,6 +139,31 @@ describe("gate-list.py", () => {
 		expect(r.out).toContain("| fence-list-continuation | OK |");
 	});
 
+	// CommonMark のパーサー（micromark）でコードブロックの行を数えた結果と同じになることを確かめる。
+	// どれも後ろの偽の節（gate: がすべて OK）がコードの中に入り、本当の節の G01=NG を読むのが正しい。
+	it.each([
+		"fence-cm-quote-fence-stale-item",
+		"fence-cm-quote-fence-stale-item-unclosed",
+		"fence-cm-nested-misindented-closer",
+		"fence-cm-nested-misindented-closer-no-fake",
+		"fence-cm-marker-misindented-closer",
+		"fence-cm-hr",
+		"fence-cm-ordered2-in-para",
+	])("%s: CommonMark のパーサーが決めたコードブロックに従い、本当の節の G01=NG を読む", (slug) => {
+		const r = run([slug]);
+		expect(r.code, r.err).toBe(0);
+		expect(r.out).toContain(`| ${slug} | NG | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 不合格 |`);
+	});
+
+	it("node を動かせないときは、手で読む方法に切りかえず、理由を出して終了コード 1", () => {
+		// PATH から node だけを消すため、python3 は先に絶対パスで探しておく
+		const python = spawnSync("sh", ["-c", "command -v python3"], { encoding: "utf8" }).stdout.trim();
+		const r = spawnSync(python, [script, "--root", fixtures, "ok"], { encoding: "utf8", env: { ...process.env, PATH: "/nonexistent" } });
+		expect(r.status).toBe(1);
+		expect(r.stderr).toContain("node を動かせません");
+		expect(r.stdout).not.toContain("合格");
+	});
+
 	it("リポジトリの全記事の gate.md に、読める合否の行がある", () => {
 		const r = run(["--tsv"], resolve(__dirname, ".."));
 		expect(r.code, r.err).toBe(0);

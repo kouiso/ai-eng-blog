@@ -23,8 +23,11 @@ NG は無いが未判定が1つ以上あれば「未判定あり」。
 from __future__ import annotations
 
 import argparse
+import json
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 GATES = [f"G{i:02d}" for i in range(1, 12)]
@@ -32,95 +35,54 @@ VERDICTS = ("OK", "NG", "未判定")
 HEADING = "## 機械で読む合否"
 LINE_RE = re.compile(r"^gate:(.*)$")
 TOKEN_RE = re.compile(r"^(G\d{2})=(\S+)$")
-# コードフェンスの行。1組目が ``` か ~~~ の並び、2組目がその後ろの文字。
-# リストの項目や引用の中のフェンス（"- ```"、"1. ```"、"> ```"）も開く。gate.md には字下げのコードブロックを書かないので、字下げの数は問わない。
-# 開く行は、字下げのあとに「リストの印（-*+ か 1. 1)）と空白」や「>」が並んでもよい
-FENCE_OPEN_RE = re.compile(r"^[ \t]*(?:(?:[-*+]|\d+[.)])[ \t]+|>[ \t]*)*(`{3,}|~{3,})(.*)$")
-# 閉じる行は、字下げと「>」のあとに ``` か ~~~ が並ぶだけ
-FENCE_CLOSE_RE = re.compile(r"^[ \t]*(?:>[ \t]*)*(`{3,}|~{3,})(.*)$")
 # 公開前ゲートの表の行。| G07 | 条件 | 確かめ方 | 判定 | 根拠 | の4列目が判定
 TABLE_ROW_RE = re.compile(r"^\|\s*(G\d{2})\s*\|")
+# コードブロックは scripts/code-blocks.mjs（CommonMark のパーサー mdast-util-from-markdown）で見つける。
+# フェンスの形（引用・リストの項目・字下げ・閉じない終わり）を手で読むと、読み違えが続いたため（レビューで何度も見つかった）
+CODE_BLOCKS_JS = Path(__file__).resolve().parent / "code-blocks.mjs"
 
 
 class GateError(Exception):
     pass
 
 
-# フェンスの外のリストの項目の始まり（字下げ、印、空白）。項目の中身の桁を知るのに使う
-LIST_ITEM_RE = re.compile(r"^[ \t]*(?:[-*+]|\d+[.)])[ \t]+(?=\S)")
+class ParserError(Exception):
+    """code-blocks.mjs を動かせなかった。gate.md の形の問題ではないので、読めない gate.md としては数えず、そこで止める。"""
 
 
-def outside_fences(lines: list[str]) -> list[str]:
-    """コードフェンス（``` か ~~~。3つ以上並べる。リストの項目や引用の中、字下げつきも含む）の中の行を空行に置きかえる。
-    行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。
-    lines は行末を落としていない行。フェンスを閉じる行の判定には半角の空白とタブだけを落とした行を使い、
-    フェンスの外の行は行末の空白を（全角の空白や NBSP も）すべて落として返す。"""
-    result: list[str] = []
-    # 開いているフェンス: (字, 並びの数, 入れ物の種類, リストの項目の中身の桁)
-    fence: tuple[str, int, str, int] | None = None
-    # フェンスの外で今いるリストの項目の中身の桁（項目の外なら None）。項目の続きの行で開くフェンスを、その項目の中のフェンスとして扱うのに使う
-    item_col: int | None = None
+def code_block_lines(text: str) -> set[int]:
+    """code-blocks.mjs で、コードブロック（フェンスも字下げも）が占める行の番号（1始まり）を集める。
+    start と end はフェンスの行そのものを含む。Node と npm ci で入れた mdast-util-from-markdown が動かなければ ParserError で止める。
+    動かせないときに手で読む方法へ切りかえることはしない（読まずに通さない）。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "gate.md"
+        path.write_text(text, encoding="utf-8", newline="\n")
+        try:
+            r = subprocess.run(["node", str(CODE_BLOCKS_JS), str(path)], capture_output=True, text=True, encoding="utf-8")
+        except OSError as e:
+            raise ParserError(f"node を動かせません（{e.__class__.__name__}: {e}）。Node を入れて npm ci を流したか確かめます") from e
+    if r.returncode != 0:
+        raise ParserError(f"code-blocks.mjs が失敗しました（npm ci を流したか確かめます）: {r.stderr.strip()}")
+    try:
+        blocks = json.loads(r.stdout)
+        return {n for b in blocks for n in range(b["start"], b["end"] + 1)}
+    except (ValueError, KeyError, TypeError) as e:
+        raise ParserError(f"code-blocks.mjs の出力を読めません（{e.__class__.__name__}）: {r.stdout[:200]!r}") from e
 
-    def indent_of(raw: str) -> int:
-        # 字下げの桁。タブは4桁として数える
-        expanded = raw.expandtabs(4)
-        return len(expanded) - len(expanded.lstrip(" "))
 
-    for raw in lines:
-        if fence is not None:
-            # 先に、入れ物（引用・リストの項目）が続いているかを見る。入れ物が終わった行は、閉じるフェンスの形でも
-            # このフェンスを閉じない（CommonMark と同じく、入れ物が終わればフェンスもそこで終わり、その行は外の行として読み直す）
-            if fence[2] == "quote":
-                ended = not raw.lstrip(" ").startswith(">")
-            elif fence[2] == "list" and raw.strip():
-                # 項目の中身の桁より浅く字下げした行で、項目（とフェンス）が終わる。
-                # 中身の桁ちょうどに置いた「- 」や「1. 」の行は、フェンスの中のコード（YAML のリストや diff）として読む
-                ended = indent_of(raw) < fence[3]
-            else:
-                ended = False
-            if not ended:
-                # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
-                m = FENCE_CLOSE_RE.match(raw)
-                if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
-                    fence = None
-                result.append("")
-                continue
-            fence = None
-        m = FENCE_OPEN_RE.match(raw)
-        # CommonMark と同じく、``` の開きの後ろ（info string）に ` があれば、フェンスではなくインラインのコード。~~~ は ` があってもよい
-        if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
-            prefix = raw[: m.start(1)]
-            column = len(prefix.expandtabs(4))
-            if ">" in prefix:
-                kind = "quote"
-            elif prefix.strip():
-                kind = "list"
-                item_col = column
-            elif item_col is not None and column >= item_col:
-                # リストの項目の続きの行（字下げだけ）で開いたフェンスは、その項目が終わるところで閉じる
-                kind = "list"
-                column = item_col
-            else:
-                kind = "top"
-                item_col = None
-            fence = (m.group(1)[0], len(m.group(1)), kind, column)
-            result.append("")
-            continue
-        # フェンスの外の行で、リストの項目の中身の桁を追う
-        marker = LIST_ITEM_RE.match(raw)
-        if marker:
-            item_col = len(marker.group(0).expandtabs(4))
-        elif raw.strip() and item_col is not None and indent_of(raw) < item_col:
-            item_col = None
-        result.append(raw.rstrip())
-    return result
+def outside_fences(text: str) -> list[str]:
+    """コードブロックの行を空行に置きかえ、行の番号を変えずに、見出し・gate: の行・表の行をコードの外だけで探せるようにする。
+    コードブロックの見分けは code-blocks.mjs（CommonMark のパーサー）に任せる。
+    改行は CommonMark と同じく \\r\\n・\\r・\\n だけを行の区切りとして数える（str.splitlines は \\x0c や U+2028 でも切るので使わない）。
+    コードの外の行は、行末の空白を（全角の空白や NBSP も）すべて落として返す。"""
+    lines = text.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    code = code_block_lines("\n".join(lines))
+    return ["" if i in code else line.rstrip() for i, line in enumerate(lines, 1)]
 
 
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    # フェンスを閉じる行の判定には行末を落とさない行を渡す（全角の空白を落とすと、フェンスの後ろの全角空白が消えて閉じる行に見えてしまう）。
-    # 見出し・gate: の行・表の行の判定に使う行は、outside_fences が行末の空白をすべて落として返す
-    lines = outside_fences(text.lstrip("\ufeff").splitlines())
+    lines = outside_fences(text)
     try:
         start = lines.index(HEADING)
     except ValueError:
@@ -214,6 +176,9 @@ def main(argv: list[str] | None = None) -> int:
             errors.append(f"{slug}: {path} を読めません（{e.__class__.__name__}）")
         except GateError as e:
             errors.append(f"{slug}: {e}")
+        except ParserError as e:
+            print(f"gate-list: {e}", file=sys.stderr)
+            return 1
 
     sep = "\t" if args.tsv else " | "
     head = ["slug", *GATES, "合否"]
