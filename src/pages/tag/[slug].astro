@@ -6,7 +6,7 @@ import {
 } from "emdash";
 import Base from "../../layouts/Base.astro";
 import { courseArticleSlugs, findCourseStep } from "../../utils/course";
-import { orderByCourse } from "../../utils/course-order";
+import { COURSE_TAG_FETCH_LIMIT, orderByCourse, tagPager } from "../../utils/course-order";
 
 const slug = decodeSlug(Astro.params.slug);
 const termsResult = await getTaxonomyTermsWithCacheHint("tag", {
@@ -33,7 +33,7 @@ const {
 	? await getEmDashCollection("posts", {
 			where: { tag: term.slug },
 			orderBy: { published_at: course ? "asc" : "desc" },
-			limit: course ? 100 : 20,
+			limit: course ? COURSE_TAG_FETCH_LIMIT : 20,
 			cursor,
 		})
 	: { entries: [], cacheHint: null, nextCursor: undefined };
@@ -43,6 +43,8 @@ if (Astro.cache?.enabled) {
 	if (cacheHint) Astro.cache.set(cacheHint);
 }
 const showNumbers = Boolean(course);
+const pager = tagPager({ isCourse: Boolean(course), termSlug: term.slug, cursor, nextCursor });
+if (pager.warning) console.warn(pager.warning);
 ---
 
 <Base
@@ -90,11 +92,11 @@ const showNumbers = Boolean(course);
 		}
 
 		{
-			(cursor || nextCursor) && (
+			(pager.showFirst || pager.next) && (
 				<nav class="pager" aria-label="ページ送り">
-					{cursor && <a href={`/tag/${term.slug}`}>最初のページ</a>}
-					{nextCursor && (
-						<a href={`/tag/${term.slug}?cursor=${encodeURIComponent(nextCursor)}`}>次へ</a>
+					{pager.showFirst && <a href={`/tag/${term.slug}`}>最初のページ</a>}
+					{pager.next && (
+						<a href={`/tag/${term.slug}?cursor=${encodeURIComponent(pager.next)}`}>次へ</a>
 					)}
 				</nav>
 			)
