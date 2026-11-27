@@ -1,0 +1,5 @@
+2026-11-27T15:03:42.275Z	zod-validate-llm-json-output	LLM の出力 JSON を zod で検証する【safeParse のエラーの読み方】
+2026-11-27T15:03:41.683Z	zod-to-json-schema-tool-definition	zod のスキーマから JSON Schema を作ってツール定義に使う【zod v4 の z.toJSONSchema】
+2026-11-27T15:03:41.132Z	structured-output-methods-compare	構造化出力のやり方を比べる【プロンプト指示、自作ツール、outputFormat】
+2026-11-27T15:03:40.571Z	rag-retrieval-eval-recall-mrr	LLM 評価で RAG の検索を採点する【Recall@k と MRR を TypeScript で】
+2026-11-27T15:03:39.967Z	rag-local-embeddings-transformers-js	埋め込みを手元で作ってベクトル検索する【Transformers.js、API キー不要】
