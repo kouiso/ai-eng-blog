@@ -248,13 +248,22 @@ const articleMeta = {
 	(function () {
 		var status = document.querySelector("[data-copy-status]");
 		var buttons = document.querySelectorAll("[data-copy-code]");
+		// 読み上げの文を入れるたびに番号を進める。あとで消すとき、自分が入れた文のままか（新しい文に変わっていないか）を見分ける
+		var announceSeq = 0;
 		function announce(text) {
-			if (!status) return;
+			if (!status) return 0;
+			var seq = ++announceSeq;
 			// 同じ文をもう一度入れても読み上げられるように、一度空にしてから入れる
 			status.textContent = "";
 			setTimeout(function () {
 				status.textContent = text;
 			}, 50);
+			return seq;
+		}
+		function clearAnnounce(seq) {
+			// ボタンの文字が戻るときに読み上げの文も消す（あとで読み上げの画面を読む人に、古い文を残さない）。
+			// 2秒のうちに別のボタンが新しい文を入れていたら消さない
+			if (status && seq === announceSeq) status.textContent = "";
 		}
 		function fallbackCopy(text) {
 			// 写すために一時の textarea へフォーカスが移るので、終わったら押したボタンへ戻す
@@ -300,11 +309,12 @@ const articleMeta = {
 					copy(code.textContent || "").then(function (ok) {
 						button.textContent = ok ? "コピーしました" : "コピーできませんでした";
 						button.dataset.state = ok ? "done" : "failed";
-						announce(ok ? "コードをコピーしました" : "コピーできませんでした。コードを選んで写してください");
+						var seq = announce(ok ? "コードをコピーしました" : "コピーできませんでした。コードを選んで写してください");
 						clearTimeout(timer);
 						timer = setTimeout(function () {
 							button.textContent = "コピー";
 							delete button.dataset.state;
+							clearAnnounce(seq);
 						}, 2000);
 					});
 				});

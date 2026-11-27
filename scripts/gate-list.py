@@ -15,13 +15,19 @@
     python3 scripts/gate-list.py --tsv      # タブ区切り
     python3 scripts/gate-list.py <slug>...  # 指定した記事だけ
 
+合否の欄は3つの値になる。G01〜G11 がすべて OK なら「合格」、NG が1つでもあれば「不合格」、
+NG は無いが未判定が1つ以上あれば「未判定あり」。
+
 終了コード: 一覧を出せたら 0（NG や未判定があっても 0）。行が無い・形が違う gate.md が1つでもあれば 1。
 """
 from __future__ import annotations
 
 import argparse
+import json
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 GATES = [f"G{i:02d}" for i in range(1, 12)]
@@ -31,15 +37,58 @@ LINE_RE = re.compile(r"^gate:(.*)$")
 TOKEN_RE = re.compile(r"^(G\d{2})=(\S+)$")
 # 公開前ゲートの表の行。| G07 | 条件 | 確かめ方 | 判定 | 根拠 | の4列目が判定
 TABLE_ROW_RE = re.compile(r"^\|\s*(G\d{2})\s*\|")
+# コードブロックは scripts/code-blocks.mjs（CommonMark のパーサー mdast-util-from-markdown）で見つける。
+# フェンスの形（引用・リストの項目・字下げ・閉じない終わり）を手で読むと、読み違えが続いたため（レビューで何度も見つかった）
+CODE_BLOCKS_JS = Path(__file__).resolve().parent / "code-blocks.mjs"
 
 
 class GateError(Exception):
     pass
 
 
+class ParserError(Exception):
+    """code-blocks.mjs を動かせなかった。gate.md の形の問題ではないので、読めない gate.md としては数えず、そこで止める。"""
+
+
+def code_block_lines(text: str) -> set[int]:
+    """code-blocks.mjs で、コードブロック（フェンスも字下げも）が占める行の番号（1始まり）を集める。
+    start と end はフェンスの行そのものを含む。Node と npm ci で入れた mdast-util-from-markdown が動かなければ ParserError で止める。
+    動かせないときに手で読む方法へ切りかえることはしない（読まずに通さない）。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "gate.md"
+        # code-blocks.mjs は1行目が --- なら次の --- までを記事の frontmatter として外してから読む。gate.md に frontmatter は無いので、
+        # 先頭に空行を1行足して外させない（空行を足しても CommonMark の読み方は変わらない）。返ってきた行の番号は1つ戻す
+        path.write_text("\n" + text, encoding="utf-8", newline="\n")
+        try:
+            r = subprocess.run(["node", str(CODE_BLOCKS_JS), str(path)], capture_output=True, text=True, encoding="utf-8")
+        except OSError as e:
+            raise ParserError(f"node を動かせません（{e.__class__.__name__}: {e}）。Node を入れて npm ci を流したか確かめます") from e
+    if r.returncode != 0:
+        raise ParserError(f"code-blocks.mjs が失敗しました（npm ci を流したか確かめます）: {r.stderr.strip()}")
+    try:
+        blocks = json.loads(r.stdout)
+        if not isinstance(blocks, list):
+            raise TypeError("一覧ではありません")
+        return {n - 1 for b in blocks for n in range(b["start"], b["end"] + 1) if n > 1}
+    except (ValueError, KeyError, TypeError) as e:
+        raise ParserError(f"code-blocks.mjs の出力を読めません（{e.__class__.__name__}）: {r.stdout[:200]!r}") from e
+
+
+def outside_fences(text: str) -> list[str]:
+    """コードブロックの行を空行に置きかえ、行の番号を変えずに、見出し・gate: の行・表の行をコードの外だけで探せるようにする。
+    コードブロックの見分けは code-blocks.mjs（CommonMark のパーサー）に任せる。
+    改行は CommonMark と同じく \\r\\n・\\r・\\n だけを行の区切りとして数える（str.splitlines は \\x0c や U+2028 でも切るので使わない）。
+    コードの外の行は、行末の空白を（全角の空白や NBSP も）すべて落として返す。"""
+    # BOM は CommonMark と同じく先頭の1つだけを外す
+    text = text[1:] if text.startswith("\ufeff") else text
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    code = code_block_lines("\n".join(lines))
+    return ["" if i in code else line.rstrip() for i, line in enumerate(lines, 1)]
+
+
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    lines = [line.rstrip() for line in text.lstrip("\ufeff").splitlines()]
+    lines = outside_fences(text)
     try:
         start = lines.index(HEADING)
     except ValueError:
@@ -133,6 +182,9 @@ def main(argv: list[str] | None = None) -> int:
             errors.append(f"{slug}: {path} を読めません（{e.__class__.__name__}）")
         except GateError as e:
             errors.append(f"{slug}: {e}")
+        except ParserError as e:
+            print(f"gate-list: {e}", file=sys.stderr)
+            return 1
 
     sep = "\t" if args.tsv else " | "
     head = ["slug", *GATES, "合否"]
@@ -142,17 +194,25 @@ def main(argv: list[str] | None = None) -> int:
         print("| " + sep.join(head) + " |")
         print("|" + "---|" * len(head))
     passed = 0
+    pending = 0
     for slug, verdicts in rows:
-        ok = all(v == "OK" for v in verdicts.values())
-        passed += ok
-        cells = [slug, *(verdicts[g] for g in GATES), "合格" if ok else "不合格"]
+        values = verdicts.values()
+        if "NG" in values:
+            overall = "不合格"
+        elif "未判定" in values:
+            overall = "未判定あり"
+            pending += 1
+        else:
+            overall = "合格"
+            passed += 1
+        cells = [slug, *(verdicts[g] for g in GATES), overall]
         print(sep.join(cells) if args.tsv else "| " + sep.join(cells) + " |")
 
     # --tsv のときは表だけを標準出力に出し、まとめの行は標準エラーに出す
     summary = sys.stderr if args.tsv else sys.stdout
     counts = {g: sum(1 for _, v in rows if v[g] == "OK") for g in GATES}
     print(file=summary)
-    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本", file=summary)
+    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本、NG は無いが未判定がある記事: {pending}本、NG がある記事: {len(rows) - passed - pending}本", file=summary)
     print("項目ごとの OK の本数: " + "、".join(f"{g} {counts[g]}" for g in GATES), file=summary)
     for e in errors:
         print(f"[ERROR] {e}", file=sys.stderr)
