@@ -149,6 +149,8 @@ describe("gate-list.py", () => {
 		"fence-cm-marker-misindented-closer",
 		"fence-cm-hr",
 		"fence-cm-ordered2-in-para",
+		// 1行目が --- の gate.md。記事の frontmatter として外さず、横線として読む
+		"fence-cm-leading-hr",
 	])("%s: CommonMark のパーサーが決めたコードブロックに従い、本当の節の G01=NG を読む", (slug) => {
 		const r = run([slug]);
 		expect(r.code, r.err).toBe(0);
@@ -169,5 +171,6 @@ describe("gate-list.py", () => {
 		expect(r.code, r.err).toBe(0);
 		const rows = r.out.split("\n").filter((l) => l.includes("\t") && !l.startsWith("slug\t"));
 		expect(rows.length).toBe(30);
-	});
+		// 記事1本ごとに node を1回起こすので、30本で数秒かかる。遅い CI でも落ちないよう時間の上限を広げる
+	}, 60_000);
 });

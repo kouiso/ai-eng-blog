@@ -56,7 +56,9 @@ def code_block_lines(text: str) -> set[int]:
     動かせないときに手で読む方法へ切りかえることはしない（読まずに通さない）。"""
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "gate.md"
-        path.write_text(text, encoding="utf-8", newline="\n")
+        # code-blocks.mjs は1行目が --- なら次の --- までを記事の frontmatter として外してから読む。gate.md に frontmatter は無いので、
+        # 先頭に空行を1行足して外させない（空行を足しても CommonMark の読み方は変わらない）。返ってきた行の番号は1つ戻す
+        path.write_text("\n" + text, encoding="utf-8", newline="\n")
         try:
             r = subprocess.run(["node", str(CODE_BLOCKS_JS), str(path)], capture_output=True, text=True, encoding="utf-8")
         except OSError as e:
@@ -65,7 +67,9 @@ def code_block_lines(text: str) -> set[int]:
         raise ParserError(f"code-blocks.mjs が失敗しました（npm ci を流したか確かめます）: {r.stderr.strip()}")
     try:
         blocks = json.loads(r.stdout)
-        return {n for b in blocks for n in range(b["start"], b["end"] + 1)}
+        if not isinstance(blocks, list):
+            raise TypeError("一覧ではありません")
+        return {n - 1 for b in blocks for n in range(b["start"], b["end"] + 1) if n > 1}
     except (ValueError, KeyError, TypeError) as e:
         raise ParserError(f"code-blocks.mjs の出力を読めません（{e.__class__.__name__}）: {r.stdout[:200]!r}") from e
 
@@ -75,7 +79,9 @@ def outside_fences(text: str) -> list[str]:
     コードブロックの見分けは code-blocks.mjs（CommonMark のパーサー）に任せる。
     改行は CommonMark と同じく \\r\\n・\\r・\\n だけを行の区切りとして数える（str.splitlines は \\x0c や U+2028 でも切るので使わない）。
     コードの外の行は、行末の空白を（全角の空白や NBSP も）すべて落として返す。"""
-    lines = text.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    # BOM は CommonMark と同じく先頭の1つだけを外す
+    text = text[1:] if text.startswith("\ufeff") else text
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
     code = code_block_lines("\n".join(lines))
     return ["" if i in code else line.rstrip() for i, line in enumerate(lines, 1)]
 
