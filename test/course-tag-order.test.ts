@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { orderByCourse } from "../src/utils/course-order";
+import { COURSE_TAG_FETCH_LIMIT, orderByCourse, tagPager } from "../src/utils/course-order";
 import { courseArticleSlugs } from "../src/utils/course";
 
 const post = (id: string, date?: string) => ({
@@ -43,5 +43,45 @@ describe("orderByCourse", () => {
 	it("講座のタグでなければ表は空で、公開日の古い順になる", () => {
 		const posts = [post("q", "2026-02-01"), post("p", "2026-01-01")];
 		expect(orderByCourse(posts, courseArticleSlugs("not-a-course")).map((p) => p.id)).toEqual(["p", "q"]);
+	});
+});
+
+describe("tagPager", () => {
+	it("講座のタグでは、続きがあっても「次へ」を出さず、上限を超えたことを警告する", () => {
+		const p = tagPager({ isCourse: true, termSlug: "llm-api", cursor: undefined, nextCursor: "abc" });
+		expect(p.next).toBeNull();
+		expect(p.showFirst).toBe(false);
+		expect(p.warning).toContain(`${COURSE_TAG_FETCH_LIMIT} 本を超えました`);
+		expect(p.warning).toContain("tag/llm-api");
+		expect(p.warning).toContain("公開日の新しい記事がタグページに出ていません");
+	});
+
+	it("講座のタグで続きが無ければ、ページ送りも警告も出さない", () => {
+		expect(tagPager({ isCourse: true, termSlug: "rag", cursor: undefined, nextCursor: undefined })).toEqual({
+			showFirst: false,
+			next: null,
+			warning: null,
+		});
+	});
+
+	it("講座のタグでは URL に cursor が付いていても「最初のページ」を出さない", () => {
+		expect(tagPager({ isCourse: true, termSlug: "rag", cursor: "x", nextCursor: null }).showFirst).toBe(false);
+	});
+
+	it("講座でないタグは、今までどおり cursor でページを送る", () => {
+		expect(tagPager({ isCourse: false, termSlug: "zod", cursor: "c1", nextCursor: "c2" })).toEqual({
+			showFirst: true,
+			next: "c2",
+			warning: null,
+		});
+		expect(tagPager({ isCourse: false, termSlug: "zod", cursor: undefined, nextCursor: undefined })).toEqual({
+			showFirst: false,
+			next: null,
+			warning: null,
+		});
+	});
+
+	it("講座のタグの取得の上限は 100 本", () => {
+		expect(COURSE_TAG_FETCH_LIMIT).toBe(100);
 	});
 });
