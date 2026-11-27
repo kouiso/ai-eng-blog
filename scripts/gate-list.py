@@ -46,10 +46,6 @@ class GateError(Exception):
     pass
 
 
-# リストの印（字下げのあと）。フェンスの入っているリストの項目が終わったかを見るのに使う
-LIST_MARKER_RE = re.compile(r"^( *)(?:[-*+]|\d+[.)])[ \t]+")
-
-
 def outside_fences(lines: list[str]) -> list[str]:
     """コードフェンス（``` か ~~~。3つ以上並べる。リストの項目や引用の中、字下げつきも含む）の中の行を空行に置きかえる。
     行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。
@@ -70,9 +66,11 @@ def outside_fences(lines: list[str]) -> list[str]:
             if fence[2] == "quote":
                 ended = not raw.lstrip(" ").startswith(">")
             elif fence[2] == "list" and raw.strip():
-                indent = len(raw) - len(raw.lstrip(" "))
-                marker = LIST_MARKER_RE.match(raw)
-                ended = indent < fence[3] or (marker is not None and len(marker.group(1)) <= fence[3])
+                # 項目の中身の桁より浅く字下げした行で、項目（とフェンス）が終わる。タブは4桁として数える。
+                # 中身の桁ちょうどに置いた「- 」や「1. 」の行は、フェンスの中のコード（YAML のリストや diff）として読む
+                expanded = raw.expandtabs(4)
+                indent = len(expanded) - len(expanded.lstrip(" "))
+                ended = indent < fence[3]
             else:
                 ended = False
             if not ended:

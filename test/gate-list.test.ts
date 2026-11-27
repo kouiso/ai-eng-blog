@@ -114,6 +114,15 @@ describe("gate-list.py", () => {
 		expect(r.out).toContain("| ok |");
 	});
 
+	it.each(["fence-a1-yaml-list", "fence-a2-diff", "fence-a4-tab", "fence-a5-nested", "fence-a7-ordered"])(
+		"%s: リストの項目の中のフェンスにある「- 」「1. 」やタブの行で早く閉じず、隠れない表の NG を見つける",
+		(slug) => {
+			const r = run([slug]);
+			expect(r.code).toBe(1);
+			expect(r.err).toContain(`[ERROR] ${slug}: G03 が表の最後の行では NG、機械で読む行では OK です`);
+		},
+	);
+
 	it("リポジトリの全記事の gate.md に、読める合否の行がある", () => {
 		const r = run(["--tsv"], resolve(__dirname, ".."));
 		expect(r.code, r.err).toBe(0);
