@@ -94,6 +94,8 @@ FENCE_OPEN = re.compile(r"^(?P<indent> *)(?P<fence>`{3,}|~{3,})(?P<info>.*)$")
 # 実行結果を載せるときに使われがちな、text 以外の情報文字列。照合されないまま通るので、text で載せ直させる
 OUTPUT_LIKE_INFO = {"console", "output", "shell-session", "sh-session", "terminal", "stdout", "stderr", "log"}
 # 箇条書きの項目の始まり（`- `、`1. `、`1) `）。項目の中身が始まる桁を、項目の中のフェンスの字下げの基準にする
+# 引用の目印（`> `）。引用の中のフェンスは、目印を外した残りで読む
+QUOTE_MARK = re.compile(r"^ {0,3}> ?")
 LIST_ITEM = re.compile(r"^ {0,3}(?:[-*+]|\d{1,9}[.)])(?: {1,4}|$)")
 
 
@@ -160,15 +162,34 @@ class FenceScanner:
     """行を順に読み、CommonMark のコードフェンスの開き・中身・閉じを見分ける（照合と文の数え方の両方で使う）。
     フェンスの字下げは、入っている箱（地の文か、箇条書きの項目の中身）の桁から3つまで。それより深い行は
     字下げしたコードか中身の文字で、フェンスではない。項目の記号の直後に書いたフェンス（`1. ~~~text`）も読む。
-    閉じる行が無いブロックは、ファイルの終わりで閉じる。"""
+    閉じる行が無いブロックは、ファイルの終わりで閉じる。引用（`> `）の中は、目印を外した残りを同じように読み、
+    引用の目印が減った行でブロックを閉じる（フェンスの中身は引用の続きの行にならない）。"""
 
     def __init__(self):
         self.opened = None  # (中身の字下げを外す桁, 箱の桁, 記号, 記号の数, 情報文字列の最初の語)
         self.list_col = 0   # いま入っている箇条書きの項目の中身の桁（項目の外なら 0）
+        self.quote = 0      # 開いているブロックが入っている引用の深さ
 
     def feed(self, raw):
         """("open", 語) / ("code", 字下げを外した行) / ("close", None) / ("plain", None) を返す"""
         line = raw.rstrip("\r")
+        if self.opened is not None:
+            # ブロックの中では、開いたときの引用の深さの分だけ目印を外す。それより深い `>` は中身の文字（npm の `> pkg@1.0.0 start` など）
+            inner, depth = line, 0
+            while depth < self.quote and QUOTE_MARK.match(inner):
+                inner = inner[QUOTE_MARK.match(inner).end():]
+                depth += 1
+            if depth < self.quote:
+                # 引用の中のブロックは、引用の目印が減った行で終わる。この行は外側として読み直す
+                self.opened = None
+                self.list_col = 0
+            else:
+                line = inner
+        if self.opened is None:
+            depth = 0
+            while QUOTE_MARK.match(line):
+                line = line[QUOTE_MARK.match(line).end():]
+                depth += 1
         if self.opened is not None:
             cut, base, ch, n, _word = self.opened
             if base > 0 and line.strip() and _lead(line) < base:
@@ -197,6 +218,7 @@ class FenceScanner:
             return ("plain", None)  # バッククォートのフェンスの情報文字列にバッククォートは入らない（インラインコードの行）
         word = info.split()[0] if info else ""
         self.opened = (col + len(f.group("indent")), col, fence[0], len(fence), word)
+        self.quote = depth
         return ("open", word)
 
 

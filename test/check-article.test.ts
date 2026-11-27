@@ -229,6 +229,21 @@ describe("出力ブロックと run ログの照合", () => {
 		expect(r.out).toContain("先頭「FAKE AFTER LIST」");
 	});
 
+	it("引用（> ）の中のフェンスも照合し、引用の目印が無くなった行でブロックを閉じる", () => {
+		const r = check("outputs", "out-fence-quote");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 4件、ログに一致 1件");
+		for (const first of ["FAKE QUOTE", "FAKE OPEN QUOTE", "FAKE AFTER QUOTE"]) {
+			expect(r.out).toContain(`先頭「${first}」`);
+		}
+	});
+
+	it("ブロックの中の `>` で始まる行（npm の出力）は、引用の目印ではなく中身の文字として照合する", () => {
+		const r = check("outputs", "out-fence-npm");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 1件、ログに一致 1件");
+	});
+
 	it("地の文で4つ以上字下げした ``` はフェンスとして開きも閉じもしない", () => {
 		const r = check("outputs", "out-fence-indented4");
 		// 字下げした ```text は字下げしたコードなので数えない。2つ目のブロックの中の字下げした ``` は中身の文字
