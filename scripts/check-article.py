@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""記事ごとの検査を1本にまとめたスクリプト（issue #42）。標準ライブラリだけで動く。
+"""記事ごとの検査を1本にまとめたスクリプト（issue #42）。Python は標準ライブラリだけで動き、コードブロックの取り出しだけ
+Node の scripts/code-blocks.mjs（`npm ci` で入れる mdast-util-from-markdown）を呼ぶ。
 
 使い方（リポジトリのルートで）:
     python3 scripts/check-article.py <slug> [<slug> ...]
@@ -39,9 +40,11 @@ checklist とガイドに無い除外は入れない。数えないものは次�
     C28  AND/OR が明確（「AやB」）               (guides/05-technical-writing.md「AやB」は曖昧)
 """
 import argparse
+import functools
 import json
 import os
 import re
+import subprocess
 import sys
 
 ARTICLES = "content/articles"
@@ -88,15 +91,11 @@ URL_ONLY = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 FM_BLOCK_INDICATOR = re.compile(r"[>|][+-]?\d?")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
 END_MARKER = re.compile(r"^-{3,5} (?:exit\b|command\b)")
-# コードフェンスの開始行（CommonMark）。リストの中で字下げしたもの、~~~、4本以上のバッククォート、
-# 情報文字列の後ろの属性（```text title="out"）も読む。行頭の ``` だけを見ると、これらの出力ブロックが照合から漏れる
-FENCE_OPEN = re.compile(r"^(?P<indent> *)(?P<fence>`{3,}|~{3,})(?P<info>.*)$")
+# コードブロックは scripts/code-blocks.mjs（CommonMark のパーサー）で取り出す。行頭の ``` を手で読むと、
+# 字下げ、箇条書きと引用の中、~~~、属性つきなどのブロックを取りこぼし、照合から漏れたため
+CODE_BLOCKS_JS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code-blocks.mjs")
 # 実行結果を載せるときに使われがちな、text 以外の情報文字列。照合されないまま通るので、text で載せ直させる
 OUTPUT_LIKE_INFO = {"console", "output", "shell-session", "sh-session", "terminal", "stdout", "stderr", "log"}
-# 箇条書きの項目の始まり（`- `、`1. `、`1) `）。項目の中身が始まる桁を、項目の中のフェンスの字下げの基準にする
-# 引用の目印（`> `）。引用の中のフェンスは、目印を外した残りで読む
-QUOTE_MARK = re.compile(r"^ {0,3}> ?")
-LIST_ITEM = re.compile(r"^ {0,3}(?:[-*+]|\d{1,9}[.)])(?: {1,4}|$)")
 
 
 class Result:
@@ -154,81 +153,23 @@ def fm_values(raw):
     return out
 
 
-def _lead(line):
-    return len(line) - len(line.lstrip(" "))
+@functools.lru_cache(maxsize=None)
+def code_blocks(path):
+    """記事のコードブロックを [{start, end, lang, value}] で返す（行番号は frontmatter を含めたファイルの行）。
+    Node と npm ci で入れた mdast-util-from-markdown を使う。動かせなければ止める（読まずに通さない）。"""
+    r = subprocess.run(["node", CODE_BLOCKS_JS, path], capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise SystemExit(f"code-blocks.mjs が失敗した（npm ci を流したか確かめる）: {r.stderr.strip()}")
+    return json.loads(r.stdout)
 
 
-class FenceScanner:
-    """行を順に読み、CommonMark のコードフェンスの開き・中身・閉じを見分ける（照合と文の数え方の両方で使う）。
-    フェンスの字下げは、入っている箱（地の文か、箇条書きの項目の中身）の桁から3つまで。それより深い行は
-    字下げしたコードか中身の文字で、フェンスではない。項目の記号の直後に書いたフェンス（`1. ~~~text`）も読む。
-    閉じる行が無いブロックは、ファイルの終わりで閉じる。引用（`> `）の中は、目印を外した残りを同じように読み、
-    引用の目印が減った行でブロックを閉じる（フェンスの中身は引用の続きの行にならない）。"""
-
-    def __init__(self):
-        self.opened = None  # (中身の字下げを外す桁, 箱の桁, 記号, 記号の数, 情報文字列の最初の語)
-        self.list_col = 0   # いま入っている箇条書きの項目の中身の桁（項目の外なら 0）
-        self.quote = 0      # 開いているブロックが入っている引用の深さ
-
-    def feed(self, raw):
-        """("open", 語) / ("code", 字下げを外した行) / ("close", None) / ("plain", None) を返す"""
-        line = raw.rstrip("\r")
-        if self.opened is not None:
-            # ブロックの中では、開いたときの引用の深さの分だけ目印を外す。それより深い `>` は中身の文字（npm の `> pkg@1.0.0 start` など）
-            inner, depth = line, 0
-            while depth < self.quote and QUOTE_MARK.match(inner):
-                inner = inner[QUOTE_MARK.match(inner).end():]
-                depth += 1
-            if depth < self.quote:
-                # 引用の中のブロックは、引用の目印が減った行で終わる。この行は外側として読み直す
-                self.opened = None
-                self.list_col = 0
-            else:
-                line = inner
-        if self.opened is None:
-            depth = 0
-            while QUOTE_MARK.match(line):
-                line = line[QUOTE_MARK.match(line).end():]
-                depth += 1
-        if self.opened is not None:
-            cut, base, ch, n, _word = self.opened
-            if base > 0 and line.strip() and _lead(line) < base:
-                # 項目の中のブロックは、項目の中身より浅い行で項目ごと終わる。この行は項目の外として読み直す
-                self.opened = None
-                self.list_col = 0
-            else:
-                if _lead(line) <= base + 3 and re.fullmatch(re.escape(ch) + "{%d,}[ \t]*" % n, line.lstrip(" ")):
-                    self.opened = None
-                    return ("close", None)
-                return ("code", line[min(cut, _lead(line)):])
-        rest, col = line, 0
-        m = LIST_ITEM.match(line)
-        if m:
-            col = self.list_col = len(m.group(0))
-            rest = line[col:]
-        elif line.strip() and _lead(line) < self.list_col:
-            self.list_col = 0  # 項目の中身より浅い行が来たので、項目の外に出た
-        elif self.list_col and _lead(line) >= self.list_col:
-            col, rest = self.list_col, line[self.list_col:]
-        f = FENCE_OPEN.match(rest)
-        if not f or len(f.group("indent")) > 3:
-            return ("plain", None)
-        fence, info = f.group("fence"), f.group("info").strip()
-        if fence[0] == "`" and "`" in info:
-            return ("plain", None)  # バッククォートのフェンスの情報文字列にバッククォートは入らない（インラインコードの行）
-        word = info.split()[0] if info else ""
-        self.opened = (col + len(f.group("indent")), col, fence[0], len(fence), word)
-        self.quote = depth
-        return ("open", word)
-
-
-def parse_article(text):
+def parse_article(text, blocks):
     """本文を (行番号, 種類, 文字列) に分ける。種類は fm / heading / cell / prose。
-    コードブロックの中身は数えず、行数だけ返す。非コード行は plain_lines に残す。"""
+    コードブロック（blocks。code_blocks の戻り値）の行は数えず、中身の行数だけ返す。非コード行は plain_lines に残す。"""
     segs, plain_lines = [], []
-    code_lines = 0
     in_fm = False
-    fences = FenceScanner()
+    code_line_nos = {n for b in blocks for n in range(b["start"], b["end"] + 1)}
+    code_lines = sum(len(b["value"].split("\n")) if b["value"] else 0 for b in blocks)
     fm_block = None  # ブロック形式（key: > や key: |）の中身を読んでいるとき、目印の行の字下げの深さ
     for i, raw in enumerate(text.split("\n"), 1):
         if i == 1 and raw == "---":
@@ -254,10 +195,7 @@ def parse_article(text):
                     continue
                 segs.append((i, "url-cell" if url_only(v) else "fm", v))
             continue
-        role, _x = fences.feed(raw)
-        if role == "code":
-            code_lines += 1
-        if role != "plain":
+        if i in code_line_nos:
             continue
         plain_lines.append((i, raw))
         s = raw.strip()
@@ -286,7 +224,7 @@ def ending3(s):
 
 def check_prose(res, path):
     text = open(path, encoding="utf-8").read()
-    sents, plain_lines, code_lines = parse_article(text)
+    sents, plain_lines, code_lines = parse_article(text, code_blocks(path))
     name = os.path.basename(path)
     res.info.append(f"prose: 文 {len(sents)}、数えなかったコードブロックの行 {code_lines}")
 
@@ -370,19 +308,9 @@ def check_prose(res, path):
 
 # --- 出力ブロックの照合 -------------------------------------------------------
 
-def fences_of(text):
-    """(開始行, 情報文字列の最初の語, 本文の行リスト) をコードブロックごとに返す。
-    本文の行からは、開始行の字下げの幅までの先頭の空白を外す（リストの中のブロックを書いたとおりの文字で照合するため）。"""
-    out, cur = [], None
-    fences = FenceScanner()
-    for i, raw in enumerate(text.split("\n"), 1):
-        role, x = fences.feed(raw)
-        if role == "open":
-            cur = (i, x, [])
-            out.append(cur)
-        elif role == "code":
-            cur[2].append(x)
-    return out
+def fences_of(path):
+    """(開始行, 情報文字列の最初の語, 中身の行リスト) をコードブロックごとに返す。中身は字下げや引用の目印を外したもの"""
+    return [(b["start"], b["lang"], b["value"].split("\n") if b["value"] else []) for b in code_blocks(path)]
 
 
 def log_regions(text):
@@ -441,7 +369,7 @@ def check_outputs(res, root, slug, exceptions_path):
     art = os.path.join(root, ARTICLES, slug + ".md")
     run_dir = os.path.join(root, LOGS, slug, "run")
     name = slug + ".md"
-    fences = fences_of(open(art, encoding="utf-8").read())
+    fences = fences_of(art)
     blocks = [f for f in fences if f[1] == "text"]
     for i, info, _body in fences:
         if info.lower() in OUTPUT_LIKE_INFO:

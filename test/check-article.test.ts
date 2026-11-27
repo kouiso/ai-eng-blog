@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 // scripts/check-article.py（記事ごとの検査。issue #42）の試験。
-// 標準ライブラリだけの Python なので python3 が要る。無ければ試験は落ちる（飛ばさない）。
+// python3 と、コードブロックを取り出す scripts/code-blocks.mjs（npm ci で入る依存）が要る。無ければ試験は落ちる（飛ばさない）。
 const script = resolve(__dirname, "../scripts/check-article.py");
 const root = resolve(__dirname, "fixtures/check-article");
 const exceptions = resolve(root, "exceptions.json");
@@ -240,6 +240,20 @@ describe("出力ブロックと run ログの照合", () => {
 
 	it("ブロックの中の `>` で始まる行（npm の出力）は、引用の目印ではなく中身の文字として照合する", () => {
 		const r = check("outputs", "out-fence-npm");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 1件、ログに一致 1件");
+	});
+
+	it("段落の次の行の「2.」は箇条書きを始めず、その後ろの ``` もフェンスとして開かない（CommonMark）", () => {
+		const r = check("outputs", "out-fence-para2");
+		// 「2. ```text」と FAKE は段落の文字。次の行の ``` で情報文字列の無いフェンスが開き、最後まで続く（text のブロックは無い）
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("```text 0件");
+		expect(r.out).not.toContain("FAKE");
+	});
+
+	it("frontmatter の中の ``` は本文のコードブロックとして読まない", () => {
+		const r = check("outputs", "out-fence-fm");
 		expect(r.code, r.out).toBe(0);
 		expect(r.out).toContain("```text 1件、ログに一致 1件");
 	});
