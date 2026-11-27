@@ -9,6 +9,7 @@
 // 段落の途中の行、閉じないままの終わりなどを手で読むと、取りこぼしと読み違いが続いたため（PR #102 のレビュー）。
 // frontmatter は本文ではないので、パーサーに渡す前に外し、行番号だけ足して戻す。
 import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import { fromMarkdown } from "mdast-util-from-markdown";
 
 /** frontmatter（1行目の --- から次の --- まで）を外した本文と、外した行数を返す */
@@ -40,6 +41,7 @@ export function codeBlocks(text) {
 	return out;
 }
 
-if (process.argv[2]) {
+// ほかのスクリプトから import されたときは動かさない（直接起動したときだけ JSON を出す）
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && process.argv[2]) {
 	process.stdout.write(`${JSON.stringify(codeBlocks(readFileSync(process.argv[2], "utf8")))}\n`);
 }

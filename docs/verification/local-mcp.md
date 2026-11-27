@@ -19,10 +19,11 @@ write-article の手順10の1で、予約の前に原稿をローカルの下書
 
 1. `npm run build` のあと、新しいスクラッチのフォルダを `--persist-to` に渡して `npx wrangler dev --local --port 8787 --persist-to <スクラッチ> --var EMDASH_SITE_URL:http://localhost:8787` を起動する。`EMDASH_SITE_URL` を上書きしないと、パスキーの relying party が本番のホスト名になり、セットアップのパスキーの登録が `Security error` で失敗する。管理画面は `http://localhost:8787` で開く（127.0.0.1 は IP アドレスなのでパスキーに使えない）。
 2. 下の「手順」の3と4と同じく、Playwright で管理者をパスキー（WebAuthn の仮想認証器）で作り、Settings → API Tokens でトークンを作る。スコープは Content Read、Content Write、Schema Read、Taxonomies Manage（講座のタグの term を作るため）。値は作成の応答にだけ出る。
-3. `EMDASH_TOKEN=<そのトークン> node scripts/render-check.mjs <slug>`（全部なら `--all`）を流す。1本ごとに `[OK]` か `[FAIL]` と、表の数、コードとリンクを含むセルの数、記号の残り、URL だけのセルのリンクの数を出し、1本でも落ちたら終了コード 1。
+3. `EMDASH_TOKEN=<そのトークン> node scripts/render-check.mjs <slug>`（全部なら `--all`）を流す。1本ごとに `[OK]` か `[FAIL]` と、表の数、コードとリンクを含むセルの数、記号の残り、URL だけのセルのリンクの数を出し、1本でも落ちたら終了コード 1。1本が MCP のエラーなどで落ちても、残りの記事は続けて確かめる。
+3b. 続けて `node scripts/wrap-check.mjs <slug>`（全部なら `--all`）を流す。Playwright の Chromium で幅 1440px と 390px の記事ページを開き、表の番号・日付・バージョンだけのセルと、文の中の日付・数字の並び（`src/utils/table-cell.ts` が目印を付けたもの）が1行に収まっているか、ページ全体が横にはみ出していないかを測る。HTML の形だけを見る render-check では、CSS の変更で日付が折れても気づけないため。ブラウザが無ければ `npx playwright install chromium` で入れる。
 4. 終わったら wrangler を止め、スクラッチのフォルダ（ローカル DB とトークン）を消す。
 
-2026-11-27 に develop（835426e）の原稿30本で流した結果: 30本とも `[OK]`。表は原稿69個・描画69個、コードを含むセルは151、原稿にリンクを含むセルは0、記号の残りは0、URL だけのセルは334個すべてが別タブで開くリンク（#76）。`src/pages/posts/[slug].astro` の `markTableCells` を外して描画すると、30本とも `[FAIL]`（URL のセルがリンクにならない334件）になることも確かめた（外したのは確かめのためだけで、コミットしていない）。
+2026-11-27 に develop（835426e）の原稿30本で流した結果: render-check は30本とも `[OK]`。表は原稿69個・描画69個、コードを含むセルは151、原稿にリンクを含むセルは0、記号の残りは0、URL だけのセルは334個すべてが別タブで開くリンク（#76）。wrap-check は30本 × 2つの幅の60回とも `[OK]`（番号・日付のセル751個と並び28個が、両方の幅で1行。はみ出し0）。`src/pages/posts/[slug].astro` の `markTableCells` を外して描画すると render-check が30本とも `[FAIL]`（URL のセルがリンクにならない334件）に、表のセルの `white-space: nowrap` を外して描画すると wrap-check が60回とも `[FAIL]`（折れた番号・日付のセル678件。1440 でも30本とも）になることも確かめた（外したのは確かめのためだけで、コミットしていない）。
 
 以下は 2026-10-31 に EmDash 1.3.1 で確かめた記録。
 

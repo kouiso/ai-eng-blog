@@ -25,7 +25,7 @@ export function bodyOf(text) {
 }
 
 /** パイプの表の1行をセルに分ける（`\|` はセルの区切りにしない。インラインコードの中の `|` は区切りとして扱う CommonMark/GFM の挙動に合わせる） */
-function splitCells(line) {
+export function splitCells(line) {
 	const s = line.trim().replace(/^\|/, "").replace(/\|$/, "");
 	const cells = [];
 	let cur = "";

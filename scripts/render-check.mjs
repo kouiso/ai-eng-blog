@@ -18,7 +18,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { bodyOf, inventory } from "./markdown-inventory.mjs";
+import { codeBlocks } from "./code-blocks.mjs";
+import { bodyOf, inventory, splitCells } from "./markdown-inventory.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 
@@ -56,10 +57,16 @@ export function expectedTables(markdown) {
 	return inventory(bodyOf(markdown)).counts["表（パイプの表）"] ?? 0;
 }
 
-/** 原稿の表のセルのうち、インラインコードとリンク（[..](..)）を含むセルの数（見出し行も数える） */
+/** 原稿の表のセルのうち、インラインコードとリンク（[..](..)）を含むセルの数と、裸の URL だけのセルの数（見出し行も数える） */
 export function expectedCells(markdown) {
 	const c = inventory(bodyOf(markdown)).counts;
-	return { code: c["表のセル: インラインコード"] ?? 0, link: c["表のセル: リンク"] ?? 0 };
+	let bareUrl = 0;
+	const code = new Set(codeBlocks(markdown).flatMap((b) => Array.from({ length: b.end - b.start + 1 }, (_x, k) => b.start + k)));
+	markdown.split("\n").forEach((line, i) => {
+		if (code.has(i + 1) || !/^\s*\|.*\|\s*$/.test(line)) return;
+		for (const cell of splitCells(line)) if (/^https?:\/\/\S+$/.test(cell.trim())) bareUrl++;
+	});
+	return { code: c["表のセル: インラインコード"] ?? 0, link: c["表のセル: リンク"] ?? 0, bareUrl };
 }
 
 const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", "#x27": "'", nbsp: " " };
@@ -105,17 +112,15 @@ export function inspectHtml(html) {
 	for (const m of prose.matchAll(/<(td|th)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/g)) {
 		const text = textOf(m[2]);
 		if (/<code[\s>]/.test(m[2])) codeCells++;
-		const isUrlOnly = /^https?:\/\/\S+$/.test(text);
-		// URL だけのセルのリンクは描画のときに足したもの（#76）なので、原稿のリンクの数には入れない
-		if (!isUrlOnly && /<a\s/.test(m[2])) linkCells++;
-		if (m[1] !== "td" || !isUrlOnly) continue;
-		// 出典は別タブで開く決まり（#76）なので、href に加えて target と rel も確かめる
-		const linked = [...m[2].matchAll(/<a\s([^>]*)>/g)].some(([, attrs]) => {
+		if (/<a\s/.test(m[2])) linkCells++;
+		if (m[1] !== "td" || !/^https?:\/\/\S+$/.test(text)) continue;
+		const anchors = [...m[2].matchAll(/<a\s([^>]*)>/g)].map(([, attrs]) => {
 			const attr = (name) => textOf(attrs.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1] ?? "");
 			const rel = attr("rel").split(/\s+/);
-			return attr("href") === text && attr("target") === "_blank" && rel.includes("noopener") && rel.includes("noreferrer");
+			return { href: attr("href"), blank: attr("target") === "_blank" && rel.includes("noopener") && rel.includes("noreferrer") };
 		});
-		urlCells.push({ url: text, linked });
+		// 原稿で [URL](URL) と書いたセルは EmDash のリンクのまま、裸の URL のセルは描画のときに別タブのリンクにする（#76）
+		urlCells.push({ url: text, linked: anchors.some((a) => a.href === text), blank: anchors.some((a) => a.href === text && a.blank) });
 	}
 	return { tables, raw, urlCells, codeCells, linkCells };
 }
@@ -128,9 +133,14 @@ export function compare(markdown, html) {
 	const problems = [];
 	if (got.tables !== want) problems.push(`表の数: 原稿 ${want}、描画 ${got.tables}`);
 	if (got.codeCells !== cells.code) problems.push(`コードを含むセル: 原稿 ${cells.code}、描画 ${got.codeCells}`);
-	if (got.linkCells !== cells.link) problems.push(`リンクを含むセル: 原稿 ${cells.link}、描画 ${got.linkCells}`);
+	// 描画のリンクのセルは、原稿のリンクのセルと、描画のときにリンクにする裸の URL のセルの和になる
+	if (got.linkCells !== cells.link + cells.bareUrl) {
+		problems.push(`リンクを含むセル: 原稿のリンク ${cells.link} と裸の URL ${cells.bareUrl}、描画 ${got.linkCells}`);
+	}
 	for (const r of got.raw) problems.push(`記号がそのまま見える <${r.tag}>（${r.label}）: ${r.text}`);
 	for (const c of got.urlCells.filter((c) => !c.linked)) problems.push(`URL のセルがリンクになっていない: ${c.url}`);
+	const blank = got.urlCells.filter((c) => c.blank).length;
+	if (blank < cells.bareUrl) problems.push(`裸の URL のセル ${cells.bareUrl} のうち、別タブで開くリンクは ${blank}`);
 	return { want, got, problems };
 }
 
@@ -163,6 +173,7 @@ function tagSlugs(tags, seedTerms) {
 		const seeded = seedTerms.find((t) => t.label === label);
 		const slug = seeded ? seeded.slug : /^[\x20-\x7e]+$/.test(label) ? label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") : null;
 		if (slug) out.push({ slug, label });
+		else console.log(`  （タグ「${label}」は term の slug を決められないので付けない。描画の確かめには影響しない）`);
 	}
 	return out;
 }
@@ -231,23 +242,26 @@ async function main(argv) {
 	const seedTerms = seed.taxonomies.find((t) => t.name === "tag")?.terms ?? [];
 	let failed = 0;
 	for (const slug of targets) {
-		const text = readFileSync(join(dir, `${slug}.md`), "utf8");
-		await upsert(origin, bearer, slug, text, seedTerms);
-		const r = await fetch(`${origin}/posts/${encodeURIComponent(slug)}`);
-		if (r.status !== 200) {
+		try {
+			const text = readFileSync(join(dir, `${slug}.md`), "utf8");
+			await upsert(origin, bearer, slug, text, seedTerms);
+			const r = await fetch(`${origin}/posts/${encodeURIComponent(slug)}`);
+			if (r.status !== 200) throw new Error(`記事ページが HTTP ${r.status}`);
+			const { want, got, problems } = compare(text, await r.text());
+			const linked = got.urlCells.filter((c) => c.linked).length;
+			const blank = got.urlCells.filter((c) => c.blank).length;
+			const summary = `表 ${got.tables}/${want}、コードのセル ${got.codeCells}、リンクのセル ${got.linkCells}、記号の残り ${got.raw.length}、URL のセル ${linked}/${got.urlCells.length}（別タブ ${blank}）`;
+			if (problems.length) {
+				failed++;
+				console.log(`[FAIL] ${slug}: ${summary}`);
+				for (const p of problems) console.log(`  - ${p}`);
+			} else {
+				console.log(`[OK] ${slug}: ${summary}`);
+			}
+		} catch (e) {
+			// 1本の失敗（MCP のエラー、ページが無いなど）で残りの記事を止めない
 			failed++;
-			console.log(`[FAIL] ${slug}: 記事ページが HTTP ${r.status}`);
-			continue;
-		}
-		const { want, got, problems } = compare(text, await r.text());
-		const linked = got.urlCells.filter((c) => c.linked).length;
-		const summary = `表 ${got.tables}/${want}、コードのセル ${got.codeCells}、リンクのセル ${got.linkCells}、記号の残り ${got.raw.length}、URL のセル ${linked}/${got.urlCells.length}`;
-		if (problems.length) {
-			failed++;
-			console.log(`[FAIL] ${slug}: ${summary}`);
-			for (const p of problems) console.log(`  - ${p}`);
-		} else {
-			console.log(`[OK] ${slug}: ${summary}`);
+			console.log(`[FAIL] ${slug}: ${e instanceof Error ? e.message : e}`);
 		}
 	}
 	console.log(`\nrender-check: ${targets.length} 本、合格 ${targets.length - failed}、不合格 ${failed}`);
