@@ -257,6 +257,8 @@ const articleMeta = {
 			}, 50);
 		}
 		function fallbackCopy(text) {
+			// 写すために一時の textarea へフォーカスが移るので、終わったら押したボタンへ戻す
+			var previous = document.activeElement;
 			var area = document.createElement("textarea");
 			area.value = text;
 			area.setAttribute("readonly", "");
@@ -271,6 +273,7 @@ const articleMeta = {
 				ok = false;
 			}
 			document.body.removeChild(area);
+			if (previous && typeof previous.focus === "function") previous.focus();
 			return ok;
 		}
 		function copy(text) {
@@ -411,6 +414,9 @@ const articleMeta = {
 	}
 	/* 印刷では、閉じた details の中身が出ないので、今までどおり横の欄の目次（項目の一覧）を出す */
 	@media print {
+		.prose :global(.code-block__copy) {
+			display: none;
+		}
 		.toc--inline {
 			display: none;
 		}

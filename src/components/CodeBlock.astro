@@ -1,7 +1,7 @@
 ---
 /**
  * 記事本文のコードブロック。EmDash の Code.astro と同じ形（.emdash-code の中に pre と code）で描き、
- * 上にコピーのボタンを置く（#28）。ボタンは JS が動くときだけ出す（posts/[slug].astro のスクリプトが hidden を外す）。
+ * 上にコピーのボタンを置く（#28）。見た目は EmDash の既定の色ではなく、記事ページの .prose pre の指定（サイトの配色）に従う。ボタンは JS が動くときだけ出す（posts/[slug].astro のスクリプトが hidden を外す）。
  * 写す中身は code 要素の文字そのもの（原稿のコードブロックの文字列と同じ）。
  */
 export interface Props {
@@ -22,12 +22,22 @@ if (!node?.code) {
 
 const { code, language, filename } = node;
 const languageClass = language ? `language-${language}` : "";
+// 帯に出す名前。ファイル名があればファイル名、無ければ言語（空の文字列は無いものとして扱う）
+const label = filename?.trim() || language?.trim() || "";
 ---
 
 <div class="emdash-code code-block" data-code-block>
 	<div class="code-block__bar">
-		{(filename || language) && <span class="code-block__lang">{filename ?? language}</span>}
-		<button type="button" class="code-block__copy" data-copy-code hidden>コピー</button>
+		{label && <span class="code-block__lang">{label}</span>}
+		<button
+			type="button"
+			class="code-block__copy"
+			data-copy-code
+			aria-label={label ? `${label} のコードをコピー` : "コードをコピー"}
+			hidden
+		>
+			コピー
+		</button>
 	</div>
 	<pre class={languageClass}><code class={languageClass}>{code}</code></pre>
 </div>
