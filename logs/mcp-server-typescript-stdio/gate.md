@@ -108,3 +108,9 @@ G10 が NG なので、`status: draft` のまま止める。CSV が届いて、`
 | `cost_estimate`、`run_environment`、`verified_at` を埋め、スキルにも入れる | 正しい（`posts` にフィールドがある。README「記事の任意フィールド」） | 57〜59行目。スキルの記事の必須条件、frontmatter の表、G05 に入れた |
 | gate.md の誤った根拠（G04 の run/09、G04 の行番号、G09 の grep 一覧、C03 の文の数）、judgments.md:35 の render.py | 正しい（G04、G09、C03 の行に、誤っていた点を書いた。render.py は履歴にも無い） | 根拠を書き直した。出力の一致は `lint/check-code-and-outputs.py` で確かめる形にした |
 | キーワード: CSV が無いのに target_query を作った | 正しい。スキル手順1-1 と `target_query` の決まりに反する | `target_query: null`。スキルに G10 を足し、CSV 待ちを明示のブロッカーにした（上の結論） |
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

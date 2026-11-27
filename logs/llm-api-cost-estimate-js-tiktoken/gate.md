@@ -83,3 +83,9 @@
 - 不合格: G07（前後リンクの先が未公開・未予約）、G10（CSV 待ち、`target_query: null`）。
 - 合計: OK 46（G 8、C 38）、NG 2（G07、G10）、任意 1（C39 あり）。
 - そのため `status: draft` のまま止める（53行目）。G07 は、前後の記事 `claude-agent-sdk-streaming` と `llm-api-429-retry-sdk-mock` が公開か、この記事より前に予約されれば OK になる。予約より前に片方が無い場合は、その側のリンクを外して frontmatter を null に戻す。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

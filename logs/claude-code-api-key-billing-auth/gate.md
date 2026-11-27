@@ -82,3 +82,9 @@
 ## 結果
 
 G07（リンク先が未公開。公開の順番で解消する。今は直さない）が NG、G11（点検の指摘の解消）はこの修正後の再点検待ち。G10 は `target_query` が `keywords/google-suggest-llm-api.csv` の行と一致して OK。ほかの G01〜G06、G08、G09 と、B の C01〜C38 は OK（C39 は任意で「あり」）。frontmatter は `status: draft` のまま止める。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

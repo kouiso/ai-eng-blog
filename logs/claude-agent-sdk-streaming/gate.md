@@ -80,3 +80,9 @@
 ## 結果
 
 A は G07（リンク先が未公開）が NG。G10 は OK（`target_query` を決めた）。G11 は未点検。ほかは OK。記事は `status: draft`。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

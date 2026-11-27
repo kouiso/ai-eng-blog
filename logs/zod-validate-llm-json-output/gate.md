@@ -96,3 +96,9 @@ G07 と G10 が NG なので、`status: draft` のまま止める。EmDash へ�
 3. `zodOutputFormat()` と `parse()` が外した制約を確かめること（86行目）は出典7の記述だけが根拠で、SDK を入れて動かしてはいない（API キーが無いと `parse()` を呼べない）。
 4. GitHub の blob のページと npm のページはこの環境から 403 だったので、同じタグの raw ファイルと `npm view` で中身を確かめた（`sources.md`）。zod.dev は main の原稿を出しているので、v4.6.7 の原稿と比べて差が記事に関係しないことを確かめた（`sources.md`）。
 5. `run/` はこの環境の Read ツールの拒否設定に当たるディレクトリなので、2026-11-10 は `run-all.sh` で scratchpad にログを書き、中身をそこで確かめてから `run/` に cp した。`check-code-and-outputs.py` も scratchpad のログと `run/` の両方で ALL OK（`lint/check-code-and-outputs.txt` は `run/` に対する最後の実行）。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

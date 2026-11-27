@@ -99,3 +99,9 @@ G07 と G10 が NG なので、`status: draft` のまま止める。
 - G07: 前後と関連のリンク先（`mcp-server-resources-prompts`、`llm-eval-harness-fixtures`、`mcp-server-typescript-stdio`、`mcp-inspector-debug`）が、どれも原稿はあるが公開も予約もされていない。リンク先が先に予約されるまで、この記事は公開できない。公開の時点で無い記事があれば、そのリンクを外して frontmatter を null に戻す。
 
 EmDash への投稿と git のコミットはしていない（執筆するエージェントの担当外）。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

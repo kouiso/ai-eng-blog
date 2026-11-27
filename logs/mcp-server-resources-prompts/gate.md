@@ -104,3 +104,9 @@ EmDash への投稿と git のコミットはしていない（執筆するエ�
 | 4 | G07 が「次の記事は原稿が無い」、G06 が「ほかの13本」としていて、リポジトリと合わない | `ls content/articles` で、この記事のほかに18本（指摘の時点の17本から、`claude-agent-sdk-first-agent.md` が増えていた）。`mcp-connection-closed-fix.md` は 9行目 `prev`、53行目 `status: draft`、70行目にこの記事へのリンク | G06 と G07 の根拠、`selection.md` の「外した候補と理由」と「既存記事との重なり」を、18本を読み直した結果に書き換えた。G06 は OK、G07 は NG のままで、結論は変わらない |
 
 原稿を直したので、コード（`run/01`〜`11.log`）、2本の lint、補助の `prose-check.py` と `check-code-and-outputs.py` をすべて回し直し、全行を判定し直した。`verified_at`、`updated`、末尾の日付は 2026-11-10 にした。123行目の段落を2つに分けて2行増えたので、124行目より後の行番号は 2026-11-02 の版から2つずれている（この gate.md、`sources.md`、`lint/judgments.md` の行番号は直した）。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

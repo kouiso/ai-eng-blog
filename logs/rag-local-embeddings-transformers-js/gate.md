@@ -90,3 +90,9 @@
 ## 結論
 
 G07（前後リンクと関連リンクの先が未公開）と G10（CSV 待ち）に落ちたので、`status: draft` のまま止める。G07 は前後の記事（`rag-chunking-japanese-text`、`rag-answer-with-citations-claude`）と関連記事 `rag-bm25-search-typescript` が、この記事より前に公開か予約されれば通る。G10 はラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば通る。どちらも、この記事の原稿を直しても解消しない。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

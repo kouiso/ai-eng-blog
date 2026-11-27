@@ -96,3 +96,9 @@ G07 と G10 が NG なので、`status: draft` のまま止める。EmDash へ�
 2. GitHub の blob のページと npm のページはこの環境から 403 だったので、同じタグの raw ファイルと `npm view` で中身を確かめた（`sources.md`）。
 3. `run/*.log` と `node_modules/` は、執筆に使う環境の Read 禁止ルールに当たる。ログは Bash の `python3` と `cat` で読んだ。
 4. 2026-11-10 の再実行で、記事の実行結果の数値（間隔、経過時間、`npm install` の秒数）は新しいログに合わせて変わった。2026-10-31 のログは git の履歴にある。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定
