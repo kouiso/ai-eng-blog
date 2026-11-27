@@ -134,6 +134,23 @@ const articleMeta = {
 			}
 
 			{
+				toc.length > 0 && (
+					<details class="toc toc--inline" data-toc-inline>
+						<summary class="toc__title">目次</summary>
+						<nav aria-label="目次" data-toc>
+							<ol class="toc__list">
+								{toc.map((item) => (
+									<li>
+										<a href={`#${item.id}`}>{item.text}</a>
+									</li>
+								))}
+							</ol>
+						</nav>
+					</details>
+				)
+			}
+
+			{
 				post.data.featured_image && (
 					<div class="article__image" {...post.edit.featured_image}>
 						<Image image={post.data.featured_image} />
@@ -180,7 +197,7 @@ const articleMeta = {
 		<aside class="article-aside">
 			{
 				toc.length > 0 && (
-					<nav class="card toc" aria-label="目次" data-toc>
+					<nav class="card toc toc--aside" aria-label="目次" data-toc>
 						<p class="toc__title">目次</p>
 						<ol class="toc__list">
 							{toc.map((item) => (
@@ -215,8 +232,9 @@ const articleMeta = {
 			if (!headings[i].id) {
 				headings[i].id = expected;
 			} else if (headings[i].id !== expected) {
-				var link = document.querySelector('[data-toc] a[href="#' + expected + '"]');
-				if (link) link.setAttribute("href", "#" + headings[i].id);
+				// 目次は狭い画面用（本文の前）と広い画面用（横の欄）の2つあるので、両方のリンクを合わせる
+				var links = document.querySelectorAll('[data-toc] a[href="#' + expected + '"]');
+				for (var j = 0; j < links.length; j++) links[j].setAttribute("href", "#" + headings[i].id);
 			}
 		}
 	})();
@@ -295,12 +313,40 @@ const articleMeta = {
 			top: 24px;
 		}
 	}
+	/* 本文（560px）と横の欄（280px）と間（40px）が並ぶ幅（880px + 左右の余白 48px）からは横に並べる。
+	   それより狭いと横の欄は本文の後ろに回るので、目次は本文の前に折りたたんだ形（.toc--inline）で出す。
+	   折り返しを幅の media query に合わせて決め、スクロールバーの幅で2つの目次が両方消える幅を作らない */
+	@media (min-width: 928px) {
+		.article-layout {
+			flex-wrap: nowrap;
+		}
+		.toc--inline {
+			display: none;
+		}
+	}
+	@media (max-width: 927.98px) {
+		.toc--aside {
+			display: none;
+		}
+	}
 	.toc {
 		padding: 20px;
 	}
 	.toc__title {
 		margin: 0 0 8px;
 		font-weight: 700;
+	}
+	.toc--inline {
+		padding: 12px 16px;
+		border: 1px solid var(--line);
+		border-radius: 8px;
+	}
+	.toc--inline .toc__title {
+		margin: 0;
+		cursor: pointer;
+	}
+	.toc--inline[open] .toc__title {
+		margin-bottom: 8px;
 	}
 	.toc__list {
 		margin: 0;
