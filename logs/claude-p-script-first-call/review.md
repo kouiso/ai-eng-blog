@@ -157,3 +157,64 @@
 - 裁定6の確認: `env -u ANTHROPIC_API_KEY claude -p --output-format stream-json --verbose --strict-mcp-config "1+1は？"` の init の行は `"apiKeySource":"none"`。2026-11-15T06:05:56Z〜06:06:06Z に実行。`claude --version` は `2.1.325 (Claude Code)`。
 - 任意の指摘のうち S1（リードで `claude -p` を LLM API の呼び出し口として示す書き方）と S6（`--strict-mcp-config` の理由を本文で説明する節）はオーナーの判断待ち。返事が無ければ今の書き方のまま。
 - N1: `ask.ts` が標準入力の待ちを避けたことを示すログは無い。本文はログ以上のことを言っていないので、直さない。
+
+## 点検（2026-11-27、3回目。head f434f8b、通し）
+
+- 判定: FAIL。直すべき指摘2件、任意の指摘9件。G11 は NG（下書きのまま）。`gate.md` の G11 の行と機械で読む行の `G11=OK` は、この点検に合わせて NG に直す必要がある（点検する側は読み取りだけで、ファイルは直していない）。
+- 点検した道具: Claude Code のサブエージェント。モデルは Opus 5.5（claude-opus-5-5）で、この記事の執筆と直しには関わっていない。`claude --version` は `2.1.332 (Claude Code)`。ログインはプランのログイン。環境変数 `ANTHROPIC_API_KEY` は未設定（`test -n` が unset）。
+- 裁定6の確認: `env -u ANTHROPIC_API_KEY claude -p --output-format stream-json --verbose --strict-mcp-config "1+1は？" | head -1` を 2026-11-27T14:01:45Z〜14:01:53Z に実行した。2.1.332 では1行目が init ではなく `{"type":"active_goal",...}` で、`apiKeySource` が入っていなかった。そこで同じコマンドを `head` なしで 2026-11-27T14:01:59Z〜14:02:04Z にもう一度流し、3行目の `system`/`init` の行を読んだ。値は `"apiKeySource":"none"`（その行の `claude_code_version` も 2.1.332）。
+- 書いた AI のサブエージェント自身の init は、点検する側からは見えない。
+- 書いた道具（`review.md:4`、`:94` と `gate.md` の記録による）: Claude Code のサブエージェント（Claude）。モデルの記録は無い。コードはオーナーの端末で Claude Code 2.1.322 から動かしている。ログインはプランのログインで、根拠は書いた側の記録（`run/09.log` の `apiKeySource: none`、2026-11-11。`run/01.log`〜`15.log` の `ANTHROPIC_API_KEY: unset`）。2026-11-14 の直しをした AI も Claude のサブエージェント。
+
+### 渡されたもの
+
+- 原稿 `content/articles/claude-p-script-first-call.md`（445行）
+- `logs/claude-p-script-first-call/` の全部（gate.md、sources.md、selection.md、brief.md、review.md、run/ の19本、code/、lint/）
+- `.claude/skills/write-article/SKILL.md`、`docs/tech-writing-pack/checklist.md`、`docs/decisions/gate-readings.md`
+- 書いた AI の報告と結論は渡されていない。渡されたのは、点検で見る項目を並べた依頼文だけ。
+
+### 確かめたこと
+
+- 共通の検査: `python3 scripts/check-article.py claude-p-script-first-call` は exit=0 で、確定0件、候補0件。OUTPUT は ```text 13件がすべてログに一致し、例外0件、ログ19本。C25 で数えなかった URL だけの値は20件。
+- lint: ai-smell-lint は `✅ 致命なし`、use 0件、mention 0件、exit=0。writing-lint は `445行/143文`、`### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0`、exit=0。保存済みの `lint/ai-smell.txt`（ファイル名の行を除く）と `lint/writing-lint.txt` に一致した。
+- コード: 記事の `ts` 2ブロックが `code/exec-file.ts` と `code/ask.ts` に1文字も違わず一致。`lint/check-code-and-outputs.txt` は ALL OK。
+- 数字とログの照合: 0.0006710900000000001 は `run/07.log`、`run/08.log`。0.00008206 と 0.0101209 は `run/11.log`。0.00007506 は `run/15.log`。7.9 は `run/14.log`、`run/15.log`。表の 94,062、18,173、3,776 と 0.01681166、0.00147332、0.00063319 は `run/16.log`（小数第8位で丸めた値）。2.1.322 は `run/02.log`、v22.23.4 は `run/03.log`、TypeScript 7.0.2 は `run/17.log`。3つのフラグを付けた行の料金は、出典7の Haiku 5.5 の単価で計算すると 0.000633 になり、ログと合う。
+- frontmatter: `verified_at: "2026-11-12"` と末尾の日付は、時刻の順で最後のログ `run/10.log`（2026-11-12T01:01:14Z、exit=0）に一致する。`run_environment` の版はすべてログの見出しの行と一致する（jq は `run/10.log` が 1.7.1、ほかが 1.8.1）。`cost_estimate` は本文の52、62、208行目と食い違わない。
+- 出典: 10ページすべてを 2026-11-27 に取得し、本文の断定を支える文があることを確かめた（出典8 は unpkg と jsdelivr がこの環境のプロキシで 403 だったので、同じ版 0.3.322 を `npm pack` で取り、`sdk.d.ts` で確かめた）。本文の（出典n）は38か所で、番号ごとの行は `sources.md` の表と一致する。frontmatter の `sources`、本文の表、`sources.md` は10件とも題名と URL が一致する。
+- 利用規約の注意書き: 本文を「利用規約」「規約」「個人」「他の人」「ほかの人」「Console」「利用条件」「商用」「禁止」で検索して0件。意味を変える注意書きは足されていない。
+- G09: 原稿と `logs/claude-p-script-first-call/` に `sk-ant`、`/Users/`、`session_01`、`@gmail`、`/tmp/claude`、UUID の形、`/home/<名前>`、メールの形を検索した。当たったのは review.md と gate.md の検索語の説明の行だけ。アカウント名は `gate.md:18` の裁定コメントの URL（public のリポジトリの URL）にだけあり、原稿には無い。
+- G08: 445行目「AI 支援で執筆しました。コードは 2026-11-12 に実際に実行して確認しています。」
+- G07: 本文の `/posts/` は0件で、`prev: null`、`next: claude-agent-sdk-streaming`。裁定1のとおりなら OK（任意の指摘2を参照）。
+- `--strict-mcp-config`: 記事の `claude -p` のコード7か所すべてにある。
+- gate.md の行番号と引用: C06、C07、C10、C27、C36 と G05 の行番号と引用を、今の原稿と照らして合っていた。
+- selection.md の 2026-11-15 追記と G10・C01: トレンドの値は今の語と以前の語がどちらも 0。高かった3語を選び直さない理由（検索意図の型が違う）は、SKILL の手順1の2の4に照らして筋が通っている。C01 の1行（`brief.md`）と食い違わない。ただし `gate.md` の G10 の行は、この追記を反映していない（直すべき指摘1）。
+- 2.1.332 での再現（モデルを呼ばないブロックだけ）: ブロック10（`--bare`）を同じ形で流し、exit=1、`subtype: success`、`is_error: true` を再現した。`result` の文面だけが違った（任意の指摘6）。
+
+### 確かめていないこと
+
+- モデルを呼ぶブロック（05、09、11、13、14、15）とトークン数の測定は、動かし直していない。
+- `keywords/LLM API.csv` と `keywords/google-suggest-llm-api.csv` はこの環境に無い。G10 の CSV との一致は確かめていない。
+- Google の上位10記事と、EmDash に載せたときの表示は見ていない。
+- guides/01〜10 はこの点検では全文を読み直していない。checklist、SKILL.md、gate-readings.md は全文を読んだ。C09〜C24 は本文を通読して判断した。
+- Node.js 22.18.0 そのものでの動作は確かめていない。
+
+### 直すべき指摘
+
+| # | 場所 | 何が問題か | 直し方 |
+|---|---|---|---|
+| 1 | `logs/claude-p-script-first-call/gate.md:45`（G10 の根拠の最後の文） | 最後の文「Google トレンドの比較は、取得が HTTP 429 で止まったので実施できていない」が今の記録と食い違う。比較は `selection.md:251-273` の「2026-11-15 追記」で行っており、同じ `gate.md` の結論も「2026-11-15 に行った」と書いている | 最後の文を「2026-11-14 は HTTP 429 で取得できず、2026-11-15 に行った（`selection.md` の「2026-11-15 追記」）。今の語は平均0で、以前の語と差は無い」の趣旨に直す |
+| 2 | `content/articles/claude-p-script-first-call.md:181` | 「同じ質問を、フラグを変えて1回ずつ、計3回送りました。」は、直前の流れでは131行目の TypeScript の質問を指すと読める。測定で送ったのは「1+1 の答えを数字だけで答えてください。」で（`code/extra/measure-isolation.sh:19`）、作業フォルダには CLAUDE.md も置いていた（`run/16.log:3`）。そのため表の「3つとも付ける」の 0.00063319 は、同じフラグで送った171行目の 0.0006710900000000001 と違い、読者は数字が合わないと受け取る | 測定に使った質問を書く。数字とコードは変えずに済む。直したら手順7と8を回し直し、gate.md と sources.md の行番号と引用も合わせる |
+
+### 任意の指摘
+
+| # | 場所 | 内容 |
+|---|---|---|
+| 1 | 記事:214 | 「最初に届く init イベントを見ます（出典1）」。出典1は "It is the first event in the stream unless startup events precede it" と条件付き。2.1.332 では init は3行目だった。記事のコードは `select` で拾うので動くが、`head -1` で読む読者はつまずく。「最初に」を外し、`type` が `system`、`subtype` が `init` のイベントを見る、と書く案 |
+| 2 | 記事:420-426、frontmatter `next` | 読者に見える次の記事へのリンクが無い。G07 は裁定1で OK だが、前の記事の `next` にリンクを足す手順10の6は「実行しない」とされている。統括かオーナーが扱いを決める項目 |
+| 3 | 記事:253 と :418 | 253行目は「`is_error` か終了コードで判定」を勧め、418行目は「終了コードで判定すると、失敗の理由を読み損ねます」と書く。418行目を「理由を読むには JSON を先に読む」の趣旨にそろえる案 |
+| 4 | 記事:378（`ask.ts`） | `close` のハンドラの中の `JSON.parse` が失敗すると、`reject` されず捕まえられない例外になる。`try` で囲んで `reject` にすると415行目の説明と合う。直すならコードと出力を動かし直す必要がある |
+| 5 | 記事:257 | 「それぞれ最新の Haiku、Sonnet、Opus を指します」。出典3が「最新」を言うのは sonnet と opus だけ。版で書く案 |
+| 6 | 記事:244-250 | 2.1.332 のクラウドの環境で `--bare` を流すと、`result` は "Authentication error · …" で "Not logged in · Please run /login" ではなかった。記事は 2.1.322 で動かしたと書いているので直さなくてよいが、文面は版か環境で変わりうる |
+| 7 | `logs/claude-p-script-first-call/lint/` | SKILL.md 手順7にある `lint/check-article.txt` が無い（30本どれにも無い）。この点検で流した `check-article.py` の結果を保存しておくとよい |
+| 8 | `review.md` の2回目の点検の節 | 書いた道具の記録と、裁定6の「書いた AI の init は見えない」の1文が無い。この3回目の節で補ったが、`gate.md` の G11 の根拠を2回目に向けたままにしない |
+| 9 | 記事:2、:4、:52、:177-189 | 前回からの S1 と S6 は、まだオーナーの判断待ち |
