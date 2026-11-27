@@ -19,7 +19,7 @@
 
 | 原稿の行 | 文 | 根拠 |
 |---|---|---|
-| 177〜189 | フラグを変えた3回のトークン数と total_cost_usd | `run/16.log`（`code/extra/measure-isolation.sh`）。表の total_cost_usd は小数第8位までに丸めた。181行目に書いた測定の質問は「1+1 の答えを数字だけで答えてください。」（`measure-isolation.sh` の `run` 関数の `claude -p` の引数）で、作業フォルダに CLAUDE.md を1つ置いている（同じスクリプトの `printf`、`run/16.log` の3行目）。3つとも付ける行の 0.00063319 は、`run/16.log` の `[all three flags]` の行（0.0006331900000000002）。171行目の 0.0006710900000000001 は `run/07.log` で、質問は131行目の TypeScript の型注釈の質問（`run/05.log` の送信）。値が違うのは別の測定だから、というところまでを本文に書いている |
+| 177〜189 | フラグを変えた3回のトークン数と total_cost_usd | `run/16.log`（`code/extra/measure-isolation.sh`）。表の total_cost_usd は小数第8位までに丸めた。181行目に書いた測定の質問は「1+1 の答えを数字だけで答えてください。」（`measure-isolation.sh` の `run` 関数の `claude -p` の引数）で、作業フォルダに CLAUDE.md を1つ置いている（同じスクリプトの `printf`、`run/16.log` の4行目）。3つとも付ける行の 0.00063319 は、`run/16.log` の `[all three flags]` の行（0.0006331900000000002）。171行目の 0.0006710900000000001 は `run/07.log` で、質問は131行目の TypeScript の型注釈の質問（`run/05.log` の送信）。値が違うのは別の測定だから、というところまでを本文に書いている |
 | 208 | `costBasis` が `list` | `run/08.log` |
 | 228 | 別名の `haiku` が `claude-haiku-5-5` になった | `run/09.log` |
 | 253 | `--bare` で終了コード1、`subtype` が `success`、`is_error` が `true` | `run/10.log` |
