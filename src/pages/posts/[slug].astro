@@ -256,7 +256,7 @@ const articleMeta = {
 			// 同じ文をもう一度入れても読み上げられるように、一度空にしてから入れる
 			status.textContent = "";
 			setTimeout(function () {
-				if (seq === announceSeq) status.textContent = text;
+				status.textContent = text;
 			}, 50);
 			return seq;
 		}

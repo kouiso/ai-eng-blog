@@ -32,9 +32,13 @@ VERDICTS = ("OK", "NG", "未判定")
 HEADING = "## 機械で読む合否"
 LINE_RE = re.compile(r"^gate:(.*)$")
 TOKEN_RE = re.compile(r"^(G\d{2})=(\S+)$")
+# コードフェンスの行。1組目が ``` か ~~~ の並び、2組目がその後ろの文字。
+# リストの項目や引用の中のフェンス（"- ```"、"1. ```"、"> ```"）も開く。gate.md には字下げのコードブロックを書かないので、字下げの数は問わない。
+# 開く行は、字下げのあとに「リストの印（-*+ か 1. 1)）と空白」や「>」が並んでもよい
+FENCE_OPEN_RE = re.compile(r"^[ \t]*(?:(?:[-*+]|\d+[.)])[ \t]+|>[ \t]*)*(`{3,}|~{3,})(.*)$")
+# 閉じる行は、字下げと「>」のあとに ``` か ~~~ が並ぶだけ
+FENCE_CLOSE_RE = re.compile(r"^[ \t]*(?:>[ \t]*)*(`{3,}|~{3,})(.*)$")
 # 公開前ゲートの表の行。| G07 | 条件 | 確かめ方 | 判定 | 根拠 | の4列目が判定
-# コードフェンスの行。1組目が ``` か ~~~ の並び、2組目がその後ろの文字
-FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 TABLE_ROW_RE = re.compile(r"^\|\s*(G\d{2})\s*\|")
 
 
@@ -43,21 +47,23 @@ class GateError(Exception):
 
 
 def outside_fences(lines: list[str]) -> list[str]:
-    """コードフェンス（``` か ~~~。CommonMark と同じく行頭から3字まで字下げでき、3つ以上並べる）の中の行を空行に置きかえる。
+    """コードフェンス（``` か ~~~。3つ以上並べる。リストの項目や引用の中、字下げつきも含む）の中の行を空行に置きかえる。
     行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。"""
     result: list[str] = []
     fence: tuple[str, int] | None = None
     for line in lines:
-        m = FENCE_RE.match(line)
         if fence is None:
-            if m:
+            m = FENCE_OPEN_RE.match(line)
+            # CommonMark と同じく、``` の開きの後ろ（info string）に ` があれば、フェンスではなくインラインのコード。~~~ は ` があってもよい
+            if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
                 fence = (m.group(1)[0], len(m.group(1)))
                 result.append("")
             else:
                 result.append(line)
             continue
-        # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない）
-        if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip():
+        # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
+        m = FENCE_CLOSE_RE.match(line)
+        if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
             fence = None
         result.append("")
     return result
@@ -65,7 +71,8 @@ def outside_fences(lines: list[str]) -> list[str]:
 
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    lines = outside_fences([line.rstrip() for line in text.lstrip("\ufeff").splitlines()])
+    # 行末は半角の空白とタブだけ落とす（全角の空白を落とすと、フェンスの後ろの全角空白が消えて閉じる行に見えてしまう）
+    lines = outside_fences([line.rstrip(" \t") for line in text.lstrip("\ufeff").splitlines()])
     try:
         start = lines.index(HEADING)
     except ValueError:

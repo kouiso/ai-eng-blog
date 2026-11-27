@@ -37,6 +37,14 @@ describe("gate-list.py", () => {
 		}
 	});
 
+	it("リストの項目の中のフェンス、混ぜた字・info つき・全角空白つきの行ではフェンスを閉じない、``` の info に ` があればフェンスではない", () => {
+		for (const slug of ["fence-list-item", "fence-mixed-char", "fence-closer-info", "fence-info-backtick", "fence-fullwidth-close"]) {
+			const r = run([slug]);
+			expect(r.code, `${slug}: ${r.err}`).toBe(0);
+			expect(r.out).toContain(`| ${slug} | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | OK | 合格 |`);
+		}
+	});
+
 	it("--tsv でタブ区切りに出し、まとめの行は標準エラーに出す", () => {
 		const r = run(["--tsv", "ok"]);
 		expect(r.code).toBe(0);
