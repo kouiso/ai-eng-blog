@@ -46,6 +46,10 @@ class GateError(Exception):
     pass
 
 
+# フェンスの外のリストの項目の始まり（字下げ、印、空白）。項目の中身の桁を知るのに使う
+LIST_ITEM_RE = re.compile(r"^[ \t]*(?:[-*+]|\d+[.)])[ \t]+(?=\S)")
+
+
 def outside_fences(lines: list[str]) -> list[str]:
     """コードフェンス（``` か ~~~。3つ以上並べる。リストの項目や引用の中、字下げつきも含む）の中の行を空行に置きかえる。
     行の番号を変えずに、見出し・gate: の行・表の行をフェンスの外だけで探せるようにする。
@@ -54,26 +58,31 @@ def outside_fences(lines: list[str]) -> list[str]:
     result: list[str] = []
     # 開いているフェンス: (字, 並びの数, 入れ物の種類, リストの項目の中身の桁)
     fence: tuple[str, int, str, int] | None = None
+    # フェンスの外で今いるリストの項目の中身の桁（項目の外なら None）。項目の続きの行で開くフェンスを、その項目の中のフェンスとして扱うのに使う
+    item_col: int | None = None
+
+    def indent_of(raw: str) -> int:
+        # 字下げの桁。タブは4桁として数える
+        expanded = raw.expandtabs(4)
+        return len(expanded) - len(expanded.lstrip(" "))
+
     for raw in lines:
         if fence is not None:
-            # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
-            m = FENCE_CLOSE_RE.match(raw)
-            if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
-                fence = None
-                result.append("")
-                continue
-            # 入れ物（引用・リストの項目）が終わったら、フェンスもそこで閉じる。その行はフェンスの外の行として読み直す
+            # 先に、入れ物（引用・リストの項目）が続いているかを見る。入れ物が終わった行は、閉じるフェンスの形でも
+            # このフェンスを閉じない（CommonMark と同じく、入れ物が終わればフェンスもそこで終わり、その行は外の行として読み直す）
             if fence[2] == "quote":
                 ended = not raw.lstrip(" ").startswith(">")
             elif fence[2] == "list" and raw.strip():
-                # 項目の中身の桁より浅く字下げした行で、項目（とフェンス）が終わる。タブは4桁として数える。
+                # 項目の中身の桁より浅く字下げした行で、項目（とフェンス）が終わる。
                 # 中身の桁ちょうどに置いた「- 」や「1. 」の行は、フェンスの中のコード（YAML のリストや diff）として読む
-                expanded = raw.expandtabs(4)
-                indent = len(expanded) - len(expanded.lstrip(" "))
-                ended = indent < fence[3]
+                ended = indent_of(raw) < fence[3]
             else:
                 ended = False
             if not ended:
+                # 閉じるフェンスは、同じ字を同じ数以上並べただけの行（後ろに文字を置かない。全角の空白は文字として数える）
+                m = FENCE_CLOSE_RE.match(raw)
+                if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip(" \t"):
+                    fence = None
                 result.append("")
                 continue
             fence = None
@@ -81,11 +90,29 @@ def outside_fences(lines: list[str]) -> list[str]:
         # CommonMark と同じく、``` の開きの後ろ（info string）に ` があれば、フェンスではなくインラインのコード。~~~ は ` があってもよい
         if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
             prefix = raw[: m.start(1)]
-            kind = "quote" if ">" in prefix else "list" if prefix.strip() else "top"
-            fence = (m.group(1)[0], len(m.group(1)), kind, m.start(1))
+            column = len(prefix.expandtabs(4))
+            if ">" in prefix:
+                kind = "quote"
+            elif prefix.strip():
+                kind = "list"
+                item_col = column
+            elif item_col is not None and column >= item_col:
+                # リストの項目の続きの行（字下げだけ）で開いたフェンスは、その項目が終わるところで閉じる
+                kind = "list"
+                column = item_col
+            else:
+                kind = "top"
+                item_col = None
+            fence = (m.group(1)[0], len(m.group(1)), kind, column)
             result.append("")
-        else:
-            result.append(raw.rstrip())
+            continue
+        # フェンスの外の行で、リストの項目の中身の桁を追う
+        marker = LIST_ITEM_RE.match(raw)
+        if marker:
+            item_col = len(marker.group(0).expandtabs(4))
+        elif raw.strip() and item_col is not None and indent_of(raw) < item_col:
+            item_col = None
+        result.append(raw.rstrip())
     return result
 
 

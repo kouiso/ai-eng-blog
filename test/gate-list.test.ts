@@ -123,6 +123,22 @@ describe("gate-list.py", () => {
 		},
 	);
 
+	it.each(["fence-quote-unindented-closer", "fence-list-unindented-closer"])(
+		"%s: 引用・リストのフェンスは字下げしない ``` で閉じず、後ろの偽の節ではなく本当の節（G01=NG）を読む",
+		(slug) => {
+			const r = run([slug]);
+			expect(r.code, r.err).toBe(0);
+			expect(r.out).toContain(`| ${slug} | NG | OK |`);
+			expect(r.out).toContain("不合格");
+		},
+	);
+
+	it("リストの項目の続きの行で開いたフェンスは、項目が終わるところで閉じ、後ろの節を読む", () => {
+		const r = run(["fence-list-continuation"]);
+		expect(r.code, r.err).toBe(0);
+		expect(r.out).toContain("| fence-list-continuation | OK |");
+	});
+
 	it("リポジトリの全記事の gate.md に、読める合否の行がある", () => {
 		const r = run(["--tsv"], resolve(__dirname, ".."));
 		expect(r.code, r.err).toBe(0);
