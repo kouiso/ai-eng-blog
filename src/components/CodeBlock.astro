@@ -1,0 +1,76 @@
+---
+/**
+ * 記事本文のコードブロック。EmDash の Code.astro と同じ形（.emdash-code の中に pre と code）で描き、
+ * 上にコピーのボタンを置く（#28）。ボタンは JS が動くときだけ出す（posts/[slug].astro のスクリプトが hidden を外す）。
+ * 写す中身は code 要素の文字そのもの（原稿のコードブロックの文字列と同じ）。
+ */
+export interface Props {
+	node: {
+		_type: "code";
+		_key: string;
+		code: string;
+		language?: string;
+		filename?: string;
+	};
+}
+
+const { node } = Astro.props;
+
+if (!node?.code) {
+	return null;
+}
+
+const { code, language, filename } = node;
+const languageClass = language ? `language-${language}` : "";
+---
+
+<div class="emdash-code code-block" data-code-block>
+	<div class="code-block__bar">
+		{(filename || language) && <span class="code-block__lang">{filename ?? language}</span>}
+		<button type="button" class="code-block__copy" data-copy-code hidden>コピー</button>
+	</div>
+	<pre class={languageClass}><code class={languageClass}>{code}</code></pre>
+</div>
+
+<style>
+	.code-block {
+		display: flex;
+		flex-direction: column;
+	}
+	.code-block__bar {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 12px;
+	}
+	.code-block__lang {
+		margin-right: auto;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--muted);
+	}
+	.code-block__copy {
+		font: inherit;
+		font-size: 13px;
+		line-height: 1.4;
+		padding: 4px 12px;
+		margin-bottom: 6px;
+		border: 1px solid var(--line-strong);
+		border-radius: 6px;
+		background: var(--surface);
+		color: var(--text);
+		cursor: pointer;
+	}
+	.code-block__copy:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.code-block__copy:focus-visible {
+		outline: 3px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.code-block__copy[data-state="done"] {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+</style>
