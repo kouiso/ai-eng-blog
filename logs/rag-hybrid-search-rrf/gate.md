@@ -105,3 +105,9 @@ G07（前後リンクと関連リンクの先が未公開）、G10（CSV 待ち�
 
 - G10 は、ラッコキーワードの CSV が届き、`target_query` を CSV の行から選べれば判定できる。そのときは選んだ語がタイトルの左寄せに入っているかを見て、C02 も判定し直す。今の原稿を直しても G10 は解消しない。
 - G07 は、リンク先の4本（`rag-answer-with-citations-claude`、`ai-agent-custom-tools-agent-sdk`、`rag-bm25-search-typescript`、`rag-local-embeddings-transformers-js`）が公開か、この記事より前に予約されれば通る。前の記事 `rag-answer-with-citations-claude` は API キーが要る記事なので、キーが入るまで公開されない。#14 と #16 の原稿ができたら、72行目と526行目の説明が中身と合うかを読み直す。
+
+## 機械で読む合否
+
+2026-11-27 に、この上の表と日付つきの追記を読んで写した今の判定（`npm run gate:list` が読む。#44）。表や追記で判定を変えたら、この行も同じ commit で直す。
+
+gate: G01=OK G02=OK G03=OK G04=OK G05=OK G06=OK G07=OK G08=OK G09=OK G10=OK G11=未判定

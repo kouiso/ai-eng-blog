@@ -16,7 +16,8 @@
     "test": "vitest run",
     "secret-scan": "node scripts/secret-scan.mjs",
     "check": "node scripts/check.mjs root",
-    "check:samples": "node scripts/check.mjs samples"
+    "check:samples": "node scripts/check.mjs samples",
+    "gate:list": "python3 scripts/gate-list.py"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.3.1",
