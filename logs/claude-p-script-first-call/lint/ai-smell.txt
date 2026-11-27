@@ -1,5 +1,5 @@
 
-===== ai-smell-lint: ../../content/articles/claude-p-script-first-call.md =====
+===== ai-smell-lint: content/articles/claude-p-script-first-call.md =====
   ✅ クリーン（機械検出される症状なし）
   --- 集計: use 0件 / 📎mention 0件
   --- 判定: ✅ 致命なし（warnは目視で要否判断）

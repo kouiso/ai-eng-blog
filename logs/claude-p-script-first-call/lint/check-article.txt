@@ -1,0 +1,10 @@
+== claude-p-script-first-call
+  prose: 文 231、数えなかったコードブロックの行 161
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] claude-p-script-first-call.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-p-script-first-call.md:36 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-p-script-first-call.md:438 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-p-script-first-call.md:441 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+  outputs: ```text 13件、ログに一致 13件、例外 0件、ログ 19本（出力部分 19か所）
+SUMMARY claude-p-script-first-call: 確定 0 {} / 候補 0 {}
+exit=0
