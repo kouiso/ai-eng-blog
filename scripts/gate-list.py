@@ -7,6 +7,8 @@
 
 判定は OK・NG・未判定 の3つ。この行は、上の表と日付つきの追記で決まった今の判定を写したもの。
 表や追記で判定を変えたときは、同じ commit でこの行も直す（write-article スキルの手順8）。
+写し忘れに気づけるよう、表に `| G07 | … | OK | … |` の行がある項目は、ファイルの中で最後の行の判定と
+この行の判定が違えば、読めない gate.md として扱う。
 
 使い方:
     python3 scripts/gate-list.py            # 全記事の一覧（Markdown の表）
@@ -27,6 +29,8 @@ VERDICTS = ("OK", "NG", "未判定")
 HEADING = "## 機械で読む合否"
 LINE_RE = re.compile(r"^gate:(.*)$")
 TOKEN_RE = re.compile(r"^(G\d{2})=(\S+)$")
+# 公開前ゲートの表の行。| G07 | 条件 | 確かめ方 | 判定 | 根拠 | の4列目が判定
+TABLE_ROW_RE = re.compile(r"^\|\s*(G\d{2})\s*\|")
 
 
 class GateError(Exception):
@@ -35,7 +39,7 @@ class GateError(Exception):
 
 def parse_gate_md(text: str) -> dict[str, str]:
     """gate.md の本文から、機械で読む合否の行を読んで {G01: "OK", ...} を返す。形が違えば GateError。"""
-    lines = text.splitlines()
+    lines = [line.rstrip() for line in text.lstrip("\ufeff").splitlines()]
     try:
         start = lines.index(HEADING)
     except ValueError:
@@ -73,7 +77,35 @@ def parse_gate_md(text: str) -> dict[str, str]:
     order = [g for g in result]
     if order != GATES:
         raise GateError("G01 から G11 の順に並べます")
+    for gate, verdict in table_verdicts(lines[:start]).items():
+        if verdict != result[gate]:
+            raise GateError(f"{gate} が表の最後の行では {verdict}、機械で読む行では {result[gate]} です（どちらかを直します）")
     return result
+
+
+def normalize(cell: str) -> str | None:
+    """表の判定の欄を OK・NG・未判定 にそろえる。「OK（注記あり）」は OK。読めなければ None。"""
+    cell = cell.strip()
+    for verdict in VERDICTS:
+        if cell.startswith(verdict):
+            return verdict
+    return None
+
+
+def table_verdicts(lines: list[str]) -> dict[str, str]:
+    """公開前ゲートの表（A）の行から、項目ごとに、ファイルの中で最後の行の判定を返す。読めない行は飛ばす。"""
+    found: dict[str, str] = {}
+    for line in lines:
+        m = TABLE_ROW_RE.match(line)
+        if not m or m.group(1) not in GATES:
+            continue
+        cells = line.strip().strip("|").split("|")
+        if len(cells) < 4:
+            continue
+        verdict = normalize(cells[3])
+        if verdict:
+            found[m.group(1)] = verdict
+    return found
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -84,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     logs = Path(args.root) / "logs"
-    slugs = args.slugs or sorted(p.parent.name for p in logs.glob("*/gate.md"))
+    slugs = list(dict.fromkeys(args.slugs)) or sorted(p.parent.name for p in logs.glob("*/gate.md"))
     if not slugs:
         print(f"gate-list: {logs} に gate.md がありません", file=sys.stderr)
         return 1
@@ -97,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
             rows.append((slug, parse_gate_md(path.read_text(encoding="utf-8"))))
         except FileNotFoundError:
             errors.append(f"{slug}: {path} がありません")
+        except (OSError, UnicodeDecodeError) as e:
+            errors.append(f"{slug}: {path} を読めません（{e.__class__.__name__}）")
         except GateError as e:
             errors.append(f"{slug}: {e}")
 
@@ -114,10 +148,12 @@ def main(argv: list[str] | None = None) -> int:
         cells = [slug, *(verdicts[g] for g in GATES), "合格" if ok else "不合格"]
         print(sep.join(cells) if args.tsv else "| " + sep.join(cells) + " |")
 
-    print()
+    # --tsv のときは表だけを標準出力に出し、まとめの行は標準エラーに出す
+    summary = sys.stderr if args.tsv else sys.stdout
     counts = {g: sum(1 for _, v in rows if v[g] == "OK") for g in GATES}
-    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本")
-    print("項目ごとの OK の本数: " + "、".join(f"{g} {counts[g]}" for g in GATES))
+    print(file=summary)
+    print(f"{len(rows)}本のうち、G01〜G11 がすべて OK の記事: {passed}本", file=summary)
+    print("項目ごとの OK の本数: " + "、".join(f"{g} {counts[g]}" for g in GATES), file=summary)
     for e in errors:
         print(f"[ERROR] {e}", file=sys.stderr)
     if errors:
