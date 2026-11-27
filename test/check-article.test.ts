@@ -122,6 +122,12 @@ describe("確定の検査は、通る記事と落ちる記事で試す", () => {
 		expect(r.out).toContain("prose: 文 5");
 	});
 
+	it("~~~ のフェンスと字下げした ``` のフェンスの中身は、C25 で数えない", () => {
+		const r = check("prose", "c25-tilde");
+		expect(r.code, r.out).toBe(0);
+		expect(r.out).toContain("数えなかったコードブロックの行 2");
+	});
+
 	it("frontmatter の値の後ろの ` # コメント` は値に数えない", () => {
 		const r = check("prose", "c25-fm-comment");
 		expect(r.code, r.out).toBe(0);
@@ -190,6 +196,22 @@ describe("出力ブロックと run ログの照合", () => {
 		const r = check("outputs", "out-nonconform");
 		expect(r.code).toBe(1);
 		expect(r.out).toContain("書式に沿っていない");
+	});
+
+	it("リストの中で字下げした ```text、属性つきの ```text、~~~text、````text も出力ブロックとして照合する", () => {
+		const r = check("outputs", "out-fence-forms");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 4件、ログに一致 0件");
+		for (const first of ["FAKE IN LIST", "FAKE WITH ATTR", "FAKE TILDE", "FAKE FOUR"]) {
+			expect(r.out).toContain(`先頭「${first}」`);
+		}
+	});
+
+	it("字下げしたフェンスの中身は字下げを外して照合し、4本のフェンスの中の ``` はブロックの一部として読む", () => {
+		const r = check("outputs", "out-fence-forms-ok");
+		expect(r.code, r.out).toBe(1);
+		expect(r.out).toContain("```text 3件、ログに一致 2件");
+		expect(r.out).toContain("先頭「```」");
 	});
 
 	it("run ディレクトリが無い記事は落ちる（飛ばさない）", () => {

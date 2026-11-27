@@ -32,7 +32,7 @@ checklist とガイドに無い除外は入れない。数えないものは次�
     C30  `**` が残っていない（コードとインラインコードの外）  (guides/03-anti-ai.md 記号)
     C31  em-dash `—` と罫線 `─` を使っていない（`──` は `─` の連続） (同上。checklist C31 の記号に合わせ、`―` U+2015 は数えない)
     C32  `：`+半角スペース、`／` を使っていない    (同上)
-    OUTPUT  記事の出力ブロック（```text）が、run ログの出力部分に1字も違わず載っている
+    OUTPUT  記事の出力ブロック（情報文字列の最初の語が text のフェンス。~~~、字下げ、属性つきも）が、run ログの出力部分に1字も違わず載っている
   候補（一覧に出すだけ）
     C16  文長に緩急がある                        (guides/03-anti-ai.md 4節「リズムの不在」)
     C26  用語が統一されている                    (guides/05-technical-writing.md「用語の統一」「表記の統一」)
@@ -88,6 +88,9 @@ URL_ONLY = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 FM_BLOCK_INDICATOR = re.compile(r"[>|][+-]?\d?")
 OUTPUT_HEADER = re.compile(r"^-{3,5} [^\n]*(?:stdout|stderr|output)[^\n]* -{3,5}$")
 END_MARKER = re.compile(r"^-{3,5} (?:exit\b|command\b)")
+# コードフェンスの開始行（CommonMark）。リストの中で字下げしたもの、~~~、4本以上のバッククォート、
+# 情報文字列の後ろの属性（```text title="out"）も読む。行頭の ``` だけを見ると、これらの出力ブロックが照合から漏れる
+FENCE_OPEN = re.compile(r"^(?P<indent> *)(?P<fence>`{3,}|~{3,})(?P<info>.*)$")
 
 
 class Result:
@@ -145,13 +148,30 @@ def fm_values(raw):
     return out
 
 
+def fence_open(line):
+    """コードフェンスの開始行なら (字下げの幅, 記号, 記号の数, 情報文字列の最初の語) を返す。違えば None。"""
+    m = FENCE_OPEN.match(line.rstrip("\r"))
+    if not m:
+        return None
+    fence, info = m.group("fence"), m.group("info").strip()
+    if fence[0] == "`" and "`" in info:
+        return None  # バッククォートのフェンスの情報文字列にバッククォートは入らない（インラインコードの行）
+    return (len(m.group("indent")), fence[0], len(fence), info.split()[0] if info else "")
+
+
+def fence_closes(line, opened):
+    """opened のフェンスを閉じる行か。同じ記号を同じ数以上並べ、後ろは空白だけ"""
+    _indent, ch, n, _word = opened
+    return re.fullmatch(re.escape(ch) + "{%d,}[ \t]*" % n, line.rstrip("\r").lstrip(" ")) is not None
+
+
 def parse_article(text):
     """本文を (行番号, 種類, 文字列) に分ける。種類は fm / heading / cell / prose。
     コードブロックの中身は数えず、行数だけ返す。非コード行は plain_lines に残す。"""
     segs, plain_lines = [], []
     code_lines = 0
     in_fm = False
-    in_code = False
+    opened = None  # 開いているコードフェンス（fence_open の戻り値）
     fm_block = None  # ブロック形式（key: > や key: |）の中身を読んでいるとき、目印の行の字下げの深さ
     for i, raw in enumerate(text.split("\n"), 1):
         if i == 1 and raw == "---":
@@ -177,11 +197,15 @@ def parse_article(text):
                     continue
                 segs.append((i, "url-cell" if url_only(v) else "fm", v))
             continue
-        if raw.startswith("```"):
-            in_code = not in_code
+        if opened is not None:
+            if fence_closes(raw, opened):
+                opened = None
+            else:
+                code_lines += 1
             continue
-        if in_code:
-            code_lines += 1
+        fo = fence_open(raw)
+        if fo is not None:
+            opened = fo
             continue
         plain_lines.append((i, raw))
         s = raw.strip()
@@ -295,17 +319,22 @@ def check_prose(res, path):
 # --- 出力ブロックの照合 -------------------------------------------------------
 
 def fences_of(text):
-    """(開始行, 情報文字列, 本文の行リスト) をコードブロックごとに返す。"""
-    out, cur = [], None
+    """(開始行, 情報文字列の最初の語, 本文の行リスト) をコードブロックごとに返す。
+    本文の行からは、開始行の字下げの幅までの先頭の空白を外す（リストの中のブロックを書いたとおりの文字で照合するため）。"""
+    out, cur, opened = [], None, None
     for i, raw in enumerate(text.split("\n"), 1):
-        if raw.startswith("```"):
-            if cur is None:
-                cur = (i, raw[3:].strip(), [])
-            else:
-                out.append(cur)
-                cur = None
-        elif cur is not None:
-            cur[2].append(raw.rstrip("\r"))
+        if opened is None:
+            fo = fence_open(raw)
+            if fo is not None:
+                opened, cur = fo, (i, fo[3], [])
+            continue
+        if fence_closes(raw, opened):
+            out.append(cur)
+            opened, cur = None, None
+            continue
+        line = raw.rstrip("\r")
+        cut = min(opened[0], len(line) - len(line.lstrip(" ")))
+        cur[2].append(line[cut:])
     return out
 
 
