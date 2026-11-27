@@ -54,7 +54,7 @@ export function tagPager(opts: {
 			showFirst: false,
 			next: null,
 			warning: opts.nextCursor
-				? `[tag/${opts.termSlug}] 講座のタグの記事が ${COURSE_TAG_FETCH_LIMIT} 本を超えました。${COURSE_TAG_FETCH_LIMIT + 1} 本目以降は表示していません（src/utils/course-order.ts の COURSE_TAG_FETCH_LIMIT）`
+				? `[tag/${opts.termSlug}] 講座のタグの記事が ${COURSE_TAG_FETCH_LIMIT} 本を超えました。公開日の古い順に取るので、公開日の新しい記事がタグページに出ていません（src/utils/course-order.ts の COURSE_TAG_FETCH_LIMIT）`
 				: null,
 		};
 	}

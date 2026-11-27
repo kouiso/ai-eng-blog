@@ -53,6 +53,7 @@ describe("tagPager", () => {
 		expect(p.showFirst).toBe(false);
 		expect(p.warning).toContain(`${COURSE_TAG_FETCH_LIMIT} 本を超えました`);
 		expect(p.warning).toContain("tag/llm-api");
+		expect(p.warning).toContain("公開日の新しい記事がタグページに出ていません");
 	});
 
 	it("講座のタグで続きが無ければ、ページ送りも警告も出さない", () => {
