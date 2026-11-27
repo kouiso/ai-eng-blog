@@ -13,6 +13,17 @@
 
 作成・予約・cron での公開は、新しいローカル DB（`wrangler dev --local --persist-to <新しいスクラッチ>`）で 1.5.0 に対して再実行した。トークンなしの `tools/list` は 401、`tools/list` は 72 ツール、`content_create` は `draft`、`content_schedule` のあとは詳細ページが 404、`content_publish` で 200、45 秒後に予約した記事は `/cdn-cgi/local/scheduled` を呼ぶと `published` になり、`publishedAt` は予約時刻と同じだった。ポートは 8787 が使用中だったので 8767 を使った。トークンはローカル DB の中だけで使い、DB ごと消した。確かめた手順と数字は [docs/decisions/emdash-version.md](../decisions/emdash-version.md) の「EmDash を 1.5.0 に上げる（2026-11-14）」にある。
 
+## 予約の前の描画の確認（render-check、2026-11-27）
+
+write-article の手順10の1で、予約の前に原稿をローカルの下書きで描画して確かめる手順。`scripts/render-check.mjs` は原稿をローカル DB に作り（あれば中身を差し替え）、ローカル DB の中で公開して `/posts/<slug>` の HTML を読む。下書きの描画を読む口が無いため、公開してから読む。本番に向けると記事が公開されてしまうので、スクリプトは localhost、127.0.0.1、[::1] 以外の URL を拒む。
+
+1. `npm run build` のあと、新しいスクラッチのフォルダを `--persist-to` に渡して `npx wrangler dev --local --port 8787 --persist-to <スクラッチ> --var EMDASH_SITE_URL:http://localhost:8787` を起動する。`EMDASH_SITE_URL` を上書きしないと、パスキーの relying party が本番のホスト名になり、セットアップのパスキーの登録が `Security error` で失敗する。管理画面は `http://localhost:8787` で開く（127.0.0.1 は IP アドレスなのでパスキーに使えない）。
+2. 下の「手順」の3と4と同じく、Playwright で管理者をパスキー（WebAuthn の仮想認証器）で作り、Settings → API Tokens でトークンを作る。スコープは Content Read、Content Write、Schema Read、Taxonomies Manage（講座のタグの term を作るため）。値は作成の応答にだけ出る。
+3. `EMDASH_TOKEN=<そのトークン> node scripts/render-check.mjs <slug>`（全部なら `--all`）を流す。1本ごとに `[OK]` か `[FAIL]` と、表の数、コードとリンクを含むセルの数、記号の残り、URL だけのセルのリンクの数を出し、1本でも落ちたら終了コード 1。
+4. 終わったら wrangler を止め、スクラッチのフォルダ（ローカル DB とトークン）を消す。
+
+2026-11-27 に develop（835426e）の原稿30本で流した結果: 30本とも `[OK]`。表は原稿69個・描画69個、コードを含むセルは151、原稿にリンクを含むセルは0、記号の残りは0、URL だけのセルは334個すべてが別タブで開くリンク（#76）。`src/pages/posts/[slug].astro` の `markTableCells` を外して描画すると、30本とも `[FAIL]`（URL のセルがリンクにならない334件）になることも確かめた（外したのは確かめのためだけで、コミットしていない）。
+
 以下は 2026-10-31 に EmDash 1.3.1 で確かめた記録。
 
 結論: Claude は EmDash 1.3.1 内蔵の MCP（`/_emdash/api/mcp`）で、下書き作成、予約、公開、`/posts` への掲載、リビジョンでの差し戻しまでを JSON-RPC over HTTP で操作できた。予約公開も MCP で使える。予約時刻を過ぎた記事は、scheduled handler（Cron Trigger）が動いた時点で公開された。ただしローカルでは cron は自動では走らず、handler を手で起動して確かめた。
