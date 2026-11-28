@@ -12,7 +12,7 @@
 // 数え方: 行ごとの正規表現で数える。コードブロックの中身は書き方として数えない（コードブロックは1個と数える）。
 // インラインの記法は、インラインコードを伏せたあとの文字列で数える。CommonMark の完全な解析ではないので、
 // 数は目安（個数の桁が合っていれば判断には足りる）。変換の確認は --json の simulate 部分を見る。
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -260,4 +260,5 @@ async function main() {
 	}
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) await main();
+// import.meta.url は実体のパスなので、起動したパスもシンボリックリンクを解いてから比べる（macOS の /tmp など）
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) await main();

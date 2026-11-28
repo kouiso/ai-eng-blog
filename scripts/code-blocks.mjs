@@ -8,7 +8,7 @@
 // フェンスの見分けは CommonMark のパーサー（mdast-util-from-markdown）に任せる。字下げ、箇条書きと引用の中、
 // 段落の途中の行、閉じないままの終わりなどを手で読むと、取りこぼしと読み違いが続いたため（PR #102 のレビュー）。
 // frontmatter は本文ではないので、パーサーに渡す前に外し、行番号だけ足して戻す。
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { fromMarkdown } from "mdast-util-from-markdown";
 
@@ -41,7 +41,8 @@ export function codeBlocks(text) {
 	return out;
 }
 
-// ほかのスクリプトから import されたときは動かさない（直接起動したときだけ JSON を出す）
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && process.argv[2]) {
+// ほかのスクリプトから import されたときは動かさない（直接起動したときだけ JSON を出す）。
+// import.meta.url は実体のパスなので、起動したパスもシンボリックリンクを解いてから比べる（macOS の /tmp など）
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href && process.argv[2]) {
 	process.stdout.write(`${JSON.stringify(codeBlocks(readFileSync(process.argv[2], "utf8")))}\n`);
 }

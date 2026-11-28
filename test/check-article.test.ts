@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 // scripts/check-article.py（記事ごとの検査。issue #42）の試験。
@@ -322,5 +324,23 @@ describe("使い方", () => {
 	it("記事が無ければ exit 2", () => {
 		const r = check("prose", "no-such-article");
 		expect(r.code).toBe(2);
+	});
+});
+
+describe("シンボリックリンクを通したパスで起動しても動く", () => {
+	it("check-article.py と code-blocks.mjs を、リンクを通したフォルダから起動する（macOS の /tmp と同じ形）", () => {
+		const dir = mkdtempSync(join(tmpdir(), "check-article-link-"));
+		try {
+			const link = join(dir, "scripts");
+			symlinkSync(resolve(__dirname, "../scripts"), link);
+			const blocks = spawnSync("node", [join(link, "code-blocks.mjs"), resolve(root, "content/articles/out-fence-fm.md")], { encoding: "utf8" });
+			expect(blocks.status, blocks.stderr).toBe(0);
+			expect(JSON.parse(blocks.stdout)).toEqual([{ start: 11, end: 13, lang: "text", value: "real output" }]);
+			const r = spawnSync("python3", [join(link, "check-article.py"), "--root", root, "--exceptions", exceptions, "--only", "outputs", "ok"], { encoding: "utf8" });
+			expect(r.status, r.stdout + r.stderr).toBe(0);
+			expect(r.stdout).toContain("確定 0");
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
 	});
 });

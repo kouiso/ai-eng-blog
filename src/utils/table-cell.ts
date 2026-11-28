@@ -73,6 +73,16 @@ export function linkifyUrlTableCells<T extends readonly unknown[] | undefined>(b
 	return mapCells(blocks, (cell, index) => {
 		const text = cellText(cell);
 		if (!URL_CELL.test(text)) return cell;
+		const markDefs = Array.isArray(cell.markDefs) ? cell.markDefs : [];
+		// 原稿で [URL](URL) や <URL> と書いたセルは、もうリンクの目印を持っている。さらに目印を足すと
+		// <a> の中に <a> が入り、ブラウザが外側を空にして、見えるリンクが別タブで開かなくなる。
+		// そのリンクの目印に、裸の URL のセルと同じ blank を付ける
+		if (markDefs.some((def: unknown) => isRecord(def) && def._type === "link")) {
+			return {
+				...cell,
+				markDefs: markDefs.map((def: unknown) => (isRecord(def) && def._type === "link" ? { ...def, blank: true } : def)),
+			};
+		}
 		const key = `auto-link-${index}`;
 		const markDef = { _type: "link", _key: key, href: text, blank: true };
 		const content = (Array.isArray(cell.content) ? cell.content : []).map((span: unknown) => {
@@ -81,7 +91,6 @@ export function linkifyUrlTableCells<T extends readonly unknown[] | undefined>(b
 			if (marks.includes(key)) return span;
 			return { ...span, marks: [...marks, key] };
 		});
-		const markDefs = Array.isArray(cell.markDefs) ? cell.markDefs : [];
 		return { ...cell, content, markDefs: [...markDefs, markDef] };
 	});
 }

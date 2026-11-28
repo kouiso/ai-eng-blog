@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { assertLocalUrl, compare, expectedCells, expectedTables, frontmatterOf, inspectHtml } from "../scripts/render-check.mjs";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { BREAKABLE_NUMBER_RUN, NUMERIC_CELL, problemsOf } from "../scripts/wrap-check.mjs";
+import { BREAKABLE_NUMBER_RUN, NUMERIC_CELL, problemsOf, URL_CELL } from "../scripts/wrap-check.mjs";
 
 const md = [
 	"---",
@@ -54,32 +54,47 @@ describe("render-check", () => {
 		const ok = compare(cellMd, page('<table><tr><th>コマンド</th><th>記事</th></tr><tr><td><code>npm i</code></td><td><a href="/posts/a">前の記事</a></td></tr></table>'));
 		expect(ok.problems).toEqual([]);
 		const ng = compare(cellMd, page("<table><tr><th>コマンド</th><th>記事</th></tr><tr><td>`npm i`</td><td>前の記事</td></tr></table>"));
-		expect(ng.problems).toEqual(["コードを含むセル: 原稿 1、描画 0", "リンクを含むセル: 原稿のリンク 1 と裸の URL 0、描画 0"]);
+		expect(ng.problems).toEqual(["コードを含むセル: 原稿 1、描画 0", "リンクを含むセル: 原稿のリンク 1 と URL だけ 0、描画 0"]);
 	});
 
 	it("URL だけのセルがリンクになっていなければ落ちる", () => {
 		const r = compare(md, page("<table><tbody><tr><td>1</td><td>https://example.com/a</td></tr></tbody></table>"));
-		expect(r.problems).toEqual([
-			"リンクを含むセル: 原稿のリンク 0 と裸の URL 1、描画 0",
-			"URL のセルがリンクになっていない: https://example.com/a",
-			"裸の URL のセル 1 のうち、別タブで開くリンクは 0",
-		]);
+		expect(r.problems).toEqual(["リンクを含むセル: 原稿のリンク 0 と URL だけ 1、描画 0", "URL のセルがリンクになっていない: https://example.com/a"]);
 	});
 
-	it("裸の URL のセルに別タブで開く印（target と rel）が無いと落ちる", () => {
+	it("URL のセルに別タブで開く印（target と rel）が無いと落ちる", () => {
 		const r = compare(md, page('<table><tbody><tr><td><a href="https://example.com/a">https://example.com/a</a></td></tr></tbody></table>'));
 		expect(r.got.urlCells).toEqual([{ url: "https://example.com/a", linked: true, blank: false }]);
-		expect(r.problems).toEqual(["裸の URL のセル 1 のうち、別タブで開くリンクは 0"]);
+		expect(r.problems).toEqual(["URL のセルのリンクが別タブで開かない: https://example.com/a"]);
 	});
 
-	it("原稿で [URL](URL) と書いたセルは、EmDash のリンクのままで落とさない", () => {
-		const linkMd = ["| 出典 |", "|---|", "| [https://example.com/b](https://example.com/b) |", "| https://example.com/a |"].join("\n");
-		expect(expectedCells(linkMd)).toEqual({ code: 0, link: 1, bareUrl: 1 });
-		const r = compare(
-			linkMd,
-			page(`<table><tr><th>出典</th></tr><tr><td><a href="https://example.com/b">https://example.com/b</a></td></tr><tr>${linkedCell}</tr></table>`),
-		);
+	// 実際の描画の HTML（ローカルの wrangler dev で test/fixtures/render-check/url-cells.md を記事にして取り出したもの）
+	const fixture = (name: string) => readFileSync(resolve(__dirname, "fixtures/render-check", name), "utf8");
+	const urlCellsMd = fixture("url-cells.md");
+
+	it("[URL](URL) と <URL> のセルも URL だけのセルに数える", () => {
+		expect(expectedCells(urlCellsMd)).toEqual({ code: 0, link: 2, bareUrl: 2 });
+	});
+
+	it("URL のセルの <a> が入れ子になった描画（直す前の linkifyUrlTableCells）は落ちる", () => {
+		const r = compare(urlCellsMd, page(fixture("url-cells.before.html")));
+		expect(r.got.nestedLinks).toBe(2);
+		expect(r.problems).toContain("<a> の中に <a> がある（2か所。ブラウザは外側を空にするので、見えるリンクの属性が変わる）");
+	});
+
+	it("[URL](URL)、裸の URL、<URL> のセルがどれも別タブの1つのリンクで、文の中のリンクはそのままの描画は通る", () => {
+		const r = compare(urlCellsMd, page(fixture("url-cells.after.html")));
 		expect(r.problems).toEqual([]);
+		expect(r.got).toMatchObject({ tables: 1, linkCells: 4, nestedLinks: 0 });
+		expect(r.got.urlCells.map((c) => c.blank)).toEqual([true, true, true]);
+	});
+
+	it("見出しの行の URL も、URL のセルとして数える", () => {
+		const headMd = ["| https://example.com/a |", "|---|", "| 本文 |"].join("\n");
+		const ok = compare(headMd, page(`<table><tr><th><a href="https://example.com/a" target="_blank" rel="noopener noreferrer">https://example.com/a</a></th></tr><tr><td>本文</td></tr></table>`));
+		expect(ok.problems).toEqual([]);
+		const ng = compare(headMd, page("<table><tr><th>https://example.com/a</th></tr><tr><td>本文</td></tr></table>"));
+		expect(ng.problems).toContain("URL のセルがリンクになっていない: https://example.com/a");
 	});
 
 	it("コードブロックの中の表の行は、裸の URL のセルに数えない", () => {
@@ -116,12 +131,13 @@ describe("render-check", () => {
 });
 
 describe("wrap-check の判定", () => {
-	const ok = { hasProse: true, brokenCells: [], brokenRuns: [], unwrapped: [], overflow: false };
+	const ok = { hasProse: true, brokenCells: [], brokenRuns: [], unwrapped: [], overflow: false, clipped: [] };
 
 	it("番号のセルと数字の並びの形は、描画の目印を付ける src/utils/table-cell.ts と同じ", () => {
 		const src = readFileSync(resolve(__dirname, "../src/utils/table-cell.ts"), "utf8");
 		expect(src).toContain(`const NUMERIC_CELL = /${NUMERIC_CELL}/;`);
 		expect(src).toContain(`const BREAKABLE_NUMBER_RUN = /${BREAKABLE_NUMBER_RUN}/g;`);
+		expect(src).toContain(`const URL_CELL = /${URL_CELL}/;`);
 	});
 
 	it("折れもはみ出しも無ければ、落ちた理由は0件", () => {
@@ -130,13 +146,14 @@ describe("wrap-check の判定", () => {
 
 	it("折れたセル、折れた並び、包まれていない並び、はみ出し、本文の箱が無いことを、それぞれ理由にする", () => {
 		expect(
-			problemsOf({ hasProse: false, brokenCells: ["2026-10-31"], brokenRuns: ["2025-11-25"], unwrapped: ["10/31"], overflow: true }),
+			problemsOf({ hasProse: false, brokenCells: ["2026-10-31"], brokenRuns: ["2025-11-25"], unwrapped: ["10/31"], overflow: true, clipped: ["table"] }),
 		).toEqual([
 			"記事の本文（data-prose）が無い",
 			"番号・日付のセルが折れた: 2026-10-31",
 			"日付・数字の並びが折れた: 2025-11-25",
 			"日付・数字の並びが目印で包まれていない: 10/31",
 			"ページ全体が横にはみ出した",
+			"中身が横に切れて見えない箱がある: table",
 		]);
 	});
 });

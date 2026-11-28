@@ -71,6 +71,20 @@ describe("linkifyUrlTableCells", () => {
 		expect(cellsOf(out)[0].content[0].text).toBe("https://example.com/a-1");
 	});
 
+	it("原稿で [URL](URL) や <URL> と書いてリンクの目印を持つセルには目印を足さず、そのリンクを別タブにする", () => {
+		const authored = {
+			_type: "tableCell",
+			_key: "c",
+			markDefs: [{ _type: "link", _key: "m1", href: "https://example.com/b" }],
+			content: [{ _type: "span", _key: "s", text: "https://example.com/b", marks: ["m1"] }],
+		};
+		const out = linkifyUrlTableCells([{ _type: "table", _key: "t", rows: [{ _type: "tableRow", _key: "r", cells: [authored] }] }]);
+		// 目印を2つ付けると <a> が入れ子になり、見えるリンクが別タブで開かない
+		expect(linkDefs(out)[0]).toEqual([{ _type: "link", _key: "m1", href: "https://example.com/b", blank: true }]);
+		expect(spanMarks(out)).toEqual([["m1"]]);
+		expect(authored.markDefs[0]).not.toHaveProperty("blank");
+	});
+
 	it("元のデータを書き換えず、付けた目印は EmDash の表の正規化を通る", () => {
 		const src = table("https://example.com/a-1");
 		const out = linkifyUrlTableCells([src]);
