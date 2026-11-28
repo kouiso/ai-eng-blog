@@ -15,7 +15,7 @@
 //
 // ローカル DB の中では記事を公開して描画を読む。公開ページを読む以外に下書きの描画を見る口が無いため。
 // 本番の EmDash に向けると記事が公開されてしまうので、ローカルの URL 以外では動かさない。
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { codeBlocks } from "./code-blocks.mjs";
@@ -57,14 +57,15 @@ export function expectedTables(markdown) {
 	return inventory(bodyOf(markdown)).counts["表（パイプの表）"] ?? 0;
 }
 
-/** 原稿の表のセルのうち、インラインコードとリンク（[..](..)）を含むセルの数と、裸の URL だけのセルの数（見出し行も数える） */
+/** 原稿の表のセルのうち、インラインコードとリンク（[..](..)）を含むセルの数と、裸の URL か <URL> だけのセルの数（見出し行も数える） */
 export function expectedCells(markdown) {
 	const c = inventory(bodyOf(markdown)).counts;
 	let bareUrl = 0;
 	const code = new Set(codeBlocks(markdown).flatMap((b) => Array.from({ length: b.end - b.start + 1 }, (_x, k) => b.start + k)));
 	markdown.split("\n").forEach((line, i) => {
 		if (code.has(i + 1) || !/^\s*\|.*\|\s*$/.test(line)) return;
-		for (const cell of splitCells(line)) if (/^https?:\/\/\S+$/.test(cell.trim())) bareUrl++;
+		// 裸の URL と、<URL> の自動リンク。どちらも描画のときにリンクになる
+		for (const cell of splitCells(line)) if (/^(?:https?:\/\/\S+|<https?:\/\/[^\s<>]+>)$/.test(cell.trim())) bareUrl++;
 	});
 	return { code: c["表のセル: インラインコード"] ?? 0, link: c["表のセル: リンク"] ?? 0, bareUrl };
 }
@@ -113,7 +114,7 @@ export function inspectHtml(html) {
 		const text = textOf(m[2]);
 		if (/<code[\s>]/.test(m[2])) codeCells++;
 		if (/<a\s/.test(m[2])) linkCells++;
-		if (m[1] !== "td" || !/^https?:\/\/\S+$/.test(text)) continue;
+		if (!/^https?:\/\/\S+$/.test(text)) continue;
 		const anchors = [...m[2].matchAll(/<a\s([^>]*)>/g)].map(([, attrs]) => {
 			const attr = (name) => textOf(attrs.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1] ?? "");
 			const rel = attr("rel").split(/\s+/);
@@ -122,7 +123,14 @@ export function inspectHtml(html) {
 		// 原稿で [URL](URL) と書いたセルは EmDash のリンクのまま、裸の URL のセルは描画のときに別タブのリンクにする（#76）
 		urlCells.push({ url: text, linked: anchors.some((a) => a.href === text), blank: anchors.some((a) => a.href === text && a.blank) });
 	}
-	return { tables, raw, urlCells, codeCells, linkCells };
+	// <a> の入れ子。HTML では許されず、ブラウザは外側の <a> を閉じてから内側を読む
+	let depth = 0;
+	let nestedLinks = 0;
+	for (const t of prose.matchAll(/<(\/?)a[\s>]/g)) {
+		if (t[1]) depth = Math.max(0, depth - 1);
+		else if (depth++ > 0) nestedLinks++;
+	}
+	return { tables, raw, urlCells, codeCells, linkCells, nestedLinks };
 }
 
 /** 原稿と描画を比べ、落ちた理由の一覧を返す（空なら合格） */
@@ -135,12 +143,13 @@ export function compare(markdown, html) {
 	if (got.codeCells !== cells.code) problems.push(`コードを含むセル: 原稿 ${cells.code}、描画 ${got.codeCells}`);
 	// 描画のリンクのセルは、原稿のリンクのセルと、描画のときにリンクにする裸の URL のセルの和になる
 	if (got.linkCells !== cells.link + cells.bareUrl) {
-		problems.push(`リンクを含むセル: 原稿のリンク ${cells.link} と裸の URL ${cells.bareUrl}、描画 ${got.linkCells}`);
+		problems.push(`リンクを含むセル: 原稿のリンク ${cells.link} と URL だけ ${cells.bareUrl}、描画 ${got.linkCells}`);
 	}
 	for (const r of got.raw) problems.push(`記号がそのまま見える <${r.tag}>（${r.label}）: ${r.text}`);
 	for (const c of got.urlCells.filter((c) => !c.linked)) problems.push(`URL のセルがリンクになっていない: ${c.url}`);
-	const blank = got.urlCells.filter((c) => c.blank).length;
-	if (blank < cells.bareUrl) problems.push(`裸の URL のセル ${cells.bareUrl} のうち、別タブで開くリンクは ${blank}`);
+	// 出典は書き方（裸、[URL](URL)、<URL>）によらず別タブで開く（#76）
+	for (const c of got.urlCells.filter((c) => c.linked && !c.blank)) problems.push(`URL のセルのリンクが別タブで開かない: ${c.url}`);
+	if (got.nestedLinks) problems.push(`<a> の中に <a> がある（${got.nestedLinks}か所。ブラウザは外側を空にするので、見えるリンクの属性が変わる）`);
 	return { want, got, problems };
 }
 
@@ -268,7 +277,7 @@ async function main(argv) {
 	return failed ? 1 : 0;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
 	main(process.argv.slice(2)).then(
 		(code) => process.exit(code),
 		(e) => {

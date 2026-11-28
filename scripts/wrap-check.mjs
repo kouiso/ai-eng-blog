@@ -13,8 +13,9 @@
 //   1. 番号・日付・バージョンだけのセル（src/utils/table-cell.ts の NUMERIC_CELL）が1行
 //   2. 文と混ざったセルの中の日付・数字の並び（同じく BREAKABLE_NUMBER_RUN）が1行で、目印（u）で包まれている
 //   3. ページ全体の横幅が画面の幅を超えない（表の中の横スクロールはよい）
+//   4. 本文の中に、中身が箱より広いのに横にスクロールせず切れている箱（overflow-x: hidden / clip）が無い
 // URL の列は途中で折れてよい（#9）ので数えない。
-import { readdirSync } from "node:fs";
+import { readdirSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -23,10 +24,12 @@ export const WIDTHS = [1440, 390];
 // src/utils/table-cell.ts と同じ形。ページの中で使うので文字列で渡す
 export const NUMERIC_CELL = "^[v^~]?\\d[\\d.\\-/: ]*$";
 export const BREAKABLE_NUMBER_RUN = "\\d[\\d\\-/.:]*[-/][\\d\\-/.:]*";
+export const URL_CELL = "^https?:\\/\\/\\S+$";
 
 /** ページの中で動かす測り方。本文の表の、折れたセル、折れた並び、包まれていない並び、はみ出しを返す */
-export function measurePage({ numericCell, breakableRun }) {
+export function measurePage({ numericCell, breakableRun, urlCell }) {
 	const numeric = new RegExp(numericCell);
+	const url = new RegExp(urlCell);
 	const run = new RegExp(breakableRun, "g");
 	// 要素の中の文字が何行に並んでいるか（文字の矩形の上端の種類で数える）
 	const lines = (el) => {
@@ -46,7 +49,7 @@ export function measurePage({ numericCell, breakableRun }) {
 	const unwrapped = [];
 	for (const td of cells) {
 		const text = td.textContent.trim();
-		if (numeric.test(text) || /^https?:\/\//.test(text)) continue;
+		if (numeric.test(text) || url.test(text)) continue;
 		const rest = td.cloneNode(true);
 		for (const e of rest.querySelectorAll("u, code, a")) e.remove();
 		unwrapped.push(...(rest.textContent.match(run) ?? []));
@@ -58,6 +61,13 @@ export function measurePage({ numericCell, breakableRun }) {
 		brokenRuns: runs.filter((u) => lines(u) > 1).map((u) => u.textContent),
 		unwrapped,
 		overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+		// 中身が箱より広いのに、箱が横にスクロールしない（hidden、clip）と、はみ出した分が切れて読めない
+		clipped: [...document.querySelectorAll("[data-prose], [data-prose] *")]
+			.filter((el) => {
+				const x = getComputedStyle(el).overflowX;
+				return el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1 && (x === "hidden" || x === "clip");
+			})
+			.map((el) => `${el.tagName.toLowerCase()}${el.className ? `.${String(el.className).split(/\s+/)[0]}` : ""}`),
 		hasProse: Boolean(document.querySelector("[data-prose]")),
 	};
 }
@@ -70,6 +80,7 @@ export function problemsOf(m) {
 	for (const t of m.brokenRuns) out.push(`日付・数字の並びが折れた: ${t}`);
 	for (const t of m.unwrapped) out.push(`日付・数字の並びが目印で包まれていない: ${t}`);
 	if (m.overflow) out.push("ページ全体が横にはみ出した");
+	for (const t of m.clipped ?? []) out.push(`中身が横に切れて見えない箱がある: ${t}`);
 	return out;
 }
 
@@ -106,7 +117,7 @@ async function main(argv) {
 				try {
 					const res = await page.goto(`${origin}/posts/${encodeURIComponent(slug)}`, { waitUntil: "networkidle" });
 					if (!res || res.status() !== 200) throw new Error(`記事ページが HTTP ${res ? res.status() : "応答なし"}`);
-					const m = await page.evaluate(measurePage, { numericCell: NUMERIC_CELL, breakableRun: BREAKABLE_NUMBER_RUN });
+					const m = await page.evaluate(measurePage, { numericCell: NUMERIC_CELL, breakableRun: BREAKABLE_NUMBER_RUN, urlCell: URL_CELL });
 					const problems = problemsOf(m);
 					const summary = `番号・日付のセル ${m.numericCells - m.brokenCells.length}/${m.numericCells} が1行、並び ${m.runs - m.brokenRuns.length}/${m.runs} が1行、はみ出し ${m.overflow ? "あり" : "なし"}`;
 					if (problems.length) {
@@ -131,7 +142,7 @@ async function main(argv) {
 	return failed ? 1 : 0;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
 	main(process.argv.slice(2)).then(
 		(code) => process.exit(code),
 		(e) => {
