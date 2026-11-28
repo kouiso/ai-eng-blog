@@ -26,6 +26,7 @@ EmDash 1.5.0 のセットアップは `site:staging` を true にし、全ペー
 
 - [ ] `<URL>/` を開いて、Error 1102（Worker exceeded resource limits）にならない。
 - [ ] 記事を1本公開したら、`<URL>/posts/<slug>` を開いて、Error 1102 にならない。記事が増えたら `/posts` とあわせて見直す。
+- [ ] 試しの1本（`claude-p-script-first-call`）を公開したら、`<URL>/posts/claude-p-script-first-call` の本文で、表が表として出ている。本文の `<table>` が原稿の表の数（2）と同じで、`| … |` の行が段落のまま出ていない（ローカルでは `scripts/render-check.mjs` で確かめた。#64、#68）。
 - [ ] scheduled event（毎分の Cron Trigger）の CPU 時間。deploy から 15 分以上たってから、Settings → Trigger Events で直近の実行が成功していること、Workers Logs で scheduled の呼び出しの CPU 時間が 10 ms を超えていないこと、Metrics の Invocation Statuses に Exceeded resources が無いことを見る。予約した記事が時刻どおりに公開されたかもあわせて見る。
 
 ## 3. サイトマップ
