@@ -1,11 +1,5 @@
-sentences: 244 (prose+frontmatter 176, headings 12, table cells 56)
-not counted: code block lines 281, URL-only table cells 11 (lines [569, 570, 571, 572, 573, 574, 575, 576, 577, 578, 579])
-LONG>60: 0  (50<len<=60: 40)
-prose length min 13 / max 60 / short(<=20) 8 / long(41-60) 88
-SAME3: 0
-AND/OR candidates (や in prose, judge by eye):
-  YA 197 えられる質問ばかりが残りやすくなるからです
-  YA 468 ハイブリッド検索をやめてベクトル検索に切り替
-  YA 538 質問を増やしても同じ向きになるかは
-  YA 538 増やしたあとで測り直します
-  YA 546 質問を何問に増やしても料金は変わりません
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/rag-retrieval-eval-recall-mrr/lint/prose-check.py", line 9, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

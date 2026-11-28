@@ -1,6 +1,7 @@
 # gate: zod-validate-llm-json-output
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+> 2026-11-24 追記: check-article.py の確定項目（C25 3か所、C17 10か所）を直し、`check-article.py --all` で確定 0 を確認した。直したのは文章だけでコードとコマンドは同じなので、実行ログと `verified_at` はそのまま使える。C16/C28 の候補は全部読んで判定を `lint/judgments.md` の「2026-11-24 の再判定」に書いた。G10 はこの追記より前の判定のまま。キーワード選定の仕組みの整備は #83 で扱う予定。G11（別の AI による点検）は依然として未実施のため、`status: draft` を維持する。
 
 
 判定日: 2026-11-10。原稿: `content/articles/zod-validate-llm-json-output.md`（482行。行番号はすべてこの版）。2026-10-31 の 437行の版に対するレビューの指摘2件（enum の大文字小文字の勧めを引いたまま放置していた点、Structured Outputs の節が SDK の検証を無視して自前の検証が要ると言い過ぎていた点）を直し、コードを実行し直し、lint をかけ直して全項目を判定し直した。

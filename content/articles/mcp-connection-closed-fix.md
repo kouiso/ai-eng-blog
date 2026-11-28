@@ -46,13 +46,13 @@ sources:
     title: "typescript-sdk v1.x src/server/stdio.ts"
     accessed: 2026-11-02
 cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude にツールを呼ばせるには、Claude Code を使える有料のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、Claude Code 2.1.322、Linux x86_64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.22.0。npm 10.9.4。SDK 1.32.2。Claude Code 2.1.322。Linux x86_64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-10"
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 MCP サーバーに `Connection closed` でつながらないとき、サーバーのプロセスはもう終了しています。SDK のクライアントは、プロセスが終わると待っていた要求をこのエラーで打ち切ります（出典4）。終了した理由を知る手がかりは、サーバーが stderr に書いた行です。

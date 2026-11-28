@@ -24,10 +24,14 @@ run/08 curl command in article: True
 run/09 curl command in article: True
 run/10 curl command in article: True
 run/11 curl command in article: True
-run/13 '$ claude mcp add --transport http --scope user char-count-http http://127.0.0.1:3000/mcp' + output in Claude Code block: True
-run/14 '$ claude mcp list' + output in Claude Code block: True
-run/15 '$ claude mcp get char-count-http' + output in Claude Code block: True
-run/16 '$ claude mcp remove char-count-http -s user' + output in Claude Code block: True
+run/13 command in article: True
+run/13 output in article: True
+run/14 command in article: True
+run/14 output in article: True
+run/15 command in article: True
+run/15 output in article: True
+run/16 command in article: True
+run/16 output in article: True
 output run/03 in article: True
 output run/05 in article: True
 output run/06 in article: True
@@ -39,8 +43,9 @@ output run/11 in article: True
 output run/20 in article: True
 output run/27 in article: True
 run/31 (restored) output == run/06 output: True
-run/23 exception text in article: True
+run/23 exception line in article: True
 AbortError line in article: True
+run/53 has abort line verbatim: True
 run/36: 30 runs, all ok=1, abort=1 in 3: True
 run/42 (no 405): 30 runs, all ok=1, notfound=2 in 30, abort=1 in 0: True
 run/38: tsc_exit=0 with @types/express: True
@@ -103,4 +108,8 @@ run 47 exit=0
 run 48 exit=0
 run 49 exit=0
 run 50 exit=0
+run 51 exit=0
+run 52 exit=130
+run 53 exit=0
 ALL OK
+exit=0

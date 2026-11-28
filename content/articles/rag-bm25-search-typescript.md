@@ -31,7 +31,7 @@ sources:
     title: "Intl.Segmenter() constructor"
     accessed: 2026-10-31
   - url: "https://tc39.es/ecma402/#sec-createsegmentdataobject"
-    title: "ECMAScript Internationalization API Specification 19.7.1 CreateSegmentDataObject"
+    title: "ECMAScript Intl API Spec 19.7.1 CreateSegmentDataObject"
     accessed: 2026-10-31
   - url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"
     title: "String.prototype.normalize()"
@@ -43,10 +43,10 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-RAG の検索部分は、BM25 なら API キーも依存パッケージも使わずに TypeScript で書けます。日本語は Node.js に組み込みの `Intl.Segmenter` で語に分け、BM25 の式でスコアを付けます。架空のネットショップの FAQ 8件に質問を投げ、実際に出たスコアと、答えの文書が出てこない質問の例まで載せます。
+RAG の検索部分は、BM25 なら API キーも依存パッケージも使わずに TypeScript で書けます。日本語は Node.js の `Intl.Segmenter` で語に分け、BM25 の式でスコアを付ける手順です。架空のネットショップの FAQ 8件に質問を投げ、実際に出たスコアと、答えの文書が出てこない質問の例まで載せます。
 
 対象は、TypeScript で何か作ったことがあり、RAG を自分で組んでみたい人です。
 
@@ -54,7 +54,7 @@ RAG の検索部分は、BM25 なら API キーも依存パッケージも使わ
 
 ## RAG の検索部分は質問の語を含む文書にスコアを付けて並べる
 
-RAG は、知識ベースから関連する情報を取り出し、ユーザーのプロンプトに足す方法です（出典1）。取り出す部分に使うのが BM25 です。BM25 はランキング関数の1つで、語の一致で文書を探します（出典1）。
+RAG は、知識ベースから関連する情報を取り出し、ユーザーのプロンプトに足す方法です（出典1）。取り出す部分に使うのが BM25 になります。BM25 はランキング関数の1つで、語の一致で文書を探します（出典1）。
 
 文書のスコアは、質問の語ごとに求めた重みの合計です（出典2）。1語の重みは次の式で決まります（出典2、出典3）。
 
@@ -92,7 +92,7 @@ mkdir bm25-search
 cd bm25-search
 ```
 
-`package.json` を置きます。`import` と `export` を使うので、`"type": "module"` を入れます（出典5）。
+`package.json` を置いてください。`import` と `export` を使うので、`"type": "module"` を入れます（出典5）。
 
 ```json
 {
@@ -106,7 +106,7 @@ cd bm25-search
 
 日本語は単語の間に空白が無いので、BM25 で数える前に文を語へ分けます。
 
-`Intl.Segmenter` は `granularity: "word"` で単語の境目に分けます（出典6）。境目はロケールの規則で決まります（出典6）。区切りの1つ1つを、この記事では語と呼びます。区切りごとの `isWordLike` は、単語らしい区切りかどうかを表します（出典7）。句読点と空白だけの区切りを外すために使います。
+`Intl.Segmenter` の `granularity: "word"` は単語の境目で分けるのです（出典6）。境目はロケールの規則で決まります（出典6）。区切りの1つ1つを、この記事では語と呼びます。区切りごとの `isWordLike` は、単語らしい区切りかどうかを表すフラグです（出典7）。句読点と空白だけの区切りを外すために使います。
 
 ```ts
 const segmenter = new Intl.Segmenter("ja", { granularity: "word" });
@@ -121,7 +121,7 @@ export function tokenize(text: string): string[] {
 }
 ```
 
-このファイルを `tokenize.ts` として保存します。`normalize("NFKC")` は互換文字をそろえる正規化です（出典8）。MDN は、この正規化が検索の用途に向くと書いています（出典8）。`toLowerCase()` で英字を小文字にそろえ、質問と文書で表記の違う語を同じ語として数えます。
+このファイルを `tokenize.ts` として保存します。`normalize("NFKC")` は互換文字をそろえる正規化です（出典8）。MDN は、この正規化が検索の用途に向くと書いています（出典8）。`toLowerCase()` で英字を小文字にそろえ、質問と文書で表記の違う語を同じ語として数えるためです。
 
 分けた結果を見るために、`show-tokens.ts` も置きます。
 
@@ -210,7 +210,7 @@ export function createSearch(docs: Doc[], k1 = 1.2, b = 0.75) {
 
 `createSearch` を呼んだ時点で、文書ごとの数を先に数え終えます。数えるのは語の回数（`tfs`）、語の数（`lengths`）、語を含む文書の数（`df`）です。先に数えておけば、質問のたびに文書を分け直さずに済みます。
 
-返す関数の中では、質問の語を `Set` に入れて重複を除きます。質問に同じ語が2回あっても、その語の重みは1回分だけ足します。スコアが0の文書は返さず、高い順に `topK` 件を返します。
+返す関数の中では、質問の語を `Set` に入れて重複を除きます。質問に同じ語が2回あっても、その語の重みは1回分だけ足す決まりです。スコアが0の文書は返さず、高い順に `topK` 件を返します。
 
 ## FAQ 8件に質問を投げる
 
@@ -297,7 +297,7 @@ node search.ts "返金はいつ？"
 
 ## b を 0 にすると長い文書が上に来る
 
-`b` を変えると、長い文書の順位が入れ替わります。
+`b` を変えると、長い文書の順位が入れ替わりました。
 
 ```bash
 node search.ts "返品"
@@ -319,7 +319,7 @@ node search.ts "返品" 0
 
 `b` が 0.75 なら、「返品」を2回含む短い `returns` が1位です。`b` を0にすると、3回含む長い `points` が上に来ました。
 
-手で計算しても同じ値になります。8件の語の数の合計は219なので、`avgdl` は 27.375 です。「返品」は2件に出るので、`idf` は `log(1 + 6.5 / 2.5)` で約 1.281 です。`returns` は22語で `tf` が2なので、`b` が 0.75 のときのスコアは次のとおりです。
+手で計算しても同じ値になります。8件の語の数の合計は219なので、`avgdl` は 27.375 です。「返品」は2件に出るので、`idf` は `log(1 + 6.5 / 2.5)` で約 1.281 です。`returns` は22語で `tf` が2なので、`b` が 0.75 のときのスコアは次のとおりになります。
 
 ```text
 1.281 × 2 / (2 + 1.2 × (0.25 + 0.75 × 22 / 27.375)) ≈ 0.847
@@ -331,7 +331,7 @@ FAQ のように1件に1つの話題を書く文書では、`b` は 0.75 のま�
 
 ## 検索結果を LLM に渡すプロンプトにする
 
-RAG では、取り出した文書をプロンプトに足してモデルに渡します（出典1）。`context.ts` は、そのプロンプトの文字列を作るところまでを受け持ちます。
+RAG では、取り出した文書をプロンプトに足してモデルに渡します（出典1）。`context.ts` は、そのプロンプトの文字列を作るところまでの役割です。
 
 ```ts
 import { createSearch } from "./bm25.ts";
@@ -394,7 +394,7 @@ node context.ts "返金はいつ？"
 
 記事の手順は Node.js の組み込み機能だけを使い、API を呼ばないので無料です。依存パッケージが無いので、ネットワークも使いません。ネットワークの無い環境で実行し直しても、記事の `node` のコマンドは9つとも成功しました。
 
-作ったプロンプトを Claude に送ると、[トークン数に応じた料金](/posts/llm-api-cost-estimate-js-tiktoken)がかかります（出典9）。Claude Haiku 5.5 なら、100万トークンあたり入力 $0.10、出力 $0.50 です（出典9）。この単価は、プロンプトが10万トークン以下のときのものです（出典9）。
+作ったプロンプトを Claude に送ると、トークン数に応じた料金がかかります（出典9）。料金は[この記事](/posts/llm-api-cost-estimate-js-tiktoken)にあります。Claude Haiku 5.5 なら、100万トークンあたり入力 $0.10、出力 $0.50 です（出典9）。この単価は、プロンプトが10万トークン以下のときのものです（出典9）。
 
 ## 確認すること
 

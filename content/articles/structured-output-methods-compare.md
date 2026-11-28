@@ -6,8 +6,8 @@ tags: ["構造化出力", "Claude Agent SDK", "TypeScript"]
 main_keyword: "構造化出力"
 target_query: "構造化出力 プロンプト"
 course_step: 2
-cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。SDK の total_cost_usd は定価で換算した見積もりで、30回の呼び出しを1回通して0.006ドル相当でした。プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）"
+cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。SDK の total_cost_usd は定価で換算した見積もりです。30回の呼び出しを1回通して0.006ドル相当でした。プランでの請求額とは別の数字です。"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。zod 4.6.7。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "llm-json-parse-error-fix"
 next: "rag-bm25-search-typescript"
@@ -46,7 +46,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 迷ったら `outputFormat` を選んでください。問い合わせの文から予約の情報を取り出す作業を、3通りのやり方で10件ずつ解かせた結論です。
@@ -97,7 +97,7 @@ Agent SDK の `query()` は、ログインしたプランの利用枠から引�
 
 ### インストールは2パッケージ
 
-SDK と zod を、記事と同じ版に固定して入れます。
+SDK と zod を、記事と同じ版に固定して入れてください。
 
 ```bash
 mkdir structured-compare
@@ -169,7 +169,7 @@ export const cases: { text: string; expected: Reservation }[] = [
 
 日付の書き方、漢数字、人数の足し算、時刻からの昼夜の判断を混ぜました。10件目は、8日と9日の2つの日付が出てくる文です。
 
-zod のスキーマの説明は省きます。書き方は[zod の記事](/posts/zod-validate-llm-json-output)にあります。`safeParse` のエラーの読み方も、そちらにあります。
+zod のスキーマの説明は省きます。書き方は[zod の記事](/posts/zod-validate-llm-json-output)にあります。`safeParse` のエラーの読み方も、そちらに書きました。
 
 ### 3つのやり方は同じオプションで呼ぶ
 
@@ -226,9 +226,9 @@ export async function extractByPrompt(text: string) {
 }
 ```
 
-`JSON.parse` が失敗しても、直さずに失敗として数えます。コードフェンスが付いた文字列を読む方法は、前の記事にあります。
+`JSON.parse` が失敗しても、直さず失敗として数えるだけです。コードフェンスが付いた文字列を読む方法は、前の記事にあります。
 
-今回の20件では、`JSON.parse` は一度も失敗しませんでした。ただ、形が合う保証はモデルの従い方しだいです。人数が文字列で返っても、気づくのは自分の検証のコードです。
+今回の20件では、`JSON.parse` は一度も失敗しませんでした。ただ、形が合う保証はモデルの従い方しだいです。人数が文字列で返っても、気づくのは自分の検証のコードになります。
 
 ## (b) 自作ツールは2ターンかかり、strictMcpConfig を外すと高くつく
 
@@ -262,7 +262,7 @@ export async function extractByTool(text: string) {
 }
 ```
 
-`tool()` に zod のスキーマを渡し、`createSdkMcpServer()` で包みます（出典2）。包んだものは `mcpServers` に渡します（出典2）。`allowedTools` に書くツールの名前は決まった形です（出典2）。今回の名前は `mcp__booking__save_reservation` です。
+`tool()` に zod のスキーマを渡し、`createSdkMcpServer()` で包む形です（出典2）。包んだものは `mcpServers` に渡します（出典2）。`allowedTools` に書くツールの名前は決まった形です（出典2）。今回の名前は `mcp__booking__save_reservation` になります。
 
 `alwaysLoad: true` は、ツールの定義を最初から読み込ませる指定です（出典2）。ツール検索が既定で有効なので、付けないと後から読み込まれます（出典2）。
 
@@ -311,7 +311,7 @@ export async function extractByOutputFormat(text: string) {
 }
 ```
 
-SDK は、出力がスキーマに合わなければモデルに出し直させます（出典1）。上限まで合わないときは、結果がエラーになります（出典1）。`subtype` の値は `error_max_structured_output_retries` です。
+SDK は、出力がスキーマに合わなければモデルに出し直させる決まりです（出典1）。上限まで合わないときは、結果がエラーになります（出典1）。`subtype` の値は `error_max_structured_output_retries` です。
 
 `outputFormat` の仕組みとエラーの扱いの説明は省きます。[別の記事](/posts/claude-agent-sdk-structured-output)に任せます。
 
@@ -325,7 +325,7 @@ SDK は、出力がスキーマに合わなければモデルに出し直させ�
 
 ## compare.ts で、10件を3通りに解かせる
 
-`compare.ts` は、3つのやり方に同じ10件を順に渡します。返った値を `Reservation.safeParse` にかけ、正解と比べて数えます。
+`compare.ts` は、3つのやり方に同じ10件を順に渡します。返った値を `Reservation.safeParse` にかけ、正解と比べて数える手順です。
 
 ```ts
 import { cases, Reservation } from "./cases.ts";
@@ -449,7 +449,7 @@ wc -l a-prompt.ts b-tool.ts c-output-format.ts
 
 結論は、迷ったら (c) です。条件によっては (a) か (b) が勝つので、場面ごとに分けて言い切ります。
 
-- 形が崩れたら困る処理（データベースに入れる、別の関数に渡す）は (c) を使います。SDK が合わない出力を出し直させるので、自分で再試行を書かずに済みます（出典1）。
+- 形が崩れたら困る処理（データベースに入れる、別の関数に渡す）は (c) が適任です。SDK が合わない出力を出し直させるので、自分で再試行を書かずに済みます（出典1）。
 - 大量に回して見積もりを抑えたい用途で、自分で検証と再試行を書けるなら (a) です。今回は (c) の半分以下の見積もりでした。
 - 取り出したあとに、同じ流れで別の処理をさせたいなら (b) です。ツールの処理の中に、保存の処理も書けます。`strictMcpConfig: true` は忘れずに付けてください。
 
@@ -465,7 +465,7 @@ wc -l a-prompt.ts b-tool.ts c-output-format.ts
 
 コードではモデルを別名の `haiku` で指定しており、ログにモデル ID は出ていません。
 
-API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典7）。出力は0.50ドル、キャッシュの読み込みは0.01ドルです（出典7）。どれも10万トークン以下のプロンプトでの単価です（出典7）。
+API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典7）。出力は0.50ドル、キャッシュの読み込みは0.01ドルになります（出典7）。どれも10万トークン以下のプロンプトでの単価です（出典7）。
 
 (a) の1回目のトークン数にこの単価を掛けると0.00076ドルで、比較表の値と合います。
 

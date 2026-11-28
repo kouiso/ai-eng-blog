@@ -1,4 +1,4 @@
-## writing-lint v2: structured-output-methods-compare.md (type=article, register=standard, 489行/171文)
+## writing-lint v2: structured-output-methods-compare.md (type=article, register=standard, 489行/177文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 

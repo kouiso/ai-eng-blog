@@ -1,45 +1,15 @@
-# check-article.py を30本に通した結果（issue #42）
+# check-article.py を30本に通した結果（issue #81 の修正後）
 
-`python3 scripts/check-article.py --all` の結果です。数字は、スクリプトと試験を入れたコミット 9bf4815982b4437e886b382c5aa71eb826315633 で出しました。この報告を足すコミットは、その子で、この報告のファイルだけを変えます（つまり、この報告を足すコミットの親で出した結果です）。各記事の `logs/<slug>/lint/` にある自前のスクリプトと並べています。
-スクリプトは30本が通るように調整していません。出た結果をそのまま載せます。記事の直しと、出力ブロックの例外の登録（`scripts/check-article-exceptions.json`、今は空）は、この PR の範囲に入れていません（#44 以降）。
+`python3 scripts/check-article.py --all` を、確定で落ちていた記事を直したあとのコードで出し直した結果です。前の報告（issue #42 当時）では確定が 42+141+18=201 行ありましたが、今回の出力で `[FAIL` の行は 0 件で、終了コードは 0 です。
 
-自前の列は、各記事の `prose-check.py` を実行した出力から読んだ件数です（書式が記事ごとに違うので、読み取れなかったところは `-`）。自前の `check-code-and-outputs.py` は30本とも OK で、終了コードは 0 でした。
+直し方の方針は issue #81 と、その直下の裁定のコメントのとおりです。
 
-| 記事 | C25 自前 | C25 新 | C17 自前 | C17 新 | C30-32 新 | OUTPUT 新 | C16 候補 | C26 候補 | C28 候補 |
-|---|---|---|---|---|---|---|---|---|---|
-| ai-agent-custom-tools-agent-sdk | 0 | 1 | 0 | 7 | 0 | 1 | 2 | 0 | 0 |
-| ai-agent-max-turns-budget-limit | 0 | 2 | 0 | 0 | 0 | 0 | 4 | 0 | 0 |
-| ai-agent-safe-file-tool | 1 | 2 | 0 | 1 | 0 | 1 | 3 | 0 | 0 |
-| ai-agent-vs-workflow | 0 | 1 | 0 | 6 | 0 | 0 | 3 | 0 | 2 |
-| claude-agent-sdk-first-agent | 1 | 2 | 0 | 6 | 0 | 0 | 1 | 0 | 3 |
-| claude-agent-sdk-streaming | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
-| claude-agent-sdk-structured-output | 1 | 2 | 0 | 6 | 0 | 0 | 2 | 0 | 2 |
-| claude-code-api-key-billing-auth | 0 | 2 | 0 | 2 | 0 | 0 | 3 | 0 | 0 |
-| claude-p-script-first-call | 0 | 1 | 0 | 10 | 0 | 0 | 1 | 0 | 0 |
-| llm-api-429-retry-sdk-mock | 1 | 1 | 0 | 9 | 0 | 1 | 2 | 0 | 1 |
-| llm-api-cost-estimate-js-tiktoken | 0 | 0 | 0 | 0 | 0 | 1 | 5 | 0 | 0 |
-| llm-as-a-judge-claude | 0 | 2 | 0 | 2 | 0 | 0 | 3 | 0 | 1 |
-| llm-eval-dataset-from-logs | 0 | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
-| llm-eval-harness-fixtures | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 |
-| llm-json-parse-error-fix | 0 | 1 | 0 | 0 | 0 | 0 | 4 | 0 | 0 |
-| mcp-connection-closed-fix | 0 | 1 | 0 | 0 | 0 | 1 | 6 | 0 | 0 |
-| mcp-inspector-debug | 0 | 2 | 0 | 0 | 0 | 1 | 4 | 0 | 0 |
-| mcp-server-resources-prompts | 0 | 2 | 0 | 0 | 0 | 1 | 6 | 0 | 0 |
-| mcp-server-streamable-http | 0 | 0 | 0 | 15 | 0 | 4 | 8 | 0 | 4 |
-| mcp-server-typescript-stdio | 1 | 1 | 0 | 11 | 0 | 2 | 5 | 0 | 0 |
-| promptfoo-llm-eval-intro | 0 | 1 | - | 6 | 0 | 0 | 0 | 0 | 1 |
-| rag-answer-with-citations-claude | 0 | 1 | 0 | 3 | 0 | 0 | 2 | 0 | 0 |
-| rag-bm25-search-typescript | 1 | 2 | 0 | 8 | 0 | 2 | 1 | 0 | 1 |
-| rag-chunking-japanese-text | 1 | 1 | 0 | 7 | 0 | 0 | 4 | 0 | 1 |
-| rag-hybrid-search-rrf | 0 | 2 | 0 | 6 | 0 | 1 | 6 | 0 | 1 |
-| rag-local-embeddings-transformers-js | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 0 |
-| rag-retrieval-eval-recall-mrr | 0 | 0 | 0 | 5 | 0 | 0 | 5 | 0 | 5 |
-| structured-output-methods-compare | 0 | 2 | 0 | 10 | 0 | 0 | 2 | 0 | 10 |
-| zod-to-json-schema-tool-definition | 2 | 3 | 0 | 10 | 0 | 1 | 4 | 0 | 1 |
-| zod-validate-llm-json-output | 3 | 3 | 0 | 10 | 0 | 0 | 3 | 0 | 2 |
-| 合計 | | 42 | | 141 | 0 | 18 | 97 | 0 | 36 |
+- C25（60字超）: 文を「。」で2つに分けるか、短い言い回しに直しました。frontmatter の `run_environment` と `cost_estimate` の値も同じルールで数えるので、列挙を「。」の文に分けました。出典の題名（RFC、ECMAScript、論文題）は、URL で特定できる形に短くしました。`sources` の表の題名との対応は本文の表のほうに残っています。
+- C17（同じ語尾の3連続）: 連続する文の中の1文を、「です」「ます」「ました」「ません」「ください」「のです」など別の語尾に替えて切りました。語尾の形だけを変え、内容は変えていません。
+- C30〜C32（記号）: 0 件のままです。
+- OUTPUT（記事の ```text と実行ログの照合）: 2通りで直しました。`$` のコマンドをコピー用に並べていた ```text ブロックは、```bash（コマンド）と ```text（実行の出力）に分け、記事側の `check-code-and-outputs.py` もその形に合わせました。実行の出力ではないもの（作業フォルダのファイルの木、BM25/RRF の式、処理の流れの図）は `scripts/check-article-exceptions.json` に理由つきで例外登録しました（13件）。mcp-server-streamable-http の AbortError の1行は、クライアントの30回ループを回し直して `logs/…/run/53.log` に実測の行として残し、本文の文字列をログに合わせました。実行ログの再生成が要る直しは、必ず実行し直してログを作っています（手でログに書き足しはしていません）。
 
-確定の検査に1件以上落ちた記事は 29 本、落ちなかった記事は 1 本（rag-local-embeddings-transformers-js）です。C17 に落ちた記事は 21 本です。終了コードは 1 です。
+確定の検査に落ちる記事は 0 本です。残るのは候補（C16、C28）だけで、どちらも機械の出した候補を全部読んで判定を各記事の `logs/<slug>/lint/judgments.md` の「2026-11-24 の再判定」に書きました。C16 は手順や結果の説明が続く箇所（30〜50字は読みやすい文の帯）、C28 は語の中の「や」（やすい・増やし・やり方、など）で、どちらも修正なしと判定しています。C26 の候補は全記事で 0 件です。
 
 ## 検査の読み方
 
@@ -48,223 +18,580 @@
 - C30 から C32: コードブロックとインラインコードの中の記号は数えません（guides/03-anti-ai.md 372行「コードは原文のままが正しい」）。C31 の記号は checklist C31 に合わせて `—` と `─`（`──` は連続）だけで、`―`（U+2015）は数えません。
 - OUTPUT: 記事の ```text ブロックすべてを run ログの出力部分と照合します。promptfoo の記事の古い書式のログ（`$ コマンド` と、`----` だけの行が2本で囲んだ出力）は、書式が一意に決まるので読めるようにしました（ログ自体は触っていません）。ファイル構成の図と数式のように実行の出力ではない text ブロックは失敗として出ます。例外に載せるかどうかは #44 で決めます。
 
-## 新しいスクリプトで落ちた箇所（確定）
 
-`python3 scripts/check-article.py --all` の `[FAIL ...]` の行を、出力の順のまま、1行も切らずに載せます（201 行）。
+## 修正後の出力の全文
+
+`python3 scripts/check-article.py --all` の出力を、最後の SUMMARY まで1行も切らずに載せます。
 
 ```text
-[FAIL C25] ai-agent-custom-tools-agent-sdk.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:52-52 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:140-233 語尾「ます」が6文連続（4窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:235-237 語尾「ます」が4文連続（2窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:245-259 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:303-303 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:307-309 語尾「です」が3文連続（1窓）
-[FAIL C17] ai-agent-custom-tools-agent-sdk.md:313-313 語尾「ます」が3文連続（1窓）
-[FAIL OUTPUT] ai-agent-custom-tools-agent-sdk.md:64 出力ブロック（7行、先頭「tool("get_product", 説明, zod の入力定義, 処理)   … ツールを1つ作」）がどの run ログにも無い
-[FAIL C25] ai-agent-max-turns-budget-limit.md:9 61字 [fm] SDK の total_cost_usd は手元で計算した見積もりで、結果を載せた11回の合計は約0.0076ドルでした。
-[FAIL C25] ai-agent-max-turns-budget-limit.md:10 147字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、モデル claude-haiku-5-5、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C25] ai-agent-safe-file-tool.md:10 73字 [fm] Node.js 22.22.0、npm 10.9.4、依存パッケージなし（型の確認は TypeScript 7.0.2）、Linux x86_64
-[FAIL C25] ai-agent-safe-file-tool.md:55 84字 [prose] モデルにツールを渡す流れは、[自作ツールを Agent SDK に渡す記事](/posts/ai-agent-custom-tools-agent-sdk)で扱います。
-[FAIL C17] ai-agent-safe-file-tool.md:561-565 語尾「いるか」が5文連続（3窓）
-[FAIL OUTPUT] ai-agent-safe-file-tool.md:148 出力ブロック（9行、先頭「safe-file-tool/」）がどの run ログにも無い
-[FAIL C25] ai-agent-vs-workflow.md:10 126字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C17] ai-agent-vs-workflow.md:55-57 語尾「ます」が5文連続（3窓）
-[FAIL C17] ai-agent-vs-workflow.md:168-168 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-vs-workflow.md:239-241 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-vs-workflow.md:276-278 語尾「ます」が3文連続（1窓）
-[FAIL C17] ai-agent-vs-workflow.md:402-404 語尾「です」が3文連続（1窓）
-[FAIL C17] ai-agent-vs-workflow.md:410-414 語尾「ます」が6文連続（4窓）
-[FAIL C25] claude-agent-sdk-first-agent.md:10 126字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C25] claude-agent-sdk-first-agent.md:72 93字 [prose] 環境変数 [`ANTHROPIC_API_KEY`](/posts/claude-code-api-key-billing-auth) は、プランのログインより先に使われます（出典4）。
-[FAIL C17] claude-agent-sdk-first-agent.md:133-133 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-first-agent.md:176-178 語尾「です」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-first-agent.md:180-182 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-first-agent.md:222-226 語尾「です」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-first-agent.md:226-280 語尾「ます」が5文連続（3窓）
-[FAIL C17] claude-agent-sdk-first-agent.md:304-310 語尾「ます」が5文連続（3窓）
-[FAIL C25] claude-agent-sdk-streaming.md:10 134字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）（型の確認は TypeScript 7.0.2）
-[FAIL C17] claude-agent-sdk-streaming.md:56-58 語尾「ます」が3文連続（1窓）
-[FAIL C25] claude-agent-sdk-structured-output.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C25] claude-agent-sdk-structured-output.md:274 73字 [prose] 公式の表は [`claude -p`](/posts/claude-p-script-first-call) の説明として書いています（出典4）。
-[FAIL C17] claude-agent-sdk-structured-output.md:180-182 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-structured-output.md:194-196 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-structured-output.md:289-293 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-structured-output.md:356-362 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-agent-sdk-structured-output.md:368-374 語尾「ます」が4文連続（2窓）
-[FAIL C17] claude-agent-sdk-structured-output.md:384-388 語尾「です」が3文連続（1窓）
-[FAIL C25] claude-code-api-key-billing-auth.md:9 61字 [fm] 有効なキーで動いた分はキーの持ち主に従量で請求され、Haiku 5.5 なら入力は100万トークンあたり0.10ドルです。
-[FAIL C25] claude-code-api-key-billing-auth.md:10 146字 [fm] Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C17] claude-code-api-key-billing-auth.md:96-100 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-code-api-key-billing-auth.md:102-106 語尾「ます」が4文連続（2窓）
-[FAIL C25] claude-p-script-first-call.md:10 108字 [fm] macOS（Darwin arm64）、Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、jq 1.7.1 から 1.8.1（型の確認は TypeScript 7.0.2）
-[FAIL C17] claude-p-script-first-call.md:52-54 語尾「ます」が4文連続（2窓）
-[FAIL C17] claude-p-script-first-call.md:65-67 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-p-script-first-call.md:138-143 語尾「です」が5文連続（3窓）
-[FAIL C17] claude-p-script-first-call.md:226-232 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-p-script-first-call.md:251-255 語尾「ます」が5文連続（3窓）
-[FAIL C17] claude-p-script-first-call.md:277-297 語尾「ます」が4文連続（2窓）
-[FAIL C17] claude-p-script-first-call.md:301-305 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-p-script-first-call.md:337-341 語尾「ます」が4文連続（2窓）
-[FAIL C17] claude-p-script-first-call.md:411-413 語尾「ます」が3文連続（1窓）
-[FAIL C17] claude-p-script-first-call.md:420-422 語尾「ます」が4文連続（2窓）
-[FAIL C25] llm-api-429-retry-sdk-mock.md:363 87字 [prose] [ストリーミング](/posts/claude-agent-sdk-streaming)で 200 が返ったあとのエラーは、SDK の自動リトライとは別の扱いです（出典1）。
-[FAIL C17] llm-api-429-retry-sdk-mock.md:148-154 語尾「ます」が3文連続（1窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:163-163 語尾「ます」が3文連続（1窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:167-171 語尾「ます」が4文連続（2窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:177-197 語尾「ます」が5文連続（3窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:253-275 語尾「ます」が5文連続（3窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:304-321 語尾「ます」が3文連続（1窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:333-333 語尾「ます」が4文連続（2窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:337-337 語尾「です」が3文連続（1窓）
-[FAIL C17] llm-api-429-retry-sdk-mock.md:361-363 語尾「ます」が5文連続（3窓）
-[FAIL OUTPUT] llm-api-429-retry-sdk-mock.md:287 出力ブロック（14行、先頭「$ node client.ts rate-limit」）がどの run ログにも無い
-[FAIL OUTPUT] llm-api-cost-estimate-js-tiktoken.md:88 出力ブロック（1行、先頭「料金（ドル）= (入力トークン数 × 入力単価 + 出力トークン数 × 出力単価) ÷ 1,000,」）がどの run ログにも無い
-[FAIL C25] llm-as-a-judge-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2
-[FAIL C25] llm-as-a-judge-claude.md:208 61字 [prose] - `systemPrompt` に文字列を渡すと、SDK はその文字列だけをシステムプロンプトとして送ります（出典3）。
-[FAIL C17] llm-as-a-judge-claude.md:61-65 語尾「ます」が3文連続（1窓）
-[FAIL C17] llm-as-a-judge-claude.md:357-359 語尾「です」が3文連続（1窓）
-[FAIL C25] llm-eval-dataset-from-logs.md:37 70字 [fm] RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format
-[FAIL C25] llm-eval-dataset-from-logs.md:46 73字 [fm] Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）
-[FAIL C25] llm-eval-harness-fixtures.md:43 73字 [fm] Node.js 22.22.0、npm 10.9.4、依存パッケージなし、Linux x86_64（型の確認は TypeScript 7.0.2）
-[FAIL OUTPUT] llm-eval-harness-fixtures.md:87 出力ブロック（7行、先頭「llm-eval/」）がどの run ログにも無い
-[FAIL C25] llm-json-parse-error-fix.md:31 70字 [fm] RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format
-[FAIL C25] mcp-connection-closed-fix.md:49 94字 [fm] Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、Claude Code 2.1.322、Linux x86_64（型の確認は TypeScript 7.0.2）
-[FAIL OUTPUT] mcp-connection-closed-fix.md:112 出力ブロック（7行、先頭「notes-mcp/」）がどの run ログにも無い
-[FAIL C25] mcp-inspector-debug.md:9 103字 [fm] Claude Code は、Pro、Max などのプランか Console のアカウント、または Amazon Bedrock、Microsoft Foundry などの API の提供元を通して使えます。
-[FAIL C25] mcp-inspector-debug.md:10 105字 [fm] Node.js 22.22.0、npm 10.9.4、MCP Inspector 2.13.0、SDK 1.32.2、zod 4.6.7、Linux x86_64（型の確認は TypeScript 7.0.2）
-[FAIL OUTPUT] mcp-inspector-debug.md:109 出力ブロック（3行、先頭「inspector-demo/」）がどの run ログにも無い
-[FAIL C25] mcp-server-resources-prompts.md:9 87字 [fm] Claude Code の会話で Resources と Prompts を使うには、Claude Code を使える有料のプランか Console のアカウントが要ります。
-[FAIL C25] mcp-server-resources-prompts.md:10 106字 [fm] Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、zod 4.6.7、Linux x86_64（Inspector の確認は 2.13.0、型の確認は TypeScript 7.0.2）
-[FAIL OUTPUT] mcp-server-resources-prompts.md:129 出力ブロック（4行、先頭「writing-helper-mcp/」）がどの run ログにも無い
-[FAIL C17] mcp-server-streamable-http.md:73-73 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:87-91 語尾「ます」が5文連続（3窓）
-[FAIL C17] mcp-server-streamable-http.md:141-148 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:208-282 語尾「です」が4文連続（2窓）
-[FAIL C17] mcp-server-streamable-http.md:282-282 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:292-292 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:294-298 語尾「ます」が4文連続（2窓）
-[FAIL C17] mcp-server-streamable-http.md:407-407 語尾「です」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:411-424 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:460-462 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:493-493 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:521-525 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:589-589 語尾「ます」が4文連続（2窓）
-[FAIL C17] mcp-server-streamable-http.md:595-597 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-streamable-http.md:601-603 語尾「ます」が3文連続（1窓）
-[FAIL OUTPUT] mcp-server-streamable-http.md:128 出力ブロック（6行、先頭「char-count-http/」）がどの run ログにも無い
-[FAIL OUTPUT] mcp-server-streamable-http.md:357 出力ブロック（1行、先頭「client error: SSE stream disconnected: AbortError:」）がどの run ログにも無い
-[FAIL OUTPUT] mcp-server-streamable-http.md:497 出力ブロック（21行、先頭「$ claude mcp add --transport http --scope user cha」）がどの run ログにも無い
-[FAIL OUTPUT] mcp-server-streamable-http.md:564 出力ブロック（1行、先頭「Stateless transport cannot be reused across reques」）がどの run ログにも無い
-[FAIL C25] mcp-server-typescript-stdio.md:226 77字 [prose] `inputSchema` には [zod のスキーマ](/posts/zod-to-json-schema-tool-definition)を書きます。
-[FAIL C17] mcp-server-typescript-stdio.md:67-67 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:75-79 語尾「です」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:85-89 語尾「です」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:89-100 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:193-226 語尾「ます」が4文連続（2窓）
-[FAIL C17] mcp-server-typescript-stdio.md:232-236 語尾「ます」が4文連続（2窓）
-[FAIL C17] mcp-server-typescript-stdio.md:236-258 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:258-262 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:300-312 語尾「です」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:318-322 語尾「ます」が3文連続（1窓）
-[FAIL C17] mcp-server-typescript-stdio.md:358-362 語尾「ます」が5文連続（3窓）
-[FAIL OUTPUT] mcp-server-typescript-stdio.md:110 出力ブロック（7行、先頭「char-count-mcp/」）がどの run ログにも無い
-[FAIL OUTPUT] mcp-server-typescript-stdio.md:332 出力ブロック（23行、先頭「$ claude mcp add char-count --scope user --transpo」）がどの run ログにも無い
-[FAIL C25] promptfoo-llm-eval-intro.md:10 144字 [fm] Node.js 22.23.4、npm 10.9.9、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C17] promptfoo-llm-eval-intro.md:73-77 語尾「ます」が4文連続（2窓）
-[FAIL C17] promptfoo-llm-eval-intro.md:229-231 語尾「ます」が3文連続（1窓）
-[FAIL C17] promptfoo-llm-eval-intro.md:241-245 語尾「ます」が3文連続（1窓）
-[FAIL C17] promptfoo-llm-eval-intro.md:301-303 語尾「ます」が3文連続（1窓）
-[FAIL C17] promptfoo-llm-eval-intro.md:317-355 語尾「ます」が4文連続（2窓）
-[FAIL C17] promptfoo-llm-eval-intro.md:392-398 語尾「ます」が5文連続（3窓）
-[FAIL C25] rag-answer-with-citations-claude.md:10 133字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2
-[FAIL C17] rag-answer-with-citations-claude.md:49-51 語尾「ます」が4文連続（2窓）
-[FAIL C17] rag-answer-with-citations-claude.md:101-118 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-answer-with-citations-claude.md:221-225 語尾「ます」が5文連続（3窓）
-[FAIL C25] rag-bm25-search-typescript.md:34 80字 [fm] ECMAScript Internationalization API Specification 19.7.1 CreateSegmentDataObject
-[FAIL C25] rag-bm25-search-typescript.md:397 89字 [prose] 作ったプロンプトを Claude に送ると、[トークン数に応じた料金](/posts/llm-api-cost-estimate-js-tiktoken)がかかります（出典9）。
-[FAIL C17] rag-bm25-search-typescript.md:49-49 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-bm25-search-typescript.md:53-57 語尾「です」が3文連続（1窓）
-[FAIL C17] rag-bm25-search-typescript.md:86-124 語尾「ます」が11文連続（9窓）
-[FAIL C17] rag-bm25-search-typescript.md:124-126 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-bm25-search-typescript.md:211-213 語尾「ます」が4文連続（2窓）
-[FAIL C17] rag-bm25-search-typescript.md:296-300 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-bm25-search-typescript.md:322-328 語尾「です」が4文連続（2窓）
-[FAIL C17] rag-bm25-search-typescript.md:334-356 語尾「ます」が3文連続（1窓）
-[FAIL OUTPUT] rag-bm25-search-typescript.md:61 出力ブロック（2行、先頭「重み = idf × tf / (tf + k1 × (1 - b + b × dl / avgdl」）がどの run ログにも無い
-[FAIL OUTPUT] rag-bm25-search-typescript.md:324 出力ブロック（1行、先頭「1.281 × 2 / (2 + 1.2 × (0.25 + 0.75 × 22 / 27.375)」）がどの run ログにも無い
-[FAIL C25] rag-chunking-japanese-text.md:449 86字 [prose] Voyage AI の埋め込み API は、[トークン数で料金が決まります](/posts/llm-api-cost-estimate-js-tiktoken)（出典8）。
-[FAIL C17] rag-chunking-japanese-text.md:48-56 語尾「です」が5文連続（3窓）
-[FAIL C17] rag-chunking-japanese-text.md:58-62 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-chunking-japanese-text.md:92-111 語尾「ます」が5文連続（3窓）
-[FAIL C17] rag-chunking-japanese-text.md:237-241 語尾「ます」が4文連続（2窓）
-[FAIL C17] rag-chunking-japanese-text.md:278-328 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-chunking-japanese-text.md:391-395 語尾「ます」が4文連続（2窓）
-[FAIL C17] rag-chunking-japanese-text.md:410-414 語尾「ます」が3文連続（1窓）
-[FAIL C25] rag-hybrid-search-rrf.md:16 81字 [fm] Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods
-[FAIL C25] rag-hybrid-search-rrf.md:46 80字 [fm] ECMAScript Internationalization API Specification 19.7.1 CreateSegmentDataObject
-[FAIL C17] rag-hybrid-search-rrf.md:82-94 語尾「です」が3文連続（1窓）
-[FAIL C17] rag-hybrid-search-rrf.md:102-111 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-hybrid-search-rrf.md:241-266 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-hybrid-search-rrf.md:268-292 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-hybrid-search-rrf.md:294-329 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-hybrid-search-rrf.md:473-503 語尾「ます」が5文連続（3窓）
-[FAIL OUTPUT] rag-hybrid-search-rrf.md:78 出力ブロック（1行、先頭「RRF の点数(d) = Σ 1 / (k + 順位(d))」）がどの run ログにも無い
-[FAIL C17] rag-retrieval-eval-recall-mrr.md:84-91 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-retrieval-eval-recall-mrr.md:112-133 語尾「ます」が4文連続（2窓）
-[FAIL C17] rag-retrieval-eval-recall-mrr.md:203-220 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-retrieval-eval-recall-mrr.md:331-410 語尾「ます」が3文連続（1窓）
-[FAIL C17] rag-retrieval-eval-recall-mrr.md:468-472 語尾「ます」が4文連続（2窓）
-[FAIL C25] structured-output-methods-compare.md:9 62字 [fm] SDK の total_cost_usd は定価で換算した見積もりで、30回の呼び出しを1回通して0.006ドル相当でした。
-[FAIL C25] structured-output-methods-compare.md:10 136字 [fm] Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、zod 4.6.7、macOS arm64（型の確認は TypeScript 7.0.2）
-[FAIL C17] structured-output-methods-compare.md:86-100 語尾「ます」が3文連続（1窓）
-[FAIL C17] structured-output-methods-compare.md:172-176 語尾「ます」が4文連続（2窓）
-[FAIL C17] structured-output-methods-compare.md:209-229 語尾「ます」が4文連続（2窓）
-[FAIL C17] structured-output-methods-compare.md:231-235 語尾「です」が3文連続（1窓）
-[FAIL C17] structured-output-methods-compare.md:235-265 語尾「ます」が4文連続（2窓）
-[FAIL C17] structured-output-methods-compare.md:265-267 語尾「です」が3文連続（1窓）
-[FAIL C17] structured-output-methods-compare.md:295-314 語尾「ます」が4文連続（2窓）
-[FAIL C17] structured-output-methods-compare.md:324-374 語尾「ます」が4文連続（2窓）
-[FAIL C17] structured-output-methods-compare.md:450-452 語尾「ます」が3文連続（1窓）
-[FAIL C17] structured-output-methods-compare.md:468-468 語尾「です」が3文連続（1窓）
-[FAIL C25] zod-to-json-schema-tool-definition.md:2 61字 [fm] zod のスキーマから JSON Schema を作ってツール定義に使う【zod v4 の z.toJSONSchema】
-[FAIL C25] zod-to-json-schema-tool-definition.md:46 70字 [fm] anthropic-sdk-typescript sdk-v1.3.0 src/resources/messages/messages.ts
-[FAIL C25] zod-to-json-schema-tool-definition.md:416 86字 [prose] ツール定義の名前、説明、スキーマは、[入力トークンとして料金に数えられます](/posts/llm-api-cost-estimate-js-tiktoken)（出典6）。
-[FAIL C17] zod-to-json-schema-tool-definition.md:61-63 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:77-79 語尾「ます」が5文連続（3窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:110-121 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:186-202 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:206-235 語尾「ます」が6文連続（4窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:248-250 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:306-306 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:310-310 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:377-379 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-to-json-schema-tool-definition.md:410-410 語尾「ます」が3文連続（1窓）
-[FAIL OUTPUT] zod-to-json-schema-tool-definition.md:98 出力ブロック（9行、先頭「zod-tool-schema/」）がどの run ログにも無い
-[FAIL C25] zod-validate-llm-json-output.md:53 65字 [prose] 講座の前の記事では、Agent SDK の outputFormat で Claude に JSON を返させる方法を扱いました。
-[FAIL C25] zod-validate-llm-json-output.md:53 64字 [prose] [前の記事](/posts/claude-agent-sdk-structured-output)から読むと流れがつながります。
-[FAIL C25] zod-validate-llm-json-output.md:451 84字 [prose] 再依頼の文を実際にモデルへ送ると、[トークン数に応じた料金](/posts/llm-api-cost-estimate-js-tiktoken)がかかります（出典9）。
-[FAIL C17] zod-validate-llm-json-output.md:49-49 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-validate-llm-json-output.md:67-69 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-validate-llm-json-output.md:84-86 語尾「ます」が5文連続（3窓）
-[FAIL C17] zod-validate-llm-json-output.md:86-88 語尾「ます」が4文連続（2窓）
-[FAIL C17] zod-validate-llm-json-output.md:96-116 語尾「ます」が4文連続（2窓）
-[FAIL C17] zod-validate-llm-json-output.md:134-149 語尾「ます」が4文連続（2窓）
-[FAIL C17] zod-validate-llm-json-output.md:185-200 語尾「ます」が3文連続（1窓）
-[FAIL C17] zod-validate-llm-json-output.md:296-335 語尾「ます」が8文連続（6窓）
-[FAIL C17] zod-validate-llm-json-output.md:339-397 語尾「ます」が7文連続（5窓）
-[FAIL C17] zod-validate-llm-json-output.md:412-433 語尾「ます」が4文連続（2窓）
+== ai-agent-custom-tools-agent-sdk
+  prose: 文 252、数えなかったコードブロックの行 124
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] ai-agent-custom-tools-agent-sdk.md:27 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] ai-agent-custom-tools-agent-sdk.md:33 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] ai-agent-custom-tools-agent-sdk.md:349 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] ai-agent-custom-tools-agent-sdk.md:351 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 5件、ログに一致 4件、例外 1件、ログ 13本（出力部分 13か所）
+    例外: 「tool("get_product", 説明, zod の入力定義, 処理)  」 理由: ツールを作ってエージェントに渡すまでの呼び出しの流れを示す図（書き方の見本）。実行の出力ではない。
+[候補 C16] ai-agent-custom-tools-agent-sdk.md:297-301 30〜50字の文が5文続く
+[候補 C16] ai-agent-custom-tools-agent-sdk.md:307-311 30〜50字の文が7文続く
+SUMMARY ai-agent-custom-tools-agent-sdk: 確定 0 {} / 候補 2 {"C16": 2}
+== ai-agent-max-turns-budget-limit
+  prose: 文 288、数えなかったコードブロックの行 183
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 18件
+    [SKIP C25-URL] ai-agent-max-turns-budget-limit.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] ai-agent-max-turns-budget-limit.md:463 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 9件、ログに一致 9件、例外 0件、ログ 33本（出力部分 33か所）
+[候補 C16] ai-agent-max-turns-budget-limit.md:76-81 30〜50字の文が7文続く
+[候補 C16] ai-agent-max-turns-budget-limit.md:157-226 30〜50字の文が7文続く
+[候補 C16] ai-agent-max-turns-budget-limit.md:297-301 30〜50字の文が6文続く
+[候補 C16] ai-agent-max-turns-budget-limit.md:442-451 30〜50字の文が6文続く
+SUMMARY ai-agent-max-turns-budget-limit: 確定 0 {} / 候補 4 {"C16": 4}
+== ai-agent-safe-file-tool
+  prose: 文 249、数えなかったコードブロックの行 296
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:30 79字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:33 74字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:39 151字 https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:42 90字 https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createsymboliclinkw
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:578 79字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:579 74字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:581 151字 https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links
+    [SKIP C25-URL] ai-agent-safe-file-tool.md:582 90字 https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createsymboliclinkw
+  outputs: ```text 9件、ログに一致 8件、例外 1件、ログ 13本（出力部分 13か所）
+    例外: 「safe-file-tool/」 理由: 作業フォルダの配置を示すファイルの木。実行の出力ではない。
+[候補 C16] ai-agent-safe-file-tool.md:233-326 30〜50字の文が6文続く
+[候補 C16] ai-agent-safe-file-tool.md:408-410 30〜50字の文が5文続く
+[候補 C16] ai-agent-safe-file-tool.md:422-445 30〜50字の文が9文続く
+SUMMARY ai-agent-safe-file-tool: 確定 0 {} / 候補 3 {"C16": 3}
+== ai-agent-vs-workflow
+  prose: 文 314、数えなかったコードブロックの行 156
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 22件
+    [SKIP C25-URL] ai-agent-vs-workflow.md:15 63字 https://www.anthropic.com/engineering/building-effective-agents
+    [SKIP C25-URL] ai-agent-vs-workflow.md:24 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] ai-agent-vs-workflow.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] ai-agent-vs-workflow.md:45 68字 https://platform.claude.com/docs/en/build-with-claude/prompt-caching
+    [SKIP C25-URL] ai-agent-vs-workflow.md:424 63字 https://www.anthropic.com/engineering/building-effective-agents
+    [SKIP C25-URL] ai-agent-vs-workflow.md:427 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] ai-agent-vs-workflow.md:428 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] ai-agent-vs-workflow.md:434 68字 https://platform.claude.com/docs/en/build-with-claude/prompt-caching
+  outputs: ```text 7件、ログに一致 7件、例外 0件、ログ 35本（出力部分 35か所）
+[候補 C16] ai-agent-vs-workflow.md:148-235 30〜50字の文が10文続く
+[候補 C16] ai-agent-vs-workflow.md:257-263 30〜50字の文が6文続く
+[候補 C16] ai-agent-vs-workflow.md:408-411 30〜50字の文が5文続く
+[候補 C28] ai-agent-vs-workflow.md:77 「予測しやすく結果のそろうワークフ」
+[候補 C28] ai-agent-vs-workflow.md:404 「件数を増やしたときの差は測っていま」
+SUMMARY ai-agent-vs-workflow: 確定 0 {} / 候補 5 {"C16": 3, "C28": 2}
+== claude-agent-sdk-first-agent
+  prose: 文 218、数えなかったコードブロックの行 114
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] claude-agent-sdk-first-agent.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-agent-sdk-first-agent.md:33 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-agent-sdk-first-agent.md:342 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-agent-sdk-first-agent.md:344 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+  outputs: ```text 6件、ログに一致 6件、例外 0件、ログ 26本（出力部分 26か所）
+[候補 C16] claude-agent-sdk-first-agent.md:322-330 30〜50字の文が6文続く
+[候補 C28] claude-agent-sdk-first-agent.md:180 「ユーザーやプロジェクトの設定がすべ」
+[候補 C28] claude-agent-sdk-first-agent.md:310 「このやり取りを自分で書きます（」
+[候補 C28] claude-agent-sdk-first-agent.md:322 「などで桁をそろえると読みやすくなります」
+SUMMARY claude-agent-sdk-first-agent: 確定 0 {} / 候補 4 {"C16": 1, "C28": 3}
+== claude-agent-sdk-streaming
+  prose: 文 170、数えなかったコードブロックの行 99
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 14件
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:18 63字 https://platform.claude.com/docs/en/build-with-claude/streaming
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:21 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:285 63字 https://platform.claude.com/docs/en/build-with-claude/streaming
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:286 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-agent-sdk-streaming.md:288 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 4件、ログに一致 4件、例外 0件、ログ 17本（出力部分 17か所）
+SUMMARY claude-agent-sdk-streaming: 確定 0 {} / 候補 0 {}
+== claude-agent-sdk-structured-output
+  prose: 文 196、数えなかったコードブロックの行 161
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 18件
+    [SKIP C25-URL] claude-agent-sdk-structured-output.md:21 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-agent-sdk-structured-output.md:33 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-agent-sdk-structured-output.md:394 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-agent-sdk-structured-output.md:398 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 8件、ログに一致 8件、例外 0件、ログ 33本（出力部分 33か所）
+[候補 C16] claude-agent-sdk-structured-output.md:362-368 30〜50字の文が6文続く
+[候補 C16] claude-agent-sdk-structured-output.md:372-380 30〜50字の文が5文続く
+[候補 C28] claude-agent-sdk-structured-output.md:188 「このやり取りの分です」
+[候補 C28] claude-agent-sdk-structured-output.md:260 「モデルはそこで出し直しをやめました」
+SUMMARY claude-agent-sdk-structured-output: 確定 0 {} / 候補 4 {"C16": 2, "C28": 2}
+== claude-code-api-key-billing-auth
+  prose: 文 213、数えなかったコードブロックの行 93
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 22件
+    [SKIP C25-URL] claude-code-api-key-billing-auth.md:33 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-code-api-key-billing-auth.md:45 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-code-api-key-billing-auth.md:341 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-code-api-key-billing-auth.md:345 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+  outputs: ```text 9件、ログに一致 9件、例外 0件、ログ 26本（出力部分 26か所）
+[候補 C16] claude-code-api-key-billing-auth.md:55-57 30〜50字の文が5文続く
+[候補 C16] claude-code-api-key-billing-auth.md:132-138 30〜50字の文が5文続く
+[候補 C16] claude-code-api-key-billing-auth.md:225-231 30〜50字の文が5文続く
+SUMMARY claude-code-api-key-billing-auth: 確定 0 {} / 候補 3 {"C16": 3}
+== claude-p-script-first-call
+  prose: 文 227、数えなかったコードブロックの行 161
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] claude-p-script-first-call.md:27 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-p-script-first-call.md:36 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] claude-p-script-first-call.md:438 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] claude-p-script-first-call.md:441 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+  outputs: ```text 13件、ログに一致 13件、例外 0件、ログ 19本（出力部分 19か所）
+SUMMARY claude-p-script-first-call: 確定 0 {} / 候補 0 {}
+== llm-api-429-retry-sdk-mock
+  prose: 文 227、数えなかったコードブロックの行 161
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 16件
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:21 70字 https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:24 84字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/client.ts
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:27 88字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/core/error.ts
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:414 70字 https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:415 84字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/client.ts
+    [SKIP C25-URL] llm-api-429-retry-sdk-mock.md:416 88字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/core/error.ts
+  outputs: ```text 9件、ログに一致 9件、例外 0件、ログ 13本（出力部分 13か所）
+[候補 C16] llm-api-429-retry-sdk-mock.md:167-175 30〜50字の文が7文続く
+[候補 C16] llm-api-429-retry-sdk-mock.md:380-386 30〜50字の文が8文続く
+[候補 C28] llm-api-429-retry-sdk-mock.md:386 「通信量を少しずつ増やすよう勧めています（出典」
+SUMMARY llm-api-429-retry-sdk-mock: 確定 0 {} / 候補 3 {"C16": 2, "C28": 1}
+== llm-api-cost-estimate-js-tiktoken
+  prose: 文 250、数えなかったコードブロックの行 94
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 24件
+    [SKIP C25-URL] llm-api-cost-estimate-js-tiktoken.md:39 62字 https://github.com/openai/tiktoken/blob/main/tiktoken/model.py
+    [SKIP C25-URL] llm-api-cost-estimate-js-tiktoken.md:48 68字 https://platform.claude.com/docs/en/build-with-claude/token-counting
+    [SKIP C25-URL] llm-api-cost-estimate-js-tiktoken.md:317 62字 https://github.com/openai/tiktoken/blob/main/tiktoken/model.py
+    [SKIP C25-URL] llm-api-cost-estimate-js-tiktoken.md:320 68字 https://platform.claude.com/docs/en/build-with-claude/token-counting
+  outputs: ```text 6件、ログに一致 5件、例外 1件、ログ 17本（出力部分 17か所）
+    例外: 「料金（ドル）= (入力トークン数 × 入力単価 + 出力トークン数 × 出力単価」 理由: 料金の計算式。実行の出力ではない。
+[候補 C16] llm-api-cost-estimate-js-tiktoken.md:82-84 30〜50字の文が7文続く
+[候補 C16] llm-api-cost-estimate-js-tiktoken.md:243-245 30〜50字の文が5文続く
+[候補 C16] llm-api-cost-estimate-js-tiktoken.md:249-273 30〜50字の文が7文続く
+[候補 C16] llm-api-cost-estimate-js-tiktoken.md:275-281 30〜50字の文が10文続く
+[候補 C16] llm-api-cost-estimate-js-tiktoken.md:291-297 30〜50字の文が7文続く
+SUMMARY llm-api-cost-estimate-js-tiktoken: 確定 0 {} / 候補 5 {"C16": 5}
+== llm-as-a-judge-claude
+  prose: 文 270、数えなかったコードブロックの行 131
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 22件
+    [SKIP C25-URL] llm-as-a-judge-claude.md:15 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-as-a-judge-claude.md:18 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] llm-as-a-judge-claude.md:21 66字 https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts
+    [SKIP C25-URL] llm-as-a-judge-claude.md:30 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] llm-as-a-judge-claude.md:375 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-as-a-judge-claude.md:376 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] llm-as-a-judge-claude.md:377 66字 https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts
+    [SKIP C25-URL] llm-as-a-judge-claude.md:380 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 5件、ログに一致 5件、例外 0件、ログ 46本（出力部分 46か所）
+[候補 C16] llm-as-a-judge-claude.md:132-154 30〜50字の文が9文続く
+[候補 C16] llm-as-a-judge-claude.md:156-205 30〜50字の文が5文続く
+[候補 C16] llm-as-a-judge-claude.md:363-367 30〜50字の文が6文続く
+[候補 C28] llm-as-a-judge-claude.md:55 「別の回答に点を付けさせるやり方です」
+SUMMARY llm-as-a-judge-claude: 確定 0 {} / 候補 4 {"C16": 3, "C28": 1}
+== llm-eval-dataset-from-logs
+  prose: 文 245、数えなかったコードブロックの行 139
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 22件
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:12 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:21 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:24 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:27 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:30 92字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:42 66字 https://pubs.opengroup.org/onlinepubs/9799919799/utilities/wc.html
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:384 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:387 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:388 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:389 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:390 92字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    [SKIP C25-URL] llm-eval-dataset-from-logs.md:394 66字 https://pubs.opengroup.org/onlinepubs/9799919799/utilities/wc.html
+  outputs: ```text 4件、ログに一致 4件、例外 0件、ログ 12本（出力部分 12か所）
+[候補 C16] llm-eval-dataset-from-logs.md:247-249 30〜50字の文が5文続く
+[候補 C16] llm-eval-dataset-from-logs.md:362-374 30〜50字の文が10文続く
+[候補 C28] llm-eval-dataset-from-logs.md:249 「で配ったときに0件になりやすいのです」
+SUMMARY llm-eval-dataset-from-logs: 確定 0 {} / 候補 3 {"C16": 2, "C28": 1}
+== llm-eval-harness-fixtures
+  prose: 文 213、数えなかったコードブロックの行 124
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:12 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:18 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:21 96字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:24 92字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:27 106字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Lookbehind_assertion
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:30 110字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Input_boundary_assertion
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:36 84字 https://docs.github.com/en/actions/how-tos/create-and-publish-actions/set-exit-codes
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:331 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:333 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:334 96字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:335 92字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:336 106字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Lookbehind_assertion
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:337 110字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Input_boundary_assertion
+    [SKIP C25-URL] llm-eval-harness-fixtures.md:339 84字 https://docs.github.com/en/actions/how-tos/create-and-publish-actions/set-exit-codes
+  outputs: ```text 3件、ログに一致 2件、例外 1件、ログ 11本（出力部分 11か所）
+    例外: 「llm-eval/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] llm-eval-harness-fixtures.md:220-247 30〜50字の文が8文続く
+SUMMARY llm-eval-harness-fixtures: 確定 0 {} / 候補 1 {"C16": 1}
+== llm-json-parse-error-fix
+  prose: 文 208、数えなかったコードブロックの行 114
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 12件
+    [SKIP C25-URL] llm-json-parse-error-fix.md:15 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    [SKIP C25-URL] llm-json-parse-error-fix.md:21 75字 https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons
+    [SKIP C25-URL] llm-json-parse-error-fix.md:24 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+    [SKIP C25-URL] llm-json-parse-error-fix.md:341 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    [SKIP C25-URL] llm-json-parse-error-fix.md:343 75字 https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons
+    [SKIP C25-URL] llm-json-parse-error-fix.md:344 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+  outputs: ```text 5件、ログに一致 5件、例外 0件、ログ 10本（出力部分 10か所）
+[候補 C16] llm-json-parse-error-fix.md:40-44 30〜50字の文が7文続く
+[候補 C16] llm-json-parse-error-fix.md:140-167 30〜50字の文が10文続く
+[候補 C16] llm-json-parse-error-fix.md:197-199 30〜50字の文が6文続く
+[候補 C16] llm-json-parse-error-fix.md:281-298 30〜50字の文が5文続く
+SUMMARY llm-json-parse-error-fix: 確定 0 {} / 候補 4 {"C16": 4}
+== mcp-connection-closed-fix
+  prose: 文 332、数えなかったコードブロックの行 160
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 24件
+    [SKIP C25-URL] mcp-connection-closed-fix.md:12 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-connection-closed-fix.md:15 72字 https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle
+    [SKIP C25-URL] mcp-connection-closed-fix.md:18 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:21 87字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:24 77字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:45 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/stdio.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:487 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-connection-closed-fix.md:488 72字 https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle
+    [SKIP C25-URL] mcp-connection-closed-fix.md:489 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:490 87字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:491 77字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts
+    [SKIP C25-URL] mcp-connection-closed-fix.md:498 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/stdio.ts
+  outputs: ```text 11件、ログに一致 10件、例外 1件、ログ 20本（出力部分 20か所）
+    例外: 「notes-mcp/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] mcp-connection-closed-fix.md:58-68 30〜50字の文が7文続く
+[候補 C16] mcp-connection-closed-fix.md:76-78 30〜50字の文が5文続く
+[候補 C16] mcp-connection-closed-fix.md:231-253 30〜50字の文が5文続く
+[候補 C16] mcp-connection-closed-fix.md:323-325 30〜50字の文が5文続く
+[候補 C16] mcp-connection-closed-fix.md:364-378 30〜50字の文が6文続く
+[候補 C16] mcp-connection-closed-fix.md:424-428 30〜50字の文が6文続く
+SUMMARY mcp-connection-closed-fix: 確定 0 {} / 候補 6 {"C16": 6}
+== mcp-inspector-debug
+  prose: 文 289、数えなかったコードブロックの行 166
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 24件
+    [SKIP C25-URL] mcp-inspector-debug.md:15 63字 https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector
+    [SKIP C25-URL] mcp-inspector-debug.md:21 81字 https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md
+    [SKIP C25-URL] mcp-inspector-debug.md:24 86字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md
+    [SKIP C25-URL] mcp-inspector-debug.md:27 89字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/environment-variables.md
+    [SKIP C25-URL] mcp-inspector-debug.md:30 61字 https://www.npmjs.com/package/@modelcontextprotocol/inspector
+    [SKIP C25-URL] mcp-inspector-debug.md:39 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-inspector-debug.md:48 82字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/secret-storage.md
+    [SKIP C25-URL] mcp-inspector-debug.md:450 63字 https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector
+    [SKIP C25-URL] mcp-inspector-debug.md:452 81字 https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md
+    [SKIP C25-URL] mcp-inspector-debug.md:453 86字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md
+    [SKIP C25-URL] mcp-inspector-debug.md:454 89字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/environment-variables.md
+    [SKIP C25-URL] mcp-inspector-debug.md:455 61字 https://www.npmjs.com/package/@modelcontextprotocol/inspector
+    [SKIP C25-URL] mcp-inspector-debug.md:458 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-inspector-debug.md:461 82字 https://github.com/modelcontextprotocol/inspector/blob/main/docs/secret-storage.md
+  outputs: ```text 11件、ログに一致 10件、例外 1件、ログ 14本（出力部分 14か所）
+    例外: 「inspector-demo/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] mcp-inspector-debug.md:245-249 30〜50字の文が9文続く
+[候補 C16] mcp-inspector-debug.md:277-303 30〜50字の文が10文続く
+[候補 C16] mcp-inspector-debug.md:415-417 30〜50字の文が5文続く
+[候補 C16] mcp-inspector-debug.md:428-430 30〜50字の文が5文続く
+SUMMARY mcp-inspector-debug: 確定 0 {} / 候補 4 {"C16": 4}
+== mcp-server-resources-prompts
+  prose: 文 316、数えなかったコードブロックの行 180
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 36件
+    [SKIP C25-URL] mcp-server-resources-prompts.md:15 63字 https://modelcontextprotocol.io/specification/2025-11-25/server
+    [SKIP C25-URL] mcp-server-resources-prompts.md:18 73字 https://modelcontextprotocol.io/specification/2025-11-25/server/resources
+    [SKIP C25-URL] mcp-server-resources-prompts.md:21 71字 https://modelcontextprotocol.io/specification/2025-11-25/server/prompts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:24 63字 https://modelcontextprotocol.io/specification/2025-11-25/schema
+    [SKIP C25-URL] mcp-server-resources-prompts.md:27 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-resources-prompts.md:30 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-resources-prompts.md:33 82字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/mcp.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:36 87字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:39 77字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:54 81字 https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md
+    [SKIP C25-URL] mcp-server-resources-prompts.md:57 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-server-resources-prompts.md:60 63字 https://modelcontextprotocol.io/specification/2026-07-28/server
+    [SKIP C25-URL] mcp-server-resources-prompts.md:63 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    [SKIP C25-URL] mcp-server-resources-prompts.md:433 63字 https://modelcontextprotocol.io/specification/2025-11-25/server
+    [SKIP C25-URL] mcp-server-resources-prompts.md:434 73字 https://modelcontextprotocol.io/specification/2025-11-25/server/resources
+    [SKIP C25-URL] mcp-server-resources-prompts.md:435 71字 https://modelcontextprotocol.io/specification/2025-11-25/server/prompts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:436 63字 https://modelcontextprotocol.io/specification/2025-11-25/schema
+    [SKIP C25-URL] mcp-server-resources-prompts.md:437 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-resources-prompts.md:438 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-resources-prompts.md:439 82字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/mcp.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:440 87字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/shared/protocol.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:441 77字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/types.ts
+    [SKIP C25-URL] mcp-server-resources-prompts.md:446 81字 https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md
+    [SKIP C25-URL] mcp-server-resources-prompts.md:447 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-server-resources-prompts.md:448 63字 https://modelcontextprotocol.io/specification/2026-07-28/server
+    [SKIP C25-URL] mcp-server-resources-prompts.md:449 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+  outputs: ```text 6件、ログに一致 5件、例外 1件、ログ 11本（出力部分 11か所）
+    例外: 「writing-helper-mcp/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] mcp-server-resources-prompts.md:76-84 30〜50字の文が5文続く
+[候補 C16] mcp-server-resources-prompts.md:100-102 30〜50字の文が6文続く
+[候補 C16] mcp-server-resources-prompts.md:266-268 30〜50字の文が5文続く
+[候補 C16] mcp-server-resources-prompts.md:268-274 30〜50字の文が8文続く
+[候補 C16] mcp-server-resources-prompts.md:282-368 30〜50字の文が5文続く
+[候補 C16] mcp-server-resources-prompts.md:376-382 30〜50字の文が10文続く
+SUMMARY mcp-server-resources-prompts: 確定 0 {} / 候補 6 {"C16": 6}
+== mcp-server-streamable-http
+  prose: 文 359、数えなかったコードブロックの行 253
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 34件
+    [SKIP C25-URL] mcp-server-streamable-http.md:15 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-server-streamable-http.md:18 72字 https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle
+    [SKIP C25-URL] mcp-server-streamable-http.md:21 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-streamable-http.md:24 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-streamable-http.md:27 86字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/express.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:30 110字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/middleware/hostHeaderValidation.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:33 104字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/webStandardStreamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:36 117字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/examples/server/simpleStatelessStreamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:39 93字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/streamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:45 92字 https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+    [SKIP C25-URL] mcp-server-streamable-http.md:54 99字 https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp
+    [SKIP C25-URL] mcp-server-streamable-http.md:57 66字 https://modelcontextprotocol.io/specification/2026-07-28/changelog
+    [SKIP C25-URL] mcp-server-streamable-http.md:60 89字 https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http
+    [SKIP C25-URL] mcp-server-streamable-http.md:63 61字 https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+    [SKIP C25-URL] mcp-server-streamable-http.md:641 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-server-streamable-http.md:642 72字 https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle
+    [SKIP C25-URL] mcp-server-streamable-http.md:643 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-streamable-http.md:644 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-streamable-http.md:645 86字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/express.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:646 110字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/middleware/hostHeaderValidation.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:647 104字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/webStandardStreamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:648 117字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/examples/server/simpleStatelessStreamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:649 93字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/streamableHttp.ts
+    [SKIP C25-URL] mcp-server-streamable-http.md:651 92字 https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+    [SKIP C25-URL] mcp-server-streamable-http.md:654 99字 https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp
+    [SKIP C25-URL] mcp-server-streamable-http.md:655 66字 https://modelcontextprotocol.io/specification/2026-07-28/changelog
+    [SKIP C25-URL] mcp-server-streamable-http.md:656 89字 https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http
+    [SKIP C25-URL] mcp-server-streamable-http.md:657 61字 https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+  outputs: ```text 19件、ログに一致 18件、例外 1件、ログ 53本（出力部分 53か所）
+    例外: 「char-count-http/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] mcp-server-streamable-http.md:118-120 30〜50字の文が7文続く
+[候補 C16] mcp-server-streamable-http.md:286-292 30〜50字の文が9文続く
+[候補 C16] mcp-server-streamable-http.md:389-411 30〜50字の文が7文続く
+[候補 C16] mcp-server-streamable-http.md:462-487 30〜50字の文が6文続く
+[候補 C16] mcp-server-streamable-http.md:543-594 30〜50字の文が15文続く
+[候補 C16] mcp-server-streamable-http.md:621-627 30〜50字の文が5文続く
+[候補 C16] mcp-server-streamable-http.md:627-637 30〜50字の文が7文続く
+[候補 C28] mcp-server-streamable-http.md:100 「で始まる初期化のやり取りも」
+[候補 C28] mcp-server-streamable-http.md:389 「アントとサーバーの最初のやり取りにする決まりです（」
+[候補 C28] mcp-server-streamable-http.md:389 「この初期化のやり取りそのものが無くなり」
+[候補 C28] mcp-server-streamable-http.md:609 「見逃しやすい行です」
+SUMMARY mcp-server-streamable-http: 確定 0 {} / 候補 11 {"C16": 7, "C28": 4}
+== mcp-server-typescript-stdio
+  prose: 文 275、数えなかったコードブロックの行 150
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 30件
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:15 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:18 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:21 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:24 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:27 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:45 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:51 82字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/mcp.ts
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:54 94字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:429 69字 https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:430 73字 https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:431 64字 https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:432 79字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:433 84字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/client/stdio.ts
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:439 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:441 82字 https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/src/server/mcp.ts
+    [SKIP C25-URL] mcp-server-typescript-stdio.md:442 94字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
+  outputs: ```text 10件、ログに一致 9件、例外 1件、ログ 21本（出力部分 42か所）
+    例外: 「char-count-mcp/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] mcp-server-typescript-stdio.md:79-89 30〜50字の文が12文続く
+[候補 C16] mcp-server-typescript-stdio.md:89-102 30〜50字の文が8文続く
+[候補 C16] mcp-server-typescript-stdio.md:228-232 30〜50字の文が5文続く
+[候補 C16] mcp-server-typescript-stdio.md:318-322 30〜50字の文が5文続く
+[候補 C16] mcp-server-typescript-stdio.md:401-410 30〜50字の文が8文続く
+SUMMARY mcp-server-typescript-stdio: 確定 0 {} / 候補 5 {"C16": 5}
+== promptfoo-llm-eval-intro
+  prose: 文 296、数えなかったコードブロックの行 163
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 30件
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:30 62字 https://www.promptfoo.dev/docs/configuration/expected-outputs/
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:39 85字 https://github.com/promptfoo/promptfoo/blob/0.125.1/src/providers/claude-agent-sdk.ts
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:48 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:54 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:444 62字 https://www.promptfoo.dev/docs/configuration/expected-outputs/
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:447 85字 https://github.com/promptfoo/promptfoo/blob/0.125.1/src/providers/claude-agent-sdk.ts
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:450 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] promptfoo-llm-eval-intro.md:452 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+  outputs: ```text 7件、ログに一致 7件、例外 0件、ログ 27本（出力部分 27か所）
+[候補 C28] promptfoo-llm-eval-intro.md:305 「ラベルの前後に記号や説明の文が付いたからです」
+SUMMARY promptfoo-llm-eval-intro: 確定 0 {} / 候補 1 {"C28": 1}
+== rag-answer-with-citations-claude
+  prose: 文 219、数えなかったコードブロックの行 222
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 18件
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:18 97字 https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:24 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:30 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:465 97字 https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:467 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] rag-answer-with-citations-claude.md:469 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 6件、ログに一致 6件、例外 0件、ログ 35本（出力部分 35か所）
+[候補 C16] rag-answer-with-citations-claude.md:49-51 30〜50字の文が6文続く
+[候補 C16] rag-answer-with-citations-claude.md:410-428 30〜50字の文が7文続く
+SUMMARY rag-answer-with-citations-claude: 確定 0 {} / 候補 2 {"C16": 2}
+== rag-bm25-search-typescript
+  prose: 文 223、数えなかったコードブロックの行 154
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 18件
+    [SKIP C25-URL] rag-bm25-search-typescript.md:18 72字 https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf
+    [SKIP C25-URL] rag-bm25-search-typescript.md:21 100字 https://lucene.apache.org/core/10_3_1/core/org/apache/lucene/search/similarities/BM25Similarity.html
+    [SKIP C25-URL] rag-bm25-search-typescript.md:24 77字 https://www.elastic.co/docs/reference/elasticsearch/index-settings/similarity
+    [SKIP C25-URL] rag-bm25-search-typescript.md:30 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-bm25-search-typescript.md:36 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    [SKIP C25-URL] rag-bm25-search-typescript.md:417 72字 https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf
+    [SKIP C25-URL] rag-bm25-search-typescript.md:418 100字 https://lucene.apache.org/core/10_3_1/core/org/apache/lucene/search/similarities/BM25Similarity.html
+    [SKIP C25-URL] rag-bm25-search-typescript.md:419 77字 https://www.elastic.co/docs/reference/elasticsearch/index-settings/similarity
+    [SKIP C25-URL] rag-bm25-search-typescript.md:421 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-bm25-search-typescript.md:423 97字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+  outputs: ```text 11件、ログに一致 9件、例外 2件、ログ 17本（出力部分 17か所）
+    例外: 「重み = idf × tf / (tf + k1 × (1 - b + b × 」 理由: BM25 の重みの式。実行の出力ではない。
+    例外: 「1.281 × 2 / (2 + 1.2 × (0.25 + 0.75 × 22」 理由: 式への数値の代入の例（式）。実行の出力ではない。
+[候補 C16] rag-bm25-search-typescript.md:213-217 30〜50字の文が5文続く
+[候補 C28] rag-bm25-search-typescript.md:159 「依存を増やさないためにこの記事では」
+SUMMARY rag-bm25-search-typescript: 確定 0 {} / 候補 2 {"C16": 1, "C28": 1}
+== rag-chunking-japanese-text
+  prose: 文 238、数えなかったコードブロックの行 230
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 16件
+    [SKIP C25-URL] rag-chunking-japanese-text.md:18 88字 https://docs.langchain.com/oss/javascript/integrations/splitters/recursive_text_splitter
+    [SKIP C25-URL] rag-chunking-japanese-text.md:24 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-chunking-japanese-text.md:33 64字 https://platform.claude.com/docs/en/build-with-claude/embeddings
+    [SKIP C25-URL] rag-chunking-japanese-text.md:477 88字 https://docs.langchain.com/oss/javascript/integrations/splitters/recursive_text_splitter
+    [SKIP C25-URL] rag-chunking-japanese-text.md:479 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-chunking-japanese-text.md:482 64字 https://platform.claude.com/docs/en/build-with-claude/embeddings
+  outputs: ```text 6件、ログに一致 6件、例外 0件、ログ 14本（出力部分 14か所）
+[候補 C16] rag-chunking-japanese-text.md:76-86 30〜50字の文が8文続く
+[候補 C16] rag-chunking-japanese-text.md:241-272 30〜50字の文が5文続く
+[候補 C16] rag-chunking-japanese-text.md:278-330 30〜50字の文が5文続く
+[候補 C16] rag-chunking-japanese-text.md:464-468 30〜50字の文が5文続く
+[候補 C28] rag-chunking-japanese-text.md:199 「を1つ増やし」
+SUMMARY rag-chunking-japanese-text: 確定 0 {} / 候補 5 {"C16": 4, "C28": 1}
+== rag-hybrid-search-rrf
+  prose: 文 337、数えなかったコードブロックの行 205
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 28件
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:18 84字 https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:24 100字 https://lucene.apache.org/core/10_3_1/core/org/apache/lucene/search/similarities/BM25Similarity.html
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:42 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:48 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:51 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:533 84字 https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:535 100字 https://lucene.apache.org/core/10_3_1/core/org/apache/lucene/search/similarities/BM25Similarity.html
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:541 105字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:543 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] rag-hybrid-search-rrf.md:544 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+  outputs: ```text 9件、ログに一致 8件、例外 1件、ログ 23本（出力部分 23か所）
+    例外: 「RRF の点数(d) = Σ 1 / (k + 順位(d))」 理由: RRF の点数の式。実行の出力ではない。
+[候補 C16] rag-hybrid-search-rrf.md:94-96 30〜50字の文が5文続く
+[候補 C16] rag-hybrid-search-rrf.md:241-266 30〜50字の文が8文続く
+[候補 C16] rag-hybrid-search-rrf.md:345-347 30〜50字の文が5文続く
+[候補 C16] rag-hybrid-search-rrf.md:395-413 30〜50字の文が8文続く
+[候補 C16] rag-hybrid-search-rrf.md:505-507 30〜50字の文が5文続く
+[候補 C16] rag-hybrid-search-rrf.md:515-523 30〜50字の文が5文続く
+[候補 C28] rag-hybrid-search-rrf.md:94 「両方の中位が上に来やすい計算です」
+SUMMARY rag-hybrid-search-rrf: 確定 0 {} / 候補 7 {"C16": 6, "C28": 1}
+== rag-local-embeddings-transformers-js
+  prose: 文 290、数えなかったコードブロックの行 141
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 34件
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:15 64字 https://platform.claude.com/docs/en/build-with-claude/embeddings
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:21 66字 https://huggingface.co/Xenova/multilingual-e5-small/tree/main/onnx
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:30 99字 https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/utils/dtypes.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:39 88字 https://github.com/microsoft/onnxruntime/blob/v1.30.0/js/node/script/install-metadata.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:42 79字 https://github.com/microsoft/onnxruntime/blob/v1.30.0/js/node/script/install.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:60 115字 https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/pipelines/feature-extraction.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:432 64字 https://platform.claude.com/docs/en/build-with-claude/embeddings
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:434 66字 https://huggingface.co/Xenova/multilingual-e5-small/tree/main/onnx
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:437 99字 https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/utils/dtypes.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:440 88字 https://github.com/microsoft/onnxruntime/blob/v1.30.0/js/node/script/install-metadata.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:441 79字 https://github.com/microsoft/onnxruntime/blob/v1.30.0/js/node/script/install.js
+    [SKIP C25-URL] rag-local-embeddings-transformers-js.md:447 115字 https://github.com/huggingface/transformers.js/blob/4.3.2/packages/transformers/src/pipelines/feature-extraction.js
+  outputs: ```text 9件、ログに一致 9件、例外 0件、ログ 56本（出力部分 56か所）
+[候補 C16] rag-local-embeddings-transformers-js.md:175-193 30〜50字の文が8文続く
+[候補 C16] rag-local-embeddings-transformers-js.md:221-223 30〜50字の文が7文続く
+[候補 C16] rag-local-embeddings-transformers-js.md:341-343 30〜50字の文が5文続く
+[候補 C16] rag-local-embeddings-transformers-js.md:407-409 30〜50字の文が5文続く
+[候補 C16] rag-local-embeddings-transformers-js.md:413-420 30〜50字の文が5文続く
+SUMMARY rag-local-embeddings-transformers-js: 確定 0 {} / 候補 5 {"C16": 5}
+== rag-retrieval-eval-recall-mrr
+  prose: 文 286、数えなかったコードブロックの行 281
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 22件
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:15 78字 https://www.elastic.co/docs/reference/elasticsearch/rest-apis/search-rank-eval
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:21 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:27 96字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:30 94字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:33 86字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:39 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:42 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:567 78字 https://www.elastic.co/docs/reference/elasticsearch/rest-apis/search-rank-eval
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:569 67字 https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:571 96字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:572 94字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:573 86字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:575 91字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    [SKIP C25-URL] rag-retrieval-eval-recall-mrr.md:576 84字 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+  outputs: ```text 5件、ログに一致 5件、例外 0件、ログ 22本（出力部分 22か所）
+[候補 C16] rag-retrieval-eval-recall-mrr.md:91-131 30〜50字の文が5文続く
+[候補 C16] rag-retrieval-eval-recall-mrr.md:135-162 30〜50字の文が6文続く
+[候補 C16] rag-retrieval-eval-recall-mrr.md:331-414 30〜50字の文が10文続く
+[候補 C16] rag-retrieval-eval-recall-mrr.md:464-468 30〜50字の文が11文続く
+[候補 C16] rag-retrieval-eval-recall-mrr.md:504-538 30〜50字の文が12文続く
+[候補 C28] rag-retrieval-eval-recall-mrr.md:197 「えられる質問ばかりが残りやすくなるからです」
+[候補 C28] rag-retrieval-eval-recall-mrr.md:468 「ハイブリッド検索をやめてベクトル検索に切り替」
+[候補 C28] rag-retrieval-eval-recall-mrr.md:538 「質問を増やしても同じ向きになるかは」
+[候補 C28] rag-retrieval-eval-recall-mrr.md:538 「増やしたあとで測り直します」
+[候補 C28] rag-retrieval-eval-recall-mrr.md:546 「質問を何問に増やしても料金は変わりません」
+SUMMARY rag-retrieval-eval-recall-mrr: 確定 0 {} / 候補 10 {"C16": 5, "C28": 5}
+== structured-output-methods-compare
+  prose: 文 291、数えなかったコードブロックの行 204
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 20件
+    [SKIP C25-URL] structured-output-methods-compare.md:27 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] structured-output-methods-compare.md:30 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+    [SKIP C25-URL] structured-output-methods-compare.md:482 65字 https://unpkg.com/@anthropic-ai/claude-agent-sdk@0.3.322/sdk.d.ts
+    [SKIP C25-URL] structured-output-methods-compare.md:483 94字 https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan
+  outputs: ```text 5件、ログに一致 5件、例外 0件、ログ 11本（出力部分 11か所）
+[候補 C16] structured-output-methods-compare.md:58-62 30〜50字の文が5文続く
+[候補 C16] structured-output-methods-compare.md:265-281 30〜50字の文が10文続く
+[候補 C28] structured-output-methods-compare.md:2 「構造化出力のやり方を比べる【プロンプト」
+[候補 C28] structured-output-methods-compare.md:4 「に3通りのやり方で10件ずつ解かせま」
+[候補 C28] structured-output-methods-compare.md:52 「3通りのやり方で10件ずつ解かせた」
+[候補 C28] structured-output-methods-compare.md:140 「3つのやり方が共有するものを置き」
+[候補 C28] structured-output-methods-compare.md:174 「3つのやり方は同じオプションで呼」
+[候補 C28] structured-output-methods-compare.md:176 「3つのやり方で同じにしました」
+[候補 C28] structured-output-methods-compare.md:328 「3つのやり方に同じ10件を順に渡」
+[候補 C28] structured-output-methods-compare.md:417 「3つのやり方の30回とも」
+[候補 C28] structured-output-methods-compare.md:427 「3つのやり方が保証するのは」
+[候補 C28] structured-output-methods-compare.md:433 「3つのやり方のファイルの行数を数」
+SUMMARY structured-output-methods-compare: 確定 0 {} / 候補 12 {"C16": 2, "C28": 10}
+== zod-to-json-schema-tool-definition
+  prose: 文 267、数えなかったコードブロックの行 172
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 26件
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:27 74字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:30 70字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:33 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:36 77字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:39 94字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/helpers/beta/zod.ts
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:45 105字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/resources/messages/messages.ts
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:434 74字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:435 70字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:436 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:437 77字 https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:438 94字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/helpers/beta/zod.ts
+    [SKIP C25-URL] zod-to-json-schema-tool-definition.md:440 105字 https://github.com/anthropics/anthropic-sdk-typescript/blob/sdk-v1.3.0/src/resources/messages/messages.ts
+  outputs: ```text 7件、ログに一致 6件、例外 1件、ログ 24本（出力部分 24か所）
+    例外: 「zod-tool-schema/」 理由: 作業フォルダの構成を示すファイルの木。実行の出力ではない。
+[候補 C16] zod-to-json-schema-tool-definition.md:235-239 30〜50字の文が7文続く
+[候補 C16] zod-to-json-schema-tool-definition.md:306-330 30〜50字の文が7文続く
+[候補 C16] zod-to-json-schema-tool-definition.md:375-379 30〜50字の文が7文続く
+[候補 C16] zod-to-json-schema-tool-definition.md:410-416 30〜50字の文が6文続く
+[候補 C28] zod-to-json-schema-tool-definition.md:75 「2025年11月で保守をやめたと書いています（出典」
+SUMMARY zod-to-json-schema-tool-definition: 確定 0 {} / 候補 5 {"C16": 4, "C28": 1}
+== zod-validate-llm-json-output
+  prose: 文 241、数えなかったコードブロックの行 184
+  C25 で数えなかった URL だけの値（表のセル、frontmatter の値。全体が URL 1つ）: 18件
+    [SKIP C25-URL] zod-validate-llm-json-output.md:27 80字 https://github.com/colinhacks/zod/blob/v4.6.7/packages/zod/src/v4/core/errors.ts
+    [SKIP C25-URL] zod-validate-llm-json-output.md:33 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+    [SKIP C25-URL] zod-validate-llm-json-output.md:474 80字 https://github.com/colinhacks/zod/blob/v4.6.7/packages/zod/src/v4/core/errors.ts
+    [SKIP C25-URL] zod-validate-llm-json-output.md:476 72字 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+  outputs: ```text 10件、ログに一致 10件、例外 0件、ログ 15本（出力部分 15か所）
+[候補 C16] zod-validate-llm-json-output.md:242-261 30〜50字の文が6文続く
+[候補 C16] zod-validate-llm-json-output.md:296-337 30〜50字の文が10文続く
+[候補 C16] zod-validate-llm-json-output.md:445-449 30〜50字の文が5文続く
+[候補 C28] zod-validate-llm-json-output.md:343 「で読みやすい文字列に直します（出」
+[候補 C28] zod-validate-llm-json-output.md:412 「英語の文はそのまま検索しやすいので」
+SUMMARY zod-validate-llm-json-output: 確定 0 {} / 候補 5 {"C16": 3, "C28": 2}
 ```
-
-## 参考: 候補（C16、C26、C28）
-
-候補は数だけ上の表に出しています。行ごとの一覧は `python3 scripts/check-article.py <slug>` で出ます。
-
-## 自前のスクリプトから落としたもの
-
-自前のスクリプトにあって、checklist とガイドの行に結びつかないため、新しいスクリプトに入れなかった検査です。
-
-- 禁止語の一覧（`PATS` の「徹底解説」「完全ガイド」「次は」「ここから」「ここまで」「でしょう」「かもしれ」「まとめ」「地図」「仕様書」「ではなく」「じゃない」「整理」など）: ai-smell-lint.py の担当で、C25 から C32 の行ではありません。
-- 全角コロン `：` 単独の検出: checklist C32 は `：` + 半角スペースです。
-- C19 の常体の検出、「落ちる」「回す」の転用動詞の数: C19 と C29 は別の作業単位、転用動詞は writing-lint.py の担当です。
-- 文長の min/max/short/long の集計: C16 の候補は、30〜50字の文が5文以上続く区間（guides/03 4節）に置き換えました。

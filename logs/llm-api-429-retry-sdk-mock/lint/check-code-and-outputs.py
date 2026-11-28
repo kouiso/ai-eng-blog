@@ -20,10 +20,8 @@ for f in ["package.json", "server.ts", "client.ts", "my-loop.ts"]:
     print(f"code {f}: {hit}")
 
 server = run(3)[1].split("\n")
-clients = "\n\n".join(f"$ {run(n)[0]}\n{run(n)[1]}" for n in range(4, 9))
 checks = {
     "02 npm install": run(2)[1],
-    "04-08 client outputs": clients,
     "03 server log (without my-loop)": "\n".join(l for l in server if not l.startswith("my-loop")),
     "03 server log (my-loop only)": "\n".join(l for l in server if l.startswith("my-loop")),
     "09 node my-loop.ts": run(9)[1],
@@ -32,6 +30,12 @@ for name, text in checks.items():
     hit = text in fences
     ok &= hit
     print(f"output {name}: {hit}")
+# 記事は 04〜08 の出力をコマンド（bash ブロック）と出力（text ブロック）の組で載せる
+for n in range(4, 9):
+    cmd, out, _ = run(n)
+    hit = cmd in fences and out in fences
+    ok &= hit
+    print(f"output run/{n:02d} command+output in article: {hit}")
 for n in range(1, 14):
     print(f"run {n:02d} exit={run(n)[2]}")
 print("ALL OK" if ok else "MISMATCH")

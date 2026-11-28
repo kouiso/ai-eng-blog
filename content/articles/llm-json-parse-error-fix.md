@@ -28,13 +28,13 @@ sources:
     title: "Pricing"
     accessed: 2026-10-31
   - url: "https://www.rfc-editor.org/rfc/rfc8259"
-    title: "RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format"
+    title: "RFC 8259 The JavaScript Object Notation (JSON)"
     accessed: 2026-10-31
 ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-10
+updated: 2026-11-24
 ---
 
 LLM の返した文字列で `JSON.parse` が `SyntaxError` を投げる原因は、2つです。JSON の前後にコードフェンスか説明の文が付いているなら、`{` から `}` までを切り出せば読めます。JSON が最後まで書かれていない応答は、`stop_reason` を確かめて取り直してください。途中で切れた出力なら、`max_tokens` を上げます（出典3）。

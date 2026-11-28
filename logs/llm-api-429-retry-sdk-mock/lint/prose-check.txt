@@ -1,9 +1,5 @@
-sentences: 194 (prose+frontmatter 136, headings 15, table cells 43)
-not counted: code block lines 165, URL-only table cells 8 (lines [391, 392, 393, 394, 395, 396, 397, 398])
-LONG>60: 0  (50<len<=60: 25)
-prose length min 12 / max 59 / short(<=20) 11 / long(41-60) 56
-SAME3: 0
-PAT 'まとめ' 167 500 以上はまとめて `InternalServerError` なので、529 もこのクラスになります（出典5）。
-AND/OR candidates (や in prose, judge by eye):
-  YA 363 通信量を少しずつ増やすよう勧めています（出典
-exit=0
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/llm-api-429-retry-sdk-mock/lint/prose-check.py", line 9, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

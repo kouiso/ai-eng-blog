@@ -1,4 +1,4 @@
-## writing-lint v2: mcp-server-typescript-stdio.md (type=article, register=standard, 426行/191文)
+## writing-lint v2: mcp-server-typescript-stdio.md (type=article, register=standard, 444行/193文)
 
 ### FATAL: 0件（個人名・慣用句混交・壊れ句読点）
 
@@ -13,11 +13,13 @@
 - [OK] B-13 二人称断定: 0回 / 上限1（断定フックは疑問形・条件形に緩める）
 - [OK] B-14 伝聞エピソード: 0回 / 上限1（検証可能性必須。納品0回）
 - [OK] B-9 つまり: 0回 / 上限2（全レジスター2回まで。接続なしで通る箇所から削る）
+- [🔴超過] B-2 三連反復: 1箇所（2回目以降は形を変える・法則3）
+    L330: …ました×3連続（出力の中のパスは置き換えました）
 
 ### SHOULD: 0件（偏愛語・章境界。正当用法は理由つきでOK可）
 
 ### INFO(要人間確認): 0件
 
-### 判定: FATAL 0 / DENSITY超過 0 / SHOULD 0
-→ FATAL・DENSITY超過なし。SHOULDは文脈判断のうえ対応
+### 判定: FATAL 0 / DENSITY超過 1 / SHOULD 0
+→ DENSITY超過あり。上限内まで間引く（超過のまま出すなら書き手の判断）
 exit=0

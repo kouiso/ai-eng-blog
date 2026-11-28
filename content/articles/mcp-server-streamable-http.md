@@ -67,10 +67,10 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、手元の `http://127.0.0.1:3000/mcp` から呼べるようにします。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
+HTTP で受ける MCP サーバーは、SDK の Streamable HTTP のトランスポートで作ります。前の記事の文字数のツールを、`http://127.0.0.1:3000/mcp` から呼べるようにするのが目標です。SDK のクライアントから呼ぶと、結果は stdio のときと同じ1行で返ります。
 
 ```text
 ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
@@ -86,7 +86,7 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 Streamable HTTP は、MCP の仕様が定める2つの標準のトランスポートの1つです（出典1）。もう1つは stdio です（出典1）。サーバーは独立したプロセスとして動き、複数のクライアントの接続を受けられます（出典1）。
 
-2025-11-25 の仕様では、サーバーは POST と GET を受ける1つの URL を用意します（出典1）。仕様はこの URL を MCP エンドポイントと呼びます。クライアントは JSON-RPC のメッセージを1つずつ、新しい POST で送ります（出典1）。
+2025-11-25 の仕様では、サーバーは POST と GET を受ける1つの URL を用意します（出典1）。仕様での名前は MCP エンドポイントです。クライアントは JSON-RPC のメッセージを1つずつ、新しい POST で送ります（出典1）。
 
 SDK の docs/server.md は、リモートには Streamable HTTP を勧めます（出典4）。同じページによれば、動かし方はステートレスとステートフルの2通りです（出典4）。ステートレスはセッションを追わない形で、API のような単純なサーバーに向くと書かれています（出典4）。
 
@@ -145,7 +145,7 @@ mkdir -p char-count-http/src
 cd char-count-http
 ```
 
-作業フォルダに `package.json` を置きます。依存のバージョンに `^` を付けず、記事と同じバージョンを入れます。
+作業フォルダに `package.json` を置いてください。依存のバージョンに `^` を付けず、記事と同じバージョンを入れます。
 
 ```json
 {
@@ -205,7 +205,7 @@ found 0 vulnerabilities
 
 ## 2. サーバーはリクエストごとに作り直す
 
-`src/server.ts` は69行です。`createServer` の中身は、前の記事のツールの登録と同じです。違うのは、その下の HTTP の受け口です。
+`src/server.ts` は69行です。`createServer` の中身は、前の記事のツールの登録と同じです。違うのは、その下の HTTP の受け口になります。
 
 ```ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -279,7 +279,7 @@ app.listen(PORT, "127.0.0.1", () => {
 });
 ```
 
-いちばん大事なのは `app.post` の中です。POST が届くたびに、`McpServer` とトランスポートを新しく作ります。SDK のステートレスの例も、同じ作り方をしています（出典8）。1つを使い回すと、2回目のリクエストから失敗します。
+いちばん大事なのは `app.post` の中です。POST が届くたびに、`McpServer` とトランスポートを新しく作ります。SDK のステートレスの例も、同じ作り方をしています（出典8）。1つを使い回すと、2回目のリクエストから失敗しました。
 
 `sessionIdGenerator: undefined` が、ステートレスにする指定です（出典8）。応答を送り終えて接続が閉じたら、`close` でトランスポートとサーバーを片づけます。
 
@@ -289,13 +289,13 @@ app.listen(PORT, "127.0.0.1", () => {
 
 Origin の検査は、ミドルウェアとして自分で書きました。仕様は、すべての接続で Origin ヘッダーを確かめるよう求めています（出典1）。不正な Origin には 403 を返すことも、仕様の決まりです（出典1）。
 
-SDK のトランスポートにも `allowedOrigins` という指定があります。ただし 1.32.2 では非推奨で、外のミドルウェアを使うよう書かれています（出典7）。この記事では `ALLOWED_ORIGINS` を空にしたので、Origin の付いたリクエストはすべて断ります。
+SDK のトランスポートにも `allowedOrigins` という指定があります。ただし 1.32.2 では非推奨で、外のミドルウェアを使うよう書かれています（出典7）。この記事では `ALLOWED_ORIGINS` を空にしたので、Origin の付いたリクエストはすべて断る設定です。
 
-`app.all` は、POST 以外を 405 で断る受け口です。仕様では、GET には SSE で応じるか、405 を返す決まりです（出典1）。2026-07-28 の仕様も、古いクライアントからの GET には 405 を返すよう勧めています（出典16）。SDK のステートレスの例も、GET と DELETE に 405 を返します（出典8）。
+`app.all` は、POST 以外を 405 で断る受け口になります。仕様では、GET には SSE で応じるか、405 を返す決まりです（出典1）。2026-07-28 の仕様も、古いクライアントからの GET には 405 を返すよう勧めています（出典16）。SDK のステートレスの例も、GET と DELETE に 405 を返します（出典8）。
 
 ## 3. SDK のクライアントで呼ぶと結果は stdio と同じ
 
-確かめるには、ターミナルを2つ使います。1つ目でサーバーを動かしたまま、2つ目で SDK のクライアントを動かします。API キーは要りません。
+確かめるには、ターミナルを2つ開いてください。1つ目でサーバーを動かしたまま、2つ目で SDK のクライアントを動かします。API キーは要りません。
 
 `src/check.ts` は、前の記事の確認用のプログラムをもとにしました。トランスポートを `StreamableHTTPClientTransport` に替え、URL を渡します。空文字を渡す呼び出しは省き、代わりに最後の行でセッション ID を表示する形です。
 
@@ -404,7 +404,7 @@ curl -sS -X POST http://127.0.0.1:3000/mcp \
 status: 406 application/json
 ```
 
-POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` です。HTTP のクライアントを自分で書くと、この1行を忘れがちです。406 が返ったら、まず `Accept` を見てください。
+POST の `Accept` には、2つの形式を両方書く決まりです（出典1）。`application/json` と `text/event-stream` の2つを書きます。HTTP のクライアントを自分で書くと、この1行を忘れがちです。406 が返ったら、まず `Accept` を見てください。
 
 ### GET には 405 が返る
 
@@ -421,7 +421,7 @@ status: 405 application/json; charset=utf-8
 
 ## Origin と Host の検査で外のページからの呼び出しを断る
 
-127.0.0.1 で待ち受けても、外のウェブサイトから手元のサーバーを操作される恐れがあります（出典1）。仕様はその手口として、DNS リバインディングを挙げています（出典1）。攻撃者のドメインの名前を 127.0.0.1 に向け、手元のサーバーにリクエストを送らせる手口です（出典6）。
+127.0.0.1 で待ち受けても、外のウェブサイトから手元のサーバーを操作される恐れがあるからです（出典1）。仕様はその手口として、DNS リバインディングを挙げています（出典1）。攻撃者のドメインの名前を 127.0.0.1 に向け、手元のサーバーにリクエストを送らせる手口です（出典6）。
 
 SDK の Host の検査は、この手口を防ぐためのものです（出典6）。Origin の検査も、仕様が同じ攻撃への対策として求めています（出典1）。外のページからのリクエストに見せるため、curl で2つのヘッダーを付けて送りました。
 
@@ -459,7 +459,7 @@ Origin は、自分で書いたミドルウェアが断りました。Host は `
 
 ブラウザのページから呼ぶには、`ALLOWED_ORIGINS` に Origin を足すだけでは足りません。`ALLOWED_ORIGINS` に `"http://localhost:5173"` を入れて試しています。
 
-ブラウザは、別の Origin へ JSON を POST する前に OPTIONS を送ります（出典17）。送ってよいかをサーバーに尋ねるためで、これをプリフライトと呼びます（出典17）。ブラウザが送るものと同じヘッダーを、curl で付けました。
+ブラウザは、別の Origin へ JSON を POST する前に OPTIONS を送る仕組みです（出典17）。送ってよいかをサーバーに尋ねるためで、これをプリフライトと呼びます（出典17）。ブラウザが送るものと同じヘッダーを、curl で付けました。
 
 ```bash
 curl -sS -i -X OPTIONS http://127.0.0.1:3000/mcp \
@@ -490,21 +490,34 @@ Origin を付けた POST を curl で直接送ると、200 で結果が返りま
 
 ## 5. Claude Code には --transport http で登録する
 
-手元で動くサーバーは、そのまま Claude Code に登録できます。HTTP のサーバーは、`claude mcp add --transport http` で足します（出典12）。後ろに名前と URL を続けます。サーバーを起動したまま、2つ目のターミナルで実行しました。
+手元で動くサーバーは、そのまま Claude Code に登録できます。HTTP のサーバーは、`claude mcp add --transport http` で足します（出典12）。後ろに名前と URL を続けてください。サーバーを起動したまま、2つ目のターミナルで実行しました。
 
 設定は使い捨てのフォルダに書き、ログインはしていません。出力の中のパスは置き換えました。
 
+```bash
+claude mcp add --transport http --scope user char-count-http http://127.0.0.1:3000/mcp
+```
+
 ```text
-$ claude mcp add --transport http --scope user char-count-http http://127.0.0.1:3000/mcp
 Added HTTP MCP server char-count-http with URL: http://127.0.0.1:3000/mcp to user config
 File modified: /path/to/tmp-home/.claude.json
+```
 
-$ claude mcp list
+```bash
+claude mcp list
+```
+
+```text
 Checking MCP server health…
 
 char-count-http: http://127.0.0.1:3000/mcp (HTTP) - √ Connected
+```
 
-$ claude mcp get char-count-http
+```bash
+claude mcp get char-count-http
+```
+
+```text
 char-count-http:
   Scope: User config (available in all your projects)
   Status: √ Connected
@@ -512,8 +525,13 @@ char-count-http:
   URL: http://127.0.0.1:3000/mcp
 
 To remove this server, run: claude mcp remove char-count-http -s user
+```
 
-$ claude mcp remove char-count-http -s user
+```bash
+claude mcp remove char-count-http -s user
+```
+
+```text
 Removed MCP server char-count-http from user config
 File modified: /path/to/tmp-home/.claude.json
 ```
@@ -522,7 +540,7 @@ File modified: /path/to/tmp-home/.claude.json
 
 ## トランスポートを使い回すと2回目から 500 になる
 
-リクエストごとに作り直すのが面倒で、サーバーとトランスポートを1つにまとめたくなります。次のように `app.post` の外で作ると、2回目のリクエストから失敗します。悪い例として、手順2の `app.post` をこの形に書き換えて試しました。
+リクエストごとに作り直すのが面倒で、サーバーとトランスポートを1つにまとめたくなるのです。次のように `app.post` の外で作ると、2回目のリクエストから失敗します。悪い例として、手順2の `app.post` をこの形に書き換えて試しました。
 
 ```ts
 const server = createServer();
@@ -559,10 +577,10 @@ Node.js v22.22.0
 
 `connect` の中の2回目の POST が、500 で失敗しています。1回目の初期化は通り、続く通知の POST で失敗した形です。そのあと curl で送っても、500 と空の本文が返り続けました。
 
-原因は、SDK のステートレスのトランスポートが2回目の処理を拒むことです。2回目の処理では、次の文言の例外を投げます（出典7）。
+原因は、SDK のステートレスのトランスポートが2回目の処理を拒むことです（出典7）。実行の記録には、2回目の処理が投げた例外の文言がそのまま残りました。
 
 ```text
-Stateless transport cannot be reused across requests. Create a new transport per request.
+2nd threw: Stateless transport cannot be reused across requests. Create a new transport per request.
 ```
 
 ソースの注記によれば、使い回すと別々のクライアントのメッセージ ID がぶつかるためです（出典7）。
@@ -586,19 +604,19 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 session: undefined
 ```
 
-SDK のクライアントは、初期化のあとに GET で SSE を開こうとします（出典9）。受け口が無いと、Express は GET に 404 を返します。クライアントは、405 を「SSE が無いサーバー」の印として黙って受け入れます（出典9）。404 のような失敗は、`Failed to open SSE stream` として報告されます（出典9）。
+SDK のクライアントは、初期化のあとに GET で SSE を開こうとします（出典9）。受け口が無いと、Express は GET に 404 を返します。クライアントは、405 を「SSE が無いサーバー」の印として黙って受け入れる決まりです（出典9）。404 のような失敗は、`Failed to open SSE stream` として報告されます（出典9）。
 
 ツールの結果は正しく返っているので、見逃しやすい行です。この形のまま30回動かしても、毎回 Not Found の行が2つ出ました。405 を返せば、この行は出ません。
 
 ## claude.ai からつなぐには公開 URL と認証が要る
 
-claude.ai のカスタムコネクタは、手元のサーバーにつながりません（出典14）。Claude は、Anthropic のクラウドからリモートの MCP サーバーにつなぎます（出典14）。サーバーは、Anthropic の IP アドレスからインターネット越しに届く場所に置く必要があります（出典14）。
+claude.ai のカスタムコネクタは、手元のサーバーにつながりません（出典14）。Claude は、Anthropic のクラウドからリモートの MCP サーバーにつなぎます（出典14）。サーバーは、Anthropic の IP アドレスからインターネット越しに届く公開の場所が必要です（出典14）。
 
 この記事のサーバーを公開するときは、少なくとも次の3つを足します。
 
 - 公開する URL。Anthropic の IP アドレスから届く場所にサーバーを置きます（出典14）
 - 認証。仕様はすべての接続で認証を実装するよう勧めています（出典1）。SDK の docs/server.md には、Bearer トークンで認証する例があります（出典4）
-- Origin と Host の許可リスト。Host の名前は `allowedHosts` に渡します（出典5）。ブラウザから呼ぶなら、`ALLOWED_ORIGINS` への追加と CORS の応答も要ります（出典17）
+- Origin と Host の許可リスト。Host の名前は `allowedHosts` に渡します（出典5）。ブラウザから呼ぶなら、`ALLOWED_ORIGINS` への追加と CORS の応答も必要です（出典17）
 
 カスタムコネクタは、無料のプランでも1つまで足せます（出典14）。この記事では公開も接続もしていないので、3つとも未確認の項目です。
 

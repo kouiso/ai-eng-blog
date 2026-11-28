@@ -61,10 +61,10 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-自分のアプリの関数を Claude Code に使わせるには、関数を MCP サーバーのツールにします。この記事では、文章の文字数を数えるツールを1つ持つサーバーを TypeScript で作ります。完成したサーバーを公式 SDK のクライアントから呼ぶと、結果は次の1行で返ります。
+自分のアプリの関数を Claude Code に使わせるには、関数を MCP サーバーのツールにします。この記事で作るのは、文章の文字数を数えるツールを1つ持つ TypeScript のサーバーです。完成したサーバーを公式 SDK のクライアントから呼ぶと、結果は次の1行で返ります。
 
 ```text
 ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バイト"}]}
@@ -76,17 +76,17 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 
 ## MCP サーバーは LLM が呼べるツールを公開するプログラム
 
-MCP は Model Context Protocol の略です。AI アプリを外部のシステムにつなぐ、オープンな規格です（出典1）。つなぐ先の例として、データソース、ツール、ワークフローの3つが挙がっています（出典1）。
+MCP は Model Context Protocol の略です。AI アプリを外部のシステムにつなぐ、オープンな規格になります（出典1）。つなぐ先の例として、データソース、ツール、ワークフローの3つが挙がっています（出典1）。
 
 MCP サーバーは、LLM（大規模言語モデル）が呼べるツールを公開するプログラムです（出典2）。ツールは、名前と入力の形を持つ機能の単位を指します（出典2）。LLM は会話とユーザーの指示からツールを選び、自分で呼び出せます（出典2）。
 
 この記事のサーバーが公開するツールは、`count_chars` の1つです。文章を受け取り、文字数、行数、UTF-8 のバイト数の3つを1行の文字列で返します。
 
-stdio 方式では、クライアントがサーバーを子プロセスとして起動します（出典3）。この記事でのクライアントは、SDK で書く確認用のプログラムと Claude Code の2つです。やり取りは標準入出力を通る JSON-RPC です（出典3）。
+stdio 方式では、クライアントがサーバーを子プロセスとして起動します（出典3）。この記事でのクライアントは、SDK で書く確認用のプログラムと Claude Code の2つです。やり取りは標準入出力を通る JSON-RPC になります（出典3）。
 
 ## 前提となる環境
 
-必要なのは Node.js と Claude Code の2つです。SDK 1.32.2 の `package.json` は、Node.js 18 以上を指定しています（出典7）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。Claude Code は 2.1.314 を使っています。インストールの手順は Claude Code の公式ページにあります（出典10）。
+必要なのは Node.js と Claude Code の2つです。SDK 1.32.2 の `package.json` は、Node.js 18 以上を指定しています（出典7）。この記事のコードは、Node.js 22.22.0 と npm 10.9.4 で動かしました。Claude Code は 2.1.314 を使っています。インストールの手順は Claude Code の公式ページです（出典10）。
 
 | パッケージ | バージョン |
 |---|---|
@@ -223,13 +223,13 @@ await server.connect(new StdioServerTransport());
 console.error("char-count MCP server started (stdio)");
 ```
 
-`inputSchema` には [zod のスキーマ](/posts/zod-to-json-schema-tool-definition)を書きます。SDK は、zod を必須の peer dependency にしています（出典4）。SDK はハンドラーを呼ぶ前に、入力をこのスキーマで確かめます（出典14）。合わない入力ではハンドラーを呼ばず、エラーの結果を返す作りです（出典14）。そのため、ハンドラーの中には入力を確かめるコードを書いていません。
+`inputSchema` には zod のスキーマを書きます。[作り方はこちら](/posts/zod-to-json-schema-tool-definition)。SDK では zod が必須の peer dependency です（出典4）。SDK はハンドラーを呼ぶ前に、入力をこのスキーマで確かめます（出典14）。合わない入力ではハンドラーを呼ばず、エラーの結果を返す作りです（出典14）。そのため、ハンドラーの中には入力を確かめるコードを書いていません。
 
 ツールの説明には、改行の数え方を書きました。文字数は、改行も1文字と数えます。行数は改行（LF）で区切った数なので、末尾が改行の文章は最後の空の行も1行です。呼ぶ側が数字を読み違えないよう、この決まりを説明に入れています。
 
 返り値の `content` には、`type: "text"` の要素を1つ入れました。v1.x ブランチの docs/server.md の例と同じ形です（出典5）。
 
-最後の行のログは、わざと `console.error` で書いています。MCP の仕様は、有効なメッセージ以外をサーバーが stdout に書くことを禁じています（出典3）。stderr にはログを書いてよいと、同じ仕様にあります（出典3）。
+最後の行のログは、わざと `console.error` で書いています。MCP の仕様は、有効なメッセージ以外をサーバーが stdout に書くことを禁じています（出典3）。stderr にはログを書いてよい、と同じ仕様です（出典3）。
 
 ### 文字数は Intl.Segmenter で数える
 
@@ -243,7 +243,7 @@ const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
 console.log("graphemes:", [...segmenter.segment(text)].length);
 ```
 
-Node.js でそのまま実行します。
+Node.js でそのまま実行してください。
 
 ```bash
 node compare.mjs
@@ -255,7 +255,7 @@ code points: 5
 graphemes: 1
 ```
 
-`length` は UTF-16 の単位で数えるので、8になります（出典15）。コードポイント単位で数えても5です。`Intl.Segmenter` に `"grapheme"` を渡すと、見た目の1文字ごとに区切ります（出典12）。`count_chars` はこの数え方なので、家族の絵文字を1文字と返します。
+`length` は UTF-16 の単位で数えるので、8になります（出典15）。コードポイント単位で数えても5です。`Intl.Segmenter` に `"grapheme"` を渡すと、見た目の1文字ごとに区切ります（出典12）。`count_chars` はこの数え方なので、家族の絵文字を1文字と返すのが特徴です。
 
 ## 3. SDK のクライアントから呼ぶと入力エラーも結果で返る
 
@@ -309,7 +309,7 @@ ok: {"content":[{"type":"text","text":"文字数: 15 / 行数: 2 / UTF-8: 50 バ
 ng: {"content":[{"type":"text","text":"MCP error -32602: Input validation error: Invalid arguments for tool count_chars: Too small: expected string to have >=1 characters at text"}],"isError":true}
 ```
 
-空行の直後の行は、サーバーが stderr に書いた起動ログです。`StdioClientTransport` の `stderr` の既定値は `"inherit"` です（出典6）。そのため、サーバーの stderr が親プロセスの画面にそのまま出ます。
+空行の直後の行は、サーバーが stderr に書いた起動ログになります。`StdioClientTransport` の `stderr` の既定値は `"inherit"` です（出典6）。そのため、サーバーの stderr が親プロセスの画面にそのまま出ます。
 
 `ok:` の行が正常な呼び出しの結果で、15文字と出ました。内訳は `MCPサーバーを作る` の10文字、家族の絵文字1文字、改行1文字、`2行目` の3文字です。
 
@@ -319,7 +319,7 @@ ng: {"content":[{"type":"text","text":"MCP error -32602: Input validation error:
 
 ## 4. Claude Code への登録は claude mcp add の1行
 
-ビルドした `dist/server.js` を、Claude Code に登録します。登録には `claude mcp add` を使います。パスは、自分の作業フォルダの絶対パスに置き換えてください。
+ビルドした `dist/server.js` を、Claude Code に登録してください。登録には `claude mcp add` を使います。パスは、自分の作業フォルダの絶対パスに置き換えてください。
 
 ```bash
 claude mcp add char-count --scope user --transport stdio -- node /path/to/char-count-mcp/dist/server.js
@@ -329,17 +329,30 @@ claude mcp add char-count --scope user --transport stdio -- node /path/to/char-c
 
 Claude Code 2.1.314 で、登録から削除までを実行した出力を載せます。設定は使い捨てのフォルダに書き、ログインはしていません。出力の中のパスは置き換えました。
 
+```bash
+claude mcp add char-count --scope user --transport stdio -- node /path/to/char-count-mcp/dist/server.js
+```
+
 ```text
-$ claude mcp add char-count --scope user --transport stdio -- node /path/to/char-count-mcp/dist/server.js
 Added stdio MCP server char-count with command: node /path/to/char-count-mcp/dist/server.js to user config
 File modified: /path/to/tmp-home/.claude/.claude.json
+```
 
-$ claude mcp list
+```bash
+claude mcp list
+```
+
+```text
 Checking MCP server health…
 
 char-count: node /path/to/char-count-mcp/dist/server.js - √ Connected
+```
 
-$ claude mcp get char-count
+```bash
+claude mcp get char-count
+```
+
+```text
 char-count:
   Scope: User config (available in all your projects)
   Status: √ Connected
@@ -349,13 +362,18 @@ char-count:
   Environment:
 
 To remove this server, run: claude mcp remove char-count -s user
+```
 
-$ claude mcp remove char-count -s user
+```bash
+claude mcp remove char-count -s user
+```
+
+```text
 Removed MCP server char-count from user config
 File modified: /path/to/tmp-home/.claude/.claude.json
 ```
 
-`claude mcp list` は、登録したサーバーごとに接続の状態を表示します（出典9）。`✘ Failed to connect` のような失敗の表示は、接続できなかったことを表します（出典9）。手元では `√ Connected` と出たので、Claude Code はこのサーバーを起動して接続できています。登録したあとの Claude Code のセッションでは、`/mcp` で同じ状態を確かめられます（出典9）。
+`claude mcp list` は、登録したサーバーごとに接続の状態を表示します（出典9）。`✘ Failed to connect` のような失敗の表示は、接続できなかったことを表します（出典9）。手元では `√ Connected` と出たので、Claude Code はこのサーバーを起動して接続できていました。登録したあとの Claude Code のセッションでは、`/mcp` で同じ状態を確かめられます（出典9）。
 
 ## stdout にログを書くと SDK のクライアントは行を捨てる
 

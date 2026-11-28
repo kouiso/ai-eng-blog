@@ -7,7 +7,7 @@ main_keyword: "AIエージェント"
 target_query: "claude agent sdk 使い方"
 course_step: 4
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "ai-agent-custom-tools-agent-sdk"
 next: "ai-agent-max-turns-budget-limit"
@@ -46,7 +46,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 Agent SDK は、Claude Code のツールとループを自分のコードで動かす SDK です（出典1）。`query()` に指示を渡せば、エージェントが動きます。
@@ -69,7 +69,7 @@ SDK は Claude Code の本体を npm の依存として同梱しています（�
 
 検証には、Claude プランでログイン済みの Claude Code が入った Mac を使いました。ログインの操作そのものは、この記事の検証では実行していません。
 
-環境変数 [`ANTHROPIC_API_KEY`](/posts/claude-code-api-key-billing-auth) は、プランのログインより先に使われます（出典4）。プランで試すなら、先に外れていることを確かめます。
+環境変数 `ANTHROPIC_API_KEY` は、プランのログインより先に使われます（出典4）。詳しくは[認証の記事](/posts/claude-code-api-key-billing-auth)を見てください。プランで試すなら、先に外れていることを確かめます。
 
 ```bash
 test -n "$ANTHROPIC_API_KEY" && echo set || echo unset
@@ -130,7 +130,7 @@ claude-agent-sdk-darwin-arm64
 sdk
 ```
 
-この `darwin-arm64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。名前の末尾は OS と CPU ごとに違います（出典10）。x64 の Linux では `linux-x64` になります。x64 の Windows では `win32-x64` です。
+この `darwin-arm64` が、プラットフォームごとに配られる Claude Code の本体です。npm の optional dependencies として入ります（出典2）。名前の末尾は OS と CPU ごとに違います（出典10）。x64 の Linux では `linux-x64` という名前です。x64 の Windows では `win32-x64` です。
 
 `npm ci --omit=optional` のように optional を飛ばすと、本体が入りません（出典2）。CI で動かないときは、`claude-agent-sdk-` で始まるフォルダがあるかを先に見てください。
 
@@ -174,10 +174,10 @@ for await (const message of query({
 
 - `model: "haiku"` は、モデルの別名です。実行すると `claude-haiku-5-5` が使われました。
 - `tools: []` は、組み込みのツールをすべて外す指定です（出典7）。
-- `maxTurns: 1` は、ターン数の上限です（出典3）。
+- `maxTurns: 1` で、ターン数を1回に限ります（出典3）。
 - `settingSources: []` は、手元の設定と CLAUDE.md を読まない指定です（出典7）。
 
-省いた場合は、ユーザーやプロジェクトの設定がすべて読まれます（出典7）。手元の設定で結果が変わらないよう、この記事では空にしています。
+省いた場合は、ユーザーやプロジェクトの設定がすべて読まれます（出典7）。手元の設定で結果が変わらないよう、この記事では空にしました。
 
 Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典9）。Node.js 20.20.0 でも試しました。`ERR_UNKNOWN_FILE_EXTENSION` のエラーが出て、`hello.ts` は動きません。
 
@@ -219,7 +219,7 @@ result: TypeScriptの型注釈とは、変数・関数の引数・戻り値な�
 
 2026-11-11 の時点で、プランのログインで動かした分は、プランの利用枠から引かれます（出典5）。SDK の数字は、使った量の目安として読んでください。
 
-API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典8）。これは10万トークン以下のプロンプトの単価で、出力は100万トークンあたり0.50ドルです（出典8）。
+API キーで使う場合、Haiku 5.5 の入力は100万トークンあたり0.10ドルです（出典8）。これは10万トークン以下のプロンプトの単価で、出力は100万トークンあたり0.50ドルになります（出典8）。
 
 ## ツールを渡すと、tool_use と tool_result が交互に届く
 
@@ -232,7 +232,7 @@ printf '# ブログ記事の下書き\n締め切り: 2026-11-20\n' > tasks/blog.
 printf '# PR をレビューする\n締め切り: 2026-11-17\n' > tasks/review.md
 ```
 
-コードは `agent.ts` として保存します。今度はツールの呼び出しと、その結果も表示します。
+コードは `agent.ts` として保存します。今度はツールの呼び出しと、その結果も表示してください。
 
 ```ts
 import { query } from "@anthropic-ai/claude-agent-sdk";
@@ -305,7 +305,7 @@ result: 請求書を送る（締め切り: 2026-11-14）
 
 ### 1回のツール呼び出しが、assistant と user の1組になる
 
-モデルがツールを呼ぶと、`assistant` のメッセージに `tool_use` のブロックが入ります。SDK がツールを実行し、結果を `user` のメッセージの `tool_result` で返します（出典3）。
+モデルがツールを呼ぶと、`assistant` のメッセージに `tool_use` のブロックが入ります。SDK がツールを実行し、結果は `user` メッセージの `tool_result` に入る仕組みです（出典3）。
 
 Messages API の SDK で自作するループでは、このやり取りを自分で書きます（出典1）。Agent SDK では、届いた `user` を読めば済みます。
 

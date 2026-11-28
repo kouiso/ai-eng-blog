@@ -7,7 +7,7 @@ main_keyword: "RAG"
 target_query: "rag 出典"
 course_step: 3
 cost_estimate: "記事のコードは読者自身の Claude プランの利用枠から引かれます。Pro は月払いで月20ドルです。SDK が出す total_cost_usd は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS（Darwin arm64）、型の確認は TypeScript 7.0.2"
+run_environment: "Node.js 22.23.4。npm 10.9.9。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS（Darwin arm64）。型の確認は TypeScript 7.0.2"
 verified_at: "2026-11-11"
 prev: "rag-local-embeddings-transformers-js"
 next: "rag-hybrid-search-rrf"
@@ -43,10 +43,10 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
-RAG の回答に出典を付けるなら、資料に番号を振ってモデルに渡します。回答と一緒に、出典の番号と引用文を JSON で返させます。返ってきた出典は、渡した資料と突き合わせてコードで確かめます。
+RAG の回答に出典を付けるなら、資料に番号を振ってモデルに渡します。回答と一緒に、出典の番号と引用文を JSON で返させます。返ってきた出典は、渡した資料と突き合わせてコードで確かめる流れです。
 
 モデルは Claude Agent SDK の `query()` で呼びます。自分の Claude プランでログインしていれば、API キーは要りません。実行したときの init メッセージの `apiKeySource` は `"none"` でした。
 
@@ -100,7 +100,7 @@ found 0 vulnerabilities
 
 [BM25 の記事](/posts/rag-bm25-search-typescript)の3ファイルを使います。1文字も変えていません。語の分け方とスコアの式は、そちらで説明しています。
 
-`tokenize.ts` は、日本語の文を語に分けます。
+`tokenize.ts` は、日本語の文を語に分けるファイルです。
 
 ```ts
 const segmenter = new Intl.Segmenter("ja", { granularity: "word" });
@@ -220,7 +220,7 @@ export function verify(answer: Answer, chunks: Doc[]): string[] {
 
 `verify.ts` として保存します。引用文は `includes` で、資料の文字列にそのまま含まれるかを見ます。1文字でも書き換えた引用は通しません。ただし、空の引用文は `includes` が true を返すので、検証を通ります。短い引用も、資料に含まれていれば通ります。
 
-番号は1から振るので、`chunks[chunk - 1]` で資料を引きます。0 や渡していない番号では `undefined` が返り、問題として数えます。
+番号は1から振るので、`chunks[chunk - 1]` が資料です。0 や渡していない番号では `undefined` が返り、問題として数えます。
 
 Anthropic の手引きも、主張ごとに引用を添えさせる方法を挙げています（出典2）。裏付けの引用が見つからない主張は取り下げさせる、という使い方です（出典2）。
 

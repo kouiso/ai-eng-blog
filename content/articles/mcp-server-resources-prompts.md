@@ -6,8 +6,8 @@ tags: ["MCPサーバー", "TypeScript", "Claude Code"]
 main_keyword: "MCPサーバー"
 target_query: "mcp server resources and prompts"
 course_step: 5
-cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Claude Code の会話で Resources と Prompts を使うには、Claude Code を使える有料のプランか Console のアカウントが要ります。"
-run_environment: "Node.js 22.22.0、npm 10.9.4、SDK 1.32.2、zod 4.6.7、Linux x86_64（Inspector の確認は 2.13.0、型の確認は TypeScript 7.0.2）"
+cost_estimate: "記事の手順は LLM の API を呼ばないので無料です。Resources と Prompts は、有料のプランか Console のアカウントで使えます。"
+run_environment: "Node.js 22.22.0。npm 10.9.4。SDK 1.32.2。zod 4.6.7。Linux x86_64。Inspector の確認は 2.13.0。型の確認は TypeScript 7.0.2"
 verified_at: "2026-11-10"
 prev: "mcp-inspector-debug"
 next: "mcp-connection-closed-fix"
@@ -70,7 +70,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 MCP サーバーが公開できる機能は、ツールのほかに Resources と Prompts の2つがあります（出典1）。Resources は、クライアントが URI を指定して読み取るデータです（出典2）。Prompts は、ユーザーが選んで使うメッセージのひな形を指します（出典3）。この記事で作るのは、文章のルールを返す Resource と、見直しを頼む Prompt です。

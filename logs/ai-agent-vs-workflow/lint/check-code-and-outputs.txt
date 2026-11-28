@@ -1,54 +1,5 @@
-blocks in article=15 expected=15
- 1 OK  run/23 command
- 2 OK  run/23 output
- 3 OK  mkdir+cd + run/24 command + run/25 command
- 4 OK  run/25 output
- 5 OK  run/26 command
- 6 OK  run/26 output
- 7 OK  code/setup-tickets.sh (= run/27 command)
- 8 OK  run/27 output
- 9 OK  code/workflow.ts
-10 OK  run/28 command
-11 OK  run/28 output
-12 OK  run/29 output
-13 OK  code/agent.ts
-14 OK  run/31 command
-15 OK  run/31 output
-run/01.log exit=0
-run/02.log exit=0
-run/03.log exit=0
-run/04.log exit=0
-run/05.log exit=0
-run/06.log exit=0
-run/07.log exit=0
-run/08.log exit=0
-run/09.log exit=0
-run/10.log exit=0
-run/11.log exit=0
-run/12.log exit=0
-run/13.log exit=0
-run/14.log exit=0
-run/15.log exit=0
-run/16.log exit=0
-run/17.log exit=0
-run/18.log exit=0
-run/19.log exit=0
-run/20.log exit=0
-run/21.log exit=0
-run/22.log exit=0
-run/23.log exit=0
-run/24.log exit=0
-run/25.log exit=0
-run/26.log exit=0
-run/27.log exit=0
-run/28.log exit=0
-run/29.log exit=0
-run/30.log exit=0
-run/31.log exit=0
-run/32.log exit=0
-run/33.log exit=0
-run/34.log exit=0
-run/35.log exit=0
-ALL OK
-round1/round2 setup commands == round3: OK
-exit=0
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/ai-agent-vs-workflow/lint/check-code-and-outputs.py", line 8, in <module>
+    art = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
+                       ~~~~~~~~^^^
+IndexError: list index out of range

@@ -7,7 +7,7 @@ main_keyword: "LLM 評価"
 target_query: "promptfoo とは"
 course_step: 6
 cost_estimate: "promptfoo は MIT ライセンスで無料です。評価でモデルを呼ぶ分は、読者自身の Claude プランの利用枠から引かれます（Pro は月払いで月20ドル）。結果に出る cost は定価で換算した見積もりで、プランでの請求額とは別の数字です。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、promptfoo 0.125.1、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"
+run_environment: "Node.js 22.23.4。npm 10.9.9。promptfoo 0.125.1。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "rag-retrieval-eval-recall-mrr"
 next: "llm-eval-dataset-from-logs"
@@ -61,7 +61,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-13
+updated: 2026-11-24
 ---
 
 promptfoo は、LLM を使うアプリを評価するための CLI です（出典1）。プロンプト、モデル、テストケースを YAML の設定ファイル1つに書くと、出力を自動で採点します。
@@ -70,7 +70,7 @@ promptfoo は、LLM を使うアプリを評価するための CLI です（出�
 
 実際に動かすと、答えの形を指定しなかったプロンプトは3件とも不合格でした。分類そのものは3件とも合っていて、落ちた理由はラベルの前後に付いた記号と説明の文です。
 
-[前の記事](/posts/rag-retrieval-eval-recall-mrr)は、RAG の検索を測る回です。採点の方法は[採点の記事](/posts/llm-eval-harness-fixtures)で扱っています。モデルに採点させる方法は[別の記事](/posts/llm-as-a-judge-claude)にあります。この記事は promptfoo の設定の書き方と、結果の読み方に絞ります。
+[前の記事](/posts/rag-retrieval-eval-recall-mrr)は、RAG の検索を測る回です。採点の方法は[採点の記事](/posts/llm-eval-harness-fixtures)で扱っています。モデルに採点させる方法は[別の記事](/posts/llm-as-a-judge-claude)にあります。この記事は、promptfoo の設定の書き方と結果の読み方だけです。
 
 ## 用意するのは Node.js 22.22.0 以上と、Claude Code が使えるプラン
 
@@ -226,7 +226,7 @@ tests:
 
 プロバイダーの ID は `anthropic:claude-agent-sdk` です（出典3）。promptfoo は、ふつうは呼ぶ前に Anthropic の API キーがあるかを確かめます（出典3）。
 
-`apiKeyRequired: false` は、この確認を飛ばす指定です（出典3）。認証は、SDK が自分で行います（出典3）。プランのログインで動かすときは、この1行が要ります。
+`apiKeyRequired: false` は、この確認を飛ばす指定です（出典3）。認証は、SDK が自分で行います（出典3）。プランのログインで動かすときは、この1行が必要です。
 
 このプロバイダーは、`ANTHROPIC_API_KEY` か設定の `apiKey` でキーを受け取ります（出典3）。キーで動かす場合は、`apiKeyRequired: false` の行は要りません。
 
@@ -242,7 +242,7 @@ tests:
 
 ### 形の検査と中身の検査を、別の metric に分けた
 
-採点の条件は `assert` に書きます。`regex` は正規表現に合うかを調べます（出典6）。`icontains` は、大文字と小文字を区別せずに文字列を含むかの検査です（出典6）。
+採点の条件は `assert` に書いてください。`regex` は正規表現に合うかを調べます（出典6）。`icontains` は、大文字と小文字を区別せずに文字列を含むかの検査です（出典6）。
 
 `defaultTest` の `regex` で、出力が3つのラベルのどれか1語ちょうどかを見ます。各テストケースの `icontains` は、正しいラベルを含むかを確かめます。
 
@@ -300,7 +300,7 @@ Writing output to results.jsonl
 
 表の1行が1つのテストケースで、右の2列がプロンプトです。各マスの先頭に `[PASS]` か `[FAIL]` が付き、続けて出力が表示されます。
 
-`sessionId` の列には、呼び出しごとの Agent SDK のセッションの ID が出ます（出典9）。記事では `<session-id>` に置き換えています。
+`sessionId` の列には、呼び出しごとの Agent SDK のセッションの ID が出るのです（出典9）。記事では `<session-id>` に置き換えています。
 
 「形の指定あり」は3件とも合格し、「形の指定なし」は3件とも不合格でした。「形の指定なし」の列の出力も、正しいラベルは3件とも含んでいます。落ちたのは、ラベルの前後に記号や説明の文が付いたからです。
 
@@ -352,7 +352,7 @@ const passed = rows.filter((r) => r.success).length;
 console.log(`合格 ${passed} / ${rows.length}`);
 ```
 
-`show-failures.ts` として保存します。`response.output` は、出典8の JSONL の例に出てきます。`prompt.label` と `vars` の2つは、出典8の説明にありません。0.125.1 が書き出した `results.jsonl` を開いて、名前を確かめました。
+`show-failures.ts` として保存してください。`response.output` は、出典8の JSONL の例に出てきます。`prompt.label` と `vars` の2つは、出典8の説明にありません。0.125.1 が書き出した `results.jsonl` を開いて、名前を確かめました。
 
 Node.js 22.18.0 以降は、`.ts` のファイルをそのまま `node` で実行できます（出典15）。
 
@@ -393,7 +393,7 @@ node show-failures.ts
 
 ## 1回の評価で、プランの利用枠から6回分が引かれる
 
-モデルを呼ぶ6回分は、プランの利用枠から引かれます（出典12）。promptfoo 自体は MIT ライセンスで、無料で使えます（出典1）。
+モデルを呼ぶ6回分は、プランの利用枠から引かれる仕組みです（出典12）。promptfoo 自体は MIT ライセンスで、無料で使えます（出典1）。
 
 このプロバイダーは、ふつうは応答をキャッシュします（出典3）。ただし `apiKeyRequired: false` のときは、キャッシュを読まず、書きもしません（出典9）。
 

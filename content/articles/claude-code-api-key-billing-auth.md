@@ -6,8 +6,8 @@ tags: ["LLM API", "Claude Agent SDK", "Claude Code", "TypeScript"]
 main_keyword: "LLM API"
 target_query: "claude code api 従量課金"
 course_step: 1
-cost_estimate: "プランで動かした分は、読者自身の Claude プランの利用枠から引かれます。無効なダミーのキーで再現した呼び出しは、結果のトークン数と total_cost_usd が 0 でした。有効なキーで動いた分はキーの持ち主に従量で請求され、Haiku 5.5 なら入力は100万トークンあたり0.10ドルです。"
-run_environment: "Node.js 22.23.4、npm 10.9.9、Claude Code 2.1.322、@anthropic-ai/claude-agent-sdk 0.3.322（同梱の Claude Code 2.1.322）、macOS arm64（型の確認は TypeScript 7.0.2）"
+cost_estimate: "プランで動かした分は、読者自身の Claude プランの利用枠から引かれます。無効なダミーのキーで再現した呼び出しは、結果のトークン数と total_cost_usd が 0 でした。有効なキーで動いた分はキーの持ち主に従量で請求されます。Haiku 5.5 なら入力は100万トークンあたり0.10ドルです。"
+run_environment: "Node.js 22.23.4。npm 10.9.9。Claude Code 2.1.322。@anthropic-ai/claude-agent-sdk 0.3.322。同梱の Claude Code は 2.1.322。macOS arm64（型の確認は TypeScript 7.0.2）"
 verified_at: "2026-11-11"
 prev: "llm-api-429-retry-sdk-mock"
 next: "claude-agent-sdk-structured-output"
@@ -49,7 +49,7 @@ ai_assisted: true
 needs_api_key: false
 status: draft
 publish_at: null
-updated: 2026-11-11
+updated: 2026-11-24
 ---
 
 原因は、環境変数 `ANTHROPIC_API_KEY` です。この変数があると、プランのログインより先にキーが使われます（出典1）。Agent SDK でも `claude -p` でも同じです。
@@ -93,7 +93,7 @@ Agent SDK なら、最初に届く init メッセージの `apiKeySource` が手
 | `/login managed key` | Claude Console のアカウントでログインしたときに保存されたキー |
 | `none` | API キーは使っていない。claude.ai のログインなど |
 
-プランで動かしたいなら、`none` 以外はすべて外します。`unset ANTHROPIC_API_KEY` を実行すれば、プランのログインに戻ります（出典1）。
+プランで動かしたいなら、`none` 以外はすべて外します。`unset ANTHROPIC_API_KEY` を実行すれば、プランのログインに戻るのです（出典1）。
 
 ## キーがあると、ログインより先に使われる
 
@@ -102,7 +102,7 @@ Claude Code が使う認証には順番があります。公式の一覧で、`A
 キーがあるときの動きは、モードによって少し違います。
 
 - 対話のモードでは、キーを使うかを最初に1回だけ聞かれ、答えが記憶されます（出典1）。
-- `claude -p` では、キーがあれば聞かずに必ず使います（出典1）。
+- `claude -p` では、キーがあれば聞かずに必ず使う仕様です（出典1）。
 - Agent SDK も、同じ環境変数を読みます（出典1）。
 
 スクリプトと Agent SDK は、確認の画面を出しません。この記事の検証でも、聞かれずにキーが使われました。別のアプリのために入れたキーが残っていると、気づかないまま従量課金で動きます。

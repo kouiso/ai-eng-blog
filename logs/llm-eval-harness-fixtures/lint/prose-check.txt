@@ -1,37 +1,5 @@
-units=170 excluded_url_only_cells=10
-C25 over60=0 max=60
-C16 prose sentences=107 min=11 max=60 le20=12 41to60=45
-C17 SAME3(3字)=0 []
-C17 SAME3(2字・参考)=0 []
-C19 non-desumasu prose=0
-PAT bold **: 0
-PAT em-dash —: 0
-PAT 罫線 ─: 0
-PAT ― U+2015: 0
-PAT 全角コロン ：: 0
-PAT 全角スラッシュ ／: 0
-PAT 徹底解説: 0
-PAT 完全ガイド: 0
-PAT でしょう: 0
-PAT かもしれ: 0
-PAT ここから: 0
-PAT ここまで: 0
-PAT 次は: 0
-PAT まとめ: 0
-PAT 整理: 0
-PAT 見ていき: 0
-PAT 解説します: 0
-PAT 紹介します: 0
-PAT ではなく: 0
-PAT ではありません: 0
-PAT じゃない: 0
-PAT や（並列候補）: 0
-PAT さまざま: 0
-PAT 落ちる: 0
-PAT 効く: 0
-PAT 回す: 2
-    (4, 'description: "LLM の回答を、完全一致、部分一致、正規表現の3つの方法で採点する T')
-    (52, 'プロンプトを1行直すたびに LLM の回答を目で読み直していると、テストケースの件数だけ読む量が増え')
-PAT 仕様書: 0
-PAT 地図: 0
-exit=0
+Traceback (most recent call last):
+  File "/private/tmp/aib-81/logs/llm-eval-harness-fixtures/lint/prose-check.py", line 12, in <module>
+    path = sys.argv[1]
+           ~~~~~~~~^^^
+IndexError: list index out of range

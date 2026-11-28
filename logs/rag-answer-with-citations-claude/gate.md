@@ -1,6 +1,7 @@
 # gate: rag-answer-with-citations-claude
 
 > 2026-11-11 追記: `target_query` を決め、G10 を OK に変えた。この下で G10 を NG、`target_query` を null と書いている箇所は、この追記より前の状態。残る NG は G07 と、まだ点検を受けていない G11。
+> 2026-11-24 追記: check-article.py の確定項目（C25 1か所、C17 3か所）を直し、`check-article.py --all` で確定 0 を確認した。直したのは文章だけでコードとコマンドは同じなので、実行ログと `verified_at` はそのまま使える。C16/C28 の候補は全部読んで判定を `lint/judgments.md` の「2026-11-24 の再判定」に書いた。G10 はこの追記より前の判定のまま。キーワード選定の仕組みの整備は #83 で扱う予定。G11（別の AI による点検）は依然として未実施のため、`status: draft` を維持する。
 
 
 判定日: 2026-11-11。原稿: `content/articles/rag-answer-with-citations-claude.md`（474行。行番号はすべて 2026-11-14 に数え直した今の版）。2026-11-11 の直し（利用条件の注意書きの節と旧出典6を削除、`ask.ts` に `strictMcpConfig: true`、`run/19.log`〜`35.log` で再実行）のあとで判定し直し、行番号も数え直した。
